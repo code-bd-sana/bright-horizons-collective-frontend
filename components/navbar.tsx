@@ -38,25 +38,21 @@ export function Navbar({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <nav
-      className={`relative z-50 inline-flex items-center w-full max-w-(--breakpoint-xl) mx-auto ${className}`}
-    >
+    <nav className={`relative z-50 inline-flex w-full items-center ${className}`}>
       {/* Outer Floating Pill Card (Figma Node 1120:55252) */}
-      <div className="w-full bg-white border border-[#e8ebe8] rounded-[20px] p-4 drop-shadow-[0px_7px_15px_rgba(174,171,163,0.12)] shadow-sm">
-        <div className="flex items-center justify-between gap-1 md:gap-2">
+      <div className="w-full rounded-[20px] border border-[#E8EBE8] bg-white p-4 font-nunito shadow-[0px_7px_8px_rgba(174,171,163,0.10),0px_30px_15px_rgba(174,171,163,0.09),0px_67px_20px_rgba(174,171,163,0.05),0px_119px_24px_rgba(174,171,163,0.01),0px_186px_26px_rgba(174,171,163,0)]">
+        <div className="flex items-center gap-1">
           {/* Desktop Nav Items */}
-          <div className="hidden lg:flex items-center gap-1 xl:gap-2 w-full justify-between">
-            <div className="flex items-center gap-1 xl:gap-2">
+          <div className="hidden lg:flex w-full items-center gap-1">
+            <div className="flex items-center gap-1">
               {navItems.map((item) => {
                 const isActive = pathname === item.href || (item.href === '/' && pathname === '/');
                 return (
                   <Link
                     key={item.label}
                     href={item.href}
-                    className={`px-3 py-1.5 text-[16px] font-medium leading-6 tracking-[-0.176px] transition-colors rounded-lg ${
-                      isActive
-                        ? 'text-[#2F7D7E] font-semibold'
-                        : 'text-[#263238] hover:text-[#2F7D7E]'
+                    className={`px-3 py-1.5 text-[16px] font-medium leading-6 tracking-[-0.176px] transition-colors ${
+                      isActive ? 'text-[#2F7D7E]' : 'text-[#263238] hover:text-[#2F7D7E]'
                     }`}
                   >
                     {item.label}
@@ -68,7 +64,7 @@ export function Navbar({
             {/* CTA Button: Start Free */}
             <Link
               href={ctaHref}
-              className="relative inline-flex items-center justify-center px-5 py-1.5 text-[16px] font-medium leading-6 tracking-[-0.176px] text-[#FFFDF8] rounded-[999px] border border-[#ACCBCB] bg-linear-to-b from-[#2F7D7E]/80 to-[#2F7D7E] hover:opacity-95 shadow-[inset_0px_-6px_3px_0px_rgba(255,255,255,0.09)] transition-all transform hover:scale-[1.02] active:scale-[0.98]"
+              className="relative ml-auto inline-flex items-center justify-center rounded-[999px] border border-[#ACCBCB] bg-linear-to-b from-[#2F7D7E]/80 to-[#2F7D7E] px-3 py-1.5 text-[16px] font-medium leading-6 tracking-[-0.176px] text-[#FFFDF8] shadow-[inset_0px_-6px_3px_0px_rgba(255,255,255,0.09)] transition-all hover:opacity-95"
             >
               {ctaLabel}
             </Link>
