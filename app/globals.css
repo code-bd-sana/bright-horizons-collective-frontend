@@ -9,6 +9,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-nunito), var(--font-geist-sans), sans-serif;
   --font-nunito: var(--font-nunito), sans-serif;
+  --font-manrope: var(--font-manrope), sans-serif;
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);

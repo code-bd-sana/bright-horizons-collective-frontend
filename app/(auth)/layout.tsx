@@ -1,5 +1,5 @@
-import Image from 'next/image';
 import React from 'react';
+import { Logo } from '@/components/logo';
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -16,14 +16,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         <div className="absolute inset-0 bg-black/60"></div>
 
         <div className="relative z-10 flex items-center gap-3">
-          <Image
-            src="/logo/logo.png"
-            alt="Logo"
-            width={92}
-            height={42}
-            className="object-contain"
-            priority
-          />
+          <Logo width={72} height={72} />
         </div>
 
         <div className="relative z-10 mt-auto">
@@ -41,14 +34,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       <div className="flex flex-col flex-1 items-center justify-center p-8 bg-background relative overflow-hidden">
         {/* Mobile Logo (Visible only on smaller screens) */}
         <div className="lg:hidden absolute top-8 left-8 z-20 flex items-center gap-2">
-          <Image
-            src="/logo/logo.png"
-            alt="Logo"
-            width={92}
-            height={42}
-            className="object-contain"
-            priority
-          />
+          <Logo width={72} height={72} />
         </div>
 
         {/* Background decorations for a premium feel on the form side */}
