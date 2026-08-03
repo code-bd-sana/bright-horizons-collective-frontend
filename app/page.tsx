@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 
 export default function Home() {
   return (
@@ -21,9 +22,12 @@ export default function Home() {
             Docs
           </a>
         </nav>
-        <button className="px-5 py-2 text-sm font-semibold text-white bg-white/10 hover:bg-white/20 border border-white/20 rounded-full backdrop-blur-md transition-all duration-300">
+        <Link
+          href="/login"
+          className="px-5 py-2 text-sm font-semibold text-white bg-white/10 hover:bg-white/20 border border-white/20 rounded-full backdrop-blur-md transition-all duration-300 inline-block"
+        >
           Get Started
-        </button>
+        </Link>
       </header>
 
       {/* Hero Section */}
@@ -46,12 +50,18 @@ export default function Home() {
         </p>
 
         <div className="flex flex-col sm:flex-row items-center gap-4">
-          <button className="px-8 py-4 text-base font-semibold text-white bg-blue-600 hover:bg-blue-500 rounded-full shadow-[0_0_40px_-10px_rgba(37,99,235,0.8)] transition-all duration-300 hover:scale-105">
+          <Link
+            href="/dashboard"
+            className="px-8 py-4 text-base font-semibold text-white bg-blue-600 hover:bg-blue-500 rounded-full shadow-[0_0_40px_-10px_rgba(37,99,235,0.8)] transition-all duration-300 hover:scale-105 inline-block"
+          >
             Start Building
-          </button>
-          <button className="px-8 py-4 text-base font-semibold text-white bg-white/5 hover:bg-white/10 border border-white/10 rounded-full backdrop-blur-md transition-all duration-300 hover:scale-105">
-            View Documentation
-          </button>
+          </Link>
+          <Link
+            href="/login"
+            className="px-8 py-4 text-base font-semibold text-white bg-white/5 hover:bg-white/10 border border-white/10 rounded-full backdrop-blur-md transition-all duration-300 hover:scale-105 inline-block"
+          >
+            Sign In
+          </Link>
         </div>
 
         {/* Feature Cards / Glassmorphism showcase */}

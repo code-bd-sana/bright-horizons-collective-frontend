@@ -15,17 +15,17 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 export function Header() {
   const { toggleSidebar } = useAppStore();
   const router = useRouter();
-  const [role, setRole] = useState<string>('User');
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setRole(localStorage.getItem('user_role') || 'User');
-  }, []);
+  const [role, setRole] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('user_role') || 'User';
+    }
+    return 'User';
+  });
 
   const handleLogout = () => {
     document.cookie = 'auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';

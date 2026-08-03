@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
 
 export function constructMetadata({
-  title = 'Modern Next.js Frontend Template',
-  description = 'A production-ready, batteries-included Next.js frontend template designed to save developers time with pre-configured tools.',
+  title = 'Jaicys Frontend | Modern Web Application',
+  description = 'A production-ready, batteries-included Next.js frontend application for Jaicys.',
   image = '/logo/logo.png',
   icons = '/favicon.ico',
   noIndex = false,
@@ -30,10 +30,10 @@ export function constructMetadata({
       title,
       description,
       images: [image],
-      creator: '@frontend-template',
+      creator: '@jaicys',
     },
     icons,
-    metadataBase: new URL('https://frontend-template.example.com'),
+    metadataBase: new URL('https://jaicys.com'),
     ...(noIndex && {
       robots: {
         index: false,
