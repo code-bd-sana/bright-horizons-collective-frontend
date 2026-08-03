@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Geist, Geist_Mono, Nunito } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
 import { QueryProvider } from '@/components/query-provider';
@@ -16,10 +16,16 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 });
 
+const nunito = Nunito({
+  variable: '--font-nunito',
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+});
+
 export const metadata: Metadata = constructMetadata({
-  title: 'Modern Frontend Template | Stunning UI',
+  title: 'Jaicys Frontend | Modern Web Application',
   description:
-    'A state-of-the-art Next.js frontend template with premium aesthetics, rich animations, and excellent performance.',
+    'A state-of-the-art Next.js frontend application with premium aesthetics and high performance.',
 });
 
 export default function RootLayout({
@@ -30,7 +36,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${nunito.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
