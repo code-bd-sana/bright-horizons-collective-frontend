@@ -91,9 +91,13 @@ function ResourceCard({
               </span>
             </div>
           </div>
-          {item.type === 'Activities' ? (
+          {item.type !== 'Therapy Toys' ? (
             <Link
-              href="/explore/activities/bubble-wrap-stomp-counting"
+              href={
+                item.type === 'Activities'
+                  ? '/explore/activities/bubble-wrap-stomp-counting'
+                  : '/explore/parent-resources/developmental-milestones'
+              }
               className="flex items-center gap-1 px-2.5 py-2 font-manrope text-base font-semibold leading-6.75 tracking-[-0.24px] text-[#F2B59F]"
             >
               {action}
