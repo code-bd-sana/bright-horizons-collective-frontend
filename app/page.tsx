@@ -1,14 +1,14 @@
 import React from 'react';
-import { HeroSection } from '@/components/hero-section';
+import { HeroSection } from '@/components/Home/hero-section';
+import { WeeklyPlanSection } from '@/components/Home/weekly-plan-section';
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#FFFDF8] text-[#263238] font-sans antialiased selection:bg-[#2F7D7E]/20">
-      {/* Section 1: Hero Section */}
+    <div className="min-h-screen bg-[#FDFDFC] font-sans text-[#263238] antialiased selection:bg-[#2F7D7E]/20">
       <HeroSection />
-
-      {/* Main Container for upcoming homepage sections */}
-      <main className="w-full">{/* Sections 2 to 10 will be added here one by one */}</main>
+      <main className="w-full">
+        <WeeklyPlanSection />
+      </main>
     </div>
   );
 }
