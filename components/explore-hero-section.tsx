@@ -3,23 +3,9 @@
 import Link from 'next/link';
 import { ArrowRight, Star } from 'lucide-react';
 
-import { Logo } from '@/components/logo';
-import { Navbar } from '@/components/navbar';
-
 export function ExploreHeroSection() {
   return (
     <section className="relative flex min-h-dvh items-start justify-center overflow-hidden bg-[#FDFDFC] pt-48 text-[#263238] max-lg:min-h-0 max-lg:pb-20 max-lg:pt-36">
-      <Logo
-        width={88}
-        height={88}
-        showBackdrop
-        className="absolute left-[calc(50%-786px)] top-4 z-20 max-[1700px]:-left-5 max-lg:left-6 max-lg:top-4"
-      />
-
-      <div className="absolute left-1/2 top-11 z-30 w-185.5 -translate-x-1/2 max-lg:top-4 max-lg:w-[min(92vw,662px)]">
-        <Navbar />
-      </div>
-
       <div className="relative z-10 flex w-187.75 flex-col items-center gap-8 px-5 text-center max-lg:w-full">
         <div className="flex w-full flex-col items-center gap-4">
           <div className="flex w-44.5 items-center gap-2.5 rounded-xl border border-[#E8EBE8] bg-white px-2 py-1.5 font-manrope text-sm leading-5.5 tracking-[-0.084px] shadow-sm">

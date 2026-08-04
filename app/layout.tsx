@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Manrope, Nunito } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
 import { QueryProvider } from '@/components/query-provider';
+import { MarketingShell } from '@/components/marketing-shell';
 import { Toaster } from 'sonner';
 import { constructMetadata } from '@/lib/metadata';
 
@@ -53,7 +54,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <QueryProvider>
-            {children}
+            <MarketingShell>{children}</MarketingShell>
             <Toaster position="top-right" richColors />
           </QueryProvider>
         </ThemeProvider>
