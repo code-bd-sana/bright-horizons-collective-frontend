@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono, Manrope, Nunito } from 'next/font/google';
+import { Geist, Geist_Mono, Lora, Manrope, Nunito } from 'next/font/google';
 import './globals.css';
-import { ThemeProvider } from '@/components/theme-provider';
 import { QueryProvider } from '@/components/query-provider';
+import { MarketingShell } from '@/components/marketing-shell';
 import { Toaster } from 'sonner';
 import { constructMetadata } from '@/lib/metadata';
 
@@ -28,6 +28,13 @@ const manrope = Manrope({
   weight: ['400', '500', '600'],
 });
 
+const lora = Lora({
+  variable: '--font-lora',
+  subsets: ['latin'],
+  style: ['italic'],
+  weight: ['400'],
+});
+
 export const metadata: Metadata = constructMetadata({
   title: 'Jaicys Frontend | Modern Web Application',
   description:
@@ -42,21 +49,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${nunito.variable} ${manrope.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${nunito.variable} ${manrope.variable} ${lora.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <QueryProvider>
-            {children}
-            <Toaster position="top-right" richColors />
-          </QueryProvider>
-        </ThemeProvider>
+        <QueryProvider>
+          <MarketingShell>{children}</MarketingShell>
+          <Toaster position="top-right" richColors />
+        </QueryProvider>
       </body>
     </html>
   );
