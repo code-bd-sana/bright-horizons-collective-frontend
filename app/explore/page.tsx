@@ -1,3 +1,4 @@
+import { ExploreCatalog } from '@/components/explore-catalog';
 import { ExploreHeroSection } from '@/components/explore-hero-section';
 import { ExploreWaveTransition } from '@/components/explore-wave-transition';
 
@@ -6,6 +7,7 @@ export default function ExplorePage() {
     <main>
       <ExploreHeroSection />
       <ExploreWaveTransition />
+      <ExploreCatalog />
     </main>
   );
 }
