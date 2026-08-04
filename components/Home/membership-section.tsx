@@ -174,15 +174,13 @@ const comparisonRows = [
 
 function CompareCheck({ support = false }: { support?: boolean }) {
   return (
-    <span className="inline-flex size-4 items-center justify-center rounded-[9px] bg-[#E9F1EE]">
-      <Image
-        src={`${ASSET_ROOT}${support ? 'figma-home-1183-11846-img-icon3.svg' : 'figma-home-1183-11846-img-icon2.svg'}`}
-        alt=""
-        width={10}
-        height={10}
-        aria-hidden="true"
-      />
-    </span>
+    <Image
+      src={`${ASSET_ROOT}${support ? 'figma-home-1183-11993-img-icon1.svg' : 'figma-home-1183-11993-img-icon.svg'}`}
+      alt=""
+      width={16}
+      height={16}
+      aria-hidden="true"
+    />
   );
 }
 
@@ -190,12 +188,15 @@ function ComparisonCell({ value, growth }: { value: string; growth?: boolean }) 
   if (value === 'check' || value === 'check-support') {
     return <CompareCheck support={value === 'check-support'} />;
   }
+  if (value === '—') {
+    return <span className="font-manrope text-base leading-4 text-[#607077]">{value}</span>;
+  }
   return (
     <span
       className={
         growth
-          ? 'font-nunito text-sm font-semibold leading-5 text-[#263238]'
-          : 'font-manrope text-sm leading-[22px] text-[#515B60]'
+          ? 'font-nunito text-sm font-semibold leading-5 tracking-[-0.084px] text-[#263238]'
+          : 'font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#515B60]'
       }
     >
       {value}
@@ -215,18 +216,16 @@ function ComparisonTable() {
         </h3>
       </div>
       <div className="grid grid-cols-[350.266px_210.344px_239.813px_172.578px]">
-        {['Feature', 'Little Steps', 'Grow Together', 'Personalized Pathways'].map(
-          (heading, index) => (
-            <div
-              key={heading}
-              className={`flex h-[49.5px] items-center border-b border-[#D8DDD9] pt-0 font-manrope text-sm font-semibold leading-[22px] tracking-[0.84px] text-[#515B60] ${
-                index === 0 ? 'pl-6' : 'justify-center text-center'
-              } ${index === 2 ? 'bg-[rgba(220,238,238,0.50)]' : ''}`}
-            >
-              {heading}
-            </div>
-          )
-        )}
+        {['Feature', 'Starter', 'Growth', 'Support'].map((heading, index) => (
+          <div
+            key={heading}
+            className={`flex h-[49.5px] items-center border-b border-[#D8DDD9] font-manrope text-sm font-semibold leading-[22px] tracking-[0.84px] ${
+              index === 0 ? 'pl-6' : 'justify-center text-center'
+            } ${index === 2 ? 'bg-[rgba(220,238,238,0.50)] text-[#2F7D7E]' : 'text-[#263238]'}`}
+          >
+            {heading}
+          </div>
+        ))}
         {comparisonRows.flatMap((row, rowIndex) =>
           row.map((value, columnIndex) => {
             const noBorder = rowIndex === comparisonRows.length - 1;
@@ -236,15 +235,16 @@ function ComparisonTable() {
                 : rowIndex === comparisonRows.length - 1
                   ? 'h-[54.5px]'
                   : 'h-[55px]';
+            const isDash = value === '—';
             return (
               <div
                 key={`${row[0]}-${columnIndex}`}
-                className={`flex ${fixedHeight} items-center ${columnIndex === 0 ? 'pl-6' : 'justify-center text-center'} ${
+                className={`flex ${fixedHeight} ${isDash ? 'items-start pt-[15.5px]' : 'items-center'} ${columnIndex === 0 ? 'pl-6' : 'justify-center text-center'} ${
                   noBorder ? '' : 'border-b border-[#D8DDD9]'
                 } ${columnIndex === 2 ? 'bg-[rgba(220,238,238,0.28)]' : ''}`}
               >
                 {columnIndex === 0 ? (
-                  <span className="font-manrope text-sm leading-[22px] text-[#263238]">
+                  <span className="font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#515B60]">
                     {value}
                   </span>
                 ) : (
