@@ -13,6 +13,7 @@ import {
   type ExploreItem,
   type FilterKey,
 } from '@/lib/explore-data';
+import { TherapyToyModal } from '@/components/explore/therapy-toy-modal';
 
 type SelectedFilters = Record<FilterKey, string[]>;
 
@@ -29,11 +30,13 @@ function ResourceCard({
   height,
   saved,
   onSave,
+  onOpenToy,
 }: {
   item: ExploreItem;
   height: number;
   saved: boolean;
   onSave: () => void;
+  onOpenToy?: () => void;
 }) {
   const action =
     item.type === 'Activities'
@@ -44,7 +47,8 @@ function ResourceCard({
 
   return (
     <article
-      className="relative overflow-hidden rounded-2xl border border-[#EDEEF0] bg-white p-4 text-white shadow-[0px_2px_16px_rgba(198,202,209,0.22)]"
+      onClick={item.type === 'Therapy Toys' ? onOpenToy : undefined}
+      className={`relative overflow-hidden rounded-2xl border border-[#EDEEF0] bg-white p-4 text-white shadow-[0px_2px_16px_rgba(198,202,209,0.22)] ${item.type === 'Therapy Toys' ? 'cursor-pointer' : ''}`}
       style={{ height }}
     >
       <Image
@@ -68,7 +72,10 @@ function ResourceCard({
           <button
             type="button"
             aria-label={saved ? `Remove ${item.title} from saved` : `Save ${item.title}`}
-            onClick={onSave}
+            onClick={(event) => {
+              event.stopPropagation();
+              onSave();
+            }}
             className="flex size-6 items-center justify-center rounded-full bg-white/90 text-[#607077] shadow-[0px_1px_4px_rgba(0,0,0,0.12)]"
           >
             <Bookmark className={saved ? 'size-4 fill-[#2F7D7E] text-[#2F7D7E]' : 'size-4'} />
@@ -98,6 +105,7 @@ function ResourceCard({
                   ? '/explore/activities/bubble-wrap-stomp-counting'
                   : '/explore/parent-resources/developmental-milestones'
               }
+              onClick={onOpenToy}
               className="flex items-center gap-1 px-2.5 py-2 font-manrope text-base font-semibold leading-6.75 tracking-[-0.24px] text-[#F2B59F]"
             >
               {action}
@@ -123,6 +131,7 @@ export function ExploreCatalog() {
   const [query, setQuery] = useState('');
   const [filters, setFilters] = useState<SelectedFilters>(emptyFilters);
   const [savedIds, setSavedIds] = useState<string[]>([]);
+  const [isToyModalOpen, setToyModalOpen] = useState(false);
   const [openGroups, setOpenGroups] = useState<Record<FilterKey, boolean>>({
     age: true,
     skill: true,
@@ -265,6 +274,7 @@ export function ExploreCatalog() {
                             : [...current, item.id]
                         )
                       }
+                      onOpenToy={() => setToyModalOpen(true)}
                     />
                   ))}
                 </div>
@@ -289,6 +299,7 @@ export function ExploreCatalog() {
           )}
         </div>
       </div>
+      <TherapyToyModal isOpen={isToyModalOpen} onClose={setToyModalOpen} />
     </section>
   );
 }
