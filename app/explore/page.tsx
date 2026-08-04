@@ -1,5 +1,11 @@
 import { ExploreHeroSection } from '@/components/explore-hero-section';
+import { ExploreWaveTransition } from '@/components/explore-wave-transition';
 
 export default function ExplorePage() {
-  return <ExploreHeroSection />;
+  return (
+    <main>
+      <ExploreHeroSection />
+      <ExploreWaveTransition />
+    </main>
+  );
 }

@@ -5,7 +5,7 @@ import { ArrowRight, Star } from 'lucide-react';
 
 export function ExploreHeroSection() {
   return (
-    <section className="relative flex min-h-dvh items-start justify-center overflow-hidden bg-[#FDFDFC] pt-48 text-[#263238] max-lg:min-h-0 max-lg:pb-20 max-lg:pt-36">
+    <section className="relative flex h-155 min-h-0 items-start justify-center overflow-hidden bg-[#FDFDFC] pt-48 text-[#263238] max-lg:h-auto max-lg:pb-20 max-lg:pt-36">
       <div className="relative z-10 flex w-187.75 flex-col items-center gap-8 px-5 text-center max-lg:w-full">
         <div className="flex w-full flex-col items-center gap-4">
           <div className="flex w-44.5 items-center gap-2.5 rounded-xl border border-[#E8EBE8] bg-white px-2 py-1.5 font-manrope text-sm leading-5.5 tracking-[-0.084px] shadow-sm">
