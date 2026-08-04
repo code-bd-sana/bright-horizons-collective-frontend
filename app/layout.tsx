@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono, Lora, Manrope, Nunito } from 'next/font/google';
 import './globals.css';
-import { ThemeProvider } from '@/components/theme-provider';
 import { QueryProvider } from '@/components/query-provider';
 import { MarketingShell } from '@/components/marketing-shell';
 import { Toaster } from 'sonner';
@@ -54,17 +53,10 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <QueryProvider>
-            <MarketingShell>{children}</MarketingShell>
-            <Toaster position="top-right" richColors />
-          </QueryProvider>
-        </ThemeProvider>
+        <QueryProvider>
+          <MarketingShell>{children}</MarketingShell>
+          <Toaster position="top-right" richColors />
+        </QueryProvider>
       </body>
     </html>
   );

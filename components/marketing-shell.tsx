@@ -3,6 +3,7 @@
 import { usePathname } from 'next/navigation';
 
 import { SiteHeader } from '@/components/site-header';
+import { SiteFooter } from '@/components/site-footer';
 
 interface MarketingShellProps {
   children: React.ReactNode;
@@ -22,6 +23,7 @@ export function MarketingShell({ children }: MarketingShellProps) {
     <div className="relative">
       <SiteHeader />
       {children}
+      <SiteFooter />
     </div>
   );
 }

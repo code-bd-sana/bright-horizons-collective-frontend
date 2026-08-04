@@ -44,7 +44,7 @@ export function Logo({
           }}
         >
           <Image
-            src="/Home/figma-hero-union.svg"
+            src="/Home/figma-home-1183-10835-union.svg"
             alt=""
             width={521}
             height={383}
@@ -58,7 +58,7 @@ export function Logo({
         </span>
       )}
       <Image
-        src="/Home/figma-hero-logo.png"
+        src="/Home/figma-home-1183-10835-image1.png"
         alt={alt}
         fill
         sizes={`${width}px`}
