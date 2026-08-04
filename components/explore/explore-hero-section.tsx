@@ -1,7 +1,7 @@
 'use client';
 
-import Link from 'next/link';
 import { ArrowRight, Star } from 'lucide-react';
+import Link from 'next/link';
 
 export function ExploreHeroSection() {
   return (

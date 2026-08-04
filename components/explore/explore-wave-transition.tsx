@@ -2,7 +2,7 @@ import Image from 'next/image';
 
 export function ExploreWaveTransition() {
   return (
-    <section aria-hidden="true" className="relative h-77.5 overflow-hidden bg-white max-lg:h-64">
+    <section aria-hidden="true" className="relative h-100 overflow-hidden bg-white max-lg:h-64">
       <Image
         src="/Home/figma-explore-wave.svg"
         alt=""

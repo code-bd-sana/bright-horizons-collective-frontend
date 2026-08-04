@@ -31,8 +31,8 @@ const manrope = Manrope({
 const lora = Lora({
   variable: '--font-lora',
   subsets: ['latin'],
-  weight: ['400'],
   style: ['italic'],
+  weight: ['400'],
 });
 
 export const metadata: Metadata = constructMetadata({
