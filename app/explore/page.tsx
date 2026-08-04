@@ -1,6 +1,6 @@
-import { ExploreCatalog } from '@/components/explore-catalog';
-import { ExploreHeroSection } from '@/components/explore-hero-section';
-import { ExploreWaveTransition } from '@/components/explore-wave-transition';
+import { ExploreCatalog } from '@/components/explore/explore-catalog';
+import { ExploreHeroSection } from '@/components/explore/explore-hero-section';
+import { ExploreWaveTransition } from '@/components/explore/explore-wave-transition';
 
 export default function ExplorePage() {
   return (

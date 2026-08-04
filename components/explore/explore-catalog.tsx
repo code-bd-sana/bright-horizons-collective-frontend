@@ -1,7 +1,8 @@
 'use client';
 
-import Image from 'next/image';
 import { ArrowRight, Bookmark, ChevronDown, Clock3, Search } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
 import { useMemo, useState } from 'react';
 
 import {
@@ -90,13 +91,23 @@ function ResourceCard({
               </span>
             </div>
           </div>
-          <button
-            type="button"
-            className="flex items-center gap-1 px-2.5 py-2 font-manrope text-base font-semibold leading-6.75 tracking-[-0.24px] text-[#F2B59F]"
-          >
-            {action}
-            <ArrowRight className="size-5" />
-          </button>
+          {item.type === 'Activities' ? (
+            <Link
+              href="/explore/activities/bubble-wrap-stomp-counting"
+              className="flex items-center gap-1 px-2.5 py-2 font-manrope text-base font-semibold leading-6.75 tracking-[-0.24px] text-[#F2B59F]"
+            >
+              {action}
+              <ArrowRight className="size-5" />
+            </Link>
+          ) : (
+            <button
+              type="button"
+              className="flex items-center gap-1 px-2.5 py-2 font-manrope text-base font-semibold leading-6.75 tracking-[-0.24px] text-[#F2B59F]"
+            >
+              {action}
+              <ArrowRight className="size-5" />
+            </button>
+          )}
         </div>
       </div>
     </article>
