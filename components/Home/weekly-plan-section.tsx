@@ -389,7 +389,10 @@ function DesktopWeeklyPlan() {
           <div className="absolute left-[55px] top-[151px] flex w-[730px] flex-col gap-5">
             <ExpandedActivity />
             {upcomingActivities.map((activity) => (
-              <UpcomingActivity key={activity.title} {...activity} />
+              <UpcomingActivity
+                key={`${activity.day}-${activity.date}-${activity.title}`}
+                {...activity}
+              />
             ))}
           </div>
 
@@ -467,7 +470,10 @@ function ResponsiveWeeklyPlan() {
             <div className="mt-5 grid gap-5 lg:grid-cols-[1fr_307px]">
               <div className="space-y-5 overflow-hidden">
                 {upcomingActivities.slice(0, 2).map((activity) => (
-                  <div key={activity.title} className="min-w-[730px]">
+                  <div
+                    key={`${activity.day}-${activity.date}-${activity.title}`}
+                    className="min-w-[730px]"
+                  >
                     <UpcomingActivity {...activity} />
                   </div>
                 ))}
