@@ -25,10 +25,12 @@ const emptyFilters: SelectedFilters = {
 
 function ResourceCard({
   item,
+  height,
   saved,
   onSave,
 }: {
   item: ExploreItem;
+  height: number;
   saved: boolean;
   onSave: () => void;
 }) {
@@ -41,8 +43,8 @@ function ResourceCard({
 
   return (
     <article
-      className="relative mb-4 break-inside-avoid overflow-hidden rounded-2xl border border-[#EDEEF0] bg-white p-4 text-white shadow-[0px_2px_16px_rgba(198,202,209,0.22)]"
-      style={{ height: item.cardHeight }}
+      className="relative overflow-hidden rounded-2xl border border-[#EDEEF0] bg-white p-4 text-white shadow-[0px_2px_16px_rgba(198,202,209,0.22)]"
+      style={{ height }}
     >
       <Image
         src={item.image}
@@ -132,6 +134,18 @@ export function ExploreCatalog() {
     });
   }, [activeType, filters, query]);
 
+  const masonryColumns = useMemo(
+    () =>
+      results.reduce<ExploreItem[][]>(
+        (columns, item, index) => {
+          columns[index % 3].push(item);
+          return columns;
+        },
+        [[], [], []]
+      ),
+    [results]
+  );
+
   const toggleFilter = (key: FilterKey, option: string) => {
     setFilters((current) => ({
       ...current,
@@ -169,67 +183,76 @@ export function ExploreCatalog() {
       </div>
 
       <div className="mx-auto mt-12 flex max-w-480 items-start gap-6 px-20 max-xl:px-8 max-lg:flex-col max-lg:px-5">
-        <aside className="w-90.25 shrink-0 rounded-3xl border border-[#E8EBE8] bg-white p-6 shadow-[0px_1px_1px_rgba(0,0,0,0.05)] max-lg:w-full">
-          <div className="flex flex-col gap-10">
-            {filterGroups.map(({ key, label, options }) => (
-              <div key={key} className="w-full">
-                <button
-                  type="button"
-                  onClick={() => setOpenGroups((current) => ({ ...current, [key]: !current[key] }))}
-                  className="flex w-full items-center justify-between font-nunito text-xl font-medium leading-7 text-[#0F1416]"
-                >
-                  {label}
-                  <ChevronDown
-                    className={`size-6 text-[#2F7D7E] transition-transform ${openGroups[key] ? '' : '-rotate-90'}`}
-                  />
-                </button>
-                {openGroups[key] && (
-                  <div className="mt-3 flex flex-col gap-2.5">
-                    {options.map((option) => {
-                      const checked = filters[key].includes(option);
-                      return (
-                        <label
-                          key={option}
-                          className="flex cursor-pointer items-center gap-2.5 font-nunito text-sm font-medium leading-5 tracking-[-0.084px] text-[#263238]"
-                        >
-                          <input
-                            type="checkbox"
-                            checked={checked}
-                            onChange={() => toggleFilter(key, option)}
-                            className="sr-only"
-                          />
-                          <span
-                            className={`flex size-4 items-center justify-center rounded border ${checked ? 'border-[#2F7D7E] bg-[#2F7D7E]' : 'border-[#8FB9A8] bg-white'}`}
+        <div className="w-101.5 shrink-0 max-lg:w-full">
+          <aside className="w-90.25 rounded-3xl border border-[#E8EBE8] bg-white p-6 shadow-[0px_1px_1px_rgba(0,0,0,0.05)] max-lg:w-full">
+            <div className="flex flex-col gap-10">
+              {filterGroups.map(({ key, label, options }) => (
+                <div key={key} className="w-full">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setOpenGroups((current) => ({ ...current, [key]: !current[key] }))
+                    }
+                    className="flex w-full items-center justify-between font-nunito text-xl font-medium leading-7 text-[#0F1416]"
+                  >
+                    {label}
+                    <ChevronDown
+                      className={`size-6 text-[#2F7D7E] transition-transform ${openGroups[key] ? '' : '-rotate-90'}`}
+                    />
+                  </button>
+                  {openGroups[key] && (
+                    <div className="mt-3 flex flex-col gap-2.5">
+                      {options.map((option) => {
+                        const checked = filters[key].includes(option);
+                        return (
+                          <label
+                            key={option}
+                            className="flex cursor-pointer items-center gap-2.5 font-nunito text-sm font-medium leading-5 tracking-[-0.084px] text-[#263238]"
                           >
-                            {checked && <span className="size-1.5 rounded-sm bg-white" />}
-                          </span>
-                          {option}
-                        </label>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </aside>
+                            <input
+                              type="checkbox"
+                              checked={checked}
+                              onChange={() => toggleFilter(key, option)}
+                              className="sr-only"
+                            />
+                            <span
+                              className={`flex size-4 items-center justify-center rounded border ${checked ? 'border-[#2F7D7E] bg-[#2F7D7E]' : 'border-[#8FB9A8] bg-white'}`}
+                            >
+                              {checked && <span className="size-1.5 rounded-sm bg-white" />}
+                            </span>
+                            {option}
+                          </label>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </aside>
+        </div>
 
         <div className="min-w-0 flex-1">
           {results.length ? (
-            <div className="columns-1 gap-4 md:columns-2 xl:columns-3">
-              {results.map((item) => (
-                <ResourceCard
-                  key={item.id}
-                  item={item}
-                  saved={savedIds.includes(item.id)}
-                  onSave={() =>
-                    setSavedIds((current) =>
-                      current.includes(item.id)
-                        ? current.filter((id) => id !== item.id)
-                        : [...current, item.id]
-                    )
-                  }
-                />
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+              {masonryColumns.map((column, columnIndex) => (
+                <div key={columnIndex} className="flex flex-col gap-6">
+                  {column.map((item, itemIndex) => (
+                    <ResourceCard
+                      key={item.id}
+                      item={item}
+                      height={columnIndex === 1 && itemIndex === 0 ? 480 : 540}
+                      saved={savedIds.includes(item.id)}
+                      onSave={() =>
+                        setSavedIds((current) =>
+                          current.includes(item.id)
+                            ? current.filter((id) => id !== item.id)
+                            : [...current, item.id]
+                        )
+                      }
+                    />
+                  ))}
+                </div>
               ))}
             </div>
           ) : (
