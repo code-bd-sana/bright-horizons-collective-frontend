@@ -10,12 +10,11 @@ const productLinks = [
 ];
 
 const companyLinks = [
-  ['About', '/#about'],
-  ['Blog', '/explore'],
   ['Contact', '/#contact'],
   ['Privacy Policy', '/privacy-policy'],
   ['Terms & Membership Agreement', '/terms-and-membership-agreement'],
   ['Affiliate Disclosure', '/affiliate-disclosure'],
+  ['Medical Disclaimer', '/medical-disclaimer'],
 ];
 
 const footerMask: CSSProperties = {
