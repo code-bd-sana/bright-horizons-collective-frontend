@@ -4,6 +4,8 @@ import { ArrowRight, ChevronDown, FileUp } from 'lucide-react';
 import Image from 'next/image';
 import { FormEvent, useState } from 'react';
 
+import { MessageSentModal } from '@/components/contact/message-sent-modal';
+
 const contactCards = [
   {
     title: 'Email Support',
@@ -106,9 +108,13 @@ function Field({
 }
 
 export function ContactPage() {
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => event.preventDefault();
+  const [isMessageSent, setMessageSent] = useState(false);
   const [isReasonMenuOpen, setReasonMenuOpen] = useState(false);
   const [contactReason, setContactReason] = useState('');
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setMessageSent(true);
+  };
   const contactReasons = [
     'General Question',
     'Membership',
@@ -263,6 +269,7 @@ export function ContactPage() {
           priority
         />
       </section>
+      <MessageSentModal isOpen={isMessageSent} onClose={setMessageSent} />
     </main>
   );
 }
