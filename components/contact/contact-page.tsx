@@ -2,7 +2,7 @@
 
 import { ArrowRight, ChevronDown, FileUp } from 'lucide-react';
 import Image from 'next/image';
-import { FormEvent } from 'react';
+import { FormEvent, useState } from 'react';
 
 const contactCards = [
   {
@@ -107,6 +107,18 @@ function Field({
 
 export function ContactPage() {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => event.preventDefault();
+  const [isReasonMenuOpen, setReasonMenuOpen] = useState(false);
+  const [contactReason, setContactReason] = useState('');
+  const contactReasons = [
+    'General Question',
+    'Membership',
+    'Weekly Plan',
+    'Activities',
+    'Billing',
+    'Technical Support',
+    'Development Question',
+    'Other',
+  ];
 
   return (
     <main className="overflow-hidden bg-[#FFFDF8] text-[#263238]">
@@ -163,29 +175,47 @@ export function ContactPage() {
               <div className="flex w-105.5 max-w-full flex-col gap-6">
                 <Field label="Full Name" placeholder="Sarah J." />
                 <Field label="Email" required type="email" placeholder="sarahj@mail.com" />
-                <label className="flex w-full flex-col gap-1.5">
+                <div className="relative flex w-full flex-col gap-1.5">
                   <span className="font-nunito text-base font-medium leading-6 tracking-[-0.176px]">
                     Contact Reason
                   </span>
-                  <span className="relative flex h-10.5 items-center rounded-md border border-[#E2E8F0] px-3.5 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#515B60]">
-                    <select
-                      defaultValue=""
-                      className="absolute inset-0 w-full appearance-none bg-transparent px-3.5 pr-10 outline-none"
-                    >
-                      <option value="" disabled>
-                        Select a topic...
-                      </option>
-                      <option>Membership</option>
-                      <option>Technical support</option>
-                      <option>Consultation</option>
-                      <option>Other</option>
-                    </select>
+                  <button
+                    type="button"
+                    aria-expanded={isReasonMenuOpen}
+                    onClick={() => setReasonMenuOpen((isOpen) => !isOpen)}
+                    className="flex h-10.5 w-full items-center justify-between rounded-md border border-[#E2E8F0] px-3.5 text-left font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#515B60]"
+                  >
+                    <span>{contactReason || 'Select a topic...'}</span>
                     <ChevronDown
-                      className="pointer-events-none absolute right-3 size-5 text-[#607077]"
+                      className={`size-5 text-[#607077] transition-transform ${isReasonMenuOpen ? 'rotate-180' : ''}`}
                       strokeWidth={1.5}
                     />
-                  </span>
-                </label>
+                  </button>
+                  {isReasonMenuOpen && (
+                    <div className="absolute left-0 top-18 z-30 w-full overflow-hidden rounded-md border border-[#E2E8F0] bg-white shadow-[0_2px_4px_-2px_rgba(0,0,0,0.1),0_4px_6px_-1px_rgba(0,0,0,0.1)]">
+                      <div className="bg-[#E9F1EE] p-1">
+                        <p className="px-2 py-1.5 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-[#263238]">
+                          Contact Reason
+                        </p>
+                      </div>
+                      <div className="border-t border-[#E2E8F0] p-1">
+                        {contactReasons.map((reason) => (
+                          <button
+                            key={reason}
+                            type="button"
+                            onClick={() => {
+                              setContactReason(reason);
+                              setReasonMenuOpen(false);
+                            }}
+                            className={`flex w-full items-center rounded px-2 py-1.5 text-left font-nunito text-sm font-medium leading-5 tracking-[-0.084px] text-[#515B60] hover:bg-[#FCE9E3] ${reason === 'Membership' ? 'bg-[#FCE9E3]' : ''}`}
+                          >
+                            {reason}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
                 <Field label="Subject" placeholder="One line of your inquiry" />
                 <label className="flex w-full flex-col gap-1.5">
                   <span className="font-manrope text-base leading-6 tracking-[-0.176px]">
