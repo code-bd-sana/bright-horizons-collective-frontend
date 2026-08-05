@@ -105,7 +105,6 @@ function ResourceCard({
                   ? '/explore/activities/bubble-wrap-stomp-counting'
                   : '/explore/parent-resources/developmental-milestones'
               }
-              onClick={onOpenToy}
               className="flex items-center gap-1 px-2.5 py-2 font-manrope text-base font-semibold leading-6.75 tracking-[-0.24px] text-[#F2B59F]"
             >
               {action}
