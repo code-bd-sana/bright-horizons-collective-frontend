@@ -126,8 +126,12 @@ function ResourceCard({
   );
 }
 
-export function ExploreCatalog() {
-  const [activeType, setActiveType] = useState<ExploreContentType>('Activities');
+type ExploreCatalogProps = {
+  activeType: ExploreContentType;
+  onActiveTypeChange: (type: ExploreContentType) => void;
+};
+
+export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalogProps) {
   const [query, setQuery] = useState('');
   const [filters, setFilters] = useState<SelectedFilters>(emptyFilters);
   const [savedIds, setSavedIds] = useState<string[]>([]);
@@ -187,7 +191,7 @@ export function ExploreCatalog() {
             <button
               type="button"
               key={type}
-              onClick={() => setActiveType(type)}
+              onClick={() => onActiveTypeChange(type)}
               className={`h-12 rounded-full px-4 font-nunito text-sm font-medium leading-5 tracking-[-0.084px] transition-colors ${activeType === type ? 'bg-[#2F7D7E] text-white' : 'bg-[#EFEFEF] text-[#64748B] hover:bg-[#E3F7EC]'}`}
             >
               {type}
