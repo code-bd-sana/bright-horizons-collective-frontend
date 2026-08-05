@@ -17,7 +17,7 @@ const defaultNavItems: NavItem[] = [
   { label: 'Membership', href: '#membership' },
   { label: 'Explore', href: '/explore' },
   { label: 'FAQ', href: '/faq' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'Contact', href: '/contact' },
   { label: 'Log in', href: '/login' },
 ];
 
