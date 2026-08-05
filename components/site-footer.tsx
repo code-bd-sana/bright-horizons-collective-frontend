@@ -15,7 +15,7 @@ const companyLinks = [
   ['Contact', '/#contact'],
   ['Privacy Policy', '/privacy-policy'],
   ['Terms & Membership Agreement', '/terms-and-membership-agreement'],
-  ['Affiliate Disclosure', '#'],
+  ['Affiliate Disclosure', '/affiliate-disclosure'],
 ];
 
 const footerMask: CSSProperties = {
