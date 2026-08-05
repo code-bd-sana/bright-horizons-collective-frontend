@@ -80,15 +80,15 @@ const answers: Record<string, string> = {
 
 function SupportCard() {
   return (
-    <aside className="relative w-[300px] rounded-2xl bg-[#F6E6D4] p-8 text-center shadow-[0_1px_1.5px_rgba(0,0,0,0.1),0_1px_1px_rgba(0,0,0,0.1)]">
+    <aside className="relative w-75 rounded-2xl bg-[#F6E6D4] p-8 text-center shadow-[0_1px_1.5px_rgba(0,0,0,0.1),0_1px_1px_rgba(0,0,0,0.1)]">
       <Image
         src="/Home/figma-home-1183-11826-img-image132-vectorized.svg"
         alt=""
         width={73}
         height={81}
-        className="pointer-events-none absolute -left-2 -top-[49px]"
+        className="pointer-events-none absolute -left-2 -top-12.25"
       />
-      <p className="font-nunito text-lg font-medium leading-[27px] text-[#263238]">
+      <p className="font-nunito text-lg font-medium leading-6.75 text-[#263238]">
         Still can&apos;t find your answer?
       </p>
       <Link
@@ -120,20 +120,20 @@ export function FaqPage() {
   );
 
   return (
-    <main className="bg-[#FDFDFC] pt-[312px] text-[#263238] max-xl:pt-44 max-lg:pt-36">
+    <main className="bg-[#FDFDFC] pt-78 text-[#263238] max-xl:pt-44 max-lg:pt-36">
       <section className="mx-auto flex max-w-[1920px] items-stretch justify-between gap-16 px-20 pb-40 max-xl:px-8 max-lg:flex-col max-lg:px-5 max-lg:pb-24">
-        <div className="flex w-[719px] shrink-0 flex-col justify-between max-lg:w-full max-lg:gap-14">
+        <div className="flex w-179.75 shrink-0 flex-col justify-between max-lg:w-full max-lg:gap-14">
           <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-4">
-              <h1 className="font-nunito text-5xl font-semibold leading-14 tracking-[-0.48px] text-[#263238] max-md:text-[38px] max-md:leading-[46px]">
+              <h1 className="font-nunito text-5xl font-semibold leading-14 tracking-[-0.48px] text-[#263238] max-md:text-[38px] max-md:leading-11.5">
                 Frequently Asked Questions
               </h1>
-              <p className="max-w-[551px] font-manrope text-base leading-6 tracking-[-0.176px] text-[#607077]">
+              <p className="max-w-137.75 font-manrope text-base leading-6 tracking-[-0.176px] text-[#607077]">
                 Find answers about memberships, activities, child profiles, weekly plans, payments,
                 and using Bright Horizons.
               </p>
             </div>
-            <label className="flex h-[54px] w-full items-center gap-[7px] rounded-2xl border border-[#D2E3DC] bg-[#F9FAFA] px-5 py-4">
+            <label className="flex h-13.5 w-full items-center gap-1.75 rounded-2xl border border-[#D2E3DC] bg-[#F9FAFA] px-5 py-4">
               <Search className="size-6 shrink-0 text-[#607077]" strokeWidth={1.5} />
               <input
                 value={query}
@@ -146,7 +146,7 @@ export function FaqPage() {
           <SupportCard />
         </div>
 
-        <div className="flex w-[868px] flex-col gap-12 max-lg:w-full max-lg:gap-10">
+        <div className="flex w-217 flex-col gap-12 max-lg:w-full max-lg:gap-10">
           {visibleGroups.map((group) => (
             <section key={group.title} className="flex flex-col gap-4">
               <h2 className="font-nunito text-lg font-medium uppercase leading-6 tracking-[-0.27px] text-[#7D8488]">
@@ -163,7 +163,7 @@ export function FaqPage() {
                       type="button"
                       aria-expanded={isOpen}
                       onClick={() => setOpenQuestion(isOpen ? null : question)}
-                      className="flex min-h-[69px] w-full items-center justify-between gap-6 p-5 text-left font-nunito text-lg font-medium leading-6 tracking-[-0.27px] text-[#263238]"
+                      className="flex min-h-17.25 w-full items-center justify-between gap-6 p-5 text-left font-nunito text-lg font-medium leading-6 tracking-[-0.27px] text-[#263238]"
                     >
                       <span>{question}</span>
                       <Plus
