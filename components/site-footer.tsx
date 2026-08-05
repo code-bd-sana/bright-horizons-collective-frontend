@@ -14,7 +14,7 @@ const companyLinks = [
   ['Blog', '/explore'],
   ['Contact', '/#contact'],
   ['Privacy Policy', '/privacy-policy'],
-  ['Terms of Use', '#'],
+  ['Terms & Membership Agreement', '/terms-and-membership-agreement'],
   ['Affiliate Disclosure', '#'],
 ];
 
