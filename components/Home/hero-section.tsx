@@ -105,7 +105,7 @@ function TrustMarks() {
       {['Licensed Pediatric OT', 'Family-Centered', 'Designed for Ages 0–8'].map((label) => (
         <div key={label} className="flex flex-col items-center gap-2">
           <span className="flex size-8 items-center justify-center overflow-hidden rounded-full bg-[#E9F1EE]">
-            <span className="flex size-5 items-center justify-center rounded-full bg-[#E9F1EE]">
+            <span className="flex size-5 items-center justify-center rounded-full bg-[#82B1B2]">
               <Image src={heroAssets.badgeCheck} alt="" width={16} height={16} />
             </span>
           </span>
@@ -129,107 +129,112 @@ function DesktopHero({
   ctaHref,
 }: Required<HeroSectionProps>) {
   return (
-    <div className="relative mx-auto hidden h-[950px] w-full max-w-[1920px] xl:block">
+    <div className="relative mx-auto hidden aspect-[1920/950] w-full max-w-[1920px] lg:block">
       <div
-        className="pointer-events-none absolute left-[238px] top-[597.1px] h-[340.933px] w-[1417.001px]"
-        style={gridMaskStyle}
+        className="relative h-[950px] w-[1920px] origin-top-left"
+        style={{ transform: 'scale(min(1, calc(100vw / 1920px)))' }}
       >
-        <Image src={heroAssets.horizontalGrid} alt="" fill className="object-fill" />
-      </div>
-      <div className="pointer-events-none absolute left-[353.86px] top-[502.73px] flex h-[528.973px] w-[1193.264px] items-center justify-center">
         <div
-          className="relative h-[1193.264px] w-[528.973px] rotate-[-90deg]"
-          style={verticalGridMaskStyle}
+          className="pointer-events-none absolute left-[238px] top-[597.1px] h-[340.933px] w-[1417.001px]"
+          style={gridMaskStyle}
         >
-          <Image src={heroAssets.verticalGrid} alt="" fill className="object-fill" />
+          <Image src={heroAssets.horizontalGrid} alt="" fill className="object-fill" />
         </div>
-      </div>
-
-      <div className="absolute left-[calc(50%-0.5px)] top-[148px] z-20 flex -translate-x-1/2 flex-col items-center gap-8 text-center">
-        <div className="flex w-[965px] flex-col items-center gap-4">
-          <div className="flex w-[178px] items-center gap-2.5 rounded-xl border border-[#E8EBE8] bg-white px-2 py-1.5 font-manrope text-sm leading-[22px] tracking-[-0.084px] shadow-sm">
-            <span className="flex items-center gap-1">
-              <Image src={heroAssets.ratingStar} alt="" width={16} height={16} />
-              {rating}
-            </span>
-            <Image src={heroAssets.divider} alt="" width={1} height={10} className="h-2.5 w-px" />
-            <span>{familyCount}</span>
+        <div className="pointer-events-none absolute left-[353.86px] top-[502.73px] flex h-[528.973px] w-[1193.264px] items-center justify-center">
+          <div
+            className="relative h-[1193.264px] w-[528.973px] rotate-[-90deg]"
+            style={verticalGridMaskStyle}
+          >
+            <Image src={heroAssets.verticalGrid} alt="" fill className="object-fill" />
           </div>
+        </div>
 
-          <div className="relative">
-            <h1 className="w-[965px] font-nunito text-[56px] font-semibold leading-16 tracking-[-0.56px] text-[#263238]">
-              {headlineMain}
-              <span className="text-[#F2B59F]">{headlineHighlight}</span>
-              {headlineEnd}
-            </h1>
-            <div className="pointer-events-none absolute -right-[82.5px] -top-[15px] flex size-[113.335px] items-center justify-center">
-              <Image
-                src={heroAssets.sparkle}
-                alt=""
-                width={99}
-                height={99}
-                className="size-[99.259px] rotate-[81.16deg] object-cover"
-              />
+        <div className="absolute left-[calc(50%-0.5px)] top-[148px] z-20 flex -translate-x-1/2 flex-col items-center gap-8 text-center">
+          <div className="flex w-[965px] flex-col items-center gap-4">
+            <div className="flex w-[178px] items-center gap-2.5 rounded-xl border border-[#E8EBE8] bg-white px-2 py-1.5 font-manrope text-sm leading-[22px] tracking-[-0.084px] shadow-sm">
+              <span className="flex items-center gap-1">
+                <Image src={heroAssets.ratingStar} alt="" width={16} height={16} />
+                {rating}
+              </span>
+              <Image src={heroAssets.divider} alt="" width={1} height={10} className="h-2.5 w-px" />
+              <span>{familyCount}</span>
             </div>
+
+            <div className="relative">
+              <h1 className="w-[965px] font-nunito text-[56px] font-semibold leading-16 tracking-[-0.56px] text-[#263238]">
+                {headlineMain}
+                <span className="text-[#F2B59F]">{headlineHighlight}</span>
+                {headlineEnd}
+              </h1>
+              <div className="pointer-events-none absolute -right-[82.5px] -top-[15px] flex size-[113.335px] items-center justify-center">
+                <Image
+                  src={heroAssets.sparkle}
+                  alt=""
+                  width={99}
+                  height={99}
+                  className="size-[99.259px] rotate-[81.16deg] object-cover"
+                />
+              </div>
+            </div>
+
+            <p className="w-[677px] font-manrope text-base leading-6 tracking-[-0.176px] text-[#607077]">
+              {subtitle}
+            </p>
           </div>
 
-          <p className="w-[677px] font-manrope text-base leading-6 tracking-[-0.176px] text-[#607077]">
-            {subtitle}
-          </p>
+          <Link
+            href={ctaHref}
+            className="relative inline-flex min-w-20 items-center justify-center gap-1 overflow-hidden rounded-full border border-[#ACCBCB] bg-linear-to-b from-[#2F7D7E]/60 to-[#2F7D7E] px-3 py-2 font-nunito text-sm font-medium leading-6 tracking-[-0.176px] text-[#F8FAFC] shadow-[inset_0px_-6px_2px_rgba(255,255,255,0.07)]"
+          >
+            <span className="px-1">{ctaText}</span>
+            <Image src={heroAssets.arrow} alt="" width={16} height={16} />
+          </Link>
         </div>
 
-        <Link
-          href={ctaHref}
-          className="relative inline-flex min-w-20 items-center justify-center gap-1 overflow-hidden rounded-full border border-[#ACCBCB] bg-linear-to-b from-[#2F7D7E]/60 to-[#2F7D7E] px-3 py-2 font-nunito text-sm font-medium leading-6 tracking-[-0.176px] text-[#F8FAFC] shadow-[inset_0px_-6px_2px_rgba(255,255,255,0.07)]"
+        <TrustMarks />
+
+        <div
+          className="pointer-events-none absolute left-1/2 top-[303px] h-[936px] w-[1518px] -translate-x-1/2"
+          style={photoMaskStyle}
         >
-          <span className="px-1">{ctaText}</span>
-          <Image src={heroAssets.arrow} alt="" width={16} height={16} />
-        </Link>
-      </div>
-
-      <TrustMarks />
-
-      <div
-        className="pointer-events-none absolute left-1/2 top-[303px] h-[936px] w-[1518px] -translate-x-1/2"
-        style={photoMaskStyle}
-      >
-        <Image
-          src={heroAssets.photo}
-          alt="Children celebrating in a sunny flower field"
-          fill
-          priority
-          className="object-cover"
-        />
-      </div>
-
-      <PlanCard />
-      <div className="pointer-events-none absolute left-[calc(50%-788px)] top-[494px] z-30 flex size-[177.031px] items-center justify-center">
-        <Image
-          src={heroAssets.planStars}
-          alt=""
-          width={134}
-          height={134}
-          className="size-[134px] rotate-[24.1deg] object-cover"
-        />
-      </div>
-
-      <div className="pointer-events-none absolute left-[calc(50%+483.96px)] top-[534px] z-30 flex h-[43.645px] w-[39.853px] items-center justify-center">
-        <div className="relative h-9 w-7.5 rotate-[-161.55deg] overflow-hidden -scale-y-100">
           <Image
-            src={heroAssets.streakCreature}
-            alt=""
+            src={heroAssets.photo}
+            alt="Children celebrating in a sunny flower field"
             fill
-            className="h-[117.99%] w-[140.17%] max-w-none -translate-x-1/4 -translate-y-[18%] object-cover"
+            priority
+            className="object-cover"
           />
         </div>
-      </div>
-      <div className="absolute left-[calc(50%+418.97px)] top-[553px] z-30 flex h-[115.903px] w-[104.604px] items-center justify-center">
-        <div className="flex h-24 w-[88px] rotate-[18.65deg] flex-col items-center rounded-[16.551px] border border-[#D9F99D] bg-[#F7FEE7] px-[17.551px] py-[12.822px] shadow-[0px_4.729px_11.822px_rgba(23,74,77,0.1)]">
-          <span className="font-manrope text-[23.644px] leading-[35.466px]">🌱</span>
-          <span className="font-nunito text-center text-xs font-bold leading-4 text-[#174A4D]">
-            Week 6<br />
-            streak!
-          </span>
+
+        <PlanCard />
+        <div className="pointer-events-none absolute left-[calc(50%-788px)] top-[494px] z-30 flex size-[177.031px] items-center justify-center">
+          <Image
+            src={heroAssets.planStars}
+            alt=""
+            width={134}
+            height={134}
+            className="size-[134px] rotate-[24.1deg] object-cover"
+          />
+        </div>
+
+        <div className="pointer-events-none absolute left-[calc(50%+483.96px)] top-[534px] z-30 flex h-[43.645px] w-[39.853px] items-center justify-center">
+          <div className="relative h-9 w-7.5 rotate-[-161.55deg] overflow-hidden -scale-y-100">
+            <Image
+              src={heroAssets.streakCreature}
+              alt=""
+              fill
+              className="h-[117.99%] w-[140.17%] max-w-none -translate-x-1/4 -translate-y-[18%] object-cover"
+            />
+          </div>
+        </div>
+        <div className="absolute left-[calc(50%+418.97px)] top-[553px] z-30 flex h-[115.903px] w-[104.604px] items-center justify-center">
+          <div className="flex h-24 w-[88px] rotate-[18.65deg] flex-col items-center rounded-[16.551px] border border-[#D9F99D] bg-[#F7FEE7] px-[17.551px] py-[12.822px] shadow-[0px_4.729px_11.822px_rgba(23,74,77,0.1)]">
+            <span className="font-manrope text-[23.644px] leading-[35.466px]">🌱</span>
+            <span className="font-nunito text-center text-xs font-bold leading-4 text-[#174A4D]">
+              Week 6<br />
+              streak!
+            </span>
+          </div>
         </div>
       </div>
     </div>
@@ -247,7 +252,7 @@ function CompactHero({
   ctaHref,
 }: Required<HeroSectionProps>) {
   return (
-    <div className="relative flex min-h-[880px] flex-col items-center overflow-hidden px-5 pb-12 pt-36 text-center xl:hidden">
+    <div className="relative flex min-h-[880px] flex-col items-center overflow-hidden px-5 pb-12 pt-36 text-center lg:hidden">
       <div className="relative z-20 flex w-full max-w-[677px] flex-col items-center gap-8">
         <div className="flex w-full flex-col items-center gap-4">
           <div className="flex w-[178px] items-center gap-2.5 rounded-xl border border-[#E8EBE8] bg-white px-2 py-1.5 font-manrope text-sm leading-[22px] tracking-[-0.084px] shadow-sm">
@@ -289,7 +294,9 @@ function CompactHero({
         {['Licensed Pediatric OT', 'Family-Centered', 'Designed for Ages 0–8'].map((label) => (
           <div key={label} className="flex flex-col items-center gap-2">
             <span className="flex size-8 items-center justify-center rounded-full bg-[#E9F1EE]">
-              <Image src={heroAssets.badgeCheck} alt="" width={16} height={16} />
+              <span className="flex size-5 items-center justify-center rounded-full bg-[#82B1B2]">
+                <Image src={heroAssets.badgeCheck} alt="" width={16} height={16} />
+              </span>
             </span>
             <span className="whitespace-nowrap font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#493630]">
               {label}
@@ -333,7 +340,7 @@ export function HeroSection({
   };
 
   return (
-    <section className="relative isolate z-10 overflow-hidden bg-[#FDFDFC] text-[#263238] xl:h-[950px]">
+    <section className="relative isolate z-10 overflow-hidden bg-[#FDFDFC] text-[#263238]">
       <DesktopHero {...content} />
       <CompactHero {...content} />
     </section>

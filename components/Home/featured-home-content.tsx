@@ -419,9 +419,9 @@ function DesktopFeaturedHomeContent() {
       <Image
         src={`${assetBase}-union.svg`}
         alt=""
-        width={2140}
-        height={495}
-        className="pointer-events-none absolute left-[-72px] top-[584px] z-[2] max-w-none"
+        width={2140.003}
+        height={494.993}
+        className="pointer-events-none absolute left-[-72.006px] top-[584.005px] z-[2] max-w-none"
       />
       <Image
         src={`${assetBase}-image7.png`}

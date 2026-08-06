@@ -28,22 +28,139 @@ const footerMask: CSSProperties = {
   maskSize: '4349.315px 2453.845px',
 };
 
-const socialLinks = [
+const footerWordmarkLetters = [
   {
-    label: 'Instagram',
-    icon: '/Home/figma-home-1183-12076-img-vector14.svg',
-    inset: 'inset-[9.38%]',
-    bordered: false,
+    src: '/Home/figma-home-1183-12076-img-vector12.svg',
+    left: -13.52,
+    top: 1339,
+    width: 163.856,
+    height: 187.229,
+    maskPosition: '-780.256px -1302.708px',
   },
   {
+    src: '/Home/figma-home-1183-12076-img-vector11.svg',
+    left: 165.35,
+    top: 1385.39,
+    width: 127.382,
+    height: 140.841,
+    maskPosition: '-959.123px -1349.095px',
+  },
+  {
+    src: '/Home/figma-home-1183-12076-img-vector4.svg',
+    left: 303.47,
+    top: 1339,
+    width: 49.737,
+    height: 187.229,
+    maskPosition: '-1097.24px -1302.708px',
+  },
+  {
+    src: '/Home/figma-home-1183-12076-img-vector10.svg',
+    left: 359.77,
+    top: 1354.37,
+    width: 153.079,
+    height: 226.631,
+    maskPosition: '-1153.545px -1318.075px',
+  },
+  {
+    src: '/Home/figma-home-1183-12076-img-vector9.svg',
+    left: 522.77,
+    top: 1339,
+    width: 135.395,
+    height: 187.229,
+    maskPosition: '-1316.545px -1302.708px',
+  },
+  {
+    src: '/Home/figma-home-1183-12076-img-vector8.svg',
+    left: 666.91,
+    top: 1350.18,
+    width: 110.25,
+    height: 178.846,
+    maskPosition: '-1460.678px -1313.888px',
+  },
+  {
+    src: '/Home/figma-home-1183-12076-img-vector7.svg',
+    left: 834.05,
+    top: 1339,
+    width: 165.79,
+    height: 187.229,
+    maskPosition: '-1627.818px -1302.708px',
+  },
+  {
+    src: '/Home/figma-home-1183-12076-img-vector6.svg',
+    left: 1014.13,
+    top: 1385.39,
+    width: 144.237,
+    height: 143.635,
+    maskPosition: '-1807.904px -1349.095px',
+  },
+  {
+    src: '/Home/figma-home-1183-12076-img-vector5.svg',
+    left: 1172.63,
+    top: 1385.39,
+    width: 127.382,
+    height: 140.841,
+    maskPosition: '-1966.396px -1349.095px',
+  },
+  {
+    src: '/Home/figma-home-1183-12076-img-vector4.svg',
+    left: 1310.74,
+    top: 1339,
+    width: 49.737,
+    height: 187.229,
+    maskPosition: '-2104.514px -1302.708px',
+  },
+  {
+    src: '/Home/figma-home-1183-12076-img-vector3.svg',
+    left: 1375.34,
+    top: 1388.18,
+    width: 129.869,
+    height: 138.047,
+    maskPosition: '-2169.107px -1351.888px',
+  },
+  {
+    src: '/Home/figma-home-1183-12076-img-vector2.svg',
+    left: 1508.33,
+    top: 1385.39,
+    width: 144.237,
+    height: 143.635,
+    maskPosition: '-2302.1px -1349.095px',
+  },
+  {
+    src: '/Home/figma-home-1183-12076-img-vector1.svg',
+    left: 1666.81,
+    top: 1385.39,
+    width: 135.395,
+    height: 140.841,
+    maskPosition: '-2460.584px -1349.095px',
+  },
+  {
+    src: '/Home/figma-home-1183-12076-img-vector.svg',
+    left: 1810.17,
+    top: 1385.67,
+    width: 129.316,
+    height: 143.356,
+    maskPosition: '-2603.943px -1349.376px',
+  },
+] as const;
+
+function footerWordmarkMask(maskPosition: string): CSSProperties {
+  return {
+    ...footerMask,
+    WebkitMaskPosition: maskPosition,
+    maskPosition,
+  };
+}
+
+const socialLinks = [
+  {
     label: 'LinkedIn',
-    icon: '/Home/figma-home-1183-12076-img-vector15.svg',
+    icon: '/Home/figma-home-1183-12076-img-vector14.svg',
     inset: 'inset-[9.38%]',
     bordered: true,
   },
   {
     label: 'Twitter',
-    icon: '/Home/figma-home-1183-12076-img-vector16.svg',
+    icon: '/Home/figma-home-1183-12076-img-vector15.svg',
     inset: 'inset-[15.62%_3.12%_9.38%_12.5%]',
     bordered: false,
   },
@@ -132,6 +249,28 @@ function FooterMenu({ title, links, width }: { title: string; links: string[][];
   );
 }
 
+function FooterWordmark() {
+  return (
+    <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+      {footerWordmarkLetters.map((letter) => (
+        <Image
+          key={`${letter.src}-${letter.left}`}
+          src={letter.src}
+          alt=""
+          width={letter.width}
+          height={letter.height}
+          className="absolute max-w-none"
+          style={{
+            left: letter.left,
+            top: letter.top,
+            ...footerWordmarkMask(letter.maskPosition),
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
 function FooterBackground() {
   return (
     <>
@@ -179,12 +318,7 @@ function FooterBackground() {
           className="h-[117.12%] w-full! max-w-none object-cover object-top"
         />
       </div>
-      <p
-        aria-hidden="true"
-        className="pointer-events-none absolute -left-4 top-329.5 whitespace-nowrap font-nunito text-[210px] font-extrabold leading-none tracking-[-0.08em] text-[#A7CCF8]"
-      >
-        Bright Horizons
-      </p>
+      <FooterWordmark />
     </>
   );
 }
