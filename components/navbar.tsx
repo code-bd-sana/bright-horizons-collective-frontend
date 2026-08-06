@@ -13,7 +13,7 @@ export interface NavItem {
 
 const defaultNavItems: NavItem[] = [
   { label: 'Home', href: '/' },
-  { label: 'About', href: '#about' },
+  { label: 'About', href: '/about' },
   { label: 'Membership', href: '#membership' },
   { label: 'Explore', href: '/explore' },
   { label: 'FAQ', href: '/faq' },

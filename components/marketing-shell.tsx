@@ -21,7 +21,7 @@ export function MarketingShell({ children }: MarketingShellProps) {
 
   return (
     <div className="relative">
-      <SiteHeader />
+      <SiteHeader aboutLayout={pathname === '/about'} />
       {children}
       <SiteFooter />
     </div>

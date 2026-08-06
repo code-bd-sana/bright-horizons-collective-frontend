@@ -1,7 +1,7 @@
 import { Logo } from '@/components/logo';
 import { Navbar } from '@/components/navbar';
 
-export function SiteHeader() {
+export function SiteHeader({ aboutLayout = false }: { aboutLayout?: boolean }) {
   return (
     <header className="pointer-events-none absolute inset-x-0 top-0 z-40">
       <div className="relative mx-auto hidden h-0 w-full max-w-[1920px] lg:block">
@@ -16,7 +16,9 @@ export function SiteHeader() {
             className="pointer-events-auto absolute left-[194px] top-4 z-20"
           />
 
-          <div className="pointer-events-auto absolute left-1/2 top-6 z-30 w-[720px] -translate-x-1/2">
+          <div
+            className={`pointer-events-auto absolute left-1/2 z-30 w-[720px] -translate-x-1/2 ${aboutLayout ? 'top-11' : 'top-6'}`}
+          >
             <Navbar />
           </div>
         </div>
