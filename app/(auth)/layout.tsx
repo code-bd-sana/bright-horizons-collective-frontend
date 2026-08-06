@@ -1,7 +1,16 @@
-import React from 'react';
+'use client';
+
 import { Logo } from '@/components/logo';
+import { usePathname } from 'next/navigation';
+import React from 'react';
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+
+  if (pathname === '/login') {
+    return <>{children}</>;
+  }
+
   return (
     <div className="min-h-screen flex w-full">
       {/* Left Branding Side (Hidden on Mobile) */}
