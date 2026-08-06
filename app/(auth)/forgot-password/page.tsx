@@ -4,7 +4,7 @@ import { Logo } from '@/components/logo';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState, type FormEvent } from 'react';
+import { useRef, useState, type FormEvent } from 'react';
 import { toast } from 'sonner';
 
 const stepContent = {
@@ -12,10 +12,6 @@ const stepContent = {
     title: 'Forget Password',
     description:
       "Enter the email address associated with your account and we'll send you a verification code to reset your password.",
-  },
-  2: {
-    title: 'Verify Code',
-    description: 'Enter the 6-digit code sent to your email.',
   },
   3: {
     title: 'New Password',
@@ -27,6 +23,8 @@ export default function ForgotPasswordPage() {
   const router = useRouter();
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [email, setEmail] = useState('');
+  const [otp, setOtp] = useState(['', '', '', '', '', '']);
+  const otpInputRefs = useRef<Array<HTMLInputElement | null>>([]);
 
   const handleEmailSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -46,7 +44,25 @@ export default function ForgotPasswordPage() {
     router.push('/login');
   };
 
-  const current = stepContent[step];
+  const otpVisual = step === 2;
+  const current = step === 2 ? null : stepContent[step];
+
+  const setOtpDigit = (index: number, value: string) => {
+    const digit = value.replace(/\D/g, '').slice(-1);
+    setOtp((currentOtp) =>
+      currentOtp.map((item, itemIndex) => (itemIndex === index ? digit : item))
+    );
+
+    if (digit && index < 5) {
+      otpInputRefs.current[index + 1]?.focus();
+    }
+  };
+
+  const handleOtpKeyDown = (index: number, event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Backspace' && !otp[index] && index > 0) {
+      otpInputRefs.current[index - 1]?.focus();
+    }
+  };
 
   return (
     <main className="relative h-dvh overflow-hidden bg-[#fffdf8] text-[#263238]">
@@ -58,15 +74,23 @@ export default function ForgotPasswordPage() {
         className="absolute left-[calc(8.333333%+34px)] top-4 z-20 max-lg:left-8 max-lg:top-5 max-lg:size-22"
       />
 
-      <section className="mx-auto flex w-full max-w-123 flex-col items-center px-6 pt-40 xl:absolute xl:left-[calc(8.333333%+69px)] xl:top-64 xl:mx-0 xl:px-0 xl:pt-0">
-        <div className="mb-10 flex w-full flex-col items-center gap-3 text-center xl:mb-12">
-          <h1 className="font-nunito text-[32px] font-medium leading-10 tracking-[-0.16px] text-[#263238]">
-            {current.title}
-          </h1>
-          <p className="w-93 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#7d8488]">
-            {current.description}
-          </p>
-        </div>
+      <section
+        className={
+          otpVisual
+            ? 'mx-auto mt-32 flex w-fit min-w-122.5 max-w-[calc(100%-3rem)] flex-col items-center gap-8 rounded-2xl border border-[#e8ebe8] bg-white p-6 shadow-[0_1px_1px_rgba(0,0,0,0.05)] xl:absolute xl:left-[calc(8.333333%+69px)] xl:top-1/2 xl:mt-0 xl:max-w-none xl:-translate-y-1/2'
+            : 'mx-auto flex w-full max-w-123 flex-col items-center px-6 pt-40 xl:absolute xl:left-[calc(8.333333%+69px)] xl:top-1/2 xl:mx-0 xl:-translate-y-1/2 xl:px-0 xl:pt-0'
+        }
+      >
+        {current && (
+          <div className="mb-10 flex w-full flex-col items-center gap-3 text-center xl:mb-12">
+            <h1 className="font-nunito text-[32px] font-medium leading-10 tracking-[-0.16px] text-[#263238]">
+              {current.title}
+            </h1>
+            <p className="w-93 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#7d8488]">
+              {current.description}
+            </p>
+          </div>
+        )}
 
         {step === 1 && (
           <form className="w-full space-y-4" onSubmit={handleEmailSubmit}>
@@ -101,34 +125,66 @@ export default function ForgotPasswordPage() {
         )}
 
         {step === 2 && (
-          <form className="w-full space-y-4" onSubmit={handleOtpSubmit}>
-            <label
-              className="block font-manrope text-base leading-6 tracking-[-0.176px] text-[#263238]"
-              htmlFor="otp"
-            >
-              Verification Code
-              <input
-                id="otp"
-                required
-                inputMode="numeric"
-                placeholder="123456"
-                maxLength={6}
-                className="mt-2 h-12 w-full rounded-xl border border-[#d5e5e5] bg-[#fafafa] px-3 text-center font-manrope text-base tracking-[0.4em] text-[#263238] outline-none placeholder:tracking-normal placeholder:text-[#7d8488] focus:border-[#5e9999]"
-              />
-            </label>
-            <button
-              type="submit"
-              className="h-12 w-full rounded-xl border border-[#accbcb] bg-[#2f7d7e] px-3 font-nunito text-base font-medium leading-6 text-white transition hover:bg-[#266b6c]"
-            >
-              Verify Code
-            </button>
-            <button
-              type="button"
-              onClick={() => setStep(1)}
-              className="h-12 w-full rounded-xl border border-[#d8ddd9] bg-white px-3 font-nunito text-base font-medium leading-6 text-[#0f172a] transition hover:bg-[#fafafa]"
-            >
-              Back to Email
-            </button>
+          <form className="flex w-full flex-col items-center gap-8" onSubmit={handleOtpSubmit}>
+            <div className="flex w-full flex-col items-center gap-3 text-center">
+              <div className="relative h-14 w-14.5">
+                <Image src="/Home/figma-otp-mail-base.svg" alt="" fill sizes="58px" />
+                <Image
+                  src="/Home/figma-otp-mail.png"
+                  alt=""
+                  width={32}
+                  height={32}
+                  className="absolute left-3.25 top-3 object-contain"
+                />
+                <span className="absolute left-3.25 top-3 size-8 bg-[#f2b59f] mask-[url('/Home/figma-otp-mail-mask.png')] mask-no-repeat mask-size-[32px_32px]" />
+                <Image
+                  src="/Home/figma-otp-mail-element.png"
+                  alt=""
+                  width={25}
+                  height={25}
+                  className="absolute left-[16.59px] top-[14.48px] object-contain"
+                />
+              </div>
+              <h1 className="whitespace-pre font-nunito text-[32px] font-medium leading-10 tracking-[-0.16px] text-[#263238]">
+                Enter 6-Digit code sent to your gmail
+              </h1>
+              <p className="w-full font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#7d8488]">
+                Enter the 6-digit verification code sent to you email. This code will expired in{' '}
+                <span className="font-semibold text-[#f2b59f]">05:00</span>
+              </p>
+            </div>
+            <div className="flex w-full flex-col items-center gap-4">
+              <div className="flex items-center gap-3.5">
+                {otp.map((digit, index) => (
+                  <input
+                    key={index}
+                    ref={(element) => {
+                      otpInputRefs.current[index] = element;
+                    }}
+                    aria-label={`Verification digit ${index + 1}`}
+                    value={digit}
+                    onChange={(event) => setOtpDigit(index, event.target.value)}
+                    onKeyDown={(event) => handleOtpKeyDown(index, event)}
+                    inputMode="numeric"
+                    maxLength={1}
+                    autoFocus={index === 0}
+                    className={`h-16.25 w-15.5 rounded-xl bg-white text-center font-manrope text-2xl text-[#263238] outline-none ${index === 0 ? 'border-2 border-[#f2b59f]' : 'border border-[#99a6b8]'}`}
+                  />
+                ))}
+              </div>
+              <button
+                type="submit"
+                className="h-10 w-full rounded-xl border border-[#accbcb] bg-[#2f7d7e] px-3 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-white shadow-[inset_0_-6px_2px_rgba(255,255,255,0.07)] transition hover:bg-[#266b6c]"
+              >
+                Reset OTP
+              </button>
+            </div>
+            <p className="w-full text-center font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#515b60]">
+              Need help?{' '}
+              <Link href="/contact" className="text-[#2f7d7e]">
+                Contact Support
+              </Link>
+            </p>
           </form>
         )}
 
@@ -170,12 +226,16 @@ export default function ForgotPasswordPage() {
 
       <aside className="absolute right-8 top-8 hidden h-[calc(100dvh-4rem)] w-[calc(50%-68px)] max-w-223 overflow-hidden rounded-2xl bg-[#e9f1ee] shadow-[0_1px_2px_rgba(0,0,0,0.05)] xl:block">
         <div
-          className="absolute left-px top-0 h-337 w-224.75"
+          className={
+            otpVisual
+              ? 'absolute -left-1.75 -top-92.75 h-[1585px] w-226.75'
+              : 'absolute left-px top-0 h-337 w-224.75'
+          }
           style={{
-            WebkitMaskImage: 'url(/Home/figma-forgot-panel-mask.svg)',
-            maskImage: 'url(/Home/figma-forgot-panel-mask.svg)',
-            WebkitMaskPosition: '-278.851px 161.207px',
-            maskPosition: '-278.851px 161.207px',
+            WebkitMaskImage: `url(${otpVisual ? '/Home/figma-otp-panel-mask.svg' : '/Home/figma-forgot-panel-mask.svg'})`,
+            maskImage: `url(${otpVisual ? '/Home/figma-otp-panel-mask.svg' : '/Home/figma-forgot-panel-mask.svg'})`,
+            WebkitMaskPosition: otpVisual ? '-270.851px 532.207px' : '-278.851px 161.207px',
+            maskPosition: otpVisual ? '-270.851px 532.207px' : '-278.851px 161.207px',
             WebkitMaskRepeat: 'no-repeat',
             maskRepeat: 'no-repeat',
             WebkitMaskSize: '1486.703px 1435.602px',
@@ -183,19 +243,18 @@ export default function ForgotPasswordPage() {
           }}
         >
           <Image
-            src="/Home/figma-forgot-panel-art.png"
+            src={otpVisual ? '/Home/figma-otp-panel-art.png' : '/Home/figma-forgot-panel-art.png'}
             alt=""
             fill
-            sizes="899px"
+            sizes={otpVisual ? '907px' : '899px'}
             className="object-cover"
             priority
           />
         </div>
-
         <div className="relative z-10 mx-auto mt-40 flex w-141 flex-col items-center gap-8 text-center">
           <div className="flex flex-col items-center gap-5">
             <Image
-              src="/Home/figma-forgot-stars.svg"
+              src={otpVisual ? '/Home/figma-otp-stars.svg' : '/Home/figma-forgot-stars.svg'}
               alt="Five star rating"
               width={116}
               height={22}
@@ -209,7 +268,7 @@ export default function ForgotPasswordPage() {
             <div className="flex items-center gap-5">
               <div className="flex items-center gap-4">
                 <Image
-                  src="/Home/figma-forgot-avatar.png"
+                  src={otpVisual ? '/Home/figma-otp-avatar.png' : '/Home/figma-forgot-avatar.png'}
                   alt="Sarah T."
                   width={56}
                   height={56}
@@ -220,7 +279,7 @@ export default function ForgotPasswordPage() {
                 </p>
               </div>
               <Image
-                src="/Home/figma-forgot-divider.svg"
+                src={otpVisual ? '/Home/figma-otp-divider.svg' : '/Home/figma-forgot-divider.svg'}
                 alt=""
                 width={1}
                 height={61}
@@ -234,9 +293,30 @@ export default function ForgotPasswordPage() {
             </div>
           </div>
           <div className="flex items-center justify-center gap-12">
-            <Image src="/Home/figma-forgot-arrow-left.svg" alt="" width={48} height={48} />
-            <Image src="/Home/figma-forgot-slider-dots.svg" alt="" width={62} height={28} />
-            <Image src="/Home/figma-forgot-arrow-right.svg" alt="" width={48} height={48} />
+            <Image
+              src={
+                otpVisual ? '/Home/figma-otp-arrow-left.svg' : '/Home/figma-forgot-arrow-left.svg'
+              }
+              alt=""
+              width={48}
+              height={48}
+            />
+            <Image
+              src={
+                otpVisual ? '/Home/figma-otp-slider-dots.svg' : '/Home/figma-forgot-slider-dots.svg'
+              }
+              alt=""
+              width={62}
+              height={28}
+            />
+            <Image
+              src={
+                otpVisual ? '/Home/figma-otp-arrow-right.svg' : '/Home/figma-forgot-arrow-right.svg'
+              }
+              alt=""
+              width={48}
+              height={48}
+            />
           </div>
         </div>
       </aside>
