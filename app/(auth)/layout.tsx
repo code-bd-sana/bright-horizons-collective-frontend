@@ -7,7 +7,7 @@ import React from 'react';
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
-  if (pathname === '/login' || pathname === '/register') {
+  if (pathname === '/login' || pathname === '/register' || pathname === '/forgot-password') {
     return <>{children}</>;
   }
 
