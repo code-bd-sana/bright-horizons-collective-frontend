@@ -14,8 +14,8 @@ const stepContent = {
       "Enter the email address associated with your account and we'll send you a verification code to reset your password.",
   },
   3: {
-    title: 'New Password',
-    description: 'Create a new secure password for your account.',
+    title: 'Create a New Password',
+    description: 'Choose a strong password to secure your account.',
   },
 };
 
@@ -25,6 +25,10 @@ export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const otpInputRefs = useRef<Array<HTMLInputElement | null>>([]);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleEmailSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -45,6 +49,7 @@ export default function ForgotPasswordPage() {
   };
 
   const otpVisual = step === 2;
+  const passwordVisual = step === 3;
   const current = step === 2 ? null : stepContent[step];
 
   const setOtpDigit = (index: number, value: string) => {
@@ -78,7 +83,9 @@ export default function ForgotPasswordPage() {
         className={
           otpVisual
             ? 'mx-auto mt-32 flex w-fit min-w-122.5 max-w-[calc(100%-3rem)] flex-col items-center gap-8 rounded-2xl border border-[#e8ebe8] bg-white p-6 shadow-[0_1px_1px_rgba(0,0,0,0.05)] xl:absolute xl:left-[calc(8.333333%+69px)] xl:top-1/2 xl:mt-0 xl:max-w-none xl:-translate-y-1/2'
-            : 'mx-auto flex w-full max-w-123 flex-col items-center px-6 pt-40 xl:absolute xl:left-[calc(8.333333%+69px)] xl:top-1/2 xl:mx-0 xl:-translate-y-1/2 xl:px-0 xl:pt-0'
+            : passwordVisual
+              ? 'mx-auto flex w-full max-w-123 flex-col items-center px-6 pt-40 xl:absolute xl:left-[calc(8.333333%+69px)] xl:top-64 xl:mx-0 xl:px-0 xl:pt-0'
+              : 'mx-auto flex w-full max-w-123 flex-col items-center px-6 pt-40 xl:absolute xl:left-[calc(8.333333%+69px)] xl:top-1/2 xl:mx-0 xl:-translate-y-1/2 xl:px-0 xl:pt-0'
         }
       >
         {current && (
@@ -195,28 +202,56 @@ export default function ForgotPasswordPage() {
               htmlFor="new-password"
             >
               New Password
-              <input
-                id="new-password"
-                type="password"
-                required
-                className="mt-2 h-12 w-full rounded-xl border border-[#d5e5e5] bg-[#fafafa] px-3 outline-none focus:border-[#5e9999]"
-              />
+              <span className="relative mt-2 block">
+                <input
+                  id="new-password"
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  placeholder="Enter new password"
+                  value={newPassword}
+                  onChange={(event) => setNewPassword(event.target.value)}
+                  className="h-12 w-full rounded-xl border border-[#d5e5e5] bg-[#fafafa] px-3 pr-12 font-manrope text-base leading-6 tracking-[-0.176px] outline-none placeholder:text-[#7d8488] focus:border-[#5e9999]"
+                />
+                <button
+                  type="button"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  onClick={() => setShowPassword((visible) => !visible)}
+                  className="absolute inset-y-0 right-0 flex w-12 items-center justify-center"
+                >
+                  <Image src="/Home/figma-password-eye.svg" alt="" width={20} height={20} />
+                </button>
+              </span>
             </label>
             <label
               className="block font-manrope text-base leading-6 tracking-[-0.176px] text-[#263238]"
               htmlFor="confirm-password"
             >
               Confirm Password
-              <input
-                id="confirm-password"
-                type="password"
-                required
-                className="mt-2 h-12 w-full rounded-xl border border-[#d5e5e5] bg-[#fafafa] px-3 outline-none focus:border-[#5e9999]"
-              />
+              <span className="relative mt-2 block">
+                <input
+                  id="confirm-password"
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  required
+                  placeholder="Confirm new password"
+                  value={confirmPassword}
+                  onChange={(event) => setConfirmPassword(event.target.value)}
+                  className="h-12 w-full rounded-xl border border-[#d5e5e5] bg-[#fafafa] px-3 pr-12 font-manrope text-base leading-6 tracking-[-0.176px] outline-none placeholder:text-[#7d8488] focus:border-[#5e9999]"
+                />
+                <button
+                  type="button"
+                  aria-label={
+                    showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'
+                  }
+                  onClick={() => setShowConfirmPassword((visible) => !visible)}
+                  className="absolute inset-y-0 right-0 flex w-12 items-center justify-center"
+                >
+                  <Image src="/Home/figma-password-eye.svg" alt="" width={20} height={20} />
+                </button>
+              </span>
             </label>
             <button
               type="submit"
-              className="h-12 w-full rounded-xl border border-[#accbcb] bg-[#2f7d7e] px-3 font-nunito text-base font-medium leading-6 text-white transition hover:bg-[#266b6c]"
+              className="h-10 w-full rounded-xl border border-[#accbcb] bg-[#2f7d7e] px-3 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-white shadow-[inset_0_-6px_2px_rgba(255,255,255,0.07)] transition hover:bg-[#266b6c]"
             >
               Update Password
             </button>
@@ -229,13 +264,23 @@ export default function ForgotPasswordPage() {
           className={
             otpVisual
               ? 'absolute -left-1.75 -top-92.75 h-[1585px] w-226.75'
-              : 'absolute left-px top-0 h-337 w-224.75'
+              : passwordVisual
+                ? 'absolute -left-4.75 top-36.25 h-309.25 w-232'
+                : 'absolute left-px top-0 h-337 w-224.75'
           }
           style={{
-            WebkitMaskImage: `url(${otpVisual ? '/Home/figma-otp-panel-mask.svg' : '/Home/figma-forgot-panel-mask.svg'})`,
-            maskImage: `url(${otpVisual ? '/Home/figma-otp-panel-mask.svg' : '/Home/figma-forgot-panel-mask.svg'})`,
-            WebkitMaskPosition: otpVisual ? '-270.851px 532.207px' : '-278.851px 161.207px',
-            maskPosition: otpVisual ? '-270.851px 532.207px' : '-278.851px 161.207px',
+            WebkitMaskImage: `url(${otpVisual ? '/Home/figma-otp-panel-mask.svg' : passwordVisual ? '/Home/figma-password-panel-mask.svg' : '/Home/figma-forgot-panel-mask.svg'})`,
+            maskImage: `url(${otpVisual ? '/Home/figma-otp-panel-mask.svg' : passwordVisual ? '/Home/figma-password-panel-mask.svg' : '/Home/figma-forgot-panel-mask.svg'})`,
+            WebkitMaskPosition: otpVisual
+              ? '-270.851px 532.207px'
+              : passwordVisual
+                ? '-258.852px 16.207px'
+                : '-278.851px 161.207px',
+            maskPosition: otpVisual
+              ? '-270.851px 532.207px'
+              : passwordVisual
+                ? '-258.852px 16.207px'
+                : '-278.851px 161.207px',
             WebkitMaskRepeat: 'no-repeat',
             maskRepeat: 'no-repeat',
             WebkitMaskSize: '1486.703px 1435.602px',
@@ -243,10 +288,16 @@ export default function ForgotPasswordPage() {
           }}
         >
           <Image
-            src={otpVisual ? '/Home/figma-otp-panel-art.png' : '/Home/figma-forgot-panel-art.png'}
+            src={
+              otpVisual
+                ? '/Home/figma-otp-panel-art.png'
+                : passwordVisual
+                  ? '/Home/figma-password-panel-art.png'
+                  : '/Home/figma-forgot-panel-art.png'
+            }
             alt=""
             fill
-            sizes={otpVisual ? '907px' : '899px'}
+            sizes={otpVisual ? '907px' : passwordVisual ? '928px' : '899px'}
             className="object-cover"
             priority
           />
@@ -254,7 +305,13 @@ export default function ForgotPasswordPage() {
         <div className="relative z-10 mx-auto mt-40 flex w-141 flex-col items-center gap-8 text-center">
           <div className="flex flex-col items-center gap-5">
             <Image
-              src={otpVisual ? '/Home/figma-otp-stars.svg' : '/Home/figma-forgot-stars.svg'}
+              src={
+                otpVisual
+                  ? '/Home/figma-otp-stars.svg'
+                  : passwordVisual
+                    ? '/Home/figma-password-stars.svg'
+                    : '/Home/figma-forgot-stars.svg'
+              }
               alt="Five star rating"
               width={116}
               height={22}
@@ -268,7 +325,13 @@ export default function ForgotPasswordPage() {
             <div className="flex items-center gap-5">
               <div className="flex items-center gap-4">
                 <Image
-                  src={otpVisual ? '/Home/figma-otp-avatar.png' : '/Home/figma-forgot-avatar.png'}
+                  src={
+                    otpVisual
+                      ? '/Home/figma-otp-avatar.png'
+                      : passwordVisual
+                        ? '/Home/figma-password-avatar.png'
+                        : '/Home/figma-forgot-avatar.png'
+                  }
                   alt="Sarah T."
                   width={56}
                   height={56}
@@ -279,7 +342,13 @@ export default function ForgotPasswordPage() {
                 </p>
               </div>
               <Image
-                src={otpVisual ? '/Home/figma-otp-divider.svg' : '/Home/figma-forgot-divider.svg'}
+                src={
+                  otpVisual
+                    ? '/Home/figma-otp-divider.svg'
+                    : passwordVisual
+                      ? '/Home/figma-password-divider.svg'
+                      : '/Home/figma-forgot-divider.svg'
+                }
                 alt=""
                 width={1}
                 height={61}
@@ -295,7 +364,11 @@ export default function ForgotPasswordPage() {
           <div className="flex items-center justify-center gap-12">
             <Image
               src={
-                otpVisual ? '/Home/figma-otp-arrow-left.svg' : '/Home/figma-forgot-arrow-left.svg'
+                otpVisual
+                  ? '/Home/figma-otp-arrow-left.svg'
+                  : passwordVisual
+                    ? '/Home/figma-password-arrow-left.svg'
+                    : '/Home/figma-forgot-arrow-left.svg'
               }
               alt=""
               width={48}
@@ -303,7 +376,11 @@ export default function ForgotPasswordPage() {
             />
             <Image
               src={
-                otpVisual ? '/Home/figma-otp-slider-dots.svg' : '/Home/figma-forgot-slider-dots.svg'
+                otpVisual
+                  ? '/Home/figma-otp-slider-dots.svg'
+                  : passwordVisual
+                    ? '/Home/figma-password-slider-dots.svg'
+                    : '/Home/figma-forgot-slider-dots.svg'
               }
               alt=""
               width={62}
@@ -311,7 +388,11 @@ export default function ForgotPasswordPage() {
             />
             <Image
               src={
-                otpVisual ? '/Home/figma-otp-arrow-right.svg' : '/Home/figma-forgot-arrow-right.svg'
+                otpVisual
+                  ? '/Home/figma-otp-arrow-right.svg'
+                  : passwordVisual
+                    ? '/Home/figma-password-arrow-right.svg'
+                    : '/Home/figma-forgot-arrow-right.svg'
               }
               alt=""
               width={48}
