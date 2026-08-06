@@ -10,12 +10,11 @@ const productLinks = [
 ];
 
 const companyLinks = [
-  ['About', '/#about'],
-  ['Blog', '/explore'],
   ['Contact', '/#contact'],
-  ['Privacy Policy', '#'],
-  ['Terms of Use', '#'],
-  ['Affiliate Disclosure', '#'],
+  ['Privacy Policy', '/privacy-policy'],
+  ['Terms & Membership Agreement', '/terms-and-membership-agreement'],
+  ['Affiliate Disclosure', '/affiliate-disclosure'],
+  ['Medical Disclaimer', '/medical-disclaimer'],
 ];
 
 const footerMask: CSSProperties = {
@@ -55,7 +54,7 @@ function FooterLogo() {
     <Link
       href="/"
       aria-label="Bright Horizons Collective"
-      className="relative block h-[85px] w-[101px] overflow-hidden shadow-[0_1px_2px_rgba(0,0,0,0.05)]"
+      className="relative block h-21.25 w-25.25 overflow-hidden shadow-[0_1px_2px_rgba(0,0,0,0.05)]"
     >
       <Image
         src="/Home/figma-home-1183-12076-img-image1.png"
@@ -92,16 +91,16 @@ function FooterForm({ className = 'w-[384px]' }: { className?: string }) {
     <form action="#" className={`flex ${className} flex-col gap-2`}>
       <label
         htmlFor="footer-email"
-        className="font-manrope text-sm font-medium leading-[22px] tracking-[0.84px] text-[#263238]"
+        className="font-manrope text-sm font-medium leading-5.5 tracking-[0.84px] text-[#263238]"
       >
         Subscribe Newsletter
       </label>
-      <div className="flex h-[42px] items-center gap-2">
+      <div className="flex h-10.5 items-center gap-2">
         <input
           id="footer-email"
           type="email"
           placeholder="Email"
-          className="h-full min-w-0 flex-1 rounded-full border border-[#E2E8F0] bg-white px-3 font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#263238] outline-none placeholder:text-[#64748B] focus:border-[#2F7D7E]"
+          className="h-full min-w-0 flex-1 rounded-full border border-[#E2E8F0] bg-white px-3 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#263238] outline-none placeholder:text-[#64748B] focus:border-[#2F7D7E]"
         />
         <button
           type="submit"
@@ -120,7 +119,7 @@ function FooterMenu({ title, links, width }: { title: string; links: string[][];
       <h2 className="font-manrope text-base font-medium leading-6 tracking-[0.96px] text-[#263238]">
         {title}
       </h2>
-      <ul className="mt-[14px] font-manrope text-sm font-normal leading-9 tracking-[-0.084px] text-[#515B60]">
+      <ul className="mt-3.5 font-manrope text-sm font-normal leading-9 tracking-[-0.084px] text-[#515B60]">
         {links.map(([label, href]) => (
           <li key={label}>
             <Link href={href} className="transition-colors hover:text-[#2F7D7E]">
@@ -139,7 +138,7 @@ function FooterBackground() {
       <div
         aria-hidden="true"
         style={footerMask}
-        className="pointer-events-none absolute -left-[205px] -top-[70px] h-[1537px] w-[2296px]"
+        className="pointer-events-none absolute -left-51.25 -top-17.5 h-[1537px] w-[2296px]"
       >
         <Image
           src="/Home/figma-home-1183-12076-img-image136.png"
@@ -149,9 +148,9 @@ function FooterBackground() {
           className="object-cover"
         />
       </div>
-      <div className="pointer-events-none absolute left-[708px] top-[709px] flex size-[339.927px] items-center justify-center mix-blend-multiply">
+      <div className="pointer-events-none absolute left-177 top-177.25 flex size-[339.927px] items-center justify-center mix-blend-multiply">
         <div className="-scale-y-100 rotate-[-172.75deg]">
-          <div className="relative size-[304px]">
+          <div className="relative size-76">
             <Image
               src="/Home/figma-home-1183-12076-img-image3.png"
               alt=""
@@ -162,27 +161,27 @@ function FooterBackground() {
           </div>
         </div>
       </div>
-      <div className="pointer-events-none absolute left-[1575px] top-[497px] h-48 w-[390px] overflow-hidden">
+      <div className="pointer-events-none absolute left-[1575px] top-124.25 h-48 w-97.5 overflow-hidden">
         <Image
           src="/Home/figma-home-1183-12076-img-image29.png"
           alt=""
           fill
           sizes="390px"
-          className="h-[202.45%] !w-full max-w-none object-cover object-top"
+          className="h-[202.45%] w-full! max-w-none object-cover object-top"
         />
       </div>
-      <div className="pointer-events-none absolute left-[131px] top-[987px] h-[179px] w-[246px] overflow-hidden">
+      <div className="pointer-events-none absolute left-32.75 top-246.75 h-44.75 w-61.5 overflow-hidden">
         <Image
           src="/Home/figma-home-1183-12076-img-image2.png"
           alt=""
           fill
           sizes="246px"
-          className="h-[117.12%] !w-full max-w-none object-cover object-top"
+          className="h-[117.12%] w-full! max-w-none object-cover object-top"
         />
       </div>
       <p
         aria-hidden="true"
-        className="pointer-events-none absolute -left-4 top-[1318px] whitespace-nowrap font-nunito text-[210px] font-extrabold leading-none tracking-[-0.08em] text-[#A7CCF8]"
+        className="pointer-events-none absolute -left-4 top-329.5 whitespace-nowrap font-nunito text-[210px] font-extrabold leading-none tracking-[-0.08em] text-[#A7CCF8]"
       >
         Bright Horizons
       </p>
@@ -194,18 +193,18 @@ function DesktopFooter() {
   return (
     <footer
       id="contact"
-      className="relative hidden h-[1467px] overflow-hidden bg-[#FDFDFC] min-[1600px]:block"
+      className="relative hidden h-366.75 overflow-hidden bg-[#FDFDFC] min-[1600px]:block"
       style={{
         backgroundImage:
           'linear-gradient(180deg, rgba(224, 242, 254, 0) 0%, rgb(224, 242, 254) 35.577%, rgb(224, 242, 254) 52.404%, rgb(224, 242, 254) 75.481%, rgb(224, 242, 254) 100%)',
       }}
     >
       <FooterBackground />
-      <div className="absolute left-1/2 top-[292px] z-10 flex w-[1166px] -translate-x-1/2 items-start gap-40">
+      <div className="absolute left-1/2 top-73 z-10 flex w-291.5 -translate-x-1/2 items-start gap-40">
         <div className="flex w-[384px] flex-col gap-8">
           <div className="flex w-full flex-col gap-4">
             <FooterLogo />
-            <p className="font-manrope text-sm font-normal leading-[22px] tracking-[-0.084px] text-[#515B60]">
+            <p className="font-manrope text-sm font-normal leading-5.5 tracking-[-0.084px] text-[#515B60]">
               Personalized pediatric OT activities and weekly plans for families, created by a
               licensed occupational therapist.
             </p>
@@ -232,11 +231,11 @@ function CompactFooter() {
           'linear-gradient(180deg, rgba(224, 242, 254, 0) 0%, rgb(224, 242, 254) 35.577%, rgb(224, 242, 254) 100%)',
       }}
     >
-      <div className="relative z-10 mx-auto max-w-[760px]">
+      <div className="relative z-10 mx-auto max-w-190">
         <div className="grid gap-12 sm:grid-cols-2">
           <div className="flex flex-col gap-4">
             <FooterLogo />
-            <p className="font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#515B60]">
+            <p className="font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#515B60]">
               Personalized pediatric OT activities and weekly plans for families, created by a
               licensed occupational therapist.
             </p>
