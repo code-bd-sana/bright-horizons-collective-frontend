@@ -29,9 +29,9 @@ function DisclosureSection({
 
 export function AffiliateDisclosurePage() {
   return (
-    <main className="bg-[#FFFDF8] pt-68 text-[#263238] max-lg:pt-40">
-      <header className="mx-auto flex max-w-117 flex-col items-center gap-3 px-5 text-center">
-        <h1 className="font-nunito text-[40px] font-semibold leading-12 tracking-[-0.4px]">
+    <main className="bg-[#FFFDF8] pt-68 text-[#263238] max-lg:pt-40 max-md:pt-28 max-sm:pt-20">
+      <header className="mx-auto flex max-w-3xl flex-col items-center gap-3 px-5 text-center max-sm:gap-2">
+        <h1 className="font-nunito text-[40px] font-semibold leading-12 tracking-[-0.4px] max-md:text-4xl max-sm:text-3xl">
           Affiliate Disclosure
         </h1>
         <p className="font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#7D8488]">
@@ -40,7 +40,7 @@ export function AffiliateDisclosurePage() {
         </p>
       </header>
 
-      <div className="mx-auto mt-40 flex w-291.5 items-start gap-20 pb-120 max-xl:w-[calc(100%-64px)] max-xl:gap-10 max-lg:mt-20 max-lg:flex-col max-lg:px-5 max-lg:pb-28 max-md:w-full">
+      <div className="mx-auto mt-40 flex w-full max-w-291.5 items-start gap-20 px-8 pb-40 max-xl:gap-10 max-lg:mt-20 max-lg:flex-col max-lg:px-5 max-lg:pb-28 max-md:mt-12 max-sm:pb-16">
         <aside className="w-68.75 shrink-0 rounded-[20px] border border-[#EDEEF0] bg-white p-4.25 shadow-[0_2px_8px_rgba(198,202,209,0.22),0_2px_2px_rgba(198,202,209,0.1)] max-lg:w-full">
           <p className="font-manrope text-xs font-medium leading-4.5 tracking-[0.48px] text-[#7D8488]">
             Table of content
