@@ -5,8 +5,8 @@ import Link from 'next/link';
 
 export function ExploreHeroSection() {
   return (
-    <section className="relative flex h-155 min-h-0 items-start justify-center overflow-hidden bg-[#FDFDFC] pt-48 text-[#263238] max-lg:h-auto max-lg:pb-20 max-lg:pt-36">
-      <div className="relative z-10 flex w-187.75 flex-col items-center gap-8 px-5 text-center max-lg:w-full">
+    <section className="relative flex h-155 min-h-0 items-start justify-center overflow-hidden bg-[#FDFDFC] pt-48 text-[#263238] max-lg:h-auto max-lg:pb-20 max-lg:pt-36 max-md:pt-28 max-sm:pt-20 max-sm:pb-16">
+      <div className="relative z-10 flex w-187.75 max-xl:w-160 flex-col items-center gap-8 max-md:gap-6 px-5 text-center max-lg:w-full">
         <div className="flex w-full flex-col items-center gap-4">
           <div className="flex w-44.5 items-center gap-2.5 rounded-xl border border-[#E8EBE8] bg-white px-2 py-1.5 font-manrope text-sm leading-5.5 tracking-[-0.084px] shadow-sm">
             <span className="flex items-center gap-1">
@@ -17,12 +17,12 @@ export function ExploreHeroSection() {
             <span>2,400+ families</span>
           </div>
 
-          <h1 className="font-nunito text-[56px] font-semibold leading-16 tracking-[-0.56px] max-lg:text-[clamp(34px,6vw,56px)] max-lg:leading-[1.14]">
+          <h1 className="font-nunito text-[56px] font-semibold leading-16 tracking-[-0.56px] max-lg:text-[48px] max-lg:leading-14 max-md:text-[40px] max-md:leading-12 max-sm:text-[32px] max-sm:leading-10">
             Support for every stage of your{' '}
             <span className="text-[#F2B59F]">child&apos;s development.</span>
           </h1>
 
-          <p className="w-155.25 font-manrope text-base leading-6 tracking-[-0.176px] text-[#607077] max-lg:w-full">
+          <p className="w-155.25 font-manrope text-base leading-6 tracking-[-0.176px] text-[#607077] max-lg:w-full max-sm:text-sm">
             Discover expert-curated activities, developmental resources, toy recommendations,
             printables, and learning ideas for every stage of childhood.
           </p>

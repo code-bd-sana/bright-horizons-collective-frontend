@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import { Logo } from '@/components/logo';
+import { Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X } from 'lucide-react';
+import { useState } from 'react';
 
 export interface NavItem {
   label: string;
@@ -40,7 +41,7 @@ export function Navbar({
   return (
     <nav className={`relative z-50 inline-flex w-full items-center ${className}`}>
       {/* Outer Floating Pill Card (Figma Node 1120:55252) */}
-      <div className="w-full rounded-[20px] border border-[#E8EBE8] bg-white p-4 font-nunito shadow-[0px_7px_8px_rgba(174,171,163,0.10),0px_30px_15px_rgba(174,171,163,0.09),0px_67px_20px_rgba(174,171,163,0.05),0px_119px_24px_rgba(174,171,163,0.01),0px_186px_26px_rgba(174,171,163,0)]">
+      <div className="w-full rounded-[20px] border border-[#E8EBE8] bg-white p-4 max-sm:px-3 max-sm:py-2.5 font-nunito shadow-[0px_7px_8px_rgba(174,171,163,0.10),0px_30px_15px_rgba(174,171,163,0.09),0px_67px_20px_rgba(174,171,163,0.05),0px_119px_24px_rgba(174,171,163,0.01),0px_186px_26px_rgba(174,171,163,0)]">
         <div className="flex items-center gap-1">
           {/* Desktop Nav Items */}
           <div className="hidden lg:flex w-full items-center gap-1">
@@ -71,11 +72,11 @@ export function Navbar({
           </div>
 
           {/* Mobile Header View */}
-          <div className="flex lg:hidden items-center justify-between w-full">
-            <span className="text-[#263238] font-semibold text-lg">Menu</span>
+          <div className="flex lg:hidden items-center justify-between w-full pl-1">
+            <Logo width={36} height={36} showBackdrop={false} />
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 text-[#263238] hover:text-[#2F7D7E] rounded-lg transition-colors focus:outline-hidden"
+              className="p-2 max-sm:p-1.5 text-[#263238] hover:text-[#2F7D7E] rounded-lg transition-colors focus:outline-hidden"
               aria-label="Toggle menu"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -85,7 +86,7 @@ export function Navbar({
 
         {/* Mobile Dropdown Drawer */}
         {mobileMenuOpen && (
-          <div className="lg:hidden pt-4 mt-3 border-t border-[#e8ebe8] flex flex-col space-y-2 animate-in fade-in slide-in-from-top-2 duration-200">
+          <div className="lg:hidden pt-4 mt-3 max-sm:pt-3 max-sm:mt-2 max-sm:space-y-1 border-t border-[#e8ebe8] flex flex-col space-y-2 animate-in fade-in slide-in-from-top-2 duration-200">
             {navItems.map((item) => {
               const isActive = pathname === item.href;
               return (

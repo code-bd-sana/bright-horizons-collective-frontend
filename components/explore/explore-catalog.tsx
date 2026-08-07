@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 
+import { TherapyToyModal } from '@/components/explore/therapy-toy-modal';
 import {
   contentTypes,
   exploreItems,
@@ -13,7 +14,6 @@ import {
   type ExploreItem,
   type FilterKey,
 } from '@/lib/explore-data';
-import { TherapyToyModal } from '@/components/explore/therapy-toy-modal';
 
 type SelectedFilters = Record<FilterKey, string[]>;
 
@@ -49,7 +49,7 @@ function ResourceCard({
     <article
       onClick={item.type === 'Therapy Toys' ? onOpenToy : undefined}
       className={`relative overflow-hidden rounded-2xl border border-[#EDEEF0] bg-white p-4 text-white shadow-[0px_2px_16px_rgba(198,202,209,0.22)] ${item.type === 'Therapy Toys' ? 'cursor-pointer' : ''}`}
-      style={{ height }}
+      style={{ height: height || 540 }}
     >
       <Image
         src={item.image}
@@ -161,18 +161,6 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
     });
   }, [activeType, filters, query]);
 
-  const masonryColumns = useMemo(
-    () =>
-      results.reduce<ExploreItem[][]>(
-        (columns, item, index) => {
-          columns[index % 3].push(item);
-          return columns;
-        },
-        [[], [], []]
-      ),
-    [results]
-  );
-
   const toggleFilter = (key: FilterKey, option: string) => {
     setFilters((current) => ({
       ...current,
@@ -209,10 +197,10 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
         </label>
       </div>
 
-      <div className="mx-auto mt-12 flex max-w-480 items-start gap-6 px-20 max-xl:px-8 max-lg:flex-col max-lg:px-5">
-        <div className="w-101.5 shrink-0 max-lg:w-full">
-          <aside className="w-90.25 rounded-3xl border border-[#E8EBE8] bg-white p-6 shadow-[0px_1px_1px_rgba(0,0,0,0.05)] max-lg:w-full">
-            <div className="flex flex-col gap-10">
+      <div className="mx-auto mt-12 flex max-w-480 items-start gap-6 px-20 max-xl:px-8 max-lg:flex-col max-md:px-5">
+        <div className="w-101.5 shrink-0 max-xl:w-80 max-lg:w-full">
+          <aside className="w-90.25 rounded-3xl border border-[#E8EBE8] bg-white p-6 shadow-[0px_1px_1px_rgba(0,0,0,0.05)] max-xl:w-full">
+            <div className="flex flex-col gap-10 max-lg:gap-6">
               {filterGroups.map(({ key, label, options }) => (
                 <div key={key} className="w-full">
                   <button
@@ -259,27 +247,24 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
           </aside>
         </div>
 
-        <div className="min-w-0 flex-1">
+        <div className="min-w-0 flex-1 w-full">
           {results.length ? (
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-              {masonryColumns.map((column, columnIndex) => (
-                <div key={columnIndex} className="flex flex-col gap-6">
-                  {column.map((item, itemIndex) => (
-                    <ResourceCard
-                      key={item.id}
-                      item={item}
-                      height={columnIndex === 1 && itemIndex === 0 ? 480 : 540}
-                      saved={savedIds.includes(item.id)}
-                      onSave={() =>
-                        setSavedIds((current) =>
-                          current.includes(item.id)
-                            ? current.filter((id) => id !== item.id)
-                            : [...current, item.id]
-                        )
-                      }
-                      onOpenToy={() => setToyModalOpen(true)}
-                    />
-                  ))}
+            <div className="columns-1 gap-6 sm:columns-2 xl:columns-3">
+              {results.map((item, index) => (
+                <div key={item.id} className="mb-6 break-inside-avoid">
+                  <ResourceCard
+                    item={item}
+                    height={index % 3 === 1 ? 480 : 540}
+                    saved={savedIds.includes(item.id)}
+                    onSave={() =>
+                      setSavedIds((current) =>
+                        current.includes(item.id)
+                          ? current.filter((id) => id !== item.id)
+                          : [...current, item.id]
+                      )
+                    }
+                    onOpenToy={() => setToyModalOpen(true)}
+                  />
                 </div>
               ))}
             </div>
