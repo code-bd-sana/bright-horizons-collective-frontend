@@ -1,6 +1,6 @@
 'use client';
 
-import { ExternalLink, X } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
 import { Heart } from 'reicon';
@@ -28,11 +28,11 @@ export function TherapyToyModal({ isOpen, onClose }: TherapyToyModalProps) {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
         showCloseButton={false}
-        className="w-174.25 max-w-[calc(100%-2rem)] gap-0 rounded-xl bg-white p-6 text-[#263238] ring-0 sm:max-w-174.25 max-md:max-h-[calc(100dvh-2rem)] max-md:overflow-y-auto"
+        className="w-174.25 max-w-[calc(100%-2rem)] gap-0 rounded-xl bg-white p-6 max-sm:p-4 text-[#263238] ring-0 sm:max-w-174.25 max-md:max-h-[calc(100dvh-2rem)] max-md:overflow-y-auto"
       >
         <DialogTitle className="sr-only">Kinetic Sand Sandbox Kit</DialogTitle>
-        <div className="flex gap-5.75 max-md:flex-col">
-          <div className="relative h-96.5 w-64.25 shrink-0 overflow-hidden rounded-lg max-md:h-64 max-md:w-full">
+        <div className="flex gap-5.75 max-md:gap-4 max-md:flex-col">
+          <div className="relative h-96.5 w-64.25 shrink-0 overflow-hidden rounded-lg max-md:h-64 max-sm:h-48 max-md:w-full">
             <Image
               src="/Home/therapy-toy-kinetic-sand.png"
               alt="Pink wooden play kitchen"
@@ -42,14 +42,14 @@ export function TherapyToyModal({ isOpen, onClose }: TherapyToyModalProps) {
             />
           </div>
 
-          <div className="flex h-96.5 min-w-0 flex-1 flex-col justify-between max-md:h-auto max-md:gap-8">
-            <div className="flex flex-col gap-6">
+          <div className="flex h-96.5 min-w-0 flex-1 flex-col justify-between max-md:h-auto max-md:gap-6 max-sm:gap-5">
+            <div className="flex flex-col gap-6 max-sm:gap-4">
               <div className="flex items-start justify-between gap-3">
-                <div className="flex min-w-0 flex-col gap-3">
+                <div className="flex min-w-0 flex-col gap-3 max-sm:gap-2">
                   <span className="w-fit rounded-full bg-[#F2B59F] px-2.5 py-0.5 font-nunito text-xs font-medium leading-4">
                     New
                   </span>
-                  <h2 className="font-nunito text-xl font-bold leading-6">
+                  <h2 className="font-nunito text-xl max-sm:text-lg font-bold leading-6">
                     Kinetic Sand Sandbox Kit
                   </h2>
                   <div className="flex flex-wrap gap-1.5">
@@ -58,14 +58,14 @@ export function TherapyToyModal({ isOpen, onClose }: TherapyToyModalProps) {
                     <Chip>Creativity</Chip>
                   </div>
                 </div>
-                <button
+                {/* <button
                   type="button"
                   onClick={() => onClose(false)}
                   aria-label="Close toy details"
                   className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#263238]/8 text-[#263238]"
                 >
                   <X className="size-4" />
-                </button>
+                </button> */}
               </div>
 
               <div className="flex flex-col gap-2">
