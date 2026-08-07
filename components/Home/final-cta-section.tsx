@@ -18,8 +18,8 @@ function CtaCard({ compact = false }: { compact?: boolean }) {
     <div
       className={
         compact
-          ? 'relative mx-auto flex min-h-[427px] max-w-[1280px] items-center justify-center overflow-hidden rounded-3xl border-2 border-[#FAF0ED] bg-[#FFFDF8] px-6 py-20 text-center shadow-[0_2px_28px_rgba(39,69,67,0.06)]'
-          : 'relative h-[427px] w-[1280px] overflow-hidden rounded-3xl border-2 border-[#FAF0ED] bg-[#FFFDF8] shadow-[0_2px_28px_rgba(39,69,67,0.06)]'
+          ? 'relative mx-auto flex min-h-106.75 max-w-7xl items-center justify-center overflow-hidden rounded-3xl border-2 border-[#FAF0ED] bg-[#FFFDF8] px-6 py-20 text-center shadow-[0_2px_28px_rgba(39,69,67,0.06)]'
+          : 'relative h-106.75 w-7xl overflow-hidden rounded-3xl border-2 border-[#FAF0ED] bg-[#FFFDF8] shadow-[0_2px_28px_rgba(39,69,67,0.06)]'
       }
     >
       <div
@@ -42,8 +42,8 @@ function CtaCard({ compact = false }: { compact?: boolean }) {
       <div
         className={
           compact
-            ? 'relative z-10 flex max-w-[683px] flex-col items-center gap-7'
-            : 'absolute left-1/2 top-1/2 z-10 flex w-[683px] -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-7'
+            ? 'relative z-10 flex max-w-170.75 flex-col items-center gap-7'
+            : 'absolute left-1/2 top-1/2 z-10 flex w-170.75 -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-7'
         }
       >
         <div className="flex flex-col items-center gap-4">
@@ -76,7 +76,7 @@ function CtaCard({ compact = false }: { compact?: boolean }) {
 export function FinalCtaSection() {
   return (
     <>
-      <section className="hidden h-[667px] bg-[#FDFDFC] px-[320px] py-[120px] min-[1600px]:block">
+      <section className="hidden h-166.75 w-full bg-[#FDFDFC] py-30 min-[1600px]:flex min-[1600px]:justify-center">
         <CtaCard />
       </section>
       <section className="bg-[#FDFDFC] px-5 py-20 min-[1600px]:hidden sm:px-8 sm:py-28">

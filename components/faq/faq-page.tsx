@@ -80,7 +80,7 @@ const answers: Record<string, string> = {
 
 function SupportCard() {
   return (
-    <aside className="relative w-75 rounded-2xl bg-[#F6E6D4] p-8 text-center shadow-[0_1px_1.5px_rgba(0,0,0,0.1),0_1px_1px_rgba(0,0,0,0.1)]">
+    <aside className="relative mx-auto w-75 max-sm:w-full rounded-2xl bg-[#F6E6D4] p-8 max-sm:p-6 max-sm:pt-8 text-center shadow-[0_1px_1.5px_rgba(0,0,0,0.1),0_1px_1px_rgba(0,0,0,0.1)]">
       <Image
         src="/Home/figma-home-1183-11826-img-image132-vectorized.svg"
         alt=""
@@ -120,21 +120,21 @@ export function FaqPage() {
   );
 
   return (
-    <main className="bg-[#FDFDFC] pt-78 text-[#263238] max-xl:pt-44 max-lg:pt-36">
-      <section className="mx-auto flex max-w-[1920px] items-stretch justify-between gap-16 px-20 pb-40 max-xl:px-8 max-lg:flex-col max-lg:px-5 max-lg:pb-24">
-        <div className="flex w-179.75 shrink-0 flex-col justify-between max-lg:w-full max-lg:gap-14">
-          <div className="flex flex-col gap-6">
-            <div className="flex flex-col gap-4">
-              <h1 className="font-nunito text-5xl font-semibold leading-14 tracking-[-0.48px] text-[#263238] max-md:text-[38px] max-md:leading-11.5">
+    <main className="bg-[#FDFDFC] pt-78 text-[#263238] max-xl:pt-44 max-lg:pt-36 max-md:pt-28 max-sm:pt-24">
+      <section className="mx-auto flex w-full max-w-384 items-stretch justify-between gap-12 lg:gap-16 px-8 lg:px-12 xl:px-20 pb-40 max-lg:flex-col max-lg:px-5 max-lg:pb-24 max-md:gap-10 max-sm:pb-16">
+        <div className="flex w-full lg:w-[45%] flex-col justify-between max-lg:gap-14">
+          <div className="flex flex-col gap-6 max-sm:gap-5">
+            <div className="flex flex-col gap-4 max-sm:gap-3">
+              <h1 className="font-nunito text-5xl font-semibold leading-14 tracking-[-0.48px] text-[#263238] max-md:text-[38px] max-md:leading-11.5 max-sm:text-3xl max-sm:leading-10">
                 Frequently Asked Questions
               </h1>
-              <p className="max-w-137.75 font-manrope text-base leading-6 tracking-[-0.176px] text-[#607077]">
+              <p className="max-w-137.75 font-manrope text-base leading-6 tracking-[-0.176px] text-[#607077] max-sm:text-sm">
                 Find answers about memberships, activities, child profiles, weekly plans, payments,
                 and using Bright Horizons.
               </p>
             </div>
-            <label className="flex h-13.5 w-full items-center gap-1.75 rounded-2xl border border-[#D2E3DC] bg-[#F9FAFA] px-5 py-4">
-              <Search className="size-6 shrink-0 text-[#607077]" strokeWidth={1.5} />
+            <label className="flex h-13.5 max-sm:h-12 w-full items-center gap-1.75 rounded-2xl border border-[#D2E3DC] bg-[#F9FAFA] px-5 max-sm:px-4 py-4 max-sm:py-3">
+              <Search className="size-6 max-sm:size-5 shrink-0 text-[#607077]" strokeWidth={1.5} />
               <input
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
@@ -143,10 +143,12 @@ export function FaqPage() {
               />
             </label>
           </div>
-          <SupportCard />
+          <div className="max-lg:hidden">
+            <SupportCard />
+          </div>
         </div>
 
-        <div className="flex w-217 flex-col gap-12 max-lg:w-full max-lg:gap-10">
+        <div className="flex w-full lg:w-[55%] flex-col gap-12 max-lg:gap-10 max-sm:gap-8">
           {visibleGroups.map((group) => (
             <section key={group.title} className="flex flex-col gap-4">
               <h2 className="font-nunito text-lg font-medium uppercase leading-6 tracking-[-0.27px] text-[#7D8488]">
@@ -163,16 +165,16 @@ export function FaqPage() {
                       type="button"
                       aria-expanded={isOpen}
                       onClick={() => setOpenQuestion(isOpen ? null : question)}
-                      className="flex min-h-17.25 w-full items-center justify-between gap-6 p-5 text-left font-nunito text-lg font-medium leading-6 tracking-[-0.27px] text-[#263238]"
+                      className="flex min-h-17.25 max-sm:min-h-14 w-full items-center justify-between gap-6 max-sm:gap-4 p-5 max-sm:p-4 text-left font-nunito text-lg max-sm:text-base font-medium leading-6 tracking-[-0.27px] text-[#263238]"
                     >
                       <span>{question}</span>
                       <Plus
-                        className={`size-6 shrink-0 text-[#2F7D7E] transition-transform ${isOpen ? 'rotate-45' : ''}`}
+                        className={`size-6 max-sm:size-5 shrink-0 text-[#2F7D7E] transition-transform ${isOpen ? 'rotate-45' : ''}`}
                         strokeWidth={1.5}
                       />
                     </button>
                     {isOpen && (
-                      <p className="px-5 pb-5 font-manrope text-base leading-6 text-[#607077]">
+                      <p className="px-5 pb-5 max-sm:px-4 max-sm:pb-4 font-manrope text-base max-sm:text-sm leading-6 text-[#607077]">
                         {answers[question]}
                       </p>
                     )}
@@ -182,10 +184,15 @@ export function FaqPage() {
             </section>
           ))}
           {!visibleGroups.length && (
-            <p className="rounded-[15px] border border-dashed border-[#D2E3DC] px-5 py-10 text-center font-manrope text-base text-[#607077]">
+            <p className="rounded-[15px] border border-dashed border-[#D2E3DC] px-5 py-10 max-sm:py-8 text-center font-manrope text-base max-sm:text-sm text-[#607077]">
               No questions match your search.
             </p>
           )}
+
+          {/* Mobile support card at the bottom */}
+          <div className="hidden max-lg:block mt-4">
+            <SupportCard />
+          </div>
         </div>
       </section>
       <FinalCtaSection />
