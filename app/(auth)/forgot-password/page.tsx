@@ -70,22 +70,20 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <main className="relative h-dvh overflow-hidden bg-[#fffdf8] text-[#263238]">
+    <main className="relative flex min-h-dvh flex-col overflow-y-auto overflow-x-hidden bg-[#fffdf8] text-[#263238] xl:h-dvh xl:flex-row xl:items-center xl:overflow-hidden">
       <Logo
         href="/"
         width={123}
         height={123}
         showBackdrop
-        className="absolute left-[calc(8.333333%+34px)] top-4 z-20 max-lg:left-8 max-lg:top-5 max-lg:size-22"
+        className="z-20 mt-6 ml-6 shrink-0 xl:absolute xl:left-[calc(8.333333%+34px)] xl:top-4 xl:m-0 max-md:ml-4 max-md:mt-4 max-xl:w-22! max-xl:h-22! max-md:w-16! max-md:h-16! [&_span[aria-hidden]]:max-xl:hidden"
       />
 
       <section
         className={
           otpVisual
-            ? 'mx-auto mt-32 flex w-fit min-w-122.5 max-w-[calc(100%-3rem)] flex-col items-center gap-8 rounded-2xl border border-[#e8ebe8] bg-white p-6 shadow-[0_1px_1px_rgba(0,0,0,0.05)] xl:absolute xl:left-[calc(8.333333%+69px)] xl:top-1/2 xl:mt-0 xl:max-w-none xl:-translate-y-1/2'
-            : passwordVisual
-              ? 'mx-auto flex w-full max-w-123 flex-col items-center px-6 pt-40 xl:absolute xl:left-[calc(8.333333%+69px)] xl:top-64 xl:mx-0 xl:px-0 xl:pt-0'
-              : 'mx-auto flex w-full max-w-123 flex-col items-center px-6 pt-40 xl:absolute xl:left-[calc(8.333333%+69px)] xl:top-1/2 xl:mx-0 xl:-translate-y-1/2 xl:px-0 xl:pt-0'
+            ? 'mx-auto my-8 flex w-[calc(100%-3rem)] max-w-122.5 flex-1 flex-col items-center justify-center gap-8 rounded-2xl border border-[#e8ebe8] bg-white p-6 shadow-[0_1px_1px_rgba(0,0,0,0.05)] xl:mx-0 xl:my-0 xl:ml-[calc(8.333333%+69px)] xl:flex-none xl:justify-start'
+            : 'mx-auto flex w-full max-w-123 flex-1 flex-col items-center justify-center px-6 py-12 xl:mx-0 xl:ml-[calc(8.333333%+69px)] xl:flex-none xl:justify-start xl:px-0 xl:py-0'
         }
       >
         {current && (
@@ -152,7 +150,7 @@ export default function ForgotPasswordPage() {
                   className="absolute left-[16.59px] top-[14.48px] object-contain"
                 />
               </div>
-              <h1 className="whitespace-pre font-nunito text-[32px] font-medium leading-10 tracking-[-0.16px] text-[#263238]">
+              <h1 className="font-nunito text-[32px] font-medium leading-10 tracking-[-0.16px] text-[#263238] max-md:text-[28px] max-sm:text-2xl">
                 Enter 6-Digit code sent to your gmail
               </h1>
               <p className="w-full font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#7d8488]">
@@ -161,7 +159,7 @@ export default function ForgotPasswordPage() {
               </p>
             </div>
             <div className="flex w-full flex-col items-center gap-4">
-              <div className="flex items-center gap-3.5">
+              <div className="flex w-full items-center justify-between gap-1.5 sm:justify-center sm:gap-3.5">
                 {otp.map((digit, index) => (
                   <input
                     key={index}
@@ -175,7 +173,7 @@ export default function ForgotPasswordPage() {
                     inputMode="numeric"
                     maxLength={1}
                     autoFocus={index === 0}
-                    className={`h-16.25 w-15.5 rounded-xl bg-white text-center font-manrope text-2xl text-[#263238] outline-none ${index === 0 ? 'border-2 border-[#f2b59f]' : 'border border-[#99a6b8]'}`}
+                    className={`h-14 w-full max-w-15.5 sm:h-16.25 rounded-xl bg-white text-center font-manrope text-xl sm:text-2xl text-[#263238] outline-none ${index === 0 ? 'border-2 border-[#f2b59f]' : 'border border-[#99a6b8]'}`}
                   />
                 ))}
               </div>
