@@ -20,12 +20,12 @@ export function ExploreWaveTransition({ activeType }: { activeType: ExploreConte
         alt=""
         width={2140}
         height={502}
-        className="z-100 pointer-events-none absolute left-1/2 top-[-219.33px] max-w-none -translate-x-1/2 max-lg:-top-30 max-lg:h-82.5 max-lg:w-350 max-md:w-70 max-md:h-16.5 max-md:-top-24 max-sm:w-50 max-sm:-top-20"
+        className="z-100 pointer-events-none absolute left-1/2 top-[-219.33px] max-w-none -translate-x-1/2 max-lg:-top-30 max-lg:h-82.5 max-lg:w-350 max-md:-top-16 max-md:w-250 max-md:h-58.75 max-sm:-top-12 max-sm:w-200 max-sm:h-47"
         priority
       />
 
       {artwork === 'kite' ? (
-        <div className="pointer-events-none absolute left-[calc(50%+372px)] top-31.75 flex h-[281.082px] w-[274.716px] items-center justify-center max-lg:left-auto max-lg:right-[2%] max-lg:scale-75 max-lg:origin-top-right max-md:scale-50 max-sm:scale-40">
+        <div className="pointer-events-none absolute left-[calc(50%+372px)] top-31.75 flex h-70.25 w-68.5 items-center justify-center max-lg:left-auto max-lg:right-[2%] max-lg:top-10 max-lg:scale-75 max-lg:origin-top-right max-md:scale-50 max-md:top-12 max-sm:scale-[0.4] max-sm:top-16">
           <div className="rotate-[43.43deg]">
             <div className="relative h-[278.712px] w-[114.444px] overflow-hidden">
               <Image
@@ -45,7 +45,7 @@ export function ExploreWaveTransition({ activeType }: { activeType: ExploreConte
           alt=""
           width={artwork === 'light' ? 313 : 413}
           height={artwork === 'light' ? 313 : 413}
-          className="pointer-events-none absolute left-[calc(50%+372px)] top-16 h-auto w-78 max-lg:left-auto max-lg:right-[2%] max-lg:top-10 max-lg:w-56 max-md:w-40 max-sm:w-32"
+          className="pointer-events-none absolute left-[calc(50%+372px)] top-16 h-auto w-78 max-lg:left-auto max-lg:right-[2%] max-lg:top-10 max-lg:w-56 max-md:w-40 max-md:top-12 max-sm:w-32 max-sm:top-16"
           priority
         />
       )}
