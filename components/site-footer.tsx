@@ -6,7 +6,7 @@ const productLinks = [
   ['Activity library', '/explore'],
   ['Activities', '/explore'],
   ['Toy Spotlight', '/explore'],
-  ['Membership', '/#membership'],
+  ['Membership', '/membership'],
 ];
 
 const companyLinks = [
