@@ -4,12 +4,37 @@ import Link from 'next/link';
 const aboutAssets = {
   arrow: '/About/figma-about-739-33851-vector.svg',
   divider: '/About/figma-about-739-33851-line2.svg',
+  horizontalGrid: '/Home/figma-home-1183-10835-frame3.svg',
+  horizontalGridMask: '/Home/figma-home-1183-10835-frame2.svg',
   ratingStar: '/About/figma-about-739-33851-icon.svg',
   stars: '/About/figma-about-739-33851-image10.png',
   photoBottom: '/About/figma-about-739-33851-vector1.png',
   photoCenter: '/About/figma-about-739-33851-union1.png',
   photoLeft: '/About/figma-about-739-33851-union2.png',
+  verticalGrid: '/Home/figma-home-1183-10835-frame4.svg',
 } as const;
+
+const horizontalGridMaskStyle = {
+  maskImage: `url('${aboutAssets.horizontalGridMask}')`,
+  maskPosition: '-123px -392.098px',
+  maskRepeat: 'no-repeat',
+  maskSize: '1689px 949px',
+  WebkitMaskImage: `url('${aboutAssets.horizontalGridMask}')`,
+  WebkitMaskPosition: '-123px -392.098px',
+  WebkitMaskRepeat: 'no-repeat',
+  WebkitMaskSize: '1689px 949px',
+};
+
+const verticalGridMaskStyle = {
+  maskImage: `url('${aboutAssets.horizontalGridMask}')`,
+  maskPosition: '-238.859px -297.733px',
+  maskRepeat: 'no-repeat',
+  maskSize: '1689px 949px',
+  WebkitMaskImage: `url('${aboutAssets.horizontalGridMask}')`,
+  WebkitMaskPosition: '-238.859px -297.733px',
+  WebkitMaskRepeat: 'no-repeat',
+  WebkitMaskSize: '1689px 949px',
+};
 
 function RatingBadge() {
   return (
@@ -84,7 +109,7 @@ function AboutArtwork({ compact = false }: { compact?: boolean }) {
   }
 
   return (
-    <div className="absolute left-[calc(50%+28px)] top-[245px] h-[480px] w-[842px]">
+    <div className="absolute left-[calc(50%+28px)] top-[245px] z-10 h-[480px] w-[842px]">
       <div className="absolute left-[352px] top-[239.5px] flex h-[313.915px] w-[294.067px] items-center justify-center">
         <Image
           src={aboutAssets.photoBottom}
@@ -125,14 +150,40 @@ function AboutArtwork({ compact = false }: { compact?: boolean }) {
   );
 }
 
+function AboutHeroGrid() {
+  return (
+    <>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute left-[238px] top-[597.1px] h-[340.933px] w-[1417.001px]"
+        style={horizontalGridMaskStyle}
+      >
+        <Image src={aboutAssets.horizontalGrid} alt="" fill className="object-fill" />
+      </div>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute left-[353.86px] top-[502.73px] flex h-[528.973px] w-[1193.264px] items-center justify-center"
+      >
+        <div
+          className="relative h-[1193.264px] w-[528.973px] rotate-[-90deg]"
+          style={verticalGridMaskStyle}
+        >
+          <Image src={aboutAssets.verticalGrid} alt="" fill className="object-fill" />
+        </div>
+      </div>
+    </>
+  );
+}
+
 function DesktopAboutHero() {
   return (
-    <div className="relative mx-auto hidden aspect-[1920/768] w-full max-w-[1920px] lg:block">
+    <div className="relative mx-auto hidden aspect-[1920/789] w-full max-w-[1920px] lg:block">
       <div
-        className="relative h-[768px] w-[1920px] origin-top-left"
+        className="relative h-[789px] w-[1920px] origin-top-left"
         style={{ transform: 'scale(min(1, calc(100vw / 1920px)))' }}
       >
-        <div className="absolute left-[calc(50%-874px)] top-[245px] flex h-[467px] w-[1744px] items-center justify-between">
+        <AboutHeroGrid />
+        <div className="absolute left-[calc(50%-874px)] top-[245px] z-10 flex h-[467px] w-[1744px] items-center justify-between">
           <div className="flex w-[822px] flex-col items-start gap-8">
             <div className="flex w-full flex-col items-start gap-4">
               <RatingBadge />

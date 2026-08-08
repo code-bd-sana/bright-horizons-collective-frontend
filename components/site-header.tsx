@@ -2,6 +2,8 @@ import { Logo } from '@/components/logo';
 import { Navbar } from '@/components/navbar';
 
 export function SiteHeader({ aboutLayout = false }: { aboutLayout?: boolean }) {
+  const backdropSrc = aboutLayout ? '/About/figma-about-739-33851-union.svg' : undefined;
+
   return (
     <header className="pointer-events-none absolute inset-x-0 top-0 z-40">
       <div className="relative mx-auto hidden h-0 w-full max-w-[1920px] lg:block">
@@ -13,6 +15,7 @@ export function SiteHeader({ aboutLayout = false }: { aboutLayout?: boolean }) {
             width={123}
             height={123}
             showBackdrop
+            backdropSrc={backdropSrc}
             className="pointer-events-auto absolute left-[194px] top-4 z-20"
           />
 
@@ -29,6 +32,7 @@ export function SiteHeader({ aboutLayout = false }: { aboutLayout?: boolean }) {
           width={123}
           height={123}
           showBackdrop
+          backdropSrc={backdropSrc}
           className="pointer-events-auto absolute left-6 top-4 z-20"
         />
 

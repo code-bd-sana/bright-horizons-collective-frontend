@@ -11,6 +11,7 @@ export interface LogoProps {
   priority?: boolean;
   alt?: string;
   showBackdrop?: boolean;
+  backdropSrc?: string;
 }
 
 export function Logo({
@@ -21,6 +22,7 @@ export function Logo({
   priority = true,
   alt = 'Bright Horizons Collective Logo',
   showBackdrop = false,
+  backdropSrc = '/Home/figma-home-1183-10835-union.svg',
 }: LogoProps) {
   const scale = width / 123;
   const backdropWidth = 618.125 * scale;
@@ -44,7 +46,7 @@ export function Logo({
           }}
         >
           <Image
-            src="/Home/figma-home-1183-10835-union.svg"
+            src={backdropSrc}
             alt=""
             width={521}
             height={383}
