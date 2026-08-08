@@ -47,16 +47,16 @@ export default function RegisterPage() {
   };
 
   return (
-    <main className="relative h-dvh overflow-hidden bg-[#fffdf8] text-[#263238]">
+    <main className="relative flex min-h-dvh flex-col overflow-y-auto overflow-x-hidden bg-[#fffdf8] text-[#263238] xl:h-dvh xl:flex-row xl:items-center xl:overflow-hidden">
       <Logo
         href="/"
         width={123}
         height={123}
         showBackdrop
-        className="absolute left-[calc(8.333333%+34px)] top-4 z-20 max-lg:left-8 max-lg:top-5 max-lg:size-22"
+        className="z-20 mt-6 ml-6 shrink-0 xl:absolute xl:left-[calc(8.333333%+34px)] xl:top-4 xl:m-0 max-md:ml-4 max-md:mt-4 max-xl:w-22! max-xl:h-22! max-md:w-16! max-md:h-16! [&_span[aria-hidden]]:max-xl:hidden"
       />
 
-      <section className="mx-auto flex w-full max-w-123 flex-col items-center px-6 pt-20 xl:absolute xl:left-[calc(8.333333%+69px)] xl:top-54 xl:mx-0 xl:px-0 xl:pt-0">
+      <section className="mx-auto flex w-full max-w-123 flex-1 flex-col items-center justify-center px-6 py-12 xl:ml-[calc(8.333333%+69px)] xl:mx-0 xl:flex-none xl:justify-start xl:px-0 xl:py-0">
         <div className="mb-8 flex w-full flex-col items-center gap-3 text-center xl:mb-12">
           <h1 className="font-nunito text-[32px] font-medium leading-10 tracking-[-0.16px] text-[#263238]">
             Create Your Account

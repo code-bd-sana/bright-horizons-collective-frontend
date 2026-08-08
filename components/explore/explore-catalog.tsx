@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 
+import { TherapyToyModal } from '@/components/explore/therapy-toy-modal';
 import {
   contentTypes,
   exploreItems,
@@ -13,7 +14,6 @@ import {
   type ExploreItem,
   type FilterKey,
 } from '@/lib/explore-data';
-import { TherapyToyModal } from '@/components/explore/therapy-toy-modal';
 
 type SelectedFilters = Record<FilterKey, string[]>;
 
@@ -49,7 +49,7 @@ function ResourceCard({
     <article
       onClick={item.type === 'Therapy Toys' ? onOpenToy : undefined}
       className={`relative overflow-hidden rounded-2xl border border-[#EDEEF0] bg-white p-4 text-white shadow-[0px_2px_16px_rgba(198,202,209,0.22)] ${item.type === 'Therapy Toys' ? 'cursor-pointer' : ''}`}
-      style={{ height }}
+      style={{ height: height || 540 }}
     >
       <Image
         src={item.image}
@@ -135,13 +135,7 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
   const [filters, setFilters] = useState<SelectedFilters>(emptyFilters);
   const [savedIds, setSavedIds] = useState<string[]>([]);
   const [isToyModalOpen, setToyModalOpen] = useState(false);
-  const [openGroups, setOpenGroups] = useState<Record<FilterKey, boolean>>({
-    age: true,
-    skill: true,
-    category: true,
-    collection: true,
-    difficulty: true,
-  });
+  const [openGroup, setOpenGroup] = useState<FilterKey | null>('age');
 
   const results = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -161,18 +155,6 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
     });
   }, [activeType, filters, query]);
 
-  const masonryColumns = useMemo(
-    () =>
-      results.reduce<ExploreItem[][]>(
-        (columns, item, index) => {
-          columns[index % 3].push(item);
-          return columns;
-        },
-        [[], [], []]
-      ),
-    [results]
-  );
-
   const toggleFilter = (key: FilterKey, option: string) => {
     setFilters((current) => ({
       ...current,
@@ -184,50 +166,48 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
 
   return (
     <section className="bg-[#FDFDFC] pb-20 pt-12">
-      <div className="mx-auto flex max-w-480 items-center gap-9 px-20 max-xl:px-8 max-lg:flex-col max-lg:items-stretch max-lg:gap-5 max-md:px-5">
-        <div className="flex shrink-0 flex-wrap items-center gap-1.75">
+      <div className="mx-auto flex max-w-480 items-center gap-9 px-20 max-xl:px-8 max-md:flex-col max-md:items-stretch max-md:gap-5 max-md:px-5">
+        <div className="flex shrink-0 items-center gap-1.75 max-md:w-full">
           {contentTypes.map((type) => (
             <button
               type="button"
               key={type}
               onClick={() => onActiveTypeChange(type)}
-              className={`h-12 rounded-full px-4 font-nunito text-sm font-medium leading-5 tracking-[-0.084px] transition-colors ${activeType === type ? 'bg-[#2F7D7E] text-white' : 'bg-[#EFEFEF] text-[#64748B] hover:bg-[#E3F7EC]'}`}
+              className={`flex h-12 flex-1 items-center justify-center whitespace-nowrap rounded-full px-4 max-sm:px-1 font-nunito text-sm font-medium leading-5 tracking-[-0.084px] transition-colors max-sm:text-[11px] ${activeType === type ? 'bg-[#2F7D7E] text-white' : 'bg-[#EFEFEF] text-[#64748B] hover:bg-[#E3F7EC]'}`}
             >
               {type}
             </button>
           ))}
         </div>
-        <span className="h-12 w-px shrink-0 bg-[#E8EBE8] max-lg:hidden" />
-        <label className="flex h-12 min-w-0 flex-1 items-center gap-1.75 rounded-2xl border border-[#FCE9E3] bg-[#FBF6F4] px-5.25 text-[#7D8488]">
+        <span className="h-12 w-px shrink-0 bg-[#E8EBE8] max-md:hidden" />
+        <label className="flex h-12 w-full shrink-0 items-center gap-1.75 rounded-2xl border border-[#FCE9E3] bg-[#FBF6F4] px-5.25 text-[#7D8488] md:flex-1">
           <Search className="size-6 shrink-0 text-[#9AA3A6]" strokeWidth={1.5} />
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search activities, speech, sensory play, routines, milestones, toys..."
-            className="min-w-0 flex-1 bg-transparent font-nunito text-sm outline-none placeholder:text-[#7D8488]"
+            className="min-w-0 flex-1 w-full bg-transparent font-nunito text-sm outline-none placeholder:text-[#7D8488] text-ellipsis"
           />
         </label>
       </div>
 
-      <div className="mx-auto mt-12 flex max-w-480 items-start gap-6 px-20 max-xl:px-8 max-lg:flex-col max-lg:px-5">
-        <div className="w-101.5 shrink-0 max-lg:w-full">
-          <aside className="w-90.25 rounded-3xl border border-[#E8EBE8] bg-white p-6 shadow-[0px_1px_1px_rgba(0,0,0,0.05)] max-lg:w-full">
-            <div className="flex flex-col gap-10">
+      <div className="mx-auto mt-12 flex max-w-480 items-start gap-6 px-20 max-xl:px-8 max-md:flex-col max-md:px-5">
+        <div className="w-101.5 shrink-0 max-xl:w-80 max-md:w-full">
+          <aside className="w-90.25 rounded-3xl border border-[#E8EBE8] bg-white p-6 shadow-[0px_1px_1px_rgba(0,0,0,0.05)] max-xl:w-full">
+            <div className="flex flex-col gap-10 max-md:gap-6">
               {filterGroups.map(({ key, label, options }) => (
                 <div key={key} className="w-full">
                   <button
                     type="button"
-                    onClick={() =>
-                      setOpenGroups((current) => ({ ...current, [key]: !current[key] }))
-                    }
+                    onClick={() => setOpenGroup((current) => (current === key ? null : key))}
                     className="flex w-full items-center justify-between font-nunito text-xl font-medium leading-7 text-[#0F1416]"
                   >
                     {label}
                     <ChevronDown
-                      className={`size-6 text-[#2F7D7E] transition-transform ${openGroups[key] ? '' : '-rotate-90'}`}
+                      className={`size-6 text-[#2F7D7E] transition-transform ${openGroup === key ? '' : '-rotate-90'}`}
                     />
                   </button>
-                  {openGroups[key] && (
+                  {openGroup === key && (
                     <div className="mt-3 flex flex-col gap-2.5">
                       {options.map((option) => {
                         const checked = filters[key].includes(option);
@@ -259,27 +239,24 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
           </aside>
         </div>
 
-        <div className="min-w-0 flex-1">
+        <div className="min-w-0 flex-1 w-full">
           {results.length ? (
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-              {masonryColumns.map((column, columnIndex) => (
-                <div key={columnIndex} className="flex flex-col gap-6">
-                  {column.map((item, itemIndex) => (
-                    <ResourceCard
-                      key={item.id}
-                      item={item}
-                      height={columnIndex === 1 && itemIndex === 0 ? 480 : 540}
-                      saved={savedIds.includes(item.id)}
-                      onSave={() =>
-                        setSavedIds((current) =>
-                          current.includes(item.id)
-                            ? current.filter((id) => id !== item.id)
-                            : [...current, item.id]
-                        )
-                      }
-                      onOpenToy={() => setToyModalOpen(true)}
-                    />
-                  ))}
+            <div className="columns-1 gap-6 lg:columns-2 xl:columns-3">
+              {results.map((item, index) => (
+                <div key={item.id} className="mb-6 break-inside-avoid">
+                  <ResourceCard
+                    item={item}
+                    height={index % 3 === 1 ? 480 : 540}
+                    saved={savedIds.includes(item.id)}
+                    onSave={() =>
+                      setSavedIds((current) =>
+                        current.includes(item.id)
+                          ? current.filter((id) => id !== item.id)
+                          : [...current, item.id]
+                      )
+                    }
+                    onOpenToy={() => setToyModalOpen(true)}
+                  />
                 </div>
               ))}
             </div>
