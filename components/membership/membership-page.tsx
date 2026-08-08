@@ -23,7 +23,7 @@ function BillingToggle({
   onChange: (billingCycle: BillingCycle) => void;
 }) {
   const optionClass = (option: BillingCycle) =>
-    `flex items-center justify-center rounded-[24px] font-nunito text-base font-medium leading-6 tracking-[-0.176px] transition-colors ${
+    `flex shrink-0 items-center justify-center rounded-[24px] font-nunito text-base font-medium leading-6 tracking-[-0.176px] whitespace-nowrap transition-colors ${
       billingCycle === option
         ? 'border border-[#F5EEFF] bg-[#2F7D7E] text-white shadow-[0_8px_20px_rgba(0,0,0,0.14)]'
         : 'text-[#656175]'
@@ -38,9 +38,11 @@ function BillingToggle({
         type="button"
         aria-pressed={billingCycle === 'monthly'}
         onClick={() => onChange('monthly')}
-        className={`${optionClass('monthly')} h-11 w-[107px] px-2.5`}
+        className={`${optionClass('monthly')} h-11 w-[107px] ${
+          billingCycle === 'monthly' ? 'px-[9px]' : 'p-[10px]'
+        }`}
       >
-        Bill monthly
+        <span>Bill monthly</span>
       </button>
       <button
         type="button"
@@ -48,7 +50,7 @@ function BillingToggle({
         onClick={() => onChange('annual')}
         className={`${optionClass('annual')} h-[42px] w-[193px] gap-1.5 px-3`}
       >
-        <span>Bill annually</span>
+        <span className="whitespace-nowrap">Bill annually</span>
         <span className="flex h-[22px] w-[74px] items-center justify-center rounded-[12px] border border-[#F5EEFF] bg-white font-nunito text-xs font-medium leading-4 text-[#2F7D7E]">
           Save 20%
         </span>

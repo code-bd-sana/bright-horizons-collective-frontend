@@ -28,10 +28,10 @@ describe('MembershipPage', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Bill monthly' }));
 
-    expect(screen.getByRole('button', { name: 'Bill monthly' })).toHaveAttribute(
-      'aria-pressed',
-      'true'
-    );
+    const monthlyButton = screen.getByRole('button', { name: 'Bill monthly' });
+
+    expect(monthlyButton).toHaveAttribute('aria-pressed', 'true');
+    expect(monthlyButton).toHaveClass('whitespace-nowrap');
     expect(screen.getByText('$15')).toBeInTheDocument();
     expect(screen.getByText('$40')).toBeInTheDocument();
     expect(screen.queryByText('$180')).not.toBeInTheDocument();
