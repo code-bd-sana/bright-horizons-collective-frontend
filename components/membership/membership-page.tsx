@@ -5,6 +5,10 @@ import Link from 'next/link';
 import { useState } from 'react';
 
 import { membershipPlans, type MembershipPlan } from '@/components/membership/membership-plans';
+import { MembershipComparison } from '@/components/membership/membership-comparison';
+import { MembershipFaqSection } from '@/components/membership/membership-faq-section';
+import { MembershipFinalCta } from '@/components/membership/membership-final-cta';
+import { MembershipTestimonials } from '@/components/membership/membership-testimonials';
 
 const MEMBERSHIP_ASSET_ROOT = '/Membership/';
 const HOME_ASSET_ROOT = '/Home/';
@@ -175,10 +179,10 @@ export function MembershipPage() {
   const [billingCycle, setBillingCycle] = useState<BillingCycle>('annual');
 
   return (
-    <main className="relative bg-[#FDFDFC] text-[#263238]">
+    <main className="relative overflow-x-clip bg-[#FDFDFC] text-[#263238]">
       <section
         aria-labelledby="membership-heading"
-        className="relative min-h-screen overflow-x-clip bg-[#FDFDFC] px-5 pt-32 pb-24 sm:px-8 min-[1400px]:h-[1434px] min-[1400px]:min-h-0 min-[1400px]:p-0"
+        className="relative min-h-screen overflow-x-clip bg-[#FDFDFC] px-5 pt-32 pb-24 sm:px-8 min-[1400px]:h-[1594px] min-[1400px]:min-h-0 min-[1400px]:p-0"
       >
         <div
           aria-hidden="true"
@@ -267,10 +271,14 @@ export function MembershipPage() {
           <MembershipCard
             plan={membershipPlans[2]}
             billingCycle={billingCycle}
-            className="min-[1400px]:mt-13 min-[1400px]:shrink-0"
+            className="min-[1400px]:mt-14 min-[1400px]:shrink-0"
           />
         </div>
       </section>
+      <MembershipComparison />
+      <MembershipTestimonials />
+      <MembershipFaqSection />
+      <MembershipFinalCta />
     </main>
   );
 }
