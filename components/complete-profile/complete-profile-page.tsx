@@ -518,8 +518,8 @@ export function CompleteProfilePage() {
             />
             Go back
           </Link>
-          <button
-            type="button"
+          <Link
+            href="/review-submit"
             className="flex h-14 flex-1 items-center justify-center gap-1 rounded-[32px] border border-[#D5E5E5] bg-[#2F7D7E] px-4 py-2 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-white"
           >
             Review &amp; Complete Setup
@@ -530,7 +530,7 @@ export function CompleteProfilePage() {
               height={16}
               aria-hidden="true"
             />
-          </button>
+          </Link>
         </div>
       </div>
     </main>
