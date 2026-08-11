@@ -161,7 +161,7 @@ export function ContactPage() {
             />
           </div>
         </div>
-        <div className="absolute left-1/2 top-126 z-10 flex w-full max-w-300 -translate-x-1/2 flex-wrap justify-center gap-6 px-5 max-xl:relative max-xl:left-auto max-xl:top-auto max-xl:mt-16 max-xl:translate-x-0">
+        <div className="absolute left-1/2 top-126 z-10 flex w-full max-w-800 -translate-x-1/2 flex-wrap justify-center gap-6 px-5 max-xl:relative max-xl:left-auto max-xl:top-auto max-xl:mt-16 max-xl:translate-x-0">
           {contactCards.map((card) => (
             <ContactCard key={card.title} card={card} />
           ))}

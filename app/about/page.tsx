@@ -11,7 +11,7 @@ export default function AboutPage() {
   return (
     <main>
       <AboutHero />
-      <AboutImpactSection />
+      {/* <AboutImpactSection /> */}
       <AboutStorySection />
       <AboutSupportSection />
       <AboutValuesSection />
