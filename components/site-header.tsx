@@ -14,11 +14,7 @@ export function SiteHeader({
       ? '/About/figma-about-739-33851-union.svg'
       : undefined;
 
-  const navbarPosition = membershipLayout
-    ? 'top-11 w-[686px]'
-    : aboutLayout
-      ? 'top-11 w-180'
-      : 'top-6 w-180';
+  const navbarPosition = membershipLayout ? 'top-11' : aboutLayout ? 'top-11' : 'top-6';
 
   return (
     <header className="pointer-events-none absolute inset-x-0 top-0 z-40">

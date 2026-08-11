@@ -72,12 +72,12 @@ export function Navbar({
   }, []);
 
   return (
-    <nav className={`relative z-50 inline-flex w-full items-center ${className}`}>
+    <nav className={`relative z-50 inline-flex w-fit items-center max-lg:w-full ${className}`}>
       {/* Outer Floating Pill Card (Figma Node 1120:55252) */}
-      <div className="w-full rounded-[20px] border border-[#E8EBE8] bg-white p-4 max-sm:px-3 max-sm:py-2.5 font-nunito shadow-[0px_7px_8px_rgba(174,171,163,0.10),0px_30px_15px_rgba(174,171,163,0.09),0px_67px_20px_rgba(174,171,163,0.05),0px_119px_24px_rgba(174,171,163,0.01),0px_186px_26px_rgba(174,171,163,0)]">
+      <div className="w-fit rounded-[20px] border border-[#E8EBE8] bg-white p-4 max-lg:w-full max-sm:px-3 max-sm:py-2.5 font-nunito shadow-[0px_7px_8px_rgba(174,171,163,0.10),0px_30px_15px_rgba(174,171,163,0.09),0px_67px_20px_rgba(174,171,163,0.05),0px_119px_24px_rgba(174,171,163,0.01),0px_186px_26px_rgba(174,171,163,0)]">
         <div className="flex items-center gap-1">
           {/* Desktop Nav Items */}
-          <div className="hidden lg:flex w-full items-center gap-1">
+          <div className="hidden lg:flex w-fit items-center gap-1">
             <div className="flex items-center gap-1">
               {visibleNavItems.map((item) => {
                 const isActive = pathname === item.href || (item.href === '/' && pathname === '/');
