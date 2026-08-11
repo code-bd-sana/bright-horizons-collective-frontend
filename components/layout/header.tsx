@@ -27,6 +27,28 @@ type MessageThread = {
   message: string;
 };
 
+type ChildProfile = {
+  name: string;
+  age: string;
+  image: string;
+  imagePosition: string;
+};
+
+const childProfiles: ChildProfile[] = [
+  {
+    name: 'Emma',
+    age: '4 yr 3 mo',
+    image: '/Home/figma-dashboard-switch-emma-4.png',
+    imagePosition: '50% 26%',
+  },
+  {
+    name: 'Emma',
+    age: '3 yr 3 mo',
+    image: '/Home/figma-dashboard-switch-emma-3.png',
+    imagePosition: '50% 25%',
+  },
+];
+
 const unreadThreads: MessageThread[] = [
   {
     initial: 'J',
@@ -127,14 +149,72 @@ function MessageItem({ thread, unread = false }: { thread: MessageThread; unread
   );
 }
 
+function ChildProfileOption({
+  profile,
+  selected,
+  onSelect,
+}: {
+  profile: ChildProfile;
+  selected: boolean;
+  onSelect: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      aria-pressed={selected}
+      onClick={onSelect}
+      className={`flex h-23 w-full items-center justify-between rounded-2xl p-3 text-left ${
+        selected ? 'border border-[#8fb9a8] bg-[#f2f3f3]' : 'bg-white'
+      }`}
+    >
+      <span className="flex items-start gap-3">
+        <span className="flex size-11 shrink-0 items-center justify-center rounded-xl border border-[#d5e5e5] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.1)]">
+          <span className="relative size-9 overflow-hidden rounded-[10px] bg-[#b16262] shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
+            <Image
+              src={profile.image}
+              alt=""
+              fill
+              sizes="36px"
+              className="object-cover"
+              style={{ objectPosition: profile.imagePosition }}
+            />
+          </span>
+        </span>
+        <span className="flex flex-col">
+          <span className="font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-[#263238]">
+            {profile.name}
+          </span>
+          <span className="font-manrope text-xs leading-4.5 text-[#7d8488]">({profile.age})</span>
+        </span>
+      </span>
+      {selected ? (
+        <span className="flex size-7.5 items-center justify-center rounded-full border-2 border-[#2f7d7e] bg-[#2f7d7e] p-0.5">
+          <Image
+            src="/Home/figma-dashboard-switch-check.svg"
+            alt="Selected"
+            width={20}
+            height={20}
+          />
+        </span>
+      ) : (
+        <span className="size-7.5 rounded-full border-2 border-[#d4d6d7] bg-white" />
+      )}
+    </button>
+  );
+}
+
 export function Header() {
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [messagesOpen, setMessagesOpen] = useState(false);
+  const [profilesOpen, setProfilesOpen] = useState(false);
+  const [selectedProfile, setSelectedProfile] = useState(0);
   const [allRead, setAllRead] = useState(false);
   const notificationButtonRef = useRef<HTMLButtonElement>(null);
   const notificationPanelRef = useRef<HTMLElement>(null);
   const messagesButtonRef = useRef<HTMLButtonElement>(null);
   const messagesPanelRef = useRef<HTMLElement>(null);
+  const profileButtonRef = useRef<HTMLButtonElement>(null);
+  const profilesPanelRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const closeOnOutsideInteraction = (event: MouseEvent) => {
@@ -143,10 +223,13 @@ export function Header() {
         !notificationButtonRef.current?.contains(target) &&
         !notificationPanelRef.current?.contains(target) &&
         !messagesButtonRef.current?.contains(target) &&
-        !messagesPanelRef.current?.contains(target)
+        !messagesPanelRef.current?.contains(target) &&
+        !profileButtonRef.current?.contains(target) &&
+        !profilesPanelRef.current?.contains(target)
       ) {
         setNotificationsOpen(false);
         setMessagesOpen(false);
+        setProfilesOpen(false);
       }
     };
 
@@ -154,10 +237,11 @@ export function Header() {
       if (event.key === 'Escape') {
         setNotificationsOpen(false);
         setMessagesOpen(false);
+        setProfilesOpen(false);
       }
     };
 
-    if (notificationsOpen || messagesOpen) {
+    if (notificationsOpen || messagesOpen || profilesOpen) {
       document.addEventListener('mousedown', closeOnOutsideInteraction);
       document.addEventListener('keydown', closeOnEscape);
     }
@@ -166,7 +250,7 @@ export function Header() {
       document.removeEventListener('mousedown', closeOnOutsideInteraction);
       document.removeEventListener('keydown', closeOnEscape);
     };
-  }, [messagesOpen, notificationsOpen]);
+  }, [messagesOpen, notificationsOpen, profilesOpen]);
 
   return (
     <header
@@ -198,6 +282,7 @@ export function Header() {
           onClick={() => {
             setMessagesOpen((open) => !open);
             setNotificationsOpen(false);
+            setProfilesOpen(false);
           }}
           className="flex size-10 items-center justify-center overflow-hidden rounded-lg bg-[#e9f1ee] p-1"
         >
@@ -211,6 +296,7 @@ export function Header() {
           onClick={() => {
             setNotificationsOpen((open) => !open);
             setMessagesOpen(false);
+            setProfilesOpen(false);
           }}
           className="flex size-10 items-center justify-center overflow-hidden rounded-lg bg-[#e9f1ee] p-1"
         >
@@ -222,8 +308,15 @@ export function Header() {
           />
         </button>
         <button
+          ref={profileButtonRef}
           type="button"
           aria-label="Selected child: Emma, 4 years old"
+          aria-expanded={profilesOpen}
+          onClick={() => {
+            setProfilesOpen((open) => !open);
+            setMessagesOpen(false);
+            setNotificationsOpen(false);
+          }}
           className="flex h-10 items-center gap-2.5 overflow-hidden rounded-lg bg-[#d2e3dc] px-2 py-1 max-md:hidden"
         >
           <span className="relative size-7 shrink-0 overflow-hidden rounded-full bg-[#accbcb]">
@@ -236,7 +329,7 @@ export function Header() {
             />
           </span>
           <span className="whitespace-nowrap font-nunito text-sm font-medium leading-5 tracking-[-0.084px] text-[#1e282d]">
-            Emma · 4y
+            {childProfiles[selectedProfile].name} · {selectedProfile === 0 ? '4y' : '3y'}
           </span>
           <Image
             src="/Home/figma-dashboard-header-chevron.svg"
@@ -259,6 +352,44 @@ export function Header() {
             className="object-cover object-[50%_10%]"
           />
         </button>
+
+        {profilesOpen && (
+          <section
+            ref={profilesPanelRef}
+            className="absolute right-0 top-13 z-50 w-100 max-w-[calc(100vw-2rem)] rounded-2xl border border-[#ebebeb] bg-white p-4 shadow-[0_20px_40px_rgba(16,45,97,0.12)]"
+            aria-label="Switch child profile"
+          >
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center justify-between font-manrope">
+                <h2 className="text-lg leading-6.75 tracking-[-0.27px] text-[#263238]">
+                  Switch Child Profile
+                </h2>
+                <p className="text-sm leading-5.5 tracking-[-0.084px] text-[#7d8488]">2 children</p>
+              </div>
+              <div className="flex flex-col gap-2">
+                {childProfiles.map((profile, index) => (
+                  <ChildProfileOption
+                    key={profile.age}
+                    profile={profile}
+                    selected={selectedProfile === index}
+                    onSelect={() => {
+                      setSelectedProfile(index);
+                      setProfilesOpen(false);
+                    }}
+                  />
+                ))}
+              </div>
+              <button
+                type="button"
+                className="relative flex h-10 w-full items-center justify-center gap-1 overflow-hidden rounded-full border border-[#accbcb] px-3 py-2 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-[#f8fafc]"
+              >
+                <span className="absolute inset-0 bg-linear-to-b from-[rgba(47,125,126,0.6)] to-[#2f7d7e]" />
+                <span className="relative">+ Add Another Child Profile</span>
+                <span className="pointer-events-none absolute inset-0 rounded-full shadow-[inset_0_-6px_2px_rgba(255,255,255,0.07)]" />
+              </button>
+            </div>
+          </section>
+        )}
 
         {messagesOpen && (
           <section
