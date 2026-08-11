@@ -1,50 +1,195 @@
 'use client';
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Users, Settings } from 'lucide-react';
+import { Logo } from '@/components/logo';
 import { cn } from '@/lib/utils';
 import { useAppStore } from '@/store/use-app-store';
-import { Logo } from '@/components/logo';
+import Image from 'next/image';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
 
-const navigation = [
-  { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { name: 'Users', href: '/dashboard/users', icon: Users },
-  { name: 'Settings', href: '/dashboard/settings', icon: Settings },
+type NavigationItem = {
+  name: string;
+  href: string;
+  icon: string;
+  active?: (pathname: string) => boolean;
+};
+
+const menuItems: NavigationItem[] = [
+  {
+    name: 'Dashboard',
+    href: '/dashboard',
+    icon: '/Home/figma-dashboard-nav-dashboard.svg',
+    active: (pathname) => pathname === '/dashboard',
+  },
+  {
+    name: 'Weekly Plans',
+    href: '/dashboard/weekly-plans',
+    icon: '/Home/figma-dashboard-nav-weekly.svg',
+  },
+  { name: 'Explore', href: '/explore', icon: '/Home/figma-dashboard-nav-explore.svg' },
+  { name: 'Messages', href: '/dashboard/messages', icon: '/Home/figma-dashboard-nav-messages.svg' },
+  {
+    name: 'Child Profiles',
+    href: '/dashboard/child-profiles',
+    icon: '/Home/figma-dashboard-nav-child-profiles.svg',
+  },
 ];
+
+const otherItems: NavigationItem[] = [
+  { name: 'Settings', href: '/dashboard/settings', icon: '/Home/figma-dashboard-nav-settings.svg' },
+  { name: 'Support', href: '/contact', icon: '/Home/figma-dashboard-nav-support.svg' },
+];
+
+function NavigationList({ items, pathname }: { items: NavigationItem[]; pathname: string }) {
+  return (
+    <div className="flex w-50 flex-col gap-2">
+      {items.map((item) => {
+        const isActive = item.active?.(pathname) ?? pathname === item.href;
+        return (
+          <Link
+            key={item.name}
+            href={item.href}
+            className={cn(
+              'flex h-9 items-center rounded-full px-3 py-2 font-nunito text-sm font-medium leading-5 tracking-[-0.084px] transition-colors',
+              isActive
+                ? 'rounded-xl bg-[#fce9e3] text-[#1e282d] shadow-[0_1px_1px_rgba(0,0,0,0.05)]'
+                : 'text-[#515b60] hover:bg-[#fce9e3]/50'
+            )}
+          >
+            <Image src={item.icon} alt="" width={20} height={20} className="mr-2 shrink-0" />
+            {item.name}
+          </Link>
+        );
+      })}
+    </div>
+  );
+}
 
 export function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const { sidebarOpen } = useAppStore();
+
+  const handleLogout = async () => {
+    await fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' });
+    router.replace('/login');
+    router.refresh();
+  };
 
   if (!sidebarOpen) return null;
 
   return (
-    <aside className="w-64 flex flex-col border-r bg-card h-screen sticky top-0 md:flex">
-      <div className="h-16 flex items-center gap-3 px-6 border-b">
-        <Logo width={52} height={52} />
-      </div>
-      <nav className="flex-1 px-4 py-6 space-y-2">
-        {navigation.map((item) => {
-          const isActive = pathname === item.href;
-          const Icon = item.icon;
-          return (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={cn(
-                'flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors',
-                isActive
-                  ? 'bg-primary text-primary-foreground'
-                  : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-              )}
+    <aside
+      className="sticky top-0 hidden h-dvh min-h-239.75 w-77.75 shrink-0 bg-[#fdfdfc] md:flex"
+      aria-label="Dashboard navigation"
+    >
+      <div className="ml-10 flex h-full w-67.75 flex-col border-r border-[#f6f4f4]">
+        <div className="flex min-h-0 flex-1 flex-col gap-5 border-r border-[#f6f4f4]">
+          <div className="relative flex h-33 w-full items-center px-4 pt-4">
+            <Logo href="/" width={125} height={100} className="shrink-0" />
+            <Image
+              src="/Home/figma-dashboard-sidebar-line-top.svg"
+              alt=""
+              width={230}
+              height={1}
+              className="absolute bottom-0 left-1/2 h-px w-57.5 -translate-x-1/2"
+            />
+          </div>
+
+          <nav className="flex flex-col gap-5" aria-label="Main navigation">
+            <section className="flex flex-col gap-2">
+              <p className="w-48 px-1 font-nunito text-xs font-medium leading-4 text-[#7d8488]">
+                MENU
+              </p>
+              <NavigationList items={menuItems} pathname={pathname} />
+            </section>
+
+            <section className="flex flex-col gap-2">
+              <p className="w-48 px-1 font-nunito text-xs font-medium leading-4 text-[#7d8488]">
+                OTHERS
+              </p>
+              <NavigationList items={otherItems} pathname={pathname} />
+            </section>
+          </nav>
+
+          <section
+            className="relative mt-auto mb-4 flex h-41.5 w-60.75 flex-col justify-end gap-4 overflow-hidden rounded-xl border-2 border-transparent p-4"
+            aria-label="Current membership plan"
+          >
+            <span
+              aria-hidden="true"
+              className="absolute inset-0 rounded-[10px]"
+              style={{
+                backgroundImage:
+                  'linear-gradient(164.974553deg, rgb(255, 255, 255) 12.806%, rgb(251, 222, 213) 45.344%, rgb(250, 214, 203) 68.311%, rgb(249, 208, 195) 96.064%, rgb(246, 189, 171) 112.33%)',
+              }}
+            />
+            <div className="relative z-10 flex w-44 flex-col gap-1">
+              <p className="font-manrope text-[10px] font-medium uppercase leading-3.75 tracking-[0.2px] text-[#515b60]">
+                Current Plan
+              </p>
+              <p className="font-nunito text-lg font-semibold leading-6 tracking-[-0.27px] text-[#263238]">
+                Grow Together
+              </p>
+              <p className="font-manrope text-xs leading-4.5 text-[#515b60]">Renews Aug 1, 2026</p>
+            </div>
+            <button
+              type="button"
+              className="relative z-10 flex min-h-12 w-51.5 items-center justify-center rounded-full border border-[#e8ebe8] bg-white px-3.25 py-1.75 font-nunito text-center text-sm font-medium leading-5 tracking-[-0.084px] text-[#2f7d7e]"
             >
-              <Icon className="w-4 h-4" />
-              {item.name}
-            </Link>
-          );
-        })}
-      </nav>
+              <span className="w-38">Upgrade Personalized Pathways</span>
+            </button>
+          </section>
+        </div>
+
+        <div className="relative flex w-full flex-col gap-2 border-r border-[#f6f4f4] p-3">
+          <Image
+            src="/Home/figma-dashboard-sidebar-line-bottom.svg"
+            alt=""
+            width={230}
+            height={1}
+            className="absolute left-1/2 top-0 h-px w-57.5 -translate-x-1/2"
+          />
+          <button type="button" className="flex w-full items-center px-3 py-3 text-left">
+            <span className="relative mr-3 size-10 shrink-0 overflow-hidden rounded-full bg-[#2f7d7e]">
+              <Image
+                src="/Home/figma-dashboard-avatar.png"
+                alt="Sarah Johnson"
+                fill
+                sizes="40px"
+                className="object-cover object-[50%_10%]"
+              />
+            </span>
+            <span className="flex min-w-0 flex-1 flex-col gap-1">
+              <span className="font-nunito text-sm font-medium leading-5 tracking-[-0.084px] text-[#515b60]">
+                Sarah Johnson
+              </span>
+              <span className="font-manrope text-xs leading-4.5 text-[#7d8488]">Parent</span>
+            </span>
+            <Image
+              src="/Home/figma-dashboard-chevron.svg"
+              alt=""
+              width={20}
+              height={20}
+              className="ml-3 shrink-0"
+            />
+          </button>
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="flex h-9 items-center rounded-full px-3 py-2 font-nunito text-sm font-medium leading-5 tracking-[-0.084px] text-[#515b60] transition-colors hover:bg-[#fce9e3]/50"
+          >
+            <Image
+              src="/Home/figma-dashboard-logout.svg"
+              alt=""
+              width={20}
+              height={20}
+              className="mr-2 shrink-0"
+            />
+            Log out
+          </button>
+        </div>
+      </div>
     </aside>
   );
 }
