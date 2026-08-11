@@ -49,6 +49,13 @@ const childProfiles: ChildProfile[] = [
   },
 ];
 
+const accountMenuItems = [
+  { label: 'My Account', icon: '/Home/figma-dashboard-profile-account.svg' },
+  { label: 'Settings Overview', icon: '/Home/figma-dashboard-profile-settings.svg' },
+  { label: 'Support and Help', icon: '/Home/figma-dashboard-profile-support.svg' },
+  { label: 'Membership and Billing', icon: '/Home/figma-dashboard-profile-billing.svg' },
+];
+
 const unreadThreads: MessageThread[] = [
   {
     initial: 'J',
@@ -207,6 +214,7 @@ export function Header() {
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [messagesOpen, setMessagesOpen] = useState(false);
   const [profilesOpen, setProfilesOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
   const [selectedProfile, setSelectedProfile] = useState(0);
   const [allRead, setAllRead] = useState(false);
   const notificationButtonRef = useRef<HTMLButtonElement>(null);
@@ -215,6 +223,8 @@ export function Header() {
   const messagesPanelRef = useRef<HTMLElement>(null);
   const profileButtonRef = useRef<HTMLButtonElement>(null);
   const profilesPanelRef = useRef<HTMLElement>(null);
+  const accountButtonRef = useRef<HTMLButtonElement>(null);
+  const accountPanelRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const closeOnOutsideInteraction = (event: MouseEvent) => {
@@ -225,11 +235,14 @@ export function Header() {
         !messagesButtonRef.current?.contains(target) &&
         !messagesPanelRef.current?.contains(target) &&
         !profileButtonRef.current?.contains(target) &&
-        !profilesPanelRef.current?.contains(target)
+        !profilesPanelRef.current?.contains(target) &&
+        !accountButtonRef.current?.contains(target) &&
+        !accountPanelRef.current?.contains(target)
       ) {
         setNotificationsOpen(false);
         setMessagesOpen(false);
         setProfilesOpen(false);
+        setAccountOpen(false);
       }
     };
 
@@ -238,10 +251,11 @@ export function Header() {
         setNotificationsOpen(false);
         setMessagesOpen(false);
         setProfilesOpen(false);
+        setAccountOpen(false);
       }
     };
 
-    if (notificationsOpen || messagesOpen || profilesOpen) {
+    if (notificationsOpen || messagesOpen || profilesOpen || accountOpen) {
       document.addEventListener('mousedown', closeOnOutsideInteraction);
       document.addEventListener('keydown', closeOnEscape);
     }
@@ -250,7 +264,12 @@ export function Header() {
       document.removeEventListener('mousedown', closeOnOutsideInteraction);
       document.removeEventListener('keydown', closeOnEscape);
     };
-  }, [messagesOpen, notificationsOpen, profilesOpen]);
+  }, [accountOpen, messagesOpen, notificationsOpen, profilesOpen]);
+
+  const handleLogout = async () => {
+    await fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' });
+    window.location.assign('/login');
+  };
 
   return (
     <header
@@ -283,6 +302,7 @@ export function Header() {
             setMessagesOpen((open) => !open);
             setNotificationsOpen(false);
             setProfilesOpen(false);
+            setAccountOpen(false);
           }}
           className="flex size-10 items-center justify-center overflow-hidden rounded-lg bg-[#e9f1ee] p-1"
         >
@@ -297,6 +317,7 @@ export function Header() {
             setNotificationsOpen((open) => !open);
             setMessagesOpen(false);
             setProfilesOpen(false);
+            setAccountOpen(false);
           }}
           className="flex size-10 items-center justify-center overflow-hidden rounded-lg bg-[#e9f1ee] p-1"
         >
@@ -316,6 +337,7 @@ export function Header() {
             setProfilesOpen((open) => !open);
             setMessagesOpen(false);
             setNotificationsOpen(false);
+            setAccountOpen(false);
           }}
           className="flex h-10 items-center gap-2.5 overflow-hidden rounded-lg bg-[#d2e3dc] px-2 py-1 max-md:hidden"
         >
@@ -340,8 +362,16 @@ export function Header() {
           />
         </button>
         <button
+          ref={accountButtonRef}
           type="button"
           aria-label="Account"
+          aria-expanded={accountOpen}
+          onClick={() => {
+            setAccountOpen((open) => !open);
+            setMessagesOpen(false);
+            setNotificationsOpen(false);
+            setProfilesOpen(false);
+          }}
           className="relative size-10 shrink-0 overflow-hidden rounded-full bg-[#2f7d7e]"
         >
           <Image
@@ -352,6 +382,87 @@ export function Header() {
             className="object-cover object-[50%_10%]"
           />
         </button>
+
+        {accountOpen && (
+          <section
+            ref={accountPanelRef}
+            className="absolute right-0 top-13 z-50 w-85.5 max-w-[calc(100vw-2rem)] overflow-hidden rounded-2xl bg-white p-4 shadow-[0_2px_19px_1px_rgba(39,69,67,0.04),0_2px_6px_rgba(30,36,44,0.11)]"
+            aria-label="Account menu"
+          >
+            <div className="flex flex-col gap-6">
+              <div className="flex items-center gap-2.5">
+                <span className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-[#d8ddd9] bg-[#2f7d7e] p-0.5">
+                  <span className="relative size-full overflow-hidden rounded-full">
+                    <Image
+                      src="/Home/figma-dashboard-profile-avatar.png"
+                      alt="Sarah Lin"
+                      fill
+                      sizes="52px"
+                      className="scale-125 object-cover object-[50%_13%]"
+                    />
+                  </span>
+                </span>
+                <div className="flex min-w-0 flex-1 flex-col gap-1">
+                  <p className="font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-[#263238]">
+                    Sarah Lin
+                  </p>
+                  <p className="truncate font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#7d8488]">
+                    sarahlin@gmail.com
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-3">
+                <div className="rounded-xl border-2 border-transparent bg-[linear-gradient(175.51deg,#fff_24.82%,#fbded5_128.91%,#fad6cb_202.39%,#f9d0c3_291.18%,#f6bdab_343.23%)] p-4">
+                  <p className="font-manrope text-[10px] font-medium uppercase leading-3.75 tracking-[0.2px] text-[#515b60]">
+                    Current Plan
+                  </p>
+                  <p className="mt-1 font-nunito text-lg font-semibold leading-6 tracking-[-0.27px] text-[#263238]">
+                    Grow Together
+                  </p>
+                  <p className="mt-1 font-manrope text-xs leading-4.5 text-[#515b60]">
+                    Renews Aug 1, 2026
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-3">
+                  {accountMenuItems.map((item) => (
+                    <button
+                      key={item.label}
+                      type="button"
+                      className="flex h-10 items-center gap-2 px-2 py-2.5 text-left font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#515b60]"
+                    >
+                      <Image src={item.icon} alt="" width={20} height={20} className="shrink-0" />
+                      <span>{item.label}</span>
+                    </button>
+                  ))}
+                </div>
+
+                <Image
+                  src="/Home/figma-dashboard-profile-divider.svg"
+                  alt=""
+                  width={310}
+                  height={1}
+                  className="h-px w-full"
+                />
+
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="flex h-10 items-center justify-between px-2 py-2.5 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#515b60]"
+                >
+                  <span>Sign Out</span>
+                  <Image
+                    src="/Home/figma-dashboard-profile-logout.svg"
+                    alt=""
+                    width={18}
+                    height={18}
+                  />
+                </button>
+              </div>
+            </div>
+          </section>
+        )}
 
         {profilesOpen && (
           <section
