@@ -1,12 +1,14 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { DEMO_SESSION_COOKIE, readDemoSession } from '@/lib/demo-session';
 
-export function proxy(request: NextRequest) {
-  const token = request.cookies.get('auth_token')?.value;
+export async function proxy(request: NextRequest) {
+  const session = await readDemoSession(request.cookies.get(DEMO_SESSION_COOKIE)?.value);
+  const isAuthenticated = Boolean(session);
 
   // Protect dashboard routes
   if (request.nextUrl.pathname.startsWith('/dashboard')) {
-    if (!token) {
+    if (!isAuthenticated) {
       return NextResponse.redirect(new URL('/login', request.url));
     }
   }
@@ -17,7 +19,7 @@ export function proxy(request: NextRequest) {
     request.nextUrl.pathname.startsWith('/register') ||
     request.nextUrl.pathname.startsWith('/forgot-password')
   ) {
-    if (token) {
+    if (isAuthenticated) {
       return NextResponse.redirect(new URL('/dashboard', request.url));
     }
   }
@@ -26,5 +28,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/login', '/register', '/forgot-password'],
+  matcher: ['/dashboard/:path*', '/login', '/register', '/forgot-password', '/api/auth/:path*'],
 };

@@ -15,22 +15,28 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export function Header() {
   const { toggleSidebar } = useAppStore();
   const router = useRouter();
-  const [role, setRole] = useState<string>(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('user_role') || 'User';
-    }
-    return 'User';
-  });
+  const [role, setRole] = useState<string>('User');
 
-  const handleLogout = () => {
-    document.cookie = 'auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-    localStorage.removeItem('user_role');
-    router.push('/login');
+  useEffect(() => {
+    const loadSession = async () => {
+      const response = await fetch('/api/auth/session', { credentials: 'same-origin' });
+      if (!response.ok) return;
+      const session = (await response.json()) as { role?: string };
+      if (session.role) setRole(session.role);
+    };
+
+    void loadSession();
+  }, []);
+
+  const handleLogout = async () => {
+    await fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' });
+    router.replace('/login');
+    router.refresh();
   };
 
   return (

@@ -11,30 +11,45 @@ const socialProviders = [
   { label: 'Continue with Google', icon: '/Home/figma-login-google.svg', tone: 'bg-[#fce9e3]' },
 ];
 
+const demoAccounts = [
+  { role: 'Parent', email: 'parent@gmail.com', password: 'parent@123' },
+  { role: 'Admin', email: 'admin@gmail.com', password: 'admin@123' },
+];
+
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setIsSubmitting(true);
 
-    let role = '';
-    if (email === 'admin@gmail.com' && password === 'admin@123') role = 'admin';
-    else if (email === 'manager@example.com' && password === 'manager123') role = 'manager';
-    else if (email === 'user@example.com' && password === 'user123') role = 'user';
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify({ email, password, rememberMe }),
+      });
+      const result = (await response.json()) as { error?: string; role?: string };
 
-    if (!role) {
-      toast.error('Invalid credentials. Please use the demo accounts.');
-      return;
+      if (!response.ok || !result.role) {
+        toast.error(result.error ?? 'Unable to sign in. Please try again.');
+        return;
+      }
+
+      toast.success(`Successfully logged in as ${result.role}`);
+      router.replace('/dashboard');
+      router.refresh();
+    } catch {
+      toast.error('Unable to sign in. Please check your connection and try again.');
+    } finally {
+      setIsSubmitting(false);
     }
-
-    document.cookie = `auth_token=${role}; path=/; max-age=86400`;
-    localStorage.setItem('user_role', role);
-    toast.success(`Successfully logged in as ${role}`);
-    router.push('/dashboard');
   };
 
   return (
@@ -148,11 +163,38 @@ export default function LoginPage() {
 
           <button
             type="submit"
+            disabled={isSubmitting}
             className="mt-5 h-12 w-full rounded-xl border border-[#accbcb] bg-[#2c7b7d] px-3 font-manrope text-sm font-semibold leading-5 text-white shadow-[0_1px_2px_rgba(16,24,40,0.05)] transition hover:bg-[#236a6c] xl:mt-8"
           >
-            Log In
+            {isSubmitting ? 'Logging In…' : 'Log In'}
           </button>
         </form>
+
+        <section
+          aria-label="Demo login credentials"
+          className="mt-5 w-full rounded-xl border border-[#d5e5e5] bg-white/70 p-3 xl:mt-6"
+        >
+          <p className="font-manrope text-xs font-semibold uppercase tracking-[0.08em] text-[#515b60]">
+            Demo login
+          </p>
+          <div className="mt-2 grid gap-2 sm:grid-cols-2">
+            {demoAccounts.map((account) => (
+              <button
+                key={account.role}
+                type="button"
+                onClick={() => {
+                  setEmail(account.email);
+                  setPassword(account.password);
+                }}
+                className="rounded-lg border border-[#e7eeee] bg-[#fafafa] px-3 py-2 text-left font-manrope text-xs leading-5 text-[#515b60] transition hover:border-[#accbcb]"
+              >
+                <span className="block font-semibold text-[#263238]">{account.role}</span>
+                <span className="block break-all">{account.email}</span>
+                <span className="block">{account.password}</span>
+              </button>
+            ))}
+          </div>
+        </section>
 
         <p className="mt-5 font-manrope text-sm leading-5 text-[#515b60] xl:mt-6">
           Do not have an account?{' '}
