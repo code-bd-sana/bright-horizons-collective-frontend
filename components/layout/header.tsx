@@ -1,94 +1,87 @@
 'use client';
 
-import { Bell, Menu, Search } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { useAppStore } from '@/store/use-app-store';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import Image from 'next/image';
 
 export function Header() {
-  const { toggleSidebar } = useAppStore();
-  const router = useRouter();
-  const [role, setRole] = useState<string>('User');
-
-  useEffect(() => {
-    const loadSession = async () => {
-      const response = await fetch('/api/auth/session', { credentials: 'same-origin' });
-      if (!response.ok) return;
-      const session = (await response.json()) as { role?: string };
-      if (session.role) setRole(session.role);
-    };
-
-    void loadSession();
-  }, []);
-
-  const handleLogout = async () => {
-    await fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' });
-    router.replace('/login');
-    router.refresh();
-  };
-
   return (
-    <header className="h-16 border-b bg-background flex items-center justify-between px-6 sticky top-0 z-30">
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={toggleSidebar} className="hidden md:flex">
-          <Menu className="w-5 h-5" />
-        </Button>
-        <div className="relative w-64 hidden sm:block">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            type="search"
-            placeholder="Search..."
-            className="w-full bg-muted shadow-none appearance-none pl-8 rounded-full"
-          />
-        </div>
-      </div>
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" className="relative">
-          <Bell className="w-5 h-5" />
-          <span className="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full"></span>
-        </Button>
+    <header
+      className="sticky top-0 z-30 flex h-18 items-center justify-between bg-[#fdfdfc] px-10"
+      aria-label="Dashboard header"
+    >
+      <label className="flex h-10 w-110.5 items-center overflow-hidden rounded-lg border border-[#fce9e3] bg-[#fbf6f4] px-5.25 py-4.25 max-md:w-70 max-sm:w-48">
+        <Image
+          src="/Home/figma-dashboard-header-search.svg"
+          alt=""
+          width={16}
+          height={16}
+          className="mr-1.75 shrink-0"
+        />
+        <input
+          type="search"
+          aria-label="Search activities, resources, and articles"
+          placeholder="Search activities, resources, articles..."
+          className="min-w-0 flex-1 bg-transparent font-nunito text-xs font-medium leading-4 text-[#263238] outline-none placeholder:text-[#7d8488]"
+        />
+      </label>
 
-        <DropdownMenu>
-          <DropdownMenuTrigger className="relative h-8 w-8 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring">
-            <Avatar className="h-8 w-8">
-              <AvatarFallback className="bg-primary/10 text-primary capitalize">
-                {role[0]}
-              </AvatarFallback>
-            </Avatar>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56" align="end">
-            <DropdownMenuGroup>
-              <DropdownMenuLabel className="font-normal">
-                <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium leading-none capitalize">{role}</p>
-                  <p className="text-xs leading-none text-muted-foreground">{role}@example.com</p>
-                </div>
-              </DropdownMenuLabel>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Settings</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={handleLogout}
-              className="text-destructive focus:bg-destructive/10 focus:text-destructive cursor-pointer"
-            >
-              Log out
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          aria-label="Messages"
+          className="flex size-10 items-center justify-center overflow-hidden rounded-lg bg-[#e9f1ee] p-1"
+        >
+          <Image src="/Home/figma-dashboard-header-chat.svg" alt="" width={25} height={24} />
+        </button>
+        <button
+          type="button"
+          aria-label="Notifications"
+          className="flex size-10 items-center justify-center overflow-hidden rounded-lg bg-[#e9f1ee] p-1"
+        >
+          <Image
+            src="/Home/figma-dashboard-header-notification.svg"
+            alt=""
+            width={24}
+            height={24}
+          />
+        </button>
+        <button
+          type="button"
+          aria-label="Selected child: Emma, 4 years old"
+          className="flex h-10 items-center gap-2.5 overflow-hidden rounded-lg bg-[#d2e3dc] px-2 py-1 max-md:hidden"
+        >
+          <span className="relative size-7 shrink-0 overflow-hidden rounded-full bg-[#accbcb]">
+            <Image
+              src="/Home/figma-dashboard-header-child.png"
+              alt="Emma"
+              fill
+              sizes="28px"
+              className="object-cover object-[50%_20%]"
+            />
+          </span>
+          <span className="whitespace-nowrap font-nunito text-sm font-medium leading-5 tracking-[-0.084px] text-[#1e282d]">
+            Emma · 4y
+          </span>
+          <Image
+            src="/Home/figma-dashboard-header-chevron.svg"
+            alt=""
+            width={20}
+            height={20}
+            className="shrink-0"
+          />
+        </button>
+        <button
+          type="button"
+          aria-label="Account"
+          className="relative size-10 shrink-0 overflow-hidden rounded-full bg-[#2f7d7e]"
+        >
+          <Image
+            src="/Home/figma-dashboard-header-avatar.png"
+            alt="Sarah Johnson"
+            fill
+            sizes="40px"
+            className="object-cover object-[50%_10%]"
+          />
+        </button>
       </div>
     </header>
   );
