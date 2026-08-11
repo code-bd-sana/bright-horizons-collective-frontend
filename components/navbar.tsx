@@ -4,7 +4,7 @@ import { Logo } from '@/components/logo';
 import { Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export interface NavItem {
   label: string;
@@ -37,6 +37,39 @@ export function Navbar({
 }: NavbarProps) {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const visibleNavItems = isAuthenticated
+    ? navItems.filter((item) => item.href !== '/login')
+    : navItems;
+  const visibleCtaLabel = isAuthenticated ? 'Dashboard' : ctaLabel;
+  const visibleCtaHref = isAuthenticated ? '/dashboard' : ctaHref;
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const getSession = async () => {
+      try {
+        const response = await fetch('/api/auth/session', {
+          credentials: 'same-origin',
+          cache: 'no-store',
+        });
+
+        if (isMounted) {
+          setIsAuthenticated(response.ok);
+        }
+      } catch {
+        if (isMounted) {
+          setIsAuthenticated(false);
+        }
+      }
+    };
+
+    void getSession();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
     <nav className={`relative z-50 inline-flex w-full items-center ${className}`}>
@@ -46,7 +79,7 @@ export function Navbar({
           {/* Desktop Nav Items */}
           <div className="hidden lg:flex w-full items-center gap-1">
             <div className="flex items-center gap-1">
-              {navItems.map((item) => {
+              {visibleNavItems.map((item) => {
                 const isActive = pathname === item.href || (item.href === '/' && pathname === '/');
                 return (
                   <Link
@@ -64,10 +97,10 @@ export function Navbar({
 
             {/* CTA Button: Start Free */}
             <Link
-              href={ctaHref}
+              href={visibleCtaHref}
               className="relative ml-auto inline-flex items-center justify-center rounded-[999px] border border-[#ACCBCB] bg-linear-to-b from-[#2F7D7E]/80 to-[#2F7D7E] px-3 py-1.5 text-[16px] font-medium leading-6 tracking-[-0.176px] text-[#FFFDF8] shadow-[inset_0px_-6px_3px_0px_rgba(255,255,255,0.09)] transition-all hover:opacity-95"
             >
-              {ctaLabel}
+              {visibleCtaLabel}
             </Link>
           </div>
 
@@ -87,7 +120,7 @@ export function Navbar({
         {/* Mobile Dropdown Drawer */}
         {mobileMenuOpen && (
           <div className="lg:hidden pt-4 mt-3 max-sm:pt-3 max-sm:mt-2 max-sm:space-y-1 border-t border-[#e8ebe8] flex flex-col space-y-2 animate-in fade-in slide-in-from-top-2 duration-200">
-            {navItems.map((item) => {
+            {visibleNavItems.map((item) => {
               const isActive = pathname === item.href;
               return (
                 <Link
@@ -105,11 +138,11 @@ export function Navbar({
               );
             })}
             <Link
-              href={ctaHref}
+              href={visibleCtaHref}
               onClick={() => setMobileMenuOpen(false)}
               className="mt-2 text-center py-2.5 text-[16px] font-medium text-[#FFFDF8] rounded-[999px] border border-[#ACCBCB] bg-linear-to-b from-[#2F7D7E]/80 to-[#2F7D7E] shadow-sm"
             >
-              {ctaLabel}
+              {visibleCtaLabel}
             </Link>
           </div>
         )}
