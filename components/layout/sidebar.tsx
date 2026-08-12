@@ -33,6 +33,7 @@ const parentMenuItems: NavigationItem[] = [
     name: 'Child Profiles',
     href: '/dashboard/child-profiles',
     icon: '/Home/figma-dashboard-nav-child-profiles.svg',
+    active: (pathname) => pathname.startsWith('/dashboard/child-profiles'),
   },
 ];
 
