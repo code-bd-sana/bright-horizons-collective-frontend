@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 
 type ChildProfile = {
   name: string;
@@ -89,13 +90,13 @@ function ChildCard({ child, selected = false }: { child: ChildProfile; selected?
         </div>
       </div>
 
-      <button
-        type="button"
+      <Link
+        href={`/dashboard/child-profiles/${child.name.toLowerCase()}`}
         className="mt-auto flex h-10 w-full items-center justify-center gap-1 rounded-full border border-[#d8ddd9] bg-white px-3 py-2 font-nunito text-sm font-medium leading-6 tracking-[-0.176px] text-[#2f7d7e]"
       >
         View Profile
         <Image src="/Home/figma-child-profiles-arrow.svg" alt="" width={16} height={16} />
-      </button>
+      </Link>
     </article>
   );
 }
