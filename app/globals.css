@@ -52,6 +52,19 @@
 }
 
 :root {
+  --explore-background: #fffdf8;
+  --explore-surface: #ffffff;
+  --explore-text-primary: #263238;
+  --explore-text-secondary: #7d8488;
+  --explore-primary: #2f7d7e;
+  --explore-primary-light: #dceeee;
+  --explore-border: #e9f1ee;
+  --explore-border-container: #e8ebe8;
+  --explore-border-highlight: #8fb9a8;
+  --explore-activity-media: #a5c7b9;
+  --explore-resource-media: #e0e7ff;
+  --explore-printable-media: #f5f3ff;
+  --explore-accent-soft: #f6e6d4;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
