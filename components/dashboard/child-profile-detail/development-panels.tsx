@@ -125,8 +125,8 @@ export function RecentActivityPanel() {
               </div>
             </div>
             <div className="flex shrink-0 items-center gap-1">
-              <CheckCircle2 className="h-4 w-4 text-[#E9F1EE]" />
-              <span className="font-manrope text-sm font-normal text-[#E9F1EE]">Completed</span>
+              <CheckCircle2 className="h-4 w-4 text-[#515B60]" />
+              <span className="font-manrope text-sm font-normal text-[#515B60]">Completed</span>
             </div>
           </div>
         ))}
