@@ -1,3 +1,6 @@
+import Image from 'next/image';
+import { ArrowRight } from 'lucide-react';
+
 const activities = [
   'Sensory Rice Bin Exploration',
   'Finger Painting with Pudding',
@@ -8,47 +11,54 @@ const activities = [
 ];
 
 const progressItems = [
-  ['Fine Motor', '68%', '#2f7d7e'],
-  ['Bilateral Coordination', '52%', '#70a5a4'],
-  ['Sensory Processing', '72%', '#8fb9a8'],
-  ['Self-Regulation', '43%', '#f2b59f'],
+  ['Fine Motor', '68%', '#2F7D7E'],
+  ['Bilateral Coordination', '54%', '#6BABB0'],
+  ['Sensory Processing', '72%', '#8FB9A8'],
+  ['Self-Regulation', '45%', '#F2B59F'],
 ];
 
 export function DevelopmentProgressPanel() {
   return (
-    <section className="rounded-xl border border-[#e8ebe8] bg-white p-5 shadow-[0_1px_1px_rgba(0,0,0,0.05)]">
-      <p className="font-manrope text-[10px] text-[#7d8488]">Development Tracking</p>
-      <h2 className="mt-1 font-nunito text-xl font-medium text-[#263238]">Emma&apos;s Progress</h2>
-      <div
-        className="mx-auto mt-5 grid size-24 place-items-center rounded-full"
-        style={{
-          background:
-            'conic-gradient(#2f7d7e 0deg 117deg, #8fb9a8 117deg 211deg, #f2b59f 211deg 286deg, #e8ebe8 286deg 360deg)',
-        }}
-      >
-        <div className="grid size-14 place-items-center rounded-full bg-white font-nunito text-sm text-[#263238]">
-          —
+    <section className="flex flex-col gap-6 rounded-2xl border border-[#E8EBE8] bg-white p-8 shadow-sm">
+      <div className="flex flex-col gap-1">
+        <p className="font-nunito text-xs font-medium text-[#2F7D7E]">Development Tracking</p>
+        <h2 className="font-nunito text-2xl font-medium leading-8 text-[#263238]">
+          Emma&apos;s Progress
+        </h2>
+      </div>
+
+      <div className="flex flex-col items-center gap-6">
+        <Image
+          src="/emmas-progress.svg"
+          alt="Emma's Progress Chart"
+          width={152}
+          height={152}
+          priority
+        />
+
+        <div className="w-full space-y-2">
+          {progressItems.map(([label, value, color]) => (
+            <div key={label} className="flex items-center justify-between">
+              <span className="flex items-center gap-2">
+                <span className="h-2.5 w-2.5 rounded-[5px]" style={{ backgroundColor: color }} />
+                <span className="font-nunito text-xs font-medium leading-4 text-[#263238]">
+                  {label}
+                </span>
+              </span>
+              <span className="font-nunito text-xs font-bold leading-4" style={{ color }}>
+                {value}
+              </span>
+            </div>
+          ))}
         </div>
       </div>
-      <div className="mt-5 space-y-2">
-        {progressItems.map(([label, value, color]) => (
-          <div
-            key={label}
-            className="flex items-center justify-between font-manrope text-[9px] text-[#7d8488]"
-          >
-            <span className="flex items-center gap-1.5">
-              <span className="size-1.5 rounded-full" style={{ backgroundColor: color }} />
-              {label}
-            </span>
-            <span>{value}</span>
-          </div>
-        ))}
-      </div>
+
       <button
         type="button"
-        className="mt-5 h-8 w-full rounded-full border border-[#d8ddd9] font-nunito text-[10px] text-[#2f7d7e]"
+        className="flex w-full items-center justify-center gap-1 rounded-full border border-[#D8DDD9] px-3 py-2 font-nunito text-base font-medium text-[#2F7D7E] shadow-[inset_0_-6px_2px_0_rgba(255,255,255,0.07)] hover:bg-[#FDFDFC] transition-colors"
       >
-        View Progress Report <span>→</span>
+        View Progress Report
+        <ArrowRight className="h-4 w-4" />
       </button>
     </section>
   );
