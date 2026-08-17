@@ -1,13 +1,37 @@
 import Image from 'next/image';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, ChevronRight, CheckCircle2 } from 'lucide-react';
 
 const activities = [
-  'Sensory Rice Bin Exploration',
-  'Finger Painting with Pudding',
-  'Water Pouring Station',
-  'Sensory Rice Bin Exploration',
-  'Sensory Rice Bin Exploration',
-  'Sensory Rice Bin Exploration',
+  {
+    title: 'Sensory Rice Bin Exploration',
+    subtitle: 'Sensory Processing · 20 min',
+    image: '/activities/activity-1.png',
+  },
+  {
+    title: 'Finger Painting with Pudding',
+    subtitle: 'Fine Motor · 15 min',
+    image: '/activities/activity-2.png',
+  },
+  {
+    title: 'Water Pouring Station',
+    subtitle: 'Coordination · 20 min',
+    image: '/activities/activity-3.png',
+  },
+  {
+    title: 'Sensory Rice Bin Exploration',
+    subtitle: 'Sensory Processing · 20 min',
+    image: '/activities/activity-1.png',
+  },
+  {
+    title: 'Sensory Rice Bin Exploration',
+    subtitle: 'Sensory Processing · 20 min',
+    image: '/activities/activity-1.png',
+  },
+  {
+    title: 'Sensory Rice Bin Exploration',
+    subtitle: 'Sensory Processing · 20 min',
+    image: '/activities/activity-1.png',
+  },
 ];
 
 const progressItems = [
@@ -66,24 +90,44 @@ export function DevelopmentProgressPanel() {
 
 export function RecentActivityPanel() {
   return (
-    <section className="rounded-xl border border-[#e8ebe8] bg-white p-5 shadow-[0_1px_1px_rgba(0,0,0,0.05)]">
+    <section className="flex flex-col gap-6 rounded-2xl border border-[#E8EBE8] bg-white p-8 shadow-sm">
       <div className="flex items-center justify-between">
-        <h2 className="font-nunito text-xl font-medium text-[#263238]">Recent activity</h2>
-        <button type="button" className="font-manrope text-[9px] text-[#2f7d7e]">
-          View all ›
+        <h2 className="font-nunito text-2xl font-medium leading-8 text-[#263238]">
+          Recent activity
+        </h2>
+        <button
+          type="button"
+          className="flex items-center gap-1 py-1.5 font-nunito text-base font-medium text-[#2F7D7E] hover:underline"
+        >
+          View all
+          <ChevronRight className="h-4 w-4" />
         </button>
       </div>
-      <div className="mt-4 space-y-3">
+
+      <div className="flex flex-col gap-5">
         {activities.map((activity, index) => (
-          <div key={`${activity}-${index}`} className="flex items-center gap-2">
-            <span className="grid size-6 shrink-0 place-items-center rounded-full bg-[#e9f1ee] text-xs">
-              {index === 1 ? '🎨' : index === 2 ? '💧' : '🌾'}
-            </span>
-            <div className="min-w-0 flex-1">
-              <p className="truncate font-manrope text-[10px] text-[#263238]">{activity}</p>
-              <p className="font-manrope text-[8px] text-[#7d8488]">Sensory Processing · 20 min</p>
+          <div key={`${activity.title}-${index}`} className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Image
+                src={activity.image}
+                alt={activity.title}
+                width={54}
+                height={54}
+                className="shrink-0 object-contain"
+              />
+              <div className="flex flex-col gap-2">
+                <p className="font-nunito text-lg font-medium leading-6 tracking-[-0.015em] text-[#263238]">
+                  {activity.title}
+                </p>
+                <p className="font-manrope text-sm font-normal leading-5.5 tracking-[-0.006em] text-[#515B60]">
+                  {activity.subtitle}
+                </p>
+              </div>
             </div>
-            <span className="font-manrope text-[8px] text-[#d4d6d7]">○ Completed</span>
+            <div className="flex shrink-0 items-center gap-1">
+              <CheckCircle2 className="h-4 w-4 text-[#E9F1EE]" />
+              <span className="font-manrope text-sm font-normal text-[#E9F1EE]">Completed</span>
+            </div>
           </div>
         ))}
       </div>
