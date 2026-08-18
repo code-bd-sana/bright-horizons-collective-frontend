@@ -186,14 +186,14 @@ function ChildInformation() {
               id="age-years"
               label=""
               placeholder="Years"
-              options={['1', '2', '3', '4', '5', '6']}
+              options={['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10']}
               hideLabel
             />
             <SelectField
               id="age-months"
               label=""
               placeholder="Months"
-              options={['0', '3', '6', '9']}
+              options={['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']}
               hideLabel
             />
           </div>
