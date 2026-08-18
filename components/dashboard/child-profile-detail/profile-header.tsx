@@ -1,17 +1,43 @@
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 import type { ChildDetail } from './types';
 
-const tabs = [
-  { label: 'Overview', icon: '/Home/figma-child-detail-tab-overview.svg' },
-  { label: 'Personal Information', icon: '/Home/figma-child-detail-tab-personal.svg' },
-  { label: 'Development Progress', icon: '/Home/figma-child-detail-tab-progress.svg' },
-  { label: 'Activity History', icon: '/Home/figma-child-detail-tab-history.svg' },
-  { label: 'Reports', icon: '/Home/figma-child-detail-tab-reports.svg' },
+const getTabs = (id: string) => [
+  {
+    label: 'Overview',
+    icon: '/Home/figma-child-detail-tab-overview.svg',
+    path: `/dashboard/child-profiles/${id}`,
+  },
+  {
+    label: 'Personal Information',
+    icon: '/Home/figma-child-detail-tab-personal.svg',
+    path: `/dashboard/child-profiles/${id}/personal-information`,
+  },
+  {
+    label: 'Development Progress',
+    icon: '/Home/figma-child-detail-tab-progress.svg',
+    path: `/dashboard/child-profiles/${id}/development-progress`,
+  },
+  {
+    label: 'Activity History',
+    icon: '/Home/figma-child-detail-tab-history.svg',
+    path: `/dashboard/child-profiles/${id}/activity-history`,
+  },
+  {
+    label: 'Reports',
+    icon: '/Home/figma-child-detail-tab-reports.svg',
+    path: `/dashboard/child-profiles/${id}/reports`,
+  },
 ];
 
 export function ProfileHeader({ child }: { child: ChildDetail }) {
+  const pathname = usePathname();
+  const tabs = getTabs(child.id);
+
   return (
     <div className="flex w-full flex-col gap-5">
       <div className="flex h-5.5 items-center gap-1.5 font-manrope text-sm leading-5.5 tracking-[-0.084px]">
@@ -24,18 +50,21 @@ export function ProfileHeader({ child }: { child: ChildDetail }) {
 
       <nav className="w-full rounded-2xl border-b border-[#d8ddd9] bg-white p-4 shadow-[-46px_61px_10.5px_rgba(171,171,171,0),-29px_39px_10px_rgba(171,171,171,0.01),-17px_22px_8.5px_rgba(171,171,171,0.03),-7px_10px_6px_rgba(171,171,171,0.04),-2px_2px_3.5px_rgba(171,171,171,0.05)]">
         <div className="flex items-center gap-3 overflow-x-auto">
-          {tabs.map((tab, index) => (
-            <button
-              key={tab.label}
-              type="button"
-              className={`flex h-9 shrink-0 items-center gap-2 rounded-xl px-3 py-2 font-manrope text-sm leading-5.5 tracking-[-0.084px] ${
-                index === 0 ? 'bg-[#515b60] text-white' : 'text-[#515b60]'
-              }`}
-            >
-              <Image src={tab.icon} alt="" width={20} height={20} />
-              {tab.label}
-            </button>
-          ))}
+          {tabs.map((tab) => {
+            const isActive = pathname === tab.path;
+            return (
+              <Link
+                key={tab.label}
+                href={tab.path}
+                className={`flex h-9 shrink-0 items-center gap-2 rounded-xl px-3 py-2 font-manrope text-sm leading-5.5 tracking-[-0.084px] ${
+                  isActive ? 'bg-[#515b60] text-white' : 'text-[#515b60] hover:bg-gray-50'
+                }`}
+              >
+                <Image src={tab.icon} alt="" width={20} height={20} />
+                {tab.label}
+              </Link>
+            );
+          })}
         </div>
       </nav>
 

@@ -5,10 +5,15 @@ import Link from 'next/link';
 import type { CSSProperties, ReactNode } from 'react';
 import { useState } from 'react';
 
-const ASSET_ROOT = '/CompleteProfile/';
+import {
+  FieldLabel,
+  SelectField,
+  TextField,
+  ToggleChips,
+  inputClassName,
+} from '@/components/ui/form-fields';
 
-const inputClassName =
-  'h-11 w-full rounded-full border border-[#D8DDD9] bg-white px-4 py-2.5 font-manrope text-base leading-6 tracking-[-0.176px] text-[#263238] shadow-[0_1px_2px_rgba(16,24,40,0.05)] outline-none transition-colors placeholder:text-[#A8ADAF] focus:border-[#2F7D7E]';
+const ASSET_ROOT = '/CompleteProfile/';
 
 const illustrationMasks = {
   main: {
@@ -72,7 +77,7 @@ function CheckoutProgress() {
                   width={124}
                   height={2}
                   aria-hidden="true"
-                  className="mx-0.5 h-px w-[124px]"
+                  className="mx-0.5 h-px w-31"
                 />
               )}
             </li>
@@ -103,7 +108,7 @@ function ChildIllustration() {
   return (
     <div
       aria-hidden="true"
-      className="relative aspect-[1314/688] w-full overflow-hidden rounded-2xl shadow-[0_1px_1.5px_rgba(0,0,0,0.10),0_1px_1px_rgba(0,0,0,0.10)]"
+      className="relative aspect-1314/688 w-full overflow-hidden rounded-2xl shadow-[0_1px_1.5px_rgba(0,0,0,0.10),0_1px_1px_rgba(0,0,0,0.10)]"
     >
       <div
         className="absolute left-[27.02%] top-[-0.58%] h-[86.66%] w-[45.21%] overflow-hidden"
@@ -145,92 +150,6 @@ function ChildIllustration() {
   );
 }
 
-function FieldLabel({ children, optional = false }: { children: ReactNode; optional?: boolean }) {
-  return (
-    <span className="font-manrope text-lg leading-[27px] tracking-[-0.27px] text-[#263238]">
-      {children}
-      {optional ? (
-        <span className="text-[#7D8488]"> (Optional)</span>
-      ) : (
-        <span className="text-[#B24B4B]"> *</span>
-      )}
-    </span>
-  );
-}
-
-function TextField({
-  id,
-  label,
-  placeholder,
-  optional,
-  type = 'text',
-  className = '',
-}: {
-  id: string;
-  label: string;
-  placeholder: string;
-  optional?: boolean;
-  type?: React.HTMLInputTypeAttribute;
-  className?: string;
-}) {
-  return (
-    <label htmlFor={id} className={`flex min-w-0 flex-col gap-1.5 ${className}`}>
-      <FieldLabel optional={optional}>{label}</FieldLabel>
-      <input
-        id={id}
-        type={type}
-        placeholder={placeholder}
-        required={!optional}
-        className={inputClassName}
-      />
-    </label>
-  );
-}
-
-function SelectField({
-  id,
-  label,
-  placeholder,
-  optional,
-  options,
-  hideLabel = false,
-}: {
-  id: string;
-  label: string;
-  placeholder: string;
-  optional?: boolean;
-  options: string[];
-  hideLabel?: boolean;
-}) {
-  return (
-    <label htmlFor={id} className={`flex min-w-0 flex-col ${hideLabel ? '' : 'gap-1.5'}`}>
-      {!hideLabel && <FieldLabel optional={optional}>{label}</FieldLabel>}
-      <span className={`${inputClassName} flex items-center justify-between px-3.5`}>
-        <select
-          id={id}
-          required={!optional}
-          defaultValue=""
-          className="min-w-0 flex-1 appearance-none bg-transparent font-manrope text-base leading-6 tracking-[-0.176px] outline-none"
-        >
-          <option value="" disabled>
-            {placeholder}
-          </option>
-          {options.map((option) => (
-            <option key={option}>{option}</option>
-          ))}
-        </select>
-        <Image
-          src={`${ASSET_ROOT}chevron-down.svg`}
-          alt=""
-          width={20}
-          height={20}
-          aria-hidden="true"
-        />
-      </span>
-    </label>
-  );
-}
-
 function SectionTitle({ number, children }: { number: number; children: ReactNode }) {
   return (
     <div className="flex items-center gap-3">
@@ -239,60 +158,6 @@ function SectionTitle({ number, children }: { number: number; children: ReactNod
       </span>
       <h2 className="font-nunito text-2xl font-semibold leading-8 text-[#263238]">{children}</h2>
     </div>
-  );
-}
-
-function ToggleChips({
-  label,
-  helper,
-  options,
-  initiallySelected = [],
-}: {
-  label: string;
-  helper: string;
-  options: string[];
-  initiallySelected?: string[];
-}) {
-  const [selected, setSelected] = useState(() => new Set(initiallySelected));
-
-  const toggle = (option: string) => {
-    setSelected((current) => {
-      const next = new Set(current);
-      if (next.has(option)) next.delete(option);
-      else next.add(option);
-      return next;
-    });
-  };
-
-  return (
-    <fieldset className="flex flex-col gap-3">
-      <legend className="font-manrope text-lg leading-[27px] tracking-[-0.27px] text-[#263238]">
-        {label}
-      </legend>
-      <div className="flex flex-wrap gap-x-4 gap-y-3">
-        {options.map((option) => {
-          const isSelected = selected.has(option);
-          return (
-            <button
-              key={option}
-              type="button"
-              aria-pressed={isSelected}
-              onClick={() => toggle(option)}
-              className={`rounded-full border px-2.5 py-1.5 font-nunito text-base font-medium leading-6 tracking-[-0.176px] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2F7D7E] ${
-                isSelected
-                  ? 'border-[#FCE9E3] bg-[#F2B59F] text-[#493630]'
-                  : 'border-[#D4D6D7] bg-white text-[#7D8488]'
-              }`}
-            >
-              {option}
-            </button>
-          );
-        })}
-      </div>
-      <p className="font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#515B60]">
-        {helper}
-      </p>
-    </fieldset>
   );
 }
 
@@ -334,12 +199,12 @@ function ChildInformation() {
           </div>
         </div>
         <div className="flex flex-col gap-4">
-          <p className="font-manrope text-lg leading-[27px] tracking-[-0.27px] text-[#263238]">
+          <p className="font-manrope text-lg leading-6.75 tracking-[-0.27px] text-[#263238]">
             About You
           </p>
           <TextField id="parent-name" label="Your name" placeholder="First name or nickname" />
           <fieldset className="flex flex-col gap-2">
-            <legend className="font-manrope text-lg leading-[27px] tracking-[-0.27px] text-[#263238]">
+            <legend className="font-manrope text-lg leading-6.75 tracking-[-0.27px] text-[#263238]">
               Your relationship to the child
             </legend>
             <div className="flex flex-wrap gap-2">
@@ -481,8 +346,8 @@ function InterestsPreferences() {
 
 export function CompleteProfilePage() {
   return (
-    <main className="bg-[#FFFDF8] pt-40 text-[#263238] min-[1600px]:pt-[292px] min-[1600px]:pb-60">
-      <div className="mx-auto flex w-full max-w-[1462px] flex-col gap-12 px-5 sm:px-8 min-[900px]:gap-20 min-[1600px]:min-h-[3192px] min-[1600px]:px-0">
+    <main className="bg-[#FFFDF8] pt-40 text-[#263238] min-[1600px]:pt-73 min-[1600px]:pb-60">
+      <div className="mx-auto flex w-full max-w-365.5 flex-col gap-12 px-5 sm:px-8 min-[900px]:gap-20 min-[1600px]:min-h-[3192px] min-[1600px]:px-0">
         <div className="flex flex-col items-center gap-12 rounded-3xl border border-[#E8EBE8] bg-white p-5 shadow-[0_1px_1.5px_rgba(0,0,0,0.10),0_1px_1px_rgba(0,0,0,0.10)] min-[900px]:gap-20 min-[900px]:p-10 min-[1600px]:p-20">
           <div className="w-full">
             <CheckoutProgress />
@@ -498,7 +363,7 @@ export function CompleteProfilePage() {
               </p>
             </div>
           </div>
-          <div className="flex w-full max-w-[718px] flex-col gap-16">
+          <div className="flex w-full max-w-179.5 flex-col gap-16">
             <ChildInformation />
             <DevelopmentFocus />
             <InterestsPreferences />
