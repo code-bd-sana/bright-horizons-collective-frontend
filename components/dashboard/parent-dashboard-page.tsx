@@ -445,7 +445,7 @@ function RecentActivityCard() {
                 </span>
               </span>
             </div>
-            <span className="flex shrink-0 items-center gap-1 font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#e9f1ee]">
+            <span className="flex shrink-0 items-center gap-1 font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#2f7d7e]">
               <Check aria-hidden="true" className="size-4 stroke-[2]" /> Done
             </span>
           </article>
