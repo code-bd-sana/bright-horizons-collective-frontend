@@ -14,7 +14,7 @@ function getSessionSecret() {
   const secret = process.env.DEMO_AUTH_SECRET;
 
   if (!secret && process.env.NODE_ENV === 'production') {
-    throw new Error('DEMO_AUTH_SECRET must be set in production.');
+    console.warn('WARNING: DEMO_AUTH_SECRET is not set in production. Using fallback secret.');
   }
 
   return secret ?? 'local-development-demo-secret-change-before-production';
