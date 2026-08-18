@@ -1,16 +1,10 @@
 import Image from 'next/image';
-import { PenLine, ChevronDown, AlertTriangle } from 'lucide-react';
+import { PenLine, AlertTriangle } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 
 import { childDetails } from '@/components/dashboard/child-profile-detail/types';
-import {
-  FieldLabel,
-  SelectField,
-  TextField,
-  ToggleChips,
-  inputClassName,
-} from '@/components/ui/form-fields';
+import { FieldLabel, SelectField, TextField, ToggleChips } from '@/components/ui/form-fields';
 
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -125,22 +119,13 @@ export default async function PersonalInformationPage({
               type="email"
               defaultValue="sarah@example.com"
             />
-            <label htmlFor="phone" className="flex min-w-0 flex-col gap-1.5">
-              <FieldLabel>Phone</FieldLabel>
-              <span className={`${inputClassName} flex items-center gap-1 px-3.5`}>
-                <span className="flex shrink-0 items-center gap-1 pr-2 font-sans text-base text-[#263238]">
-                  US
-                  <ChevronDown className="h-4 w-4 text-[#263238]" />
-                </span>
-                <input
-                  id="phone"
-                  type="tel"
-                  placeholder="+1 (555) 000-0000"
-                  defaultValue="+1 (555) 000-0000"
-                  className="min-w-0 flex-1 bg-transparent font-manrope text-base leading-6 tracking-[-0.176px] text-[#515B60] outline-none placeholder:text-[#A8ADAF]"
-                />
-              </span>
-            </label>
+            <TextField
+              id="phone"
+              label="Phone"
+              placeholder="+1 (555) 000-0000"
+              type="tel"
+              defaultValue="+1 (555) 000-0000"
+            />
           </div>
         </Card>
 
@@ -211,7 +196,7 @@ export default async function PersonalInformationPage({
         </Card>
       </div>
 
-      <div className="flex h-14 flex-row items-center justify-center gap-4">
+      <div className="flex h-14 flex-row items-center justify-start gap-4">
         <button
           type="button"
           className="flex h-14 w-46.75 items-center justify-center rounded-full bg-[#2F7D7E] px-4 py-2 font-nunito text-base font-medium text-white shadow-[0px_0.6px_0px_0px_#401392,inset_0px_0.7px_2px_0px_#FFFFFF]"

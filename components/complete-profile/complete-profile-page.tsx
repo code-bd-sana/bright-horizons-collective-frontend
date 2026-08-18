@@ -5,13 +5,7 @@ import Link from 'next/link';
 import type { CSSProperties, ReactNode } from 'react';
 import { useState } from 'react';
 
-import {
-  FieldLabel,
-  SelectField,
-  TextField,
-  ToggleChips,
-  inputClassName,
-} from '@/components/ui/form-fields';
+import { FieldLabel, SelectField, TextField, ToggleChips } from '@/components/ui/form-fields';
 
 const ASSET_ROOT = '/CompleteProfile/';
 
@@ -227,20 +221,7 @@ function ChildInformation() {
           </fieldset>
           <div className="grid grid-cols-2 gap-6">
             <TextField id="email" label="Email" placeholder="sarah@example.com" type="email" />
-            <label htmlFor="phone" className="flex min-w-0 flex-col gap-1.5">
-              <FieldLabel>Phone</FieldLabel>
-              <span className={`${inputClassName} flex items-center gap-2 px-3.5`}>
-                <span className="flex shrink-0 items-center gap-1 border-r border-[#E8EBE8] pr-2 font-sans text-base">
-                  US
-                </span>
-                <input
-                  id="phone"
-                  type="tel"
-                  placeholder="+1 (555) 000-0000"
-                  className="min-w-0 flex-1 bg-transparent font-manrope text-base leading-6 tracking-[-0.176px] outline-none placeholder:text-[#A8ADAF]"
-                />
-              </span>
-            </label>
+            <TextField id="phone" label="Phone" placeholder="+1 (555) 000-0000" type="tel" />
           </div>
         </div>
       </div>
