@@ -1,4 +1,4 @@
-import { Star } from 'lucide-react';
+import { Lightbulb, TrendingUp } from 'lucide-react';
 
 const areas = [
   {
@@ -45,50 +45,50 @@ const areas = [
 
 export function DevelopmentAreas() {
   return (
-    <div className="flex flex-col gap-5 rounded-2xl border border-[#E8EBE8] bg-transparent p-6 md:p-8">
+    <div className="flex flex-col gap-5 rounded-[16px] border border-[#E8EBE8] bg-transparent p-6 md:p-8">
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div className="flex flex-col gap-2">
-          <h2 className="font-nunito text-2xl font-medium leading-8 text-[#263238]">
+          <h2 className="font-nunito text-[24px] font-medium leading-8 text-[#263238]">
             Development areas
           </h2>
-          <p className="font-nunito text-sm font-medium leading-5 tracking-[-0.006em] text-[#7D8488]">
+          <p className="font-nunito text-[14px] font-medium leading-5 tracking-[-0.006em] text-[#7D8488]">
             Progress based on completed therapeutic activities & weekly plans
           </p>
         </div>
         <button
           type="button"
-          className="flex w-fit items-center gap-1 rounded-full bg-[#D5E5E5] px-3 py-2 font-manrope text-xs font-medium tracking-[0.04em] text-[#174A4D] transition-colors hover:bg-[#c2d6d6]"
+          className="flex w-fit items-center gap-1 rounded-full border border-[#D5E5E5] bg-[#D5E5E5] px-3 py-2 font-nunito text-[12px] font-medium tracking-[0.04em] text-[#174A4D] shadow-[inset_0px_-6px_2px_0px_rgba(255,255,255,0.07)] transition-colors hover:bg-[#c2d6d6]"
         >
           5 Core Growth Areas
         </button>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {areas.map((area, idx) => (
           <div
             key={idx}
             className="flex flex-col gap-4 rounded-xl border border-[#DCEEEE] bg-white p-4"
           >
             <div className="flex flex-col gap-3">
-              <h3 className="font-manrope text-base font-semibold leading-6 tracking-[-0.011em] text-[#263238]">
+              <h3 className="font-manrope text-[16px] font-semibold leading-6 tracking-[-0.011em] text-[#263238]">
                 {area.title}
               </h3>
               <div className="flex items-center gap-1">
-                <span className="font-nunito text-xs font-medium leading-4 text-[#263238]">
+                <span className="font-nunito text-[12px] font-medium leading-4 text-[#263238]">
                   Current focus:
                 </span>
-                <span className="font-nunito text-xs font-medium leading-4 text-[#515B60]">
+                <span className="font-nunito text-[12px] font-medium leading-4 text-[#515B60]">
                   {area.focus}
                 </span>
               </div>
             </div>
 
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-1">
               <div className="flex items-center justify-between">
-                <span className="font-nunito text-xs font-medium leading-4 text-[#515B60]">
+                <span className="font-nunito text-[12px] font-medium leading-4 text-[#515B60]">
                   Completed Engagement
                 </span>
-                <span className="font-nunito text-xs font-bold leading-4 text-[#2F7D7E]">
+                <span className="font-nunito text-[12px] font-bold leading-4 text-[#2F7D7E]">
                   {area.progressText}
                 </span>
               </div>
@@ -102,15 +102,15 @@ export function DevelopmentAreas() {
 
             <div className="flex flex-col gap-2">
               <div className="flex items-start gap-2 rounded-lg border border-[#D5E5E5] bg-[#FAFAFA] p-2">
-                <Star className="mt-0.5 h-4 w-4 shrink-0 text-[#7D8488]" />
-                <p className="font-nunito text-xs font-medium leading-4 text-[#263238]">
+                <TrendingUp className="mt-0.5 h-4 w-4 shrink-0 text-[#7D8488]" />
+                <p className="font-nunito text-[12px] font-medium leading-4 text-[#263238]">
                   Recent Milestone:{' '}
                   <span className="font-manrope font-normal text-[#515B60]">{area.milestone}</span>
                 </p>
               </div>
               <div className="flex items-start gap-2 rounded-lg border border-[#ECFCCB] bg-[#F7FEE7] p-2">
-                <Star className="mt-0.5 h-4 w-4 shrink-0 text-[#7D8488]" />
-                <p className="font-nunito text-xs font-medium leading-4 text-[#263238]">
+                <Lightbulb className="mt-0.5 h-4 w-4 shrink-0 text-[#7D8488]" />
+                <p className="font-nunito text-[12px] font-medium leading-4 text-[#263238]">
                   OT Home Tip:{' '}
                   <span className="font-manrope font-normal text-[#515B60]">{area.tip}</span>
                 </p>
