@@ -1,4 +1,7 @@
-import React from 'react';
+'use client';
+
+import React, { useState } from 'react';
+import Image from 'next/image';
 
 const steps = [
   {
@@ -52,7 +55,16 @@ const steps = [
 ];
 
 export function StepByStepInstructions() {
-  const imgVector = 'http://localhost:3845/assets/c605dc12ccfa7a730271082c3174e39c418bf671.svg';
+  const imgVector = '/Home/figma-activity-detail-chevron-down.svg';
+  const [stepsState, setStepsState] = useState(steps);
+
+  const toggleStep = (index: number) => {
+    setStepsState((prevSteps) => {
+      const newSteps = [...prevSteps];
+      newSteps[index] = { ...newSteps[index], isOpen: !newSteps[index].isOpen };
+      return newSteps;
+    });
+  };
 
   return (
     <div className="bg-white border border-[#fafafa] drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] rounded-[16px] p-[32px] flex flex-col w-full">
@@ -67,10 +79,11 @@ export function StepByStepInstructions() {
         </div>
 
         <div className="flex flex-col gap-[20px] w-full">
-          {steps.map((step, idx) => (
+          {stepsState.map((step, idx) => (
             <div
               key={idx}
-              className={`bg-[var(--bg\/-white,white)] border ${step.isOpen ? 'border-[#dceeee] drop-shadow-[0px_1px_1.5px_rgba(0,0,0,0.1),0px_1px_1px_rgba(0,0,0,0.1)]' : 'border-[var(--border\/300,#e8ebe8)]'} rounded-[16px] p-[20px] flex flex-col gap-[10px] w-full`}
+              onClick={() => toggleStep(idx)}
+              className={`bg-[var(--bg\/-white,white)] border ${step.isOpen ? 'border-[#dceeee] drop-shadow-[0px_1px_1.5px_rgba(0,0,0,0.1),0px_1px_1px_rgba(0,0,0,0.1)]' : 'border-[var(--border\/300,#e8ebe8)]'} rounded-[16px] p-[20px] flex flex-col gap-[10px] w-full cursor-pointer transition-all duration-200`}
             >
               <div className="flex items-center justify-between w-full">
                 <div className="flex items-center gap-[12px]">
@@ -83,17 +96,11 @@ export function StepByStepInstructions() {
                     {step.title}
                   </p>
                 </div>
-                <div className="flex items-center justify-center rotate-180 shrink-0">
+                <div
+                  className={`flex items-center justify-center shrink-0 transition-transform duration-200 ${step.isOpen ? 'rotate-180' : ''}`}
+                >
                   <div className="w-[24px] h-[24px] rounded-[6px] flex items-center justify-center p-[2px]">
-                    <div className="w-[16px] h-[16px] relative overflow-hidden">
-                      <div className="absolute top-[37.5%] bottom-[37.5%] left-[25%] right-[25%]">
-                        <img
-                          src={imgVector}
-                          alt="Chevron"
-                          className="absolute inset-[-12.5%_-6.25%] block max-w-none w-full h-full"
-                        />
-                      </div>
-                    </div>
+                    <Image src={imgVector} alt="Chevron" width={16} height={16} />
                   </div>
                 </div>
               </div>
