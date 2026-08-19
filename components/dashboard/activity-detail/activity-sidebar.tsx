@@ -1,11 +1,12 @@
 import React from 'react';
+import Image from 'next/image';
 
 export function ActivitySidebar() {
-  const imgVector1 = 'http://localhost:3845/assets/73a40c4013f779e469037e2043ee94f906fc43f0.svg'; // Play icon
-  const imgVector2 = 'http://localhost:3845/assets/69af177b32e53b3c84abe55ceb63d26b365764b3.svg'; // Arrow right
-  const imgVector3 = 'http://localhost:3845/assets/c064f260ef9c9828537cced471b3e4a9bf4b2adf.svg'; // Bookmark
-  const imgFrame19 = 'http://localhost:3845/assets/118411b0431e06c3c71628ed8e6374c6b3689517.svg'; // Warning icon
-  const imgIcon = 'http://localhost:3845/assets/aff4701733190ab2f21977d537cf5b121114c127.svg'; // Development goal icon
+  const imgVector1 = '/Home/figma-activity-detail-play.svg';
+  const imgVector2 = '/Home/figma-activity-detail-arrow-right.svg';
+  const imgVector3 = '/Home/figma-activity-detail-bookmark.svg';
+  const imgFrame19 = '/Home/figma-activity-detail-warning.svg';
+  const imgIcon = '/Home/figma-activity-detail-goal.svg';
 
   return (
     <div className="flex flex-col gap-[24px] w-full max-w-[287px]">
@@ -18,8 +19,8 @@ export function ActivitySidebar() {
           <p className="font-['Mitr'] text-[40px] leading-[48px] text-[#2f7d7e] tracking-[-0.4px]">
             20:00
           </p>
-          <button className="border border-[#2f7d7e] rounded-full px-3 py-2 flex items-center justify-center gap-1 w-full overflow-hidden">
-            <img src={imgVector1} alt="Play" className="w-4 h-4" />
+          <button className="border border-[#2f7d7e] rounded-full px-3 py-2 flex items-center justify-center gap-1 w-full overflow-hidden relative">
+            <Image src={imgVector1} alt="Play" width={16} height={16} />
             <span className="font-['Nunito'] font-medium text-sm leading-5 text-[#2f7d7e] tracking-[-0.084px]">
               Start session timer
             </span>
@@ -37,11 +38,11 @@ export function ActivitySidebar() {
             <span className="font-['Nunito'] font-medium text-sm leading-5 text-white tracking-[-0.084px]">
               Complete Activity
             </span>
-            <img src={imgVector2} alt="Arrow Right" className="w-4 h-4" />
+            <Image src={imgVector2} alt="Arrow Right" width={16} height={16} />
           </button>
 
-          <button className="border border-[var(--border\/500,#d8ddd9)] rounded-full px-3 py-2 flex items-center justify-center gap-1 w-full overflow-hidden">
-            <img src={imgVector3} alt="Bookmark" className="w-4 h-4" />
+          <button className="border border-[var(--border\/500,#d8ddd9)] rounded-full px-3 py-2 flex items-center justify-center gap-1 w-full overflow-hidden relative">
+            <Image src={imgVector3} alt="Bookmark" width={16} height={16} />
             <span className="font-['Nunito'] font-medium text-sm leading-5 text-[color:var(--text-primary\/400,#515b60)] tracking-[-0.084px]">
               Save for Later
             </span>
@@ -88,7 +89,7 @@ export function ActivitySidebar() {
             'Watch for signs of overexertion: flushed cheeks, rapid breathing, or irritability. Offer a water break.',
           ].map((note, idx) => (
             <div key={idx} className="flex items-start gap-[12px] w-full">
-              <img src={imgFrame19} alt="Warning" className="w-[24px] h-[24px] shrink-0" />
+              <Image src={imgFrame19} alt="Warning" width={24} height={24} className="shrink-0" />
               <p className="flex-1 font-['Manrope'] font-normal text-[14px] leading-[22px] text-[#263238] tracking-[-0.084px]">
                 {note}
               </p>
@@ -100,7 +101,7 @@ export function ActivitySidebar() {
       {/* Development Goal */}
       <div className="bg-[var(--secondary\/200,#d2e3dc)] rounded-[16px] p-[32px] flex flex-col gap-[16px] w-full">
         <div className="flex items-center gap-[8px]">
-          <img src={imgIcon} alt="Development Goal" className="w-[20px] h-[20px]" />
+          <Image src={imgIcon} alt="Development Goal" width={20} height={20} />
           <h2 className="font-['Nunito'] font-medium text-[20px] leading-[28px] text-[#263238]">
             Development Goal
           </h2>

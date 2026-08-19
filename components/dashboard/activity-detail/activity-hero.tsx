@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 
 export function ActivityHero() {
   return (
@@ -18,10 +19,11 @@ export function ActivityHero() {
 
       {/* Hero Image Container */}
       <div className="w-full h-[477px] bg-[var(--secondary\/200,#d2e3dc)] rounded-[16px] overflow-hidden relative">
-        <img
-          src="http://localhost:3845/assets/bf4fc034894db390a47e176ac36cb4125172b8c8.png"
+        <Image
+          src="/Home/figma-activity-detail-hero.png"
           alt="Animal Yoga Adventure"
-          className="absolute inset-0 w-full h-full object-cover"
+          fill
+          className="object-cover"
         />
 
         {/* Badges */}
