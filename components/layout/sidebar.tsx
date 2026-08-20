@@ -39,7 +39,7 @@ const parentMenuItems: NavigationItem[] = [
 
 const parentOtherItems: NavigationItem[] = [
   { name: 'Settings', href: '/dashboard/settings', icon: '/Home/figma-dashboard-nav-settings.svg' },
-  { name: 'Support', href: '/contact', icon: '/Home/figma-dashboard-nav-support.svg' },
+  { name: 'Support', href: '/dashboard/support', icon: '/Home/figma-dashboard-nav-support.svg' },
 ];
 
 const adminMenuItems: NavigationItem[] = [
