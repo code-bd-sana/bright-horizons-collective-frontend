@@ -1,8 +1,9 @@
 'use client';
 
-import { ContactSupportModal } from '@/components/dashboard/contact-support-modal';
-import { ReportIssueModal } from '@/components/dashboard/report-issue-modal';
-import { SendFeedbackModal } from '@/components/dashboard/send-feedback-modal';
+// Support feature entry point.
+import { ContactSupportModal } from '@/components/dashboard/support/contact-support-modal';
+import { ReportIssueModal } from '@/components/dashboard/support/report-issue-modal';
+import { SendFeedbackModal } from '@/components/dashboard/support/send-feedback-modal';
 import { Bug, HandHeart, Minus, Plus, Search, Send } from 'lucide-react';
 import { useMemo, useState } from 'react';
 

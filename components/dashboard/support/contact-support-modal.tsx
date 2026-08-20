@@ -1,22 +1,23 @@
 'use client';
 
+// Contact support dialog.
 import { Dialog, DialogClose, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { X } from 'lucide-react';
 import { FormEvent, useState } from 'react';
 import { toast } from 'sonner';
 
-type ReportIssueModalProps = { isOpen: boolean; onClose: (open: boolean) => void };
+type ContactSupportModalProps = { isOpen: boolean; onClose: (open: boolean) => void };
 
-export function ReportIssueModal({ isOpen, onClose }: ReportIssueModalProps) {
-  const [issueArea, setIssueArea] = useState('');
-  const [description, setDescription] = useState('');
+export function ContactSupportModal({ isOpen, onClose }: ContactSupportModalProps) {
+  const [subject, setSubject] = useState('');
+  const [message, setMessage] = useState('');
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     onClose(false);
-    toast.success('Your issue report has been submitted.');
-    setIssueArea('');
-    setDescription('');
+    toast.success('Your message has been sent to parent support.');
+    setSubject('');
+    setMessage('');
   };
 
   return (
@@ -27,10 +28,10 @@ export function ReportIssueModal({ isOpen, onClose }: ReportIssueModalProps) {
       >
         <div className="flex items-center justify-between">
           <DialogTitle className="font-nunito text-2xl font-semibold leading-8 text-[#263238]">
-            Report a Technical Issue
+            Contact Parent Support
           </DialogTitle>
           <DialogClose
-            aria-label="Close issue report"
+            aria-label="Close contact support"
             className="rounded-sm p-1 text-[#667085] outline-none focus-visible:ring-2 focus-visible:ring-[#2f7d7e]"
           >
             <X size={20} strokeWidth={1.3} />
@@ -38,20 +39,20 @@ export function ReportIssueModal({ isOpen, onClose }: ReportIssueModalProps) {
         </div>
         <form className="mt-8" onSubmit={handleSubmit}>
           <label className="block font-manrope text-lg font-medium leading-6.75 tracking-[-0.27px]">
-            Issue Area
+            Subject
             <input
-              value={issueArea}
-              onChange={(event) => setIssueArea(event.target.value)}
-              placeholder="Write issue area..."
+              value={subject}
+              onChange={(event) => setSubject(event.target.value)}
+              placeholder="How can we help you?"
               required
               className="mt-1.5 h-11 w-full rounded-full border border-[#d8ddd9] px-4 font-manrope text-base leading-6 tracking-[-0.176px] text-[#515b60] shadow-[0_1px_2px_rgba(16,24,40,0.05)] outline-none placeholder:text-[#515b60] focus:border-[#2f7d7e]"
             />
           </label>
           <label className="mt-8 block font-manrope text-base leading-6 tracking-[-0.176px]">
-            Description of Issue
+            Message
             <textarea
-              value={description}
-              onChange={(event) => setDescription(event.target.value)}
+              value={message}
+              onChange={(event) => setMessage(event.target.value)}
               placeholder="Please provide as much detail as possible..."
               required
               className="mt-1.5 h-37.5 w-full resize-none rounded-md border border-[#dce4ed] p-4 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#515b60] shadow-[0_1px_2px_rgba(16,24,40,0.05)] outline-none placeholder:text-[#a8adaf] focus:border-[#2f7d7e]"
@@ -69,7 +70,7 @@ export function ReportIssueModal({ isOpen, onClose }: ReportIssueModalProps) {
               type="submit"
               className="h-14 w-46.75 rounded-full border border-[#d5e5e5] bg-[#2f7d7e] font-nunito text-base font-medium tracking-[-0.176px] text-white"
             >
-              Report Issue
+              Send Message
             </button>
           </div>
         </form>

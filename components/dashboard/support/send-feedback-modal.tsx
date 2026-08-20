@@ -1,5 +1,6 @@
 'use client';
 
+// Feedback dialog.
 import { Dialog, DialogClose, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Star, X } from 'lucide-react';
 import { FormEvent, useState } from 'react';
