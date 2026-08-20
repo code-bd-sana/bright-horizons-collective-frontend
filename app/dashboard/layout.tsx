@@ -8,11 +8,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const session = await readDemoSession(cookieStore.get(DEMO_SESSION_COOKIE)?.value);
 
   return (
-    <div className="flex min-h-screen w-full bg-[#fffdf8]">
+    <div className="flex h-dvh w-full overflow-hidden bg-[#fffdf8]">
       <Sidebar role={session?.role} />
-      <div className="flex flex-col flex-1 min-w-0">
+      <div className="flex min-w-0 flex-1 flex-col">
         <Header />
-        <main className="flex-1 overflow-auto p-8">{children}</main>
+        <main className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-8">{children}</main>
       </div>
     </div>
   );

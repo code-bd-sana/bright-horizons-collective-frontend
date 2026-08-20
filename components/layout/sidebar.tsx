@@ -147,12 +147,12 @@ export function Sidebar({ role = 'parent' }: { role?: DemoRole }) {
 
   return (
     <aside
-      className="sticky top-0 hidden h-dvh min-h-239.75 w-77.75 shrink-0 bg-[#fdfdfc] md:flex"
+      className="hidden h-dvh min-h-0 w-77.75 shrink-0 bg-[#fdfdfc] md:flex"
       aria-label="Dashboard navigation"
     >
       <div className="ml-10 flex h-full w-67.75 flex-col border-r border-[#f6f4f4]">
-        <div className="flex min-h-0 flex-1 flex-col gap-5 border-r border-[#f6f4f4]">
-          <div className="relative flex h-33 w-full items-center px-4 pt-4">
+        <div className="flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto overscroll-contain border-r border-[#f6f4f4]">
+          <div className="relative flex h-33 w-full shrink-0 items-center px-4 pt-4">
             <Logo href="/" width={125} height={100} className="shrink-0" />
             <Image
               src="/Home/figma-dashboard-sidebar-line-top.svg"
@@ -164,7 +164,7 @@ export function Sidebar({ role = 'parent' }: { role?: DemoRole }) {
           </div>
 
           <nav
-            className={`flex flex-col ${isAdmin ? 'gap-0' : 'gap-5'}`}
+            className={`flex shrink-0 flex-col ${isAdmin ? 'gap-0' : 'gap-5'}`}
             aria-label="Main navigation"
           >
             <section className="flex flex-col gap-2">
@@ -186,7 +186,7 @@ export function Sidebar({ role = 'parent' }: { role?: DemoRole }) {
 
           {!isAdmin && (
             <section
-              className="relative mt-auto mb-4 flex h-41.5 w-60.75 flex-col justify-end gap-4 overflow-hidden rounded-xl border-2 border-transparent p-4"
+              className="relative mt-auto mb-4 flex h-41.5 w-60.75 shrink-0 flex-col justify-end gap-4 overflow-hidden rounded-xl border-2 border-transparent p-4"
               aria-label="Current membership plan"
             >
               <span
