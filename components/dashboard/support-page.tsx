@@ -1,14 +1,16 @@
 'use client';
 
+import { ContactSupportModal } from '@/components/dashboard/contact-support-modal';
+import { ReportIssueModal } from '@/components/dashboard/report-issue-modal';
+import { SendFeedbackModal } from '@/components/dashboard/send-feedback-modal';
 import { Bug, HandHeart, Minus, Plus, Search, Send } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { toast } from 'sonner';
 
 type SupportAction = {
   title: string;
   description: string;
   icon: typeof Send;
-  message: string;
+  modal: 'contact' | 'feedback' | 'issue';
 };
 
 const supportActions: SupportAction[] = [
@@ -16,19 +18,19 @@ const supportActions: SupportAction[] = [
     title: 'Contact Support',
     description: 'Reach out to our parent assistance team',
     icon: Send,
-    message: 'Opening support contact options',
+    modal: 'contact',
   },
   {
     title: 'Send Feedback',
     description: 'Help us build a better platform.',
     icon: HandHeart,
-    message: 'Thanks for helping us improve Bright Horizons Collective!',
+    modal: 'feedback',
   },
   {
     title: 'Report an Issue',
     description: 'Report bugs or technical difficulties',
     icon: Bug,
-    message: 'Opening issue reporting options',
+    modal: 'issue',
   },
 ];
 
@@ -58,6 +60,7 @@ const questions = [
 export function SupportPage() {
   const [openQuestion, setOpenQuestion] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
+  const [activeModal, setActiveModal] = useState<SupportAction['modal'] | null>(null);
 
   const visibleQuestions = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
@@ -80,11 +83,11 @@ export function SupportPage() {
       </header>
 
       <div className="grid gap-4 sm:grid-cols-3">
-        {supportActions.map(({ title, description, icon: Icon, message }) => (
+        {supportActions.map(({ title, description, icon: Icon, modal }) => (
           <button
             key={title}
             type="button"
-            onClick={() => toast.info(message)}
+            onClick={() => setActiveModal(modal)}
             className="flex min-h-32 flex-col rounded-2xl border border-[#e8ebe8] bg-white p-4 text-left transition-shadow hover:shadow-[0_2px_10px_rgba(39,69,67,0.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2f7d7e]"
           >
             <span className="flex size-10 items-center justify-center rounded-lg bg-[#eef3f3] text-[#2f7d7e]">
@@ -169,6 +172,19 @@ export function SupportPage() {
           )}
         </div>
       </section>
+
+      <ContactSupportModal
+        isOpen={activeModal === 'contact'}
+        onClose={(open) => !open && setActiveModal(null)}
+      />
+      <SendFeedbackModal
+        isOpen={activeModal === 'feedback'}
+        onClose={(open) => !open && setActiveModal(null)}
+      />
+      <ReportIssueModal
+        isOpen={activeModal === 'issue'}
+        onClose={(open) => !open && setActiveModal(null)}
+      />
     </section>
   );
 }
