@@ -77,7 +77,10 @@ export function SecurityPanel() {
 
   return (
     <div className="w-full max-w-188.25">
-      <form className="rounded-2xl border border-[#eff1ef] bg-white p-8" onSubmit={savePassword}>
+      <form
+        className="rounded-2xl border border-[#eff1ef] bg-white p-4 sm:p-8"
+        onSubmit={savePassword}
+      >
         <h2 className="font-nunito text-2xl font-semibold leading-8 tracking-[-0.03em] text-[#263238]">
           Change Password
         </h2>
@@ -114,13 +117,13 @@ export function SecurityPanel() {
           />
         </div>
         <button
-          className="mt-8 flex h-10 items-center justify-center rounded-xl border border-[#accbcb] bg-linear-to-r from-[rgba(47,125,126,0.6)] to-[#2f7d7e] px-4 font-nunito text-base font-medium leading-6 tracking-[-0.02em] text-white shadow-[0_1px_2px_rgba(38,50,56,0.08)] transition-opacity hover:opacity-90"
+          className="mt-8 flex h-10 w-full items-center justify-center rounded-xl border border-[#accbcb] bg-linear-to-r from-[rgba(47,125,126,0.6)] to-[#2f7d7e] px-4 font-nunito text-base font-medium leading-6 tracking-[-0.02em] text-white shadow-[0_1px_2px_rgba(38,50,56,0.08)] transition-opacity hover:opacity-90 sm:w-auto"
           type="submit"
         >
           Change Password
         </button>
       </form>
-      <section className="mt-12 rounded-2xl border border-[#f5c6cb] bg-[#fef6f6] p-5">
+      <section className="mt-8 rounded-2xl border border-[#f5c6cb] bg-[#fef6f6] p-4 sm:mt-12 sm:p-5">
         <div className="flex gap-3">
           <TriangleAlert
             aria-hidden="true"

@@ -18,7 +18,7 @@ const billingHistory = [
 
 function CurrentPlanCard() {
   return (
-    <section className="rounded-[20px] border-2 border-[#e8ebe8] bg-white p-8 shadow-[0_1px_2px_rgba(0,0,0,0.05)] sm:p-8.5">
+    <section className="rounded-[20px] border-2 border-[#e8ebe8] bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.05)] sm:p-8.5">
       <div className="space-y-2">
         <span className="inline-flex rounded-full bg-[#d5e5e5] px-3 py-1 font-manrope text-xs leading-4.5 text-[#263238]">
           CURRENT PLAN
@@ -69,7 +69,7 @@ function CurrentPlanCard() {
 
 function PaymentMethodCard() {
   return (
-    <section className="rounded-2xl border border-[#e8ebe8] bg-white p-8">
+    <section className="rounded-2xl border border-[#e8ebe8] bg-white p-4 sm:p-8">
       <h2 className="font-nunito text-2xl font-semibold leading-8 text-[#263238]">
         Payment Method
       </h2>
@@ -105,7 +105,7 @@ function PaymentMethodCard() {
 function BillingHistoryTable() {
   return (
     <section className="overflow-hidden rounded-xl border border-[#e8ebe8] bg-white">
-      <header className="flex items-center justify-between border-b border-[#bbcac6] px-8 py-8">
+      <header className="flex items-center justify-between gap-4 border-b border-[#bbcac6] px-4 py-5 sm:px-8 sm:py-8">
         <h2 className="font-nunito text-2xl font-semibold leading-8 text-[#1a1c1c]">
           Billing History
         </h2>

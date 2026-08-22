@@ -79,7 +79,7 @@ export function NotificationsPanel() {
   );
 
   return (
-    <section className="w-full max-w-227 rounded-[20px] border-2 border-[#e8ebe8] bg-white p-8 shadow-[0_1px_2px_rgba(0,0,0,0.05)] sm:p-8.5">
+    <section className="w-full max-w-227 rounded-[20px] border-2 border-[#e8ebe8] bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.05)] sm:p-8.5">
       <h2 className="font-nunito text-2xl font-semibold leading-8 text-[#263238]">
         Email &amp; Push Alert Controls
       </h2>

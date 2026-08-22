@@ -44,8 +44,8 @@ export function AccountPanel() {
 
   return (
     <form onSubmit={saveAccount}>
-      <section className="flex min-h-41 items-center rounded-2xl border border-[#e8ebe8] bg-white p-8">
-        <div className="flex items-center gap-4">
+      <section className="flex min-h-41 items-center rounded-2xl border border-[#e8ebe8] bg-white p-4 sm:p-8">
+        <div className="flex items-center gap-3 sm:gap-4">
           <span className="relative size-25 shrink-0 overflow-hidden rounded-2xl border-2 border-[#d5e5e5] bg-[#2f7d7e] p-1">
             <Image
               src="/Home/figma-dashboard-profile-avatar.png"
@@ -70,11 +70,11 @@ export function AccountPanel() {
           </div>
         </div>
       </section>
-      <section className="mt-6 rounded-2xl border border-[#e8ebe8] bg-white p-8">
+      <section className="mt-6 rounded-2xl border border-[#e8ebe8] bg-white p-4 sm:p-8">
         <h2 className="font-nunito text-2xl font-medium leading-8 tracking-[-0.16px] text-[#263238]">
           Basic Information
         </h2>
-        <div className="mt-8 grid gap-x-4 gap-y-7 md:grid-cols-2">
+        <div className="mt-6 grid gap-x-4 gap-y-6 sm:mt-8 sm:gap-y-7 md:grid-cols-2">
           <SettingField label="Full Name">
             <input
               value={name}
@@ -116,11 +116,11 @@ export function AccountPanel() {
           </SettingField>
         </div>
       </section>
-      <section className="mt-6 rounded-2xl border border-[#e8ebe8] bg-white p-8">
+      <section className="mt-6 rounded-2xl border border-[#e8ebe8] bg-white p-4 sm:p-8">
         <h2 className="font-nunito text-2xl font-medium leading-8 tracking-[-0.16px] text-[#263238]">
           Preferences
         </h2>
-        <div className="mt-8 grid gap-4 md:grid-cols-2">
+        <div className="mt-6 grid gap-4 sm:mt-8 md:grid-cols-2">
           <SettingField label="Language">
             <SelectControl
               value="English (United States)"
@@ -138,16 +138,16 @@ export function AccountPanel() {
           </SettingField>
         </div>
       </section>
-      <div className="mt-8 flex justify-end gap-4">
+      <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-end sm:gap-4">
         <button
           type="reset"
-          className="h-14 w-30.75 rounded-full border border-[#d4d6d7] bg-white font-nunito text-base font-medium tracking-[-0.176px] text-[#14094b]"
+          className="h-14 w-full rounded-full border border-[#d4d6d7] bg-white font-nunito text-base font-medium tracking-[-0.176px] text-[#14094b] sm:w-30.75"
         >
           Cancel
         </button>
         <button
           type="submit"
-          className="h-14 w-46.75 rounded-full border border-[#d5e5e5] bg-[#2f7d7e] font-nunito text-base font-medium tracking-[-0.176px] text-white"
+          className="h-14 w-full rounded-full border border-[#d5e5e5] bg-[#2f7d7e] font-nunito text-base font-medium tracking-[-0.176px] text-white sm:w-46.75"
         >
           Save Changes
         </button>
