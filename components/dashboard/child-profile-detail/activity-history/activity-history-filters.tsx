@@ -2,7 +2,7 @@ import { Search } from 'lucide-react';
 
 export function ActivityHistoryFilters() {
   return (
-    <div className="flex flex-col gap-6 rounded-[16px] border border-[#E8EBE8] bg-white p-6 shadow-[0px_1px_2px_-1px_rgba(0,0,0,0.1),0px_1px_3px_0px_rgba(0,0,0,0.1)]">
+    <div className="flex flex-col gap-6 rounded-[16px] border border-[#E8EBE8] bg-white p-4 shadow-[0px_1px_2px_-1px_rgba(0,0,0,0.1),0px_1px_3px_0px_rgba(0,0,0,0.1)] sm:p-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="flex w-full max-w-110.5 items-center gap-1.75 rounded-[12px] border border-[#D8DDD9] bg-white px-5 py-4 shadow-[0px_1px_2px_rgba(0,0,0,0.05)]">
           <Search className="h-5 w-5 text-[#D8DDD9]" />

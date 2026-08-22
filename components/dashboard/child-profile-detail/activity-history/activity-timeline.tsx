@@ -37,7 +37,7 @@ export function ActivityTimeline() {
   ];
 
   return (
-    <div className="flex flex-col gap-6 rounded-[16px] border border-[#E8EBE8] bg-white p-8 shadow-[0px_1px_2px_rgba(0,0,0,0.05)]">
+    <div className="flex flex-col gap-6 rounded-[16px] border border-[#E8EBE8] bg-white p-4 shadow-[0px_1px_2px_rgba(0,0,0,0.05)] sm:p-8">
       <h2 className="font-nunito text-[24px] font-medium leading-8 text-[#263238]">This Week</h2>
 
       <div className="flex flex-col">
@@ -53,7 +53,7 @@ export function ActivityTimeline() {
             <div className="mb-5 flex flex-1 flex-col gap-5 rounded-[16px] border border-[#E9F1EE] bg-white p-5 shadow-[0px_1px_2px_rgba(0,0,0,0.05)]">
               <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                 <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
                     <h3 className="font-nunito text-[20px] font-medium leading-7 text-[#263238]">
                       {activity.title}
                     </h3>
