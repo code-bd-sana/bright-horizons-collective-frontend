@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { Menu } from 'lucide-react';
 import { useAppStore } from '@/store/use-app-store';
@@ -214,6 +215,7 @@ function ChildProfileOption({
 
 export function Header() {
   const { setSidebarOpen } = useAppStore();
+  const router = useRouter();
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [messagesOpen, setMessagesOpen] = useState(false);
   const [profilesOpen, setProfilesOpen] = useState(false);
@@ -271,7 +273,7 @@ export function Header() {
 
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' });
-    window.location.assign('/login');
+    router.push('/login');
   };
 
   return (
