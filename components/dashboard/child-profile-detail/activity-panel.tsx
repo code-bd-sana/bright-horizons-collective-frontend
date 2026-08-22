@@ -4,9 +4,9 @@ import { ActivityArtwork } from './activity-artwork';
 
 export function ActivityPanel() {
   return (
-    <section className="flex flex-col gap-6 rounded-2xl border border-[#e8ebe8] bg-[#fffdf8] p-8 shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
+    <section className="flex flex-col gap-6 rounded-2xl border border-[#e8ebe8] bg-[#fffdf8] p-4 sm:p-8 shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
       <div className="flex flex-col gap-6">
-        <div className="flex items-start justify-between gap-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
           <div className="flex flex-col gap-1">
             <p className="font-nunito text-xs font-medium leading-4 text-[#2f7d7e]">
               Today&apos;s Activity · Mon, Jul 20
@@ -17,7 +17,7 @@ export function ActivityPanel() {
           </div>
           <button
             type="button"
-            className="relative flex h-10 shrink-0 items-center gap-1 overflow-hidden rounded-full border border-[#d8ddd9] bg-[#2f7d7e] px-3 py-2 font-nunito text-sm font-medium leading-6 tracking-[-0.176px] text-white"
+            className="relative flex h-10 w-full shrink-0 items-center justify-center gap-1 overflow-hidden rounded-full border border-[#d8ddd9] bg-[#2f7d7e] px-3 py-2 font-nunito text-sm font-medium leading-6 tracking-[-0.176px] text-white sm:w-auto"
           >
             <span className="relative">Start Activity</span>
             <Image

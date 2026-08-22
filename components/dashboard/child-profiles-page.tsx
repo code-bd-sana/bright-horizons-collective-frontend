@@ -41,7 +41,7 @@ const children: ChildProfile[] = [
 function ChildCard({ child, selected = false }: { child: ChildProfile; selected?: boolean }) {
   return (
     <article
-      className={`flex min-h-90 flex-1 flex-col gap-4 rounded-2xl border bg-white p-6 ${
+      className={`flex flex-1 flex-col gap-4 rounded-2xl border bg-white p-4 sm:min-h-90 sm:p-6 ${
         selected ? 'border-[#8fb9a8]' : 'border-[#e8ebe8]'
       }`}
     >
@@ -103,8 +103,8 @@ function ChildCard({ child, selected = false }: { child: ChildProfile; selected?
 
 export function ChildProfilesPage() {
   return (
-    <section className="mx-auto flex w-full max-w-382.25 flex-col gap-6">
-      <div className="flex items-center justify-between gap-6">
+    <section className="mx-auto flex w-full max-w-382.25 flex-col gap-4 sm:gap-6">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
         <div>
           <h1 className="font-nunito text-2xl font-medium leading-8 text-[#272f3a]">
             Child Profiles
@@ -113,16 +113,16 @@ export function ChildProfilesPage() {
             Select a profile to view their developmental journey.
           </p>
         </div>
-        <button
-          type="button"
-          className="flex h-10 items-center gap-1 rounded-full border border-[#accbcb] bg-linear-to-b from-[#2f7d7e]/60 to-[#2f7d7e] px-3 py-2 font-nunito text-sm font-medium leading-5 tracking-[-0.084px] text-[#f8fafc] shadow-[inset_0_-6px_2px_rgba(255,255,255,0.07)]"
+        <Link
+          href="/dashboard/child-profiles/add-child"
+          className="flex h-10 w-full items-center justify-center gap-1 rounded-full border border-[#accbcb] bg-linear-to-b from-[#2f7d7e]/60 to-[#2f7d7e] px-3 py-2 font-nunito text-sm font-medium leading-5 tracking-[-0.084px] text-[#f8fafc] shadow-[inset_0_-6px_2px_rgba(255,255,255,0.07)] sm:w-auto"
         >
           <span className="text-base leading-4">+</span>
           Add Child
-        </button>
+        </Link>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-3 sm:gap-6">
         {summaryCards.map((card) => (
           <article
             key={card.label}
@@ -145,7 +145,7 @@ export function ChildProfilesPage() {
         ))}
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-2 md:gap-6">
         {children.map((child, index) => (
           <ChildCard key={child.name} child={child} selected={index === 0} />
         ))}

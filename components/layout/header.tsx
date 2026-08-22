@@ -1,7 +1,10 @@
 'use client';
 
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
+import { Menu } from 'lucide-react';
+import { useAppStore } from '@/store/use-app-store';
 
 const notificationDescription =
   'Weekly developmental goal plan for motor skills is now ready for review.';
@@ -211,6 +214,8 @@ function ChildProfileOption({
 }
 
 export function Header() {
+  const { setSidebarOpen } = useAppStore();
+  const router = useRouter();
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [messagesOpen, setMessagesOpen] = useState(false);
   const [profilesOpen, setProfilesOpen] = useState(false);
@@ -268,15 +273,23 @@ export function Header() {
 
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' });
-    window.location.assign('/login');
+    router.push('/login');
   };
 
   return (
     <header
-      className="sticky top-0 z-30 flex h-18 items-center justify-between bg-[#fdfdfc] px-10"
+      className="sticky top-0 z-30 flex h-16 items-center gap-3 bg-[#fdfdfc] px-4 sm:h-18 sm:px-6 lg:px-10"
       aria-label="Dashboard header"
     >
-      <label className="flex h-10 w-110.5 items-center overflow-hidden rounded-lg border border-[#fce9e3] bg-[#fbf6f4] px-5.25 py-4.25 max-md:w-70 max-sm:w-48">
+      <button
+        type="button"
+        aria-label="Open navigation"
+        onClick={() => setSidebarOpen(true)}
+        className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-[#e9f1ee] text-[#2f7d7e] lg:hidden"
+      >
+        <Menu size={22} strokeWidth={1.7} />
+      </button>
+      <label className="flex h-10 min-w-0 flex-1 items-center overflow-hidden rounded-lg border border-[#fce9e3] bg-[#fbf6f4] px-3 py-3 sm:px-5.25 sm:py-4.25 lg:max-w-110.5">
         <Image
           src="/Home/figma-dashboard-header-search.svg"
           alt=""
@@ -292,7 +305,7 @@ export function Header() {
         />
       </label>
 
-      <div className="relative flex items-center gap-3">
+      <div className="relative flex shrink-0 items-center gap-2 sm:gap-3">
         <button
           ref={messagesButtonRef}
           type="button"
@@ -304,7 +317,7 @@ export function Header() {
             setProfilesOpen(false);
             setAccountOpen(false);
           }}
-          className="flex size-10 items-center justify-center overflow-hidden rounded-lg bg-[#e9f1ee] p-1"
+          className="hidden size-10 items-center justify-center overflow-hidden rounded-lg bg-[#e9f1ee] p-1 min-[420px]:flex"
         >
           <Image src="/Home/figma-dashboard-header-chat.svg" alt="" width={25} height={24} />
         </button>
@@ -339,7 +352,7 @@ export function Header() {
             setNotificationsOpen(false);
             setAccountOpen(false);
           }}
-          className="flex h-10 items-center gap-2.5 overflow-hidden rounded-lg bg-[#d2e3dc] px-2 py-1 max-md:hidden"
+          className="flex h-10 items-center gap-2.5 overflow-hidden rounded-lg bg-[#d2e3dc] px-2 py-1 max-lg:hidden"
         >
           <span className="relative size-7 shrink-0 overflow-hidden rounded-full bg-[#accbcb]">
             <Image

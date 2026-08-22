@@ -15,6 +15,8 @@ const universalCardVariants = cva(
         resource: 'h-[428px] w-full',
         printable:
           'flex min-h-[274px] w-full items-center gap-6 max-[700px]:flex-col max-[700px]:items-stretch max-[700px]:gap-0',
+        therapyToy:
+          'h-[540px] w-full rounded-[16px] border-[#edeef0] shadow-[0_2px_4px_1px_rgba(198,202,209,0.1),0_2px_16px_rgba(198,202,209,0.22)]',
         custom: 'w-full',
       },
       state: {
@@ -37,7 +39,9 @@ const universalCardMediaVariants = cva('relative shrink-0 overflow-hidden rounde
     recipe: {
       activity: 'absolute -left-px -right-px -top-px h-[286px] bg-[var(--explore-activity-media)]',
       resource: 'absolute -left-px -right-px -top-px h-[274px] bg-[var(--explore-resource-media)]',
-      printable: 'h-[274px] w-[259px] bg-[var(--explore-printable-media)] max-[700px]:w-full',
+      printable:
+        'h-[274px] w-[42%] max-w-[259px] bg-[var(--explore-printable-media)] max-[700px]:w-full max-[700px]:max-w-none',
+      therapyToy: 'absolute inset-0 rounded-[16px]',
       custom: 'w-full',
     },
   },
@@ -51,7 +55,9 @@ const universalCardBodyVariants = cva('flex flex-col', {
     recipe: {
       activity: 'absolute inset-x-[15px] top-[301px] gap-4 pb-4',
       resource: 'absolute inset-x-[15px] top-[289px] gap-3',
-      printable: 'w-[332px] shrink-0 gap-3 max-[700px]:w-full max-[700px]:p-4',
+      printable:
+        'min-w-0 max-w-[332px] flex-1 gap-3 max-[700px]:w-full max-[700px]:max-w-none max-[700px]:p-4',
+      therapyToy: 'absolute inset-x-4 bottom-4 z-10 gap-2',
       custom: 'w-full',
     },
   },
