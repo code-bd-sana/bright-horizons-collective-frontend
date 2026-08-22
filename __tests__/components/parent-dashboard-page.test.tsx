@@ -7,7 +7,11 @@ import { describe, expect, it, vi } from 'vitest';
 import { ParentDashboardPage } from '@/components/dashboard/parent-dashboard-page';
 
 vi.mock('next/image', () => ({
-  default: ({ alt = '', fill: _fill, ...props }: React.ImgHTMLAttributes<HTMLImageElement>) => (
+  default: ({
+    alt = '',
+    fill: _fill,
+    ...props
+  }: React.ImgHTMLAttributes<HTMLImageElement> & { fill?: boolean }) => (
     <img alt={alt} {...props} />
   ),
 }));

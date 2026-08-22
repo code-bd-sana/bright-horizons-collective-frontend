@@ -16,7 +16,11 @@ import {
 } from '@/components/dashboard/explore/universal-card';
 
 vi.mock('next/image', () => ({
-  default: ({ alt = '', fill: _fill, ...props }: React.ImgHTMLAttributes<HTMLImageElement>) => (
+  default: ({
+    alt = '',
+    fill: _fill,
+    ...props
+  }: React.ImgHTMLAttributes<HTMLImageElement> & { fill?: boolean }) => (
     <img alt={alt} {...props} />
   ),
 }));
