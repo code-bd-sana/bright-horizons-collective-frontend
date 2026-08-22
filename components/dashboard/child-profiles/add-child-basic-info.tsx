@@ -1,8 +1,10 @@
 'use client';
 
 import { DynamicForm } from '@/components/ui/dynamic-form';
+import { AddChildStepper } from './add-child-stepper';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Camera, ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 import { z } from 'zod';
@@ -18,16 +20,11 @@ const basicInfoSchema = z.object({
 
 type BasicInfoValues = z.infer<typeof basicInfoSchema>;
 
-const steps = [
-  'Basic Info',
-  'Caregiver Information',
-  'Development & Focus',
-  'Interests & Preferences',
-];
 const selectClassName =
   'h-11 w-full appearance-none bg-transparent px-3.5 pr-10 font-manrope text-base leading-6 tracking-[-0.176px] text-[#515b60] outline-none';
 
 export function AddChildBasicInfo() {
+  const router = useRouter();
   const [photoPreview, setPhotoPreview] = useState('/Home/figma-child-profile-emma.png');
 
   function updatePhoto(file: File | undefined, setPhoto: (file: File) => void) {
@@ -41,35 +38,12 @@ export function AddChildBasicInfo() {
 
   function submitBasicInfo(data: BasicInfoValues) {
     toast.success(`${data.nickname}'s basic information has been saved.`);
+    router.push('/dashboard/child-profiles/add-child/caregiver-information');
   }
 
   return (
     <section className="mx-auto w-full max-w-212.75 pb-8 pt-6.5 text-[#263238]">
-      <ol className="flex items-center overflow-x-auto border-b border-[#d8ddd9] pb-6">
-        {steps.map((step, index) => {
-          const active = index === 0;
-
-          return (
-            <li className="flex shrink-0 items-center" key={step}>
-              <div className="flex items-center gap-2">
-                <span
-                  className={`flex size-6 items-center justify-center rounded-full font-nunito text-sm font-medium leading-5 text-white ${active ? 'bg-[#2f7d7e]' : 'bg-[#a8adaf]'}`}
-                >
-                  {index + 1}
-                </span>
-                <span
-                  className={`font-nunito text-base font-medium leading-6 tracking-[-0.176px] ${active ? 'text-[#2f7d7e]' : 'text-[#a8adaf]'}`}
-                >
-                  {step}
-                </span>
-              </div>
-              {index < steps.length - 1 && (
-                <span className="mx-2 h-px w-11 shrink-0 bg-[#7d8488]" aria-hidden="true" />
-              )}
-            </li>
-          );
-        })}
-      </ol>
+      <AddChildStepper currentStep={1} />
 
       <DynamicForm
         defaultValues={{
