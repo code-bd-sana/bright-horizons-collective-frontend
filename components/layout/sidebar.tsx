@@ -27,7 +27,12 @@ const parentMenuItems: NavigationItem[] = [
     href: '/dashboard/weekly-plans',
     icon: '/Home/figma-dashboard-nav-weekly.svg',
   },
-  { name: 'Explore', href: '/explore', icon: '/Home/figma-dashboard-nav-explore.svg' },
+  {
+    name: 'Explore',
+    href: '/dashboard/explore',
+    icon: '/Home/figma-dashboard-nav-explore.svg',
+    active: (pathname) => pathname.startsWith('/dashboard/explore'),
+  },
   { name: 'Messages', href: '/dashboard/messages', icon: '/Home/figma-dashboard-nav-messages.svg' },
   {
     name: 'Child Profiles',
