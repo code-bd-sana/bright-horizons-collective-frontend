@@ -67,23 +67,24 @@ export function StepByStepInstructions() {
   };
 
   return (
-    <div className="bg-white border border-[#fafafa] drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] rounded-[16px] p-[32px] flex flex-col w-full">
+    <div className="flex w-full flex-col rounded-[16px] border border-[#fafafa] bg-white p-4 shadow-[0px_1px_1px_rgba(0,0,0,0.05)] sm:p-6 lg:p-8">
       <div className="flex flex-col gap-[24px] w-full">
-        <div className="flex items-start justify-between w-full">
+        <div className="flex items-start justify-between gap-4 w-full">
           <h2 className="font-['Nunito'] font-medium text-[24px] leading-[32px] text-[#263238]">
             Step-by-Step Instructions
           </h2>
-          <p className="font-['Nunito'] font-medium text-[12px] leading-[16px] text-[color:var(--secondary\/100,#e9f1ee)] w-[124px]">
+          <p className="w-[124px] font-['Nunito'] text-[12px] font-medium leading-[16px] text-[#2f7d7e]">
             7 steps · tap to expand
           </p>
         </div>
 
         <div className="flex flex-col gap-[20px] w-full">
           {stepsState.map((step, idx) => (
-            <div
+            <button
+              type="button"
               key={idx}
               onClick={() => toggleStep(idx)}
-              className={`bg-[var(--bg\/-white,white)] border ${step.isOpen ? 'border-[#dceeee] drop-shadow-[0px_1px_1.5px_rgba(0,0,0,0.1),0px_1px_1px_rgba(0,0,0,0.1)]' : 'border-[var(--border\/300,#e8ebe8)]'} rounded-[16px] p-[20px] flex flex-col gap-[10px] w-full cursor-pointer transition-all duration-200`}
+              className={`bg-[var(--bg\/-white,white)] border ${step.isOpen ? 'border-[#dceeee] shadow-[0px_1px_1.5px_rgba(0,0,0,0.1),0px_1px_1px_rgba(0,0,0,0.1)]' : 'border-[var(--border\/300,#e8ebe8)]'} flex w-full flex-col gap-[10px] rounded-[16px] p-4 text-left transition-all duration-200 sm:p-5`}
             >
               <div className="flex items-center justify-between w-full">
                 <div className="flex items-center gap-[12px]">
@@ -109,7 +110,7 @@ export function StepByStepInstructions() {
                   {step.description}
                 </p>
               )}
-            </div>
+            </button>
           ))}
         </div>
       </div>

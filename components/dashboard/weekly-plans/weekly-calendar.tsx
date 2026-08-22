@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { Clock3 } from 'lucide-react';
 
 const activityMask = '/Home/figma-parent-dashboard-activity-mask.svg';
 
@@ -68,9 +69,13 @@ const weeklyActivities = [
   },
 ];
 
-export function WeeklyCalendar() {
+interface WeeklyCalendarProps {
+  title?: string;
+}
+
+export function WeeklyCalendar({ title = 'Weekly Calendar' }: WeeklyCalendarProps) {
   return (
-    <div className="flex w-full flex-col items-start rounded-[16px] border border-solid border-[#e8ebe8] p-[32px] shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)]">
+    <div className="flex w-full flex-col items-start rounded-[16px] border border-solid border-[#e8ebe8] p-4 sm:p-6 lg:p-[32px] shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)]">
       <div className="flex w-full shrink-0 flex-col items-center">
         <div className="flex w-full shrink-0 flex-col items-start">
           <div className="flex w-full shrink-0 flex-col items-start">
@@ -81,10 +86,10 @@ export function WeeklyCalendar() {
                     Week 3 · July 20 – July 26
                   </p>
                   <p className="shrink-0 whitespace-nowrap font-nunito text-[24px] font-medium leading-[32px] text-[#263238]">
-                    Weekly Calendar
+                    {title}
                   </p>
                 </div>
-                <div className="flex w-[137px] shrink-0 flex-col items-start">
+                <div className="flex w-[137px] shrink-0 flex-col items-start max-lg:hidden">
                   <p className="w-full shrink-0 font-nunito text-[12px] font-medium leading-[16px] text-[#7d8488]">
                     Tap a day to view activity
                   </p>
@@ -108,9 +113,9 @@ export function WeeklyCalendar() {
                   return (
                     <div
                       key={index}
-                      className={`flex h-[100px] w-full shrink-0 items-center justify-between rounded-[16px] p-[20px] ${rowClasses}`}
+                      className={`flex h-[100px] w-full shrink-0 items-center justify-between rounded-[16px] p-[20px] max-lg:min-h-[92px] max-lg:h-auto max-lg:p-3 sm:max-lg:p-4 max-sm:flex-col max-sm:items-stretch max-sm:gap-3 ${rowClasses}`}
                     >
-                      <div className="flex shrink-0 items-center gap-[24px]">
+                      <div className="flex min-w-0 items-center gap-[24px] max-lg:gap-3">
                         <div className="flex shrink-0 flex-col items-center">
                           <p className="shrink-0 whitespace-nowrap font-nunito text-[12px] font-bold leading-[16px] tracking-[-0.18px] text-[#174a4d]">
                             {activity.day}
@@ -122,8 +127,8 @@ export function WeeklyCalendar() {
                           </div>
                         </div>
 
-                        <div className="flex shrink-0 items-center gap-[16px]">
-                          <div className="relative size-[60px] shrink-0">
+                        <div className="flex min-w-0 items-center gap-[16px] max-lg:gap-3">
+                          <div className="relative size-[60px] shrink-0 max-md:hidden">
                             <div className="absolute inset-[2.14%_4.04%_9.5%_4.04%]">
                               <span
                                 className="absolute inset-0 max-w-none"
@@ -149,9 +154,9 @@ export function WeeklyCalendar() {
                               </span>
                             </div>
                           </div>
-                          <div className="flex shrink-0 flex-col items-start gap-[8px]">
+                          <div className="flex min-w-0 flex-col items-start gap-[8px]">
                             <div className="flex items-center gap-[10px]">
-                              <p className="shrink-0 whitespace-nowrap font-nunito text-[16px] font-bold leading-[16px] tracking-[-0.24px] text-[#174a4d]">
+                              <p className="min-w-0 truncate font-nunito text-[16px] font-bold leading-[16px] tracking-[-0.24px] text-[#174a4d] max-lg:max-w-[180px]">
                                 {activity.title}
                               </p>
                               {activity.status === 'current' && (
@@ -166,28 +171,10 @@ export function WeeklyCalendar() {
                               <div className="shrink-0">
                                 <div className="flex size-full items-center gap-[4px] bg-clip-padding">
                                   <div className="flex size-[10px] shrink-0 items-center justify-center">
-                                    <svg
-                                      width="10"
-                                      height="10"
-                                      viewBox="0 0 10 10"
-                                      fill="none"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                      <path
-                                        d="M4.99984 8.75016C7.0709 8.75016 8.74984 7.07123 8.74984 5.00016C8.74984 2.9291 7.0709 1.25016 4.99984 1.25016C2.92877 1.25016 1.24984 2.9291 1.24984 5.00016C1.24984 7.07123 2.92877 8.75016 4.99984 8.75016Z"
-                                        stroke="#607077"
-                                        strokeWidth="1.25"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                      />
-                                      <path
-                                        d="M4.99984 2.5V5.00001L6.6665 5.83334"
-                                        stroke="#607077"
-                                        strokeWidth="1.25"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                      />
-                                    </svg>
+                                    <Clock3
+                                      aria-hidden="true"
+                                      className="size-[10px] stroke-[1.25] text-[#607077]"
+                                    />
                                   </div>
                                   <div className="shrink-0">
                                     <div className="flex size-full flex-col items-start bg-clip-padding">
@@ -199,7 +186,7 @@ export function WeeklyCalendar() {
                                 </div>
                               </div>
                               <div className="size-[3px] shrink-0 rounded-[1.5px] bg-[#d8ddd9]" />
-                              <div className="h-[16.5px] w-[128.578px] shrink-0">
+                              <div className="h-[16.5px] w-[128.578px] shrink-0 max-lg:hidden">
                                 <div className="flex size-full flex-col items-start overflow-clip rounded-[inherit] bg-clip-padding">
                                   <p className="shrink-0 whitespace-nowrap font-manrope text-[11px] font-normal leading-[16.5px] text-[#607077]">
                                     {activity.category}
@@ -212,7 +199,7 @@ export function WeeklyCalendar() {
                       </div>
 
                       {/* Action Button */}
-                      <div className="flex min-w-[80px] shrink-0 items-center justify-center overflow-clip rounded-[9999px] border border-solid border-[#d2e3dc] px-[12px] py-[8px] relative">
+                      <div className="relative flex min-w-[80px] shrink-0 items-center justify-center overflow-clip rounded-[9999px] border border-solid border-[#d2e3dc] px-[12px] py-[8px] max-sm:self-end">
                         {activity.status === 'completed' && (
                           <div
                             aria-hidden

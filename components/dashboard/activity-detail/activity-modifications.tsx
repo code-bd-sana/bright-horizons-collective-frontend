@@ -1,8 +1,6 @@
-import React from 'react';
-
 export function ActivityModifications() {
   return (
-    <div className="bg-white border border-[#fafafa] drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] rounded-[16px] p-[32px] flex flex-col gap-[24px] w-full">
+    <div className="flex w-full flex-col gap-6 rounded-[16px] border border-[#fafafa] bg-white p-4 shadow-[0px_1px_1px_rgba(0,0,0,0.05)] sm:p-6 lg:p-8">
       <div className="flex flex-col gap-[12px] w-full">
         <h2 className="font-['Nunito'] font-medium text-[24px] leading-[32px] text-[#263238]">
           Activity Modifications
@@ -13,9 +11,9 @@ export function ActivityModifications() {
         </p>
       </div>
 
-      <div className="flex items-center gap-[24px] w-full">
+      <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-stretch sm:gap-6">
         {/* Make it Easier */}
-        <div className="bg-white border border-[#fafafa] drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] rounded-[16px] p-[32px] flex flex-col gap-[24px] flex-1 min-w-0">
+        <div className="flex min-w-0 flex-1 flex-col gap-6 rounded-[16px] border border-[#fafafa] bg-white p-4 shadow-[0px_1px_1px_rgba(0,0,0,0.05)] sm:p-6 lg:p-8">
           <h3 className="font-['Nunito'] font-medium text-[20px] leading-[28px] text-[#263238]">
             Make it Easier
           </h3>
@@ -28,7 +26,7 @@ export function ActivityModifications() {
         </div>
 
         {/* Make it Harder */}
-        <div className="bg-white border border-[#fafafa] drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] rounded-[16px] p-[32px] flex flex-col gap-[24px] flex-1 min-w-0">
+        <div className="flex min-w-0 flex-1 flex-col gap-6 rounded-[16px] border border-[#fafafa] bg-white p-4 shadow-[0px_1px_2px_rgba(0,0,0,0.05)] sm:p-6 lg:p-8">
           <h3 className="font-['Nunito'] font-medium text-[20px] leading-[28px] text-[#263238]">
             Make it Harder
           </h3>

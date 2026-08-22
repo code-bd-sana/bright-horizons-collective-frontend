@@ -1,24 +1,9 @@
-import React from 'react';
 import Image from 'next/image';
 
 export function ActivityHero() {
   return (
-    <div className="flex flex-col gap-6 w-full">
-      {/* Breadcrumb */}
-      <div className="flex items-center gap-1.5 w-full">
-        <span className="font-['Manrope'] font-normal text-[14px] leading-[22px] text-[#2f7d7e] tracking-[-0.084px]">
-          Weekly Plans
-        </span>
-        <span className="font-['Manrope'] font-normal text-[18px] leading-[27px] text-[#d8ddd9] tracking-[-0.27px]">
-          /
-        </span>
-        <span className="font-['Manrope'] font-normal text-[14px] leading-[22px] text-[#263238] tracking-[-0.084px]">
-          Animal Yoga Adventure
-        </span>
-      </div>
-
-      {/* Hero Image Container */}
-      <div className="w-full h-[477px] bg-[var(--secondary\/200,#d2e3dc)] rounded-[16px] overflow-hidden relative">
+    <div className="w-full">
+      <div className="relative h-[220px] w-full overflow-hidden rounded-[16px] bg-[var(--secondary\/200,#d2e3dc)] sm:h-[360px] lg:h-[477px]">
         <Image
           src="/Home/figma-activity-detail-hero.png"
           alt="Animal Yoga Adventure"
@@ -27,7 +12,7 @@ export function ActivityHero() {
         />
 
         {/* Badges */}
-        <div className="absolute top-4 left-4 flex items-center gap-3">
+        <div className="absolute left-4 top-4 flex items-center gap-3">
           <div className="bg-[#e0f0e9] border border-[var(--secondary\/100,#e9f1ee)] rounded-full px-[9px] py-[7px] flex items-center">
             <span className="font-['Nunito'] font-medium text-[12px] leading-[16px] text-[#263238]">
               Easy

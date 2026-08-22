@@ -1,9 +1,8 @@
-import React from 'react';
 import Image from 'next/image';
 
 export function AllPlansHeader() {
   return (
-    <div className="flex flex-col gap-[24px] w-full max-w-[1216px]">
+    <div className="flex w-full flex-col gap-[24px]">
       {/* Title Section */}
       <div className="flex flex-col gap-[12px]">
         <h1 className="font-['Nunito'] font-medium text-[32px] leading-[40px] text-[#263238] tracking-[-0.16px]">
@@ -15,7 +14,7 @@ export function AllPlansHeader() {
       </div>
 
       {/* Stats Section */}
-      <div className="flex flex-col md:flex-row gap-[24px] w-full">
+      <div className="grid w-full gap-4 sm:max-lg:grid-cols-2 sm:gap-6 lg:flex lg:gap-[24px]">
         {/* Stat 1 */}
         <div className="bg-[#fafafa] border border-[#e8ebe8] rounded-[16px] p-[16px] flex flex-col gap-[12px] h-[154px] justify-center w-full">
           <div className="bg-[#f1f3f3] border border-[#fafafa] rounded-[8px] overflow-hidden w-[32px] h-[32px] flex items-center justify-center shrink-0">
