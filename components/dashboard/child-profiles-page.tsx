@@ -113,13 +113,13 @@ export function ChildProfilesPage() {
             Select a profile to view their developmental journey.
           </p>
         </div>
-        <button
-          type="button"
+        <Link
+          href="/dashboard/child-profiles/add-child"
           className="flex h-10 items-center gap-1 rounded-full border border-[#accbcb] bg-linear-to-b from-[#2f7d7e]/60 to-[#2f7d7e] px-3 py-2 font-nunito text-sm font-medium leading-5 tracking-[-0.084px] text-[#f8fafc] shadow-[inset_0_-6px_2px_rgba(255,255,255,0.07)]"
         >
           <span className="text-base leading-4">+</span>
           Add Child
-        </button>
+        </Link>
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">
