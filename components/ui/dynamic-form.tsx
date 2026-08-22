@@ -3,7 +3,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import React, { useState } from 'react';
-import { Controller, DefaultValues, useForm } from 'react-hook-form';
+import { Controller, DefaultValues, UseFormReturn, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
@@ -45,19 +45,21 @@ export type FormFieldConfig = {
 interface DynamicFormProps<T extends z.ZodType<any, any>> {
   schema: T;
   defaultValues: DefaultValues<z.infer<T>>;
-  fields: FormFieldConfig[];
+  fields?: FormFieldConfig[];
   onSubmit: (data: z.infer<T>) => Promise<void> | void;
   submitText?: string;
   isLoading?: boolean;
+  children?: (form: UseFormReturn<z.infer<T>>) => React.ReactNode;
 }
 
 export function DynamicForm<T extends z.ZodType<any, any>>({
   schema,
   defaultValues,
-  fields,
+  fields = [],
   onSubmit,
   submitText = 'Submit',
   isLoading = false,
+  children,
 }: DynamicFormProps<T>) {
   const form = useForm<z.infer<T>>({
     resolver: zodResolver(schema) as any,
@@ -213,38 +215,44 @@ export function DynamicForm<T extends z.ZodType<any, any>>({
 
   return (
     <form onSubmit={handleSubmit(onSubmit as any)} className="space-y-6">
-      <div className="space-y-4">
-        {fields.map((config) => (
-          <div key={config.name} className="space-y-2">
-            {config.type !== 'checkbox' && (
-              <Label htmlFor={config.name} className="font-semibold text-foreground">
-                {config.label}
-              </Label>
-            )}
+      {children ? (
+        children(form)
+      ) : (
+        <>
+          <div className="space-y-4">
+            {fields.map((config) => (
+              <div key={config.name} className="space-y-2">
+                {config.type !== 'checkbox' && (
+                  <Label htmlFor={config.name} className="font-semibold text-foreground">
+                    {config.label}
+                  </Label>
+                )}
 
-            <Controller
-              name={config.name as any}
-              control={control}
-              render={({ field }) => renderField(config, field)}
-            />
+                <Controller
+                  name={config.name as any}
+                  control={control}
+                  render={({ field }) => renderField(config, field)}
+                />
 
-            {config.description && (
-              <p className="text-sm text-muted-foreground">{config.description}</p>
-            )}
+                {config.description && (
+                  <p className="text-sm text-muted-foreground">{config.description}</p>
+                )}
 
-            {errors[config.name] && (
-              <p className="text-sm text-destructive font-medium">
-                {errors[config.name]?.message as string}
-              </p>
-            )}
+                {errors[config.name] && (
+                  <p className="text-sm text-destructive font-medium">
+                    {errors[config.name]?.message as string}
+                  </p>
+                )}
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
 
-      <Button type="submit" disabled={isLoading} className="w-full h-11">
-        {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-        {submitText}
-      </Button>
+          <Button type="submit" disabled={isLoading} className="w-full h-11">
+            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {submitText}
+          </Button>
+        </>
+      )}
     </form>
   );
 }

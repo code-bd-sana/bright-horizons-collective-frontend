@@ -64,7 +64,7 @@ function RecommendationCard({ item }: { item: Recommendation }) {
   return (
     <article className="flex flex-col items-center gap-6 rounded-3xl border border-[#E9F1EE] bg-white pb-6 md:flex-row md:pb-0 md:pr-6">
       <div
-        className={`relative flex h-[274px] w-full shrink-0 items-center justify-center rounded-t-3xl md:w-[259px] md:rounded-l-3xl md:rounded-tr-none ${item.tone}`}
+        className={`relative flex h-68.5 w-full shrink-0 items-center justify-center rounded-t-3xl md:w-64.75 md:rounded-l-3xl md:rounded-tr-none ${item.tone}`}
       >
         <div className="absolute left-1.5 top-1.5 flex w-[calc(100%-12px)] items-center justify-between">
           <div className="flex items-center gap-1 rounded-full bg-[#E9F1EE] px-2.5 py-1">
@@ -79,18 +79,16 @@ function RecommendationCard({ item }: { item: Recommendation }) {
             <Bookmark className="h-3.5 w-3.5 text-[#263238]" />
           </button>
         </div>
-        <div className="relative h-[220px] w-[220px]">
+        <div className="relative h-55 w-55">
           <Image src={item.image} alt={item.title} fill className="object-contain" />
         </div>
       </div>
-      <div className="flex w-full flex-col gap-3 px-6 md:max-w-[332px] md:px-0">
-        <h4 className="font-nunito text-xl font-medium leading-[28px] text-[#263238]">
-          {item.title}
-        </h4>
-        <p className="whitespace-pre-line font-manrope text-sm font-normal leading-[22px] tracking-[-0.006em] text-[#7D8488]">
+      <div className="flex w-full flex-col gap-3 px-6 md:max-w-83 md:px-0">
+        <h4 className="font-nunito text-xl font-medium leading-7 text-[#263238]">{item.title}</h4>
+        <p className="whitespace-pre-line font-manrope text-sm font-normal leading-5.5 tracking-[-0.006em] text-[#7D8488]">
           {item.description}
         </p>
-        <button className="mt-1 flex w-fit items-center gap-[5px] rounded-full font-manrope text-xs font-semibold leading-[18px] tracking-[0.04em] text-[#2F7D7E] hover:underline">
+        <button className="mt-1 flex w-fit items-center gap-1.25 rounded-full font-manrope text-xs font-semibold leading-4.5 tracking-[0.04em] text-[#2F7D7E] hover:underline">
           {item.actionIcon === 'download' && <Download className="h-3.5 w-3.5" />}
           {item.action}
           {item.actionIcon === 'arrow-right' && <ArrowRight className="h-3.5 w-3.5" />}
@@ -102,12 +100,12 @@ function RecommendationCard({ item }: { item: Recommendation }) {
 
 export function RecommendationsPanel() {
   return (
-    <section className="flex flex-col gap-8 rounded-2xl border border-[#E8EBE8] bg-white p-8 shadow-sm">
+    <section className="flex flex-col gap-8 rounded-2xl border border-[#E8EBE8] bg-white p-4 sm:p-8 shadow-sm">
       <div className="flex flex-col gap-2">
         <h2 className="font-nunito text-2xl font-medium text-[#263238]">
           Recommended Resources & Therapy Toys
         </h2>
-        <p className="font-nunito text-sm font-medium leading-[20px] tracking-[-0.006em] text-[#7D8488]">
+        <p className="font-nunito text-sm font-medium leading-5 tracking-[-0.006em] text-[#7D8488]">
           Handpicked parent guides and pediatric OT/SLP sensory tools
         </p>
       </div>

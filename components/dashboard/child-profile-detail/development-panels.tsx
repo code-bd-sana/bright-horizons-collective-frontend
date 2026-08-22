@@ -43,7 +43,7 @@ const progressItems = [
 
 export function DevelopmentProgressPanel() {
   return (
-    <section className="flex flex-col gap-6 rounded-2xl border border-[#E8EBE8] bg-white p-8 shadow-sm">
+    <section className="flex flex-col gap-6 rounded-2xl border border-[#E8EBE8] bg-white p-4 sm:p-8 shadow-sm">
       <div className="flex flex-col gap-1">
         <p className="font-nunito text-xs font-medium text-[#2F7D7E]">Development Tracking</p>
         <h2 className="font-nunito text-2xl font-medium leading-8 text-[#263238]">
@@ -90,7 +90,7 @@ export function DevelopmentProgressPanel() {
 
 export function RecentActivityPanel() {
   return (
-    <section className="flex flex-col gap-6 rounded-2xl border border-[#E8EBE8] bg-white p-8 shadow-sm">
+    <section className="flex flex-col gap-6 rounded-2xl border border-[#E8EBE8] bg-white p-4 sm:p-8 shadow-sm">
       <div className="flex items-center justify-between">
         <h2 className="font-nunito text-2xl font-medium leading-8 text-[#263238]">
           Recent activity
@@ -106,8 +106,11 @@ export function RecentActivityPanel() {
 
       <div className="flex flex-col gap-5">
         {activities.map((activity, index) => (
-          <div key={`${activity.title}-${index}`} className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
+          <div
+            key={`${activity.title}-${index}`}
+            className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between"
+          >
+            <div className="flex min-w-0 items-center gap-2">
               <Image
                 src={activity.image}
                 alt={activity.title}
@@ -115,8 +118,8 @@ export function RecentActivityPanel() {
                 height={54}
                 className="shrink-0 object-contain"
               />
-              <div className="flex flex-col gap-2">
-                <p className="font-nunito text-lg font-medium leading-6 tracking-[-0.015em] text-[#263238]">
+              <div className="flex min-w-0 flex-col gap-2">
+                <p className="truncate font-nunito text-lg font-medium leading-6 tracking-[-0.015em] text-[#263238]">
                   {activity.title}
                 </p>
                 <p className="font-manrope text-sm font-normal leading-5.5 tracking-[-0.006em] text-[#515B60]">
@@ -124,7 +127,7 @@ export function RecentActivityPanel() {
                 </p>
               </div>
             </div>
-            <div className="flex shrink-0 items-center gap-1">
+            <div className="flex items-center gap-1 sm:pl-14">
               <CheckCircle2 className="h-4 w-4 text-[#515B60]" />
               <span className="font-manrope text-sm font-normal text-[#515B60]">Completed</span>
             </div>

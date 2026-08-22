@@ -4,7 +4,7 @@ const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 export function WeeklyPlanPanel() {
   return (
-    <section className="flex flex-col gap-6 rounded-2xl border border-[#e8ebe8] bg-[#fffdf8] p-8 shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
+    <section className="flex flex-col gap-6 rounded-2xl border border-[#e8ebe8] bg-[#fffdf8] p-4 sm:p-8 shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
       <div className="flex flex-col gap-8">
         <div className="flex flex-col gap-6">
           <div className="flex flex-col gap-1">
