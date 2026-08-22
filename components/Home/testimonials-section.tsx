@@ -35,7 +35,7 @@ const testimonials: Testimonial[] = [
 
 function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
   return (
-    <article className="w-[571px] shrink-0 overflow-hidden rounded-3xl border border-[#E9F1EE] bg-white p-8">
+    <article className="w-[571px] shrink-0 overflow-hidden rounded-3xl border border-[#E9F1EE] bg-white p-8 max-lg:w-full max-md:p-5">
       <div className="flex flex-col gap-12">
         <div className="flex items-center justify-between">
           <span className="font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#7D8488]">
@@ -62,17 +62,17 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
             {quote}
           </blockquote>
 
-          <div className="relative h-0 w-[507px] rotate-180">
+          <div className="relative h-0 w-[507px] max-w-full rotate-180">
             <Image
               src={testimonial.divider}
               alt=""
               width={507}
               height={2}
-              className="absolute left-0 top-[-2px] h-0.5 w-[507px] max-w-none"
+              className="absolute left-0 top-[-2px] h-0.5 w-full"
             />
           </div>
 
-          <div className="flex items-start justify-between">
+          <div className="flex items-start justify-between gap-4">
             <div className="flex flex-col gap-2">
               <p className="w-[233px] font-nunito text-xl leading-7 font-medium text-[#263238]">
                 Sarah Karim
@@ -80,7 +80,7 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
               <p className="font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#7D8488]">
                 {testimonial.age}
               </p>
-              <p className="flex items-center gap-2 whitespace-nowrap font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#7D8488]">
+              <p className="flex flex-wrap items-center gap-x-2 font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#7D8488]">
                 <span>Member since 2024</span>
                 <span>·</span>
                 <span>Portland, OR</span>
@@ -105,7 +105,7 @@ function TestimonialsHeading() {
       <span className="rounded-xl border border-[#FAE1D9] bg-white px-2 py-1.5 font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#614840]">
         Member love
       </span>
-      <h2 className="whitespace-nowrap font-nunito text-5xl leading-14 font-semibold tracking-[-0.48px] text-[#263238]">
+      <h2 className="whitespace-nowrap font-nunito text-5xl leading-14 font-semibold tracking-[-0.48px] text-[#263238] max-lg:whitespace-normal max-md:text-[34px] max-md:leading-[1.16]">
         Why families love Bright Horizons
       </h2>
     </header>

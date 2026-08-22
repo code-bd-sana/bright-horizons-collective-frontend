@@ -14,7 +14,6 @@ import { WhyBrightHorizonsSection } from '@/components/Home/why-bright-horizons-
 export default function Home() {
   return (
     <div className="min-h-screen bg-[#FDFDFC] font-sans text-[#263238] antialiased selection:bg-[#2F7D7E]/20">
-      {/* Test Comment */}
       <HeroSection />
       <main className="w-full">
         <WeeklyPlanSection />

@@ -47,7 +47,7 @@ function CtaCard({ compact = false }: { compact?: boolean }) {
         }
       >
         <div className="flex flex-col items-center gap-4">
-          <h2 className="font-nunito text-[40px] font-semibold leading-12 tracking-[-0.4px] text-[#414D60]">
+          <h2 className="font-nunito text-[40px] font-semibold leading-12 tracking-[-0.4px] text-[#414D60] max-md:text-[34px] max-md:leading-[1.16]">
             Ready to make play more meaningful?
           </h2>
           <p className="font-manrope text-base leading-6 text-[#7D8488]">

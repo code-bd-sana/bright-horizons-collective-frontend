@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { Menu } from 'lucide-react';
 import { useAppStore } from '@/store/use-app-store';
@@ -215,7 +215,9 @@ function ChildProfileOption({
 
 export function Header() {
   const { setSidebarOpen } = useAppStore();
+  const pathname = usePathname();
   const router = useRouter();
+  const isMessagesPage = pathname === '/dashboard/messages';
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [messagesOpen, setMessagesOpen] = useState(false);
   const [profilesOpen, setProfilesOpen] = useState(false);
@@ -289,21 +291,25 @@ export function Header() {
       >
         <Menu size={22} strokeWidth={1.7} />
       </button>
-      <label className="flex h-10 min-w-0 flex-1 items-center overflow-hidden rounded-lg border border-[#fce9e3] bg-[#fbf6f4] px-3 py-3 sm:px-5.25 sm:py-4.25 lg:max-w-110.5">
-        <Image
-          src="/Home/figma-dashboard-header-search.svg"
-          alt=""
-          width={16}
-          height={16}
-          className="mr-1.75 shrink-0"
-        />
-        <input
-          type="search"
-          aria-label="Search activities, resources, and articles"
-          placeholder="Search activities, resources, articles..."
-          className="min-w-0 flex-1 bg-transparent font-nunito text-xs font-medium leading-4 text-[#263238] outline-none placeholder:text-[#7d8488]"
-        />
-      </label>
+      {isMessagesPage ? (
+        <span className="flex-1" aria-hidden="true" />
+      ) : (
+        <label className="flex h-10 min-w-0 flex-1 items-center overflow-hidden rounded-lg border border-[#fce9e3] bg-[#fbf6f4] px-3 py-3 sm:px-5.25 sm:py-4.25 lg:max-w-110.5">
+          <Image
+            src="/Home/figma-dashboard-header-search.svg"
+            alt=""
+            width={16}
+            height={16}
+            className="mr-1.75 shrink-0"
+          />
+          <input
+            type="search"
+            aria-label="Search activities, resources, and articles"
+            placeholder="Search activities, resources, articles..."
+            className="min-w-0 flex-1 bg-transparent font-nunito text-xs font-medium leading-4 text-[#263238] outline-none placeholder:text-[#7d8488]"
+          />
+        </label>
+      )}
 
       <div className="relative flex shrink-0 items-center gap-2 sm:gap-3">
         <button
