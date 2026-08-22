@@ -1,6 +1,6 @@
 'use client';
 
-import { BellRing, BookOpen, CalendarDays, MessageCircle, RefreshCw } from 'lucide-react';
+import { AlarmClock, CalendarDays, FileCog, MessageSquareText, RefreshCw } from 'lucide-react';
 import { useState } from 'react';
 
 type NotificationId =
@@ -17,13 +17,13 @@ const notificationOptions = [
     id: 'activityReminders',
     title: 'Activity Reminders',
     description: "Daily prompts for scheduled activities to keep your child's routine on track.",
-    icon: BellRing,
+    icon: AlarmClock,
   },
   {
     id: 'messages',
     title: 'Messages',
     description: 'Instant alerts for new messages from educators or fellow collective parents.',
-    icon: MessageCircle,
+    icon: MessageSquareText,
   },
   {
     id: 'platformUpdates',
@@ -35,7 +35,7 @@ const notificationOptions = [
     id: 'parentResources',
     title: 'New Parent Resources',
     description: 'Access to expert articles, webinars, and educational whitepapers.',
-    icon: BookOpen,
+    icon: FileCog,
   },
 ] as const satisfies ReadonlyArray<{
   id: NotificationId;
