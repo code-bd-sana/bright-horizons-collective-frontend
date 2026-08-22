@@ -88,7 +88,7 @@ function HowItWorksHeading() {
       <span className="rounded-xl border border-[#FAE1D9] bg-[#FCE9E3] px-2 py-1.5 font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#614840]">
         How It Works
       </span>
-      <h2 className="whitespace-nowrap font-nunito text-5xl leading-14 font-semibold tracking-[-0.48px] text-[#263238] max-lg:whitespace-normal max-md:text-[34px] max-md:leading-[1.16]">
+      <h2 className="whitespace-nowrap font-nunito text-5xl leading-14 font-semibold tracking-[-0.48px] text-[#263238]">
         Simple to start
       </h2>
     </header>
@@ -98,7 +98,7 @@ function HowItWorksHeading() {
 function WorkflowStep({ step }: { step: Step }) {
   return (
     <article
-      className="flex shrink-0 items-start gap-6 rounded-2xl p-6 max-lg:w-full max-md:!h-auto max-md:flex-col"
+      className="flex shrink-0 items-start gap-6 rounded-2xl p-6"
       style={{ backgroundColor: step.color, height: `${step.cardHeight}px` }}
     >
       <span
@@ -108,11 +108,11 @@ function WorkflowStep({ step }: { step: Step }) {
         {step.number}
       </span>
       <div
-        className="flex shrink-0 flex-col items-start justify-between max-md:!h-auto max-md:!w-full max-md:gap-3"
+        className="flex shrink-0 flex-col items-start justify-between"
         style={{ height: `${step.bodyHeight}px`, width: `${step.descriptionWidth}px` }}
       >
         <h3
-          className="font-nunito text-xl leading-7 font-medium text-[#101828] max-md:!w-full"
+          className="font-nunito text-xl leading-7 font-medium text-[#101828]"
           style={{ width: `${step.titleWidth ?? step.descriptionWidth}px` }}
         >
           {step.title}

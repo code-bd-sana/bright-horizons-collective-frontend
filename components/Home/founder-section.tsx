@@ -8,7 +8,7 @@ function FounderHeading() {
       <span className="rounded-xl border border-[#FAE1D9] bg-[#FFFDF8] px-2 py-1.5 font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#614840]">
         Who we are
       </span>
-      <h2 className="whitespace-nowrap font-nunito text-5xl leading-14 font-semibold tracking-[-0.48px] text-[#263238] max-lg:whitespace-normal max-md:text-[34px] max-md:leading-[1.16]">
+      <h2 className="whitespace-nowrap font-nunito text-5xl leading-14 font-semibold tracking-[-0.48px] text-[#263238]">
         The person behind the plan
       </h2>
     </header>
@@ -17,37 +17,37 @@ function FounderHeading() {
 
 function Credentials() {
   return (
-    <div className="flex flex-col max-md:grid max-md:grid-cols-2">
-      <div className="flex items-start max-md:contents">
-        <div className="flex w-[168px] flex-col items-center border-r border-b border-[#F5C4B2] px-4 py-3 max-md:w-full">
-          <p className="w-[152px] font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#493630] max-md:w-full max-md:text-center">
+    <div className="flex flex-col">
+      <div className="flex items-start">
+        <div className="flex w-[168px] flex-col items-center border-r border-b border-[#F5C4B2] px-4 py-3">
+          <p className="w-[152px] font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#493630]">
             Licensed Pediatric Occupational Therapist
           </p>
         </div>
         <div className="flex flex-col items-center border-r border-b border-[#F5C4B2] px-4 py-3">
-          <p className="w-[98px] text-center font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#493630] max-md:w-full">
+          <p className="w-[98px] text-center font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#493630]">
             NBCOT Certified
           </p>
         </div>
-        <div className="flex flex-col items-center border-b border-[#F5C4B2] px-4 py-3 max-md:border-r">
-          <p className="w-[106px] text-right font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#493630] max-md:w-full max-md:text-center">
+        <div className="flex flex-col items-center border-b border-[#F5C4B2] px-4 py-3">
+          <p className="w-[106px] text-right font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#493630]">
             7+ years clinical practice
           </p>
         </div>
       </div>
-      <div className="flex items-start max-md:contents">
+      <div className="flex items-start">
         <div className="flex flex-col items-center border-r border-[#F5C4B2] px-4 py-3">
-          <p className="w-[136px] font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#493630] max-md:w-full max-md:text-center">
+          <p className="w-[136px] font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#493630]">
             Home Health Specialist
           </p>
         </div>
-        <div className="flex w-[130px] flex-col items-center border-r border-[#F5C4B2] px-4 py-3 max-md:w-full max-md:border-b">
-          <p className="w-[152px] text-center font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#493630] max-md:w-full">
+        <div className="flex w-[130px] flex-col items-center border-r border-[#F5C4B2] px-4 py-3">
+          <p className="w-[152px] text-center font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#493630]">
             Evidence-Based Practice
           </p>
         </div>
         <div className="flex flex-col items-center px-4 py-3">
-          <p className="w-[106px] text-right font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#493630] max-md:w-full max-md:text-center">
+          <p className="w-[106px] text-right font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#493630]">
             Family-Centered Care
           </p>
         </div>
@@ -58,7 +58,7 @@ function Credentials() {
 
 function FounderCopy() {
   return (
-    <div className="flex w-[719px] flex-col items-start gap-6 max-lg:w-full">
+    <div className="flex w-[719px] flex-col items-start gap-6">
       <div className="flex w-full flex-col gap-6">
         <div className="w-full whitespace-pre-wrap font-manrope text-lg leading-[27px] tracking-[-0.27px] text-[#263238]">
           <p>Hi, I&apos;m Jaicy.</p>
@@ -84,7 +84,7 @@ function FounderCopy() {
           alt=""
           width={531}
           height={18}
-          className="h-[18px] w-[531px] max-w-full"
+          className="h-[18px] w-[531px]"
         />
       </div>
 
