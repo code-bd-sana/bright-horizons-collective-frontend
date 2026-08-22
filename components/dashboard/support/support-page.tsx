@@ -74,8 +74,8 @@ export function SupportPage() {
 
   return (
     <section className="-mt-3 w-full max-w-208 pb-8 text-[#263238]">
-      <header className="mb-12">
-        <h1 className="font-nunito text-[32px] font-medium leading-10 tracking-[-0.16px]">
+      <header className="mb-8 sm:mb-12">
+        <h1 className="font-nunito text-2xl font-medium leading-8 tracking-[-0.16px] sm:text-[32px] sm:leading-10">
           Support
         </h1>
         <p className="mt-1 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#7d8488]">
@@ -83,13 +83,13 @@ export function SupportPage() {
         </p>
       </header>
 
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-3">
         {supportActions.map(({ title, description, icon: Icon, modal }) => (
           <button
             key={title}
             type="button"
             onClick={() => setActiveModal(modal)}
-            className="flex min-h-32 flex-col rounded-2xl border border-[#e8ebe8] bg-white p-4 text-left transition-shadow hover:shadow-[0_2px_10px_rgba(39,69,67,0.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2f7d7e]"
+            className="flex min-h-28 flex-col rounded-2xl border border-[#e8ebe8] bg-white p-4 text-left transition-shadow hover:shadow-[0_2px_10px_rgba(39,69,67,0.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2f7d7e] sm:min-h-32"
           >
             <span className="flex size-10 items-center justify-center rounded-lg bg-[#eef3f3] text-[#2f7d7e]">
               <Icon size={22} strokeWidth={1.6} aria-hidden="true" />
@@ -141,7 +141,7 @@ export function SupportPage() {
               return (
                 <article
                   key={question}
-                  className={`rounded-2xl border border-[#e8ebe8] bg-white ${isOpen ? 'px-5 py-4 shadow-[0_2px_10px_rgba(39,69,67,0.08)]' : 'px-5 py-5'}`}
+                  className={`rounded-2xl border border-[#e8ebe8] bg-white ${isOpen ? 'px-4 py-4 shadow-[0_2px_10px_rgba(39,69,67,0.08)] sm:px-5' : 'px-4 py-5 sm:px-5'}`}
                 >
                   <button
                     type="button"

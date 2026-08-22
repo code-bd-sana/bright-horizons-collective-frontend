@@ -17,10 +17,10 @@ type SettingsSidebarProps = {
 export function SettingsSidebar({ activeSection, onSectionChange }: SettingsSidebarProps) {
   return (
     <nav
-      className="rounded-xl border border-[#d8ddd9] bg-white p-4"
+      className="overflow-x-auto rounded-xl border border-[#d8ddd9] bg-white p-2 sm:p-4"
       aria-label="Settings navigation"
     >
-      <div className="flex flex-col gap-2">
+      <div className="flex min-w-max gap-2 xl:min-w-0 xl:flex-col">
         {settingsNavigation.map(({ id, label, icon: Icon }) => {
           const isActive = activeSection === id;
 
@@ -29,7 +29,7 @@ export function SettingsSidebar({ activeSection, onSectionChange }: SettingsSide
               key={id}
               type="button"
               onClick={() => onSectionChange(id)}
-              className={`flex h-9 items-center gap-3 rounded-xl px-3 text-left font-nunito text-sm font-medium leading-5 tracking-[-0.084px] transition-colors ${isActive ? 'bg-[#2f7d7e] text-white' : 'text-[#515b60] hover:bg-[#fce9e3]/50'}`}
+              className={`flex h-9 shrink-0 items-center gap-3 rounded-xl px-3 text-left font-nunito text-sm font-medium leading-5 tracking-[-0.084px] transition-colors ${isActive ? 'bg-[#2f7d7e] text-white' : 'text-[#515b60] hover:bg-[#fce9e3]/50'}`}
             >
               <Icon size={20} strokeWidth={1.5} aria-hidden="true" />
               {label}

@@ -31,7 +31,7 @@ export function SettingsPage() {
   return (
     <section className="-mt-3 mx-auto w-full max-w-343.5 pb-8 text-[#263238]">
       <header>
-        <h1 className="font-nunito text-[32px] font-medium leading-10 tracking-[-0.16px]">
+        <h1 className="font-nunito text-2xl font-medium leading-8 tracking-[-0.16px] sm:text-[32px] sm:leading-10">
           Settings & Account Management
         </h1>
         <p className="mt-1 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#7d8488]">
@@ -39,7 +39,7 @@ export function SettingsPage() {
           legal terms.
         </p>
       </header>
-      <div className="mt-10 grid items-start gap-6 xl:grid-cols-[286px_minmax(0,1fr)]">
+      <div className="mt-6 grid items-start gap-6 sm:mt-10 xl:grid-cols-[286px_minmax(0,1fr)]">
         <SettingsSidebar activeSection={activeSection} onSectionChange={setActiveSection} />
         <div>
           <ActiveSettingsPanel section={activeSection} />

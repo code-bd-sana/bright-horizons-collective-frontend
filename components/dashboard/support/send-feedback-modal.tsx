@@ -24,7 +24,7 @@ export function SendFeedbackModal({ isOpen, onClose }: SendFeedbackModalProps) {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
         showCloseButton={false}
-        className="w-171 max-w-[calc(100%-2rem)] gap-0 rounded-2xl border border-[#eff1ef] bg-white p-8 text-[#263238] shadow-none sm:max-w-225"
+        className="w-171 max-h-[calc(100dvh-2rem)] max-w-[calc(100%-2rem)] gap-0 overflow-y-auto rounded-2xl border border-[#eff1ef] bg-white p-4 text-[#263238] shadow-none sm:p-8 sm:max-w-225"
       >
         <div className="flex items-center justify-between">
           <DialogTitle className="font-nunito text-2xl font-semibold leading-8 text-[#263238]">
@@ -71,17 +71,17 @@ export function SendFeedbackModal({ isOpen, onClose }: SendFeedbackModalProps) {
               className="mt-1.5 h-37.5 w-full resize-none rounded-md border border-[#dce4ed] p-4 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#515b60] shadow-[0_1px_2px_rgba(16,24,40,0.05)] outline-none placeholder:text-[#a8adaf] focus:border-[#2f7d7e]"
             />
           </label>
-          <div className="mt-8 flex gap-4">
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:gap-4">
             <button
               type="button"
               onClick={() => onClose(false)}
-              className="h-14 w-30.75 rounded-full border border-[#d4d6d7] font-nunito text-base font-medium tracking-[-0.176px] text-[#14094b]"
+              className="h-14 w-full rounded-full border border-[#d4d6d7] font-nunito text-base font-medium tracking-[-0.176px] text-[#14094b] sm:w-30.75"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="h-14 w-46.75 rounded-full border border-[#d5e5e5] bg-[#2f7d7e] font-nunito text-base font-medium tracking-[-0.176px] text-white"
+              className="h-14 w-full rounded-full border border-[#d5e5e5] bg-[#2f7d7e] font-nunito text-base font-medium tracking-[-0.176px] text-white sm:w-46.75"
             >
               Submit Feedback
             </button>
