@@ -54,7 +54,7 @@ const resources: Resource[] = [
 
 function ResourceCard({ resource }: { resource: Resource }) {
   return (
-    <article className="relative h-[460px] w-[422px] overflow-hidden rounded-3xl border border-[#E9F1EE] bg-white max-lg:w-full">
+    <article className="relative h-[460px] w-[422px] overflow-hidden rounded-3xl border border-[#E9F1EE] bg-white">
       <div className="absolute inset-x-0 top-0 h-[290px] overflow-hidden rounded-3xl bg-[#E0E7FF]">
         <div
           className={`absolute ${resource.imageClassName}`}
@@ -73,7 +73,7 @@ function ResourceCard({ resource }: { resource: Resource }) {
         </div>
       </div>
 
-      <div className="absolute left-[15px] top-[321px] flex w-[390px] flex-col gap-3 max-lg:w-[calc(100%-30px)]">
+      <div className="absolute left-[15px] top-[321px] flex w-[390px] flex-col gap-3">
         <div className="flex items-start justify-between">
           <h3 className="font-nunito text-xl leading-7 font-medium tracking-[-0.2px] text-[#263238]">
             {resource.title}
@@ -84,7 +84,7 @@ function ResourceCard({ resource }: { resource: Resource }) {
         </div>
 
         <p
-          className={`font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#7D8488] max-lg:!w-full ${resource.descriptionWidth}`}
+          className={`font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#7D8488] ${resource.descriptionWidth}`}
         >
           {resource.description}
         </p>
@@ -113,7 +113,7 @@ function ResourcesHeading() {
       <span className="rounded-xl border border-[#FAE1D9] bg-[#FCE9E3] px-2 py-1.5 font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#614840]">
         For parents
       </span>
-      <h2 className="mt-4 w-[573px] font-nunito text-5xl leading-14 font-semibold tracking-[-0.48px] text-[#263238] max-lg:w-full max-md:text-[34px] max-md:leading-[1.16]">
+      <h2 className="mt-4 w-[573px] font-nunito text-5xl leading-14 font-semibold tracking-[-0.48px] text-[#263238]">
         Resources for parents
       </h2>
     </header>
