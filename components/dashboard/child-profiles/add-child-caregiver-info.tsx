@@ -3,6 +3,7 @@
 import { DynamicForm } from '@/components/ui/dynamic-form';
 import { AddChildStepper } from './add-child-stepper';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { ChevronDown } from 'lucide-react';
 import { z } from 'zod';
 import { toast } from 'sonner';
@@ -22,8 +23,11 @@ const inputClassName =
   'h-11 w-full rounded-full border border-[#d8ddd9] bg-white px-4 py-2.5 font-manrope text-base leading-6 tracking-[-0.176px] text-[#515b60] shadow-[0_1px_2px_rgba(16,24,40,0.05)] outline-none focus:border-[#2f7d7e]';
 
 export function AddChildCaregiverInfo() {
+  const router = useRouter();
+
   function submitCaregiverInfo(data: CaregiverInfoValues) {
     toast.success(`${data.name}'s caregiver information has been saved.`);
+    router.push('/dashboard/child-profiles/add-child/development-focus');
   }
 
   return (
