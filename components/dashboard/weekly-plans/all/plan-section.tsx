@@ -1,17 +1,17 @@
-import React from 'react';
+import type { ReactNode } from 'react';
 
 interface PlanSectionProps {
   title: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export function PlanSection({ title, children }: PlanSectionProps) {
   return (
-    <section className="flex flex-col gap-[24px] w-full">
+    <section className="flex w-full flex-col gap-4 lg:gap-[24px]">
       <h2 className="font-['Nunito'] font-medium text-[32px] leading-[40px] tracking-[-0.16px] text-[#263238]">
         {title}
       </h2>
-      <div className="flex flex-wrap gap-[24px] w-full">{children}</div>
+      <div className="flex w-full flex-wrap gap-4 sm:gap-6">{children}</div>
     </section>
   );
 }

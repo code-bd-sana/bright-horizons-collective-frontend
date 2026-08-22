@@ -12,7 +12,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
       <Sidebar role={session?.role} />
       <div className="flex flex-col flex-1 min-w-0">
         <Header />
-        <main className="flex-1 overflow-auto p-8">{children}</main>
+        <main className="flex-1 overflow-auto p-4 sm:p-6 lg:p-8">{children}</main>
       </div>
     </div>
   );

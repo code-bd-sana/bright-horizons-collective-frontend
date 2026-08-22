@@ -66,7 +66,7 @@ const recommendations = [
 function Card({ children, className = '' }: { children: React.ReactNode; className?: string }) {
   return (
     <section
-      className={`rounded-2xl border border-[#e8ebe8] bg-[#fffdf8] p-8 shadow-[0_1px_2px_rgba(0,0,0,0.05)] ${className}`}
+      className={`rounded-2xl border border-[#e8ebe8] bg-[#fffdf8] p-4 sm:p-6 lg:p-8 shadow-[0_1px_2px_rgba(0,0,0,0.05)] ${className}`}
     >
       {children}
     </section>
@@ -105,7 +105,7 @@ function WelcomeBanner() {
   ];
 
   return (
-    <section className="relative h-[340px] overflow-hidden rounded-2xl border border-[#fce9e3] bg-[#fffdf8] p-8">
+    <section className="relative min-h-[340px] overflow-hidden rounded-2xl border border-[#fce9e3] bg-[#fffdf8] p-4 sm:p-6 lg:h-[340px] lg:p-8">
       <Image
         src="/Home/figma-parent-dashboard-hero-background.svg"
         alt=""
@@ -161,7 +161,7 @@ function WelcomeBanner() {
           </Link>
         </div>
 
-        <div className="mt-6 flex w-full max-w-[569px] gap-4 min-[1050px]:mt-0">
+        <div className="mt-6 flex w-full max-w-[569px] gap-3 sm:gap-4 min-[1050px]:mt-0 max-sm:flex-col">
           {stats.map((stat) => (
             <article
               key={stat.label}
@@ -188,7 +188,7 @@ function WelcomeBanner() {
 
 function TodayActivityCard() {
   return (
-    <Card className="flex h-[617px] flex-col gap-6">
+    <Card className="flex min-h-[480px] flex-col gap-6 lg:h-[617px]">
       <div className="flex flex-col gap-3">
         <div className="flex items-start justify-between gap-4">
           <div>
@@ -209,32 +209,33 @@ function TodayActivityCard() {
         </p>
       </div>
 
-      <div className="relative h-[329px] w-full overflow-hidden rounded-2xl bg-[#d2e3dc]">
-        <div
-          className="absolute left-1/2 top-1/2 h-[323px] w-[331px] -translate-x-1/2 -translate-y-1/2"
-          style={{
-            WebkitMaskImage: `url(${yogaMask})`,
-            maskImage: `url(${yogaMask})`,
-            WebkitMaskPosition: 'center',
-            maskPosition: 'center',
-            WebkitMaskRepeat: 'no-repeat',
-            maskRepeat: 'no-repeat',
-            WebkitMaskSize: '100% 100%',
-            maskSize: '100% 100%',
-          }}
-        >
-          <Image
-            src="/Home/figma-parent-dashboard-yoga.png"
-            alt="Panda practicing an animal yoga pose"
-            fill
-            sizes="331px"
-            className="object-cover"
-            style={{ objectPosition: '50% 58%' }}
-          />
+      <div className="relative h-[250px] w-full overflow-hidden rounded-2xl bg-[#d2e3dc] sm:h-[329px]">
+        <div className="absolute left-1/2 top-1/2 h-[323px] w-[330.57px] -translate-x-1/2 -translate-y-1/2">
+          <div
+            className="absolute -left-[11.36px] -top-[131.22px] h-[612.357px] w-[360.603px]"
+            style={{
+              WebkitMaskImage: `url(${yogaMask})`,
+              maskImage: `url(${yogaMask})`,
+              WebkitMaskPosition: '14.157px 138.729px',
+              maskPosition: '14.157px 138.729px',
+              WebkitMaskRepeat: 'no-repeat',
+              maskRepeat: 'no-repeat',
+              WebkitMaskSize: '322.443px 309.926px',
+              maskSize: '322.443px 309.926px',
+            }}
+          >
+            <Image
+              src="/Home/figma-parent-dashboard-yoga.png"
+              alt="Panda practicing an animal yoga pose"
+              fill
+              sizes="361px"
+              className="object-cover"
+            />
+          </div>
         </div>
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className="h-[68px] w-[390px] max-w-full shrink-0">
         <div className="flex items-center gap-1.25">
           <span className="rounded-full border border-[#dceeee] bg-[#e0f0e9] px-2.25 py-1.75 font-nunito text-xs font-medium leading-4 text-[#263238]">
             Easy
@@ -244,7 +245,7 @@ function TodayActivityCard() {
             20 min
           </span>
         </div>
-        <div className="flex flex-wrap gap-1.25">
+        <div className="mt-2 flex flex-wrap gap-1.25">
           <span className="rounded-full border border-[#accbcb] bg-white px-2.25 py-1.75 font-nunito text-xs font-medium leading-4 text-[#2f7d7e]">
             Yoga cards &amp; open space
           </span>
@@ -259,7 +260,7 @@ function TodayActivityCard() {
 
 function ProgressCard() {
   return (
-    <Card className="flex h-[617px] flex-col">
+    <Card className="flex min-h-[480px] flex-col lg:h-[617px]">
       <p className="font-nunito text-xs font-medium leading-4 text-[#2f7d7e]">
         Development Tracking
       </p>
@@ -326,7 +327,7 @@ function ProgressCard() {
 
 function WeeklyPlanCard() {
   return (
-    <Card className="flex h-[617px] flex-col">
+    <Card className="flex min-h-[480px] flex-col lg:h-[617px]">
       <p className="font-nunito text-xs font-medium leading-4 text-[#2f7d7e]">
         Week 3 · July 20–26
       </p>
@@ -392,7 +393,7 @@ function WeeklyPlanCard() {
       </div>
 
       <div className="mt-6">
-        <ArrowLink href="/dashboard/weekly-plans" full>
+        <ArrowLink href="/dashboard/weekly-plans/view" full>
           View Full Weekly Plan
         </ArrowLink>
       </div>
@@ -402,7 +403,7 @@ function WeeklyPlanCard() {
 
 function RecentActivityCard() {
   return (
-    <Card className="h-[444px]">
+    <Card className="min-h-[360px] lg:h-[444px]">
       <div className="flex items-center justify-between">
         <h2 className="font-nunito text-2xl font-medium leading-8 text-[#263238]">
           Recent activity
@@ -476,7 +477,7 @@ function MessagesCard() {
   ];
 
   return (
-    <Card className="flex h-[444px] flex-col">
+    <Card className="flex min-h-[360px] flex-col lg:h-[444px]">
       <div className="flex items-center justify-between">
         <h2 className="font-nunito text-2xl font-medium leading-8 text-[#263238]">Messages</h2>
         <span className="rounded-full bg-[#2f7d7e] px-3 py-1 font-nunito text-xs font-medium leading-4 text-white">
@@ -518,7 +519,7 @@ function MessagesCard() {
 
 function RecommendationsCard() {
   return (
-    <Card className="h-[444px]">
+    <Card className="min-h-[360px] lg:h-[444px]">
       <p className="font-nunito text-xs font-medium leading-4 text-[#2f7d7e]">
         Personalised For Emma
       </p>
@@ -527,8 +528,11 @@ function RecommendationsCard() {
       </h2>
       <div className="mt-6 space-y-6">
         {recommendations.map((item) => (
-          <article key={item.title} className="flex items-start justify-between gap-4">
-            <div className="flex min-w-0 gap-4">
+          <article
+            key={item.title}
+            className="flex items-start justify-between gap-4 max-sm:flex-col"
+          >
+            <div className="flex min-w-0 gap-3 sm:gap-4">
               <span
                 className="relative mt-1 size-[119px] shrink-0"
                 style={{

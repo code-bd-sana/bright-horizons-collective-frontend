@@ -1,8 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, Download } from 'lucide-react';
+import { ArrowRight, CalendarDays, Check, Download } from 'lucide-react';
 
-const maskImage = '/Home/figma-parent-dashboard-star-mask.svg';
+const maskImage = '/Home/figma-weekly-plans-history-mask.svg';
 
 const pastPlans = [
   {
@@ -10,7 +10,7 @@ const pastPlans = [
     status: 'Completed',
     title: 'Sensory Exploration',
     dateRange: 'Jun 29 – Jul 5',
-    image: '/Home/figma-parent-dashboard-yoga.png',
+    image: '/Home/figma-weekly-plans-history.png',
     categories: ['Sensory Processing', 'Body Awareness', 'Self-Regulation'],
     days: [true, true, true, true, true, true, true],
     progress: 100,
@@ -22,7 +22,7 @@ const pastPlans = [
     status: 'Completed',
     title: 'Sensory Exploration',
     dateRange: 'Jun 29 – Jul 5',
-    image: '/Home/figma-parent-dashboard-yoga.png',
+    image: '/Home/figma-weekly-plans-history.png',
     categories: ['Sensory Processing', 'Body Awareness', 'Self-Regulation'],
     days: [true, true, false, true, false, true, true],
     progress: 80,
@@ -33,7 +33,7 @@ const pastPlans = [
 
 export function PastWeeklyPlans() {
   return (
-    <section className="mt-[24px] flex w-full flex-col items-start gap-[24px] rounded-[16px] border border-[#e8ebe8] p-[32px] shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
+    <section className="flex w-full flex-col items-start gap-[24px] rounded-[16px] border border-[#e8ebe8] bg-[#fffdf8] p-4 sm:p-6 lg:p-[32px] shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
       <div className="flex w-full items-start justify-between">
         <h2 className="font-nunito text-[24px] font-medium leading-[32px] text-[#263238]">
           Weekly Plans
@@ -52,32 +52,30 @@ export function PastWeeklyPlans() {
         {pastPlans.map((plan, index) => (
           <article
             key={index}
-            className="flex w-full items-start justify-between rounded-[16px] border border-[#e9f1ee] bg-transparent p-[16px]"
+            className="flex w-full items-start justify-between rounded-[16px] border border-[#e9f1ee] bg-transparent p-[16px] max-lg:flex-col max-lg:gap-5"
           >
-            <div className="flex shrink-0 items-center gap-[20px]">
+            <div className="flex min-w-0 shrink-0 items-center gap-[20px] max-lg:w-full max-lg:flex-col max-lg:items-start">
               {/* Left Image */}
               <div className="relative h-[164px] w-[171px] shrink-0">
-                <div className="absolute -left-[6px] -top-[3px] h-full w-full">
-                  <div
-                    className="absolute -left-[9px] -top-[79.5px] h-[319px] w-[187px]"
-                    style={{
-                      WebkitMaskImage: `url(${maskImage})`,
-                      maskImage: `url(${maskImage})`,
-                      WebkitMaskPosition: 'center',
-                      maskPosition: 'center',
-                      WebkitMaskRepeat: 'no-repeat',
-                      maskRepeat: 'no-repeat',
-                      WebkitMaskSize: '166px 163px',
-                      maskSize: '166px 163px',
-                    }}
-                  >
-                    <Image src={plan.image} alt="" fill sizes="187px" className="object-cover" />
-                  </div>
+                <div
+                  className="absolute -left-[9px] -top-[79.5px] h-[319.06px] w-[187.887px]"
+                  style={{
+                    WebkitMaskImage: `url(${maskImage})`,
+                    maskImage: `url(${maskImage})`,
+                    WebkitMaskPosition: '11.313px 83.244px',
+                    maskPosition: '11.313px 83.244px',
+                    WebkitMaskRepeat: 'no-repeat',
+                    maskRepeat: 'no-repeat',
+                    WebkitMaskSize: '166.132px 163.068px',
+                    maskSize: '166.132px 163.068px',
+                  }}
+                >
+                  <Image src={plan.image} alt="" fill sizes="187.887px" className="object-cover" />
                 </div>
               </div>
 
               {/* Center Content */}
-              <div className="flex shrink-0 flex-col items-start gap-[24px]">
+              <div className="flex min-w-0 shrink-0 flex-col items-start gap-[24px] max-lg:w-full">
                 <div className="flex w-[162px] shrink-0 flex-col items-start gap-[8px]">
                   <div className="flex w-full shrink-0 items-center gap-[10px]">
                     <div
@@ -103,38 +101,10 @@ export function PastWeeklyPlans() {
                       {plan.title}
                     </h3>
                     <div className="flex shrink-0 items-center gap-[4px]">
-                      <svg
-                        width="14"
-                        height="14"
-                        viewBox="0 0 14 14"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M11.6667 2.33333H2.33333C1.689 2.33333 1.16667 2.85567 1.16667 3.5V11.6667C1.16667 12.311 1.689 12.8333 2.33333 12.8333H11.6667C12.311 12.8333 12.8333 12.311 12.8333 11.6667V3.5C12.8333 2.85567 12.311 2.33333 11.6667 2.33333Z"
-                          stroke="#607077"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M9.33333 1.16667V3.5"
-                          stroke="#607077"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M4.66667 1.16667V3.5"
-                          stroke="#607077"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M1.16667 5.83333H12.8333"
-                          stroke="#607077"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
+                      <CalendarDays
+                        aria-hidden="true"
+                        className="size-[14px] stroke-[1.25] text-[#607077]"
+                      />
                       <p className="font-manrope text-[12px] font-normal leading-[18px] text-[#607077]">
                         {plan.dateRange}
                       </p>
@@ -143,7 +113,7 @@ export function PastWeeklyPlans() {
                 </div>
 
                 <div className="flex w-full shrink-0 flex-col items-start gap-[8px]">
-                  <div className="flex w-full shrink-0 items-center gap-[8px]">
+                  <div className="flex w-full shrink-0 items-center gap-[8px] max-lg:flex-wrap">
                     {plan.categories.map((category) => (
                       <div
                         key={category}
@@ -167,21 +137,10 @@ export function PastWeeklyPlans() {
                             }`}
                           >
                             {isComplete && (
-                              <svg
-                                width="11"
-                                height="11"
-                                viewBox="0 0 11 11"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  d="M9.16667 2.75L4.125 7.79167L1.83333 5.5"
-                                  stroke="white"
-                                  strokeWidth="1.5"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                />
-                              </svg>
+                              <Check
+                                aria-hidden="true"
+                                className="size-[11px] stroke-[1.5] text-white"
+                              />
                             )}
                           </div>
                           <span className="font-manrope text-[8px] font-semibold leading-[12px] text-[#8fb9a8]">
@@ -201,35 +160,13 @@ export function PastWeeklyPlans() {
             </div>
 
             {/* Right Actions & Progress */}
-            <div className="flex w-[122px] shrink-0 flex-col items-center gap-[24px]">
+            <div className="flex w-[122px] shrink-0 flex-col items-center gap-[24px] max-lg:w-full max-lg:flex-row max-lg:justify-between">
               <div className="flex shrink-0 flex-col items-center gap-[4px]">
-                <div className="relative h-[52px] w-[52px] shrink-0">
-                  <svg
-                    className="h-full w-full -rotate-90"
-                    viewBox="0 0 52 52"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <circle
-                      cx="26"
-                      cy="26"
-                      r="24"
-                      fill="none"
-                      className="stroke-[#eaecee]"
-                      strokeWidth="4"
-                    ></circle>
-                    <circle
-                      cx="26"
-                      cy="26"
-                      r="24"
-                      fill="none"
-                      className="stroke-[#8fb9a8]"
-                      strokeWidth="4"
-                      strokeDasharray="150"
-                      strokeDashoffset={150 - (150 * plan.progress) / 100}
-                      strokeLinecap="round"
-                    ></circle>
-                  </svg>
-                  <div className="absolute inset-0 flex items-center justify-center">
+                <div
+                  className="grid h-[52px] w-[52px] shrink-0 place-items-center rounded-full"
+                  style={{ background: `conic-gradient(#8fb9a8 ${plan.progress}%, #eaecee 0)` }}
+                >
+                  <div className="grid size-[44px] place-items-center rounded-full bg-[#fffdf8]">
                     <span className="font-nunito text-[12px] font-medium leading-[16px] text-[#8fb9a8]">
                       {plan.progress}%
                     </span>

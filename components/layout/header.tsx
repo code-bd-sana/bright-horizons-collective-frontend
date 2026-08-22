@@ -275,10 +275,10 @@ export function Header() {
 
   return (
     <header
-      className="sticky top-0 z-30 flex h-18 items-center justify-between bg-[#fdfdfc] px-10"
+      className="sticky top-0 z-30 flex h-16 items-center justify-between gap-2 bg-[#fdfdfc] px-4 sm:px-6 md:px-8 lg:h-18 lg:px-10"
       aria-label="Dashboard header"
     >
-      <label className="flex h-10 w-110.5 items-center overflow-hidden rounded-lg border border-[#fce9e3] bg-[#fbf6f4] px-5.25 py-4.25 max-md:w-70 max-sm:w-48">
+      <label className="flex h-10 w-110.5 min-w-0 items-center overflow-hidden rounded-lg border border-[#fce9e3] bg-[#fbf6f4] px-5.25 py-4.25 max-lg:w-[320px] max-md:w-[240px] max-sm:flex-1 max-sm:w-auto max-sm:px-3">
         <Image
           src="/Home/figma-dashboard-header-search.svg"
           alt=""
@@ -294,7 +294,7 @@ export function Header() {
         />
       </label>
 
-      <div className="relative flex items-center gap-3">
+      <div className="relative flex shrink-0 items-center gap-2 sm:gap-3">
         <button
           ref={messagesButtonRef}
           type="button"
@@ -306,7 +306,7 @@ export function Header() {
             setProfilesOpen(false);
             setAccountOpen(false);
           }}
-          className="flex size-10 items-center justify-center overflow-hidden rounded-lg bg-[#e9f1ee] p-1"
+          className="flex size-10 items-center justify-center overflow-hidden rounded-lg bg-[#e9f1ee] p-1 max-sm:hidden"
         >
           <Image src="/Home/figma-dashboard-header-chat.svg" alt="" width={25} height={24} />
         </button>

@@ -126,10 +126,10 @@ export default function AllWeeklyPlansPage() {
   ];
 
   return (
-    <div className="flex flex-col items-center w-full min-h-screen pb-[100px]">
-      <div className="w-full max-w-[1540px] px-[40px] py-[32px] flex flex-col gap-[48px]">
+    <div className="flex min-h-screen w-full flex-col items-center pb-[100px]">
+      <div className="flex w-full max-w-[1529px] flex-col gap-10 lg:gap-14">
         {/* Top Breadcrumb & Header */}
-        <div className="flex flex-col gap-[24px]">
+        <div className="flex flex-col gap-10">
           <div className="flex items-center gap-[8px]">
             <Link
               href="/dashboard/weekly-plans"
@@ -147,7 +147,7 @@ export default function AllWeeklyPlansPage() {
           <AllPlansHeader />
         </div>
 
-        <div className="flex flex-col gap-[32px] w-full bg-white border border-[#e8ebe8] rounded-[16px] p-[32px]">
+        <div className="flex w-full flex-col gap-4 rounded-[16px] border border-[#e8ebe8] bg-white p-4 sm:p-6 lg:gap-6 lg:p-[32px]">
           <PlanSection title="Current Weeks">
             {currentWeeks.map((plan) => (
               <PlanCard
@@ -165,7 +165,7 @@ export default function AllWeeklyPlansPage() {
           </PlanSection>
         </div>
 
-        <div className="flex flex-col gap-[32px] w-full border border-[#e8ebe8] rounded-[16px] p-[32px]">
+        <div className="flex w-full flex-col gap-4 rounded-[16px] border border-[#e8ebe8] p-4 sm:p-6 lg:gap-6 lg:p-[32px]">
           <PlanSection title="Upcoming Weeks">
             {upcomingWeeks.map((plan) => (
               <PlanCard
@@ -183,7 +183,7 @@ export default function AllWeeklyPlansPage() {
           </PlanSection>
         </div>
 
-        <div className="flex flex-col gap-[32px] w-full border border-[#e8ebe8] rounded-[16px] p-[32px]">
+        <div className="flex w-full flex-col gap-4 rounded-[16px] border border-[#e8ebe8] p-4 sm:p-6 lg:gap-6 lg:p-[32px]">
           <PlanSection title="Previous Weekly Plan">
             {previousWeeks.map((plan) => (
               <PlanCard
