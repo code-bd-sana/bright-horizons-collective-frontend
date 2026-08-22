@@ -90,7 +90,7 @@ function PlanCard({ plan }: { plan: Plan }) {
 
   return (
     <article
-      className={`relative h-[654px] w-[422px] rounded-[20px] bg-white p-[33px] ${
+      className={`relative h-[654px] w-[422px] rounded-[20px] bg-white p-[33px] max-lg:w-full max-md:h-auto max-md:min-h-[654px] max-md:p-6 ${
         plan.accent
           ? 'border-2 border-[#2F7D7E] shadow-[0_48px_6.5px_rgba(49,132,135,0),0_31px_6px_rgba(49,132,135,0.02),0_17px_5px_rgba(49,132,135,0.08),0_8px_4px_rgba(49,132,135,0.13),0_2px_2px_rgba(49,132,135,0.15)]'
           : 'border border-[#D8DDD9] shadow-[0_2px_6px_rgba(23,74,77,0.06)]'
@@ -111,7 +111,7 @@ function PlanCard({ plan }: { plan: Plan }) {
           </span>
         </>
       )}
-      <div className="flex h-full w-[356px] flex-col">
+      <div className="flex h-full w-[356px] flex-col max-lg:w-full">
         <div className={plan.name === 'Grow Together' ? 'h-[84px]' : 'h-[60px]'}>
           <h3 className="font-nunito text-xl font-semibold leading-7 text-[#2F7D7E]">
             {plan.name}
@@ -140,7 +140,7 @@ function PlanCard({ plan }: { plan: Plan }) {
             {plan.action}
           </Link>
         </div>
-        <div className={`mt-4 ${featurePanelHeight} border-t border-[#D8DDD9] py-4`}>
+        <div className={`mt-4 ${featurePanelHeight} border-t border-[#D8DDD9] py-4 max-md:h-auto`}>
           {plan.featuresHeading && (
             <p className="mb-2 font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#7D8488]">
               {plan.featuresHeading}

@@ -135,9 +135,9 @@ function UpcomingActivity({
   artwork = 'star',
 }: UpcomingActivityData) {
   return (
-    <article className="flex min-h-[106px] items-center rounded-[14px] border border-l-[3px] border-[#E9F1EE] py-[21px] pl-[23px] pr-[21px]">
-      <div className="flex w-full items-start justify-between">
-        <div className="flex items-start gap-6">
+    <article className="flex min-h-[106px] items-center rounded-[14px] border border-l-[3px] border-[#E9F1EE] py-[21px] pl-[23px] pr-[21px] max-lg:p-4">
+      <div className="flex w-full items-start justify-between max-lg:flex-col max-lg:gap-4">
+        <div className="flex min-w-0 items-start gap-6 max-sm:gap-3">
           <div className="flex w-8 shrink-0 flex-col items-center">
             <span className="font-nunito text-xs font-bold leading-4 tracking-[-0.18px] text-[#174A4D]">
               {day}
@@ -146,23 +146,23 @@ function UpcomingActivity({
               {date}
             </span>
           </div>
-          <div className="flex items-start gap-4">
+          <div className="flex min-w-0 items-start gap-4 max-sm:gap-3">
             <ActivityArtwork variant={artwork} />
-            <div className="flex h-[60px] flex-col gap-2">
+            <div className="flex h-[60px] min-w-0 flex-col gap-2 max-lg:h-auto">
               <h4 className="font-nunito text-base font-bold leading-4 tracking-[-0.24px] text-[#174A4D]">
                 {title}
               </h4>
-              <p className="w-[281px] font-manrope text-xs leading-[18px] text-[#A8ADAF]">
+              <p className="w-[281px] font-manrope text-xs leading-[18px] text-[#A8ADAF] max-lg:w-auto">
                 {description}
               </p>
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 max-lg:ml-10 max-sm:ml-0">
           <DurationBadge />
           <DifficultyBadge />
         </div>
-        <FigmaIcon name="img-icon3" size={16} className="rotate-90" />
+        <FigmaIcon name="img-icon3" size={16} className="rotate-90 max-lg:hidden" />
       </div>
     </article>
   );
@@ -170,9 +170,9 @@ function UpcomingActivity({
 
 function ExpandedActivity() {
   return (
-    <article className="h-[336px] rounded-[14px] border border-l-[3px] border-[#2F7D7E] py-[21px] pl-[23px] pr-[21px]">
-      <div className="flex items-start justify-between py-4">
-        <div className="flex items-start gap-6">
+    <article className="h-[336px] rounded-[14px] border border-l-[3px] border-[#2F7D7E] py-[21px] pl-[23px] pr-[21px] max-lg:h-auto max-lg:p-4">
+      <div className="flex items-start justify-between py-4 max-lg:flex-col max-lg:gap-4">
+        <div className="flex min-w-0 items-start gap-6 max-sm:gap-3">
           <div className="flex w-8 shrink-0 flex-col items-center">
             <span className="font-nunito text-xs font-bold leading-4 tracking-[-0.18px] text-[#174A4D]">
               MON
@@ -181,27 +181,27 @@ function ExpandedActivity() {
               Jul 20
             </span>
           </div>
-          <div className="flex items-start gap-4">
+          <div className="flex min-w-0 items-start gap-4 max-sm:gap-3">
             <ActivityArtwork />
-            <div className="flex h-[60px] flex-col gap-2">
+            <div className="flex h-[60px] min-w-0 flex-col gap-2 max-lg:h-auto">
               <h3 className="font-nunito text-base font-bold leading-4 tracking-[-0.24px] text-[#174A4D]">
                 Animal Yoga Adventure
               </h3>
-              <p className="w-[281px] font-manrope text-xs leading-[18px] text-[#A8ADAF]">
+              <p className="w-[281px] font-manrope text-xs leading-[18px] text-[#A8ADAF] max-lg:w-auto">
                 Move through fun animal poses to build balance and whole-body motor planning.
               </p>
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 max-lg:ml-10 max-sm:ml-0">
           <DurationBadge />
           <DifficultyBadge />
         </div>
-        <FigmaIcon name="img-icon3" size={16} className="-rotate-90" />
+        <FigmaIcon name="img-icon3" size={16} className="-rotate-90 max-lg:hidden" />
       </div>
 
-      <div className="mt-1 flex items-start justify-between border-t border-[#D5E5E5] pt-6">
-        <div className="w-[294px]">
+      <div className="mt-1 flex items-start justify-between border-t border-[#D5E5E5] pt-6 max-lg:flex-col max-lg:gap-6">
+        <div className="w-[294px] max-lg:w-full">
           <h4 className="font-nunito text-sm font-medium leading-5 tracking-[-0.084px] text-[#174A4D]">
             Each activity includes:
           </h4>
@@ -214,13 +214,13 @@ function ExpandedActivity() {
                 <span className="mt-px flex size-[18px] shrink-0 items-center justify-center rounded-full bg-[#DCEEEE]">
                   <FigmaIcon name="img-icon4" size={11} />
                 </span>
-                <span className="whitespace-nowrap">{benefit}</span>
+                <span className="max-lg:whitespace-normal">{benefit}</span>
               </li>
             ))}
           </ul>
         </div>
 
-        <div className="w-[210px] rounded-[14px] bg-[#F0F8F5] p-5">
+        <div className="w-[210px] rounded-[14px] bg-[#F0F8F5] p-5 max-lg:w-full">
           <h4 className="font-nunito text-sm font-semibold leading-5 tracking-[-0.084px] text-[#2F7D7E]">
             Modifications preview:
           </h4>
@@ -461,8 +461,8 @@ function ResponsiveWeeklyPlan() {
               </div>
             </div>
 
-            <div className="mt-8 overflow-x-auto">
-              <div className="min-w-[730px]">
+            <div className="mt-8 overflow-x-auto max-lg:overflow-visible">
+              <div className="min-w-[730px] max-lg:min-w-0">
                 <ExpandedActivity />
               </div>
             </div>
@@ -472,7 +472,7 @@ function ResponsiveWeeklyPlan() {
                 {upcomingActivities.slice(0, 2).map((activity) => (
                   <div
                     key={`${activity.day}-${activity.date}-${activity.title}`}
-                    className="min-w-[730px]"
+                    className="min-w-[730px] max-lg:min-w-0"
                   >
                     <UpcomingActivity {...activity} />
                   </div>
