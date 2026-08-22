@@ -8,11 +8,11 @@ import { FieldLabel, SelectField, TextField, ToggleChips } from '@/components/ui
 
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="flex flex-col gap-8 rounded-2xl border border-[#EFF1EF] bg-white p-8">
+    <section className="flex flex-col gap-6 rounded-2xl border border-[#EFF1EF] bg-white p-4 sm:gap-8 sm:p-8">
       <div className="flex items-center gap-3">
         <h2 className="font-nunito text-2xl font-semibold leading-8 text-[#263238]">{title}</h2>
       </div>
-      <div className="flex flex-col gap-8">{children}</div>
+      <div className="flex flex-col gap-6 sm:gap-8">{children}</div>
     </section>
   );
 }
@@ -28,8 +28,8 @@ export default async function PersonalInformationPage({
   if (!child) notFound();
 
   return (
-    <div className="mx-auto mt-14 flex w-full max-w-179.5 flex-col gap-14 pb-12">
-      <div className="flex flex-col gap-8">
+    <div className="mx-auto mt-8 flex w-full max-w-179.5 flex-col gap-8 pb-12 sm:mt-14 sm:gap-14">
+      <div className="flex flex-col gap-6 sm:gap-8">
         <Card title="Basic Information">
           <div className="flex items-center gap-4">
             <div className="flex h-16 w-16 shrink-0 overflow-hidden rounded-full shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
@@ -77,7 +77,7 @@ export default async function PersonalInformationPage({
 
           <div className="flex flex-col gap-1.5">
             <FieldLabel>Age</FieldLabel>
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
               <SelectField
                 id="age-years"
                 label=""
@@ -196,16 +196,16 @@ export default async function PersonalInformationPage({
         </Card>
       </div>
 
-      <div className="flex h-14 flex-row items-center justify-start gap-4">
+      <div className="flex flex-col gap-3 sm:h-14 sm:flex-row sm:items-center sm:justify-start sm:gap-4">
         <button
           type="button"
-          className="flex h-14 w-46.75 items-center justify-center rounded-full bg-[#2F7D7E] px-4 py-2 font-nunito text-base font-medium text-white shadow-[0px_0.6px_0px_0px_#401392,inset_0px_0.7px_2px_0px_#FFFFFF]"
+          className="flex h-14 w-full items-center justify-center rounded-full bg-[#2F7D7E] px-4 py-2 font-nunito text-base font-medium text-white shadow-[0px_0.6px_0px_0px_#401392,inset_0px_0.7px_2px_0px_#FFFFFF] sm:w-46.75"
         >
           Save Changes
         </button>
         <Link
           href={`/dashboard/child-profiles/${child.id}`}
-          className="flex h-14 w-30.75 items-center justify-center rounded-full border border-[#D4D6D7] bg-white px-4 py-2 font-nunito text-base font-medium text-[#14094B] shadow-[0px_0.4px_0px_0px_#2B223C,inset_0px_0.4px_0.5px_0px_rgba(255,255,255,0.75)] transition-colors hover:bg-gray-50"
+          className="flex h-14 w-full items-center justify-center rounded-full border border-[#D4D6D7] bg-white px-4 py-2 font-nunito text-base font-medium text-[#14094B] shadow-[0px_0.4px_0px_0px_#2B223C,inset_0px_0.4px_0.5px_0px_rgba(255,255,255,0.75)] transition-colors hover:bg-gray-50 sm:w-30.75"
         >
           Cancel
         </Link>
