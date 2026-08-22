@@ -62,7 +62,7 @@ export function AddChildDevelopmentFocus() {
 
           return (
             <>
-              <section className="mt-14 rounded-2xl border border-[#eff1ef] bg-white p-8">
+              <section className="mt-8 rounded-2xl border border-[#eff1ef] bg-white p-4 sm:mt-14 sm:p-8">
                 <h1 className="font-nunito text-2xl font-semibold leading-8 text-[#263238]">
                   Development &amp; Focus
                 </h1>
@@ -111,15 +111,15 @@ export function AddChildDevelopmentFocus() {
                 </div>
               </section>
 
-              <div className="mt-14 flex flex-wrap gap-4">
+              <div className="mt-8 flex flex-col gap-3 sm:mt-14 sm:flex-row sm:flex-wrap sm:gap-4">
                 <button
-                  className="h-14 rounded-[32px] border border-[#d5e5e5] bg-[#2f7d7e] px-4 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-white"
+                  className="h-14 w-full rounded-[32px] border border-[#d5e5e5] bg-[#2f7d7e] px-4 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-white sm:w-auto"
                   type="submit"
                 >
                   Continue to Interests &amp; Preferences
                 </button>
                 <Link
-                  className="flex h-14 w-30.75 items-center justify-center rounded-[32px] border border-[#d4d6d7] bg-white px-4 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-[#14094b]"
+                  className="flex h-14 w-full items-center justify-center rounded-[32px] border border-[#d4d6d7] bg-white px-4 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-[#14094b] sm:w-30.75"
                   href="/dashboard/child-profiles"
                 >
                   Cancel
