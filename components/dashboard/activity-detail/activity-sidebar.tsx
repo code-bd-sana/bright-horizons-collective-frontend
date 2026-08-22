@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 
 export function ActivitySidebar() {
   const imgVector1 = '/Home/figma-activity-detail-play.svg';
@@ -33,12 +34,15 @@ export function ActivitySidebar() {
           Ready to begin?
         </p>
         <div className="flex flex-col gap-[24px] w-full">
-          <button className="bg-[#2f7d7e] rounded-full px-3 py-2 flex items-center justify-center gap-1 w-full overflow-hidden relative shadow-[inset_0px_-6px_2px_0px_rgba(255,255,255,0.07)]">
+          <Link
+            href="/dashboard/weekly-plans/completed-activity"
+            className="bg-[#2f7d7e] rounded-full px-3 py-2 flex items-center justify-center gap-1 w-full overflow-hidden relative shadow-[inset_0px_-6px_2px_0px_rgba(255,255,255,0.07)]"
+          >
             <span className="font-['Nunito'] font-medium text-sm leading-5 text-white tracking-[-0.084px]">
               Complete Activity
             </span>
             <Image src={imgVector2} alt="Arrow Right" width={16} height={16} />
-          </button>
+          </Link>
 
           <button className="border border-[var(--border\/500,#d8ddd9)] rounded-full px-3 py-2 flex items-center justify-center gap-1 w-full overflow-hidden relative">
             <Image src={imgVector3} alt="Bookmark" width={16} height={16} />

@@ -73,7 +73,7 @@ export function StepByStepInstructions() {
           <h2 className="font-['Nunito'] font-medium text-[24px] leading-[32px] text-[#263238]">
             Step-by-Step Instructions
           </h2>
-          <p className="font-['Nunito'] font-medium text-[12px] leading-[16px] text-[color:var(--secondary\/100,#e9f1ee)] w-[124px]">
+          <p className="w-[124px] font-['Nunito'] text-[12px] font-medium leading-[16px] text-[#2f7d7e]">
             7 steps · tap to expand
           </p>
         </div>
