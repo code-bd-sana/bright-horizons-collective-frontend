@@ -24,7 +24,7 @@ export function AddChildStepper({ currentStep }: { currentStep: 1 | 2 | 3 | 4 })
                 {complete ? <Check aria-hidden="true" size={16} strokeWidth={2} /> : stepNumber}
               </span>
               <span
-                className={`font-nunito text-base font-medium leading-6 tracking-[-0.176px] ${complete ? 'text-[#2f7d7e]' : active ? 'text-[#263238]' : 'text-[#a8adaf]'}`}
+                className={`font-nunito text-base font-medium leading-6 tracking-[-0.176px] ${complete || (active && currentStep === 4) ? 'text-[#2f7d7e]' : active ? 'text-[#263238]' : 'text-[#a8adaf]'}`}
               >
                 {step}
               </span>

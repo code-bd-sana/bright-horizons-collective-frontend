@@ -3,6 +3,7 @@
 import { DynamicForm } from '@/components/ui/dynamic-form';
 import { AddChildStepper } from './add-child-stepper';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { z } from 'zod';
 import { toast } from 'sonner';
 
@@ -25,8 +26,11 @@ const supportAreas = [
 ];
 
 export function AddChildDevelopmentFocus() {
+  const router = useRouter();
+
   function submitDevelopmentFocus(data: DevelopmentFocusValues) {
     toast.success(`${data.areasOfSupport.length} development areas have been saved.`);
+    router.push('/dashboard/child-profiles/add-child/interests-preferences');
   }
 
   return (
