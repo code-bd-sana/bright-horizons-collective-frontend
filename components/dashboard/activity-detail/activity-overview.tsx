@@ -1,9 +1,7 @@
-import React from 'react';
-
 export function ActivityOverview() {
   return (
-    <div className="flex flex-col gap-[48px] w-full">
-      <div className="flex flex-col gap-[32px] w-full max-w-[720px]">
+    <div className="flex w-full flex-col gap-8 lg:gap-12">
+      <div className="flex w-full max-w-[720px] flex-col gap-6 lg:gap-8">
         {/* Title and Description */}
         <div className="flex flex-col gap-[12px] w-full">
           <div className="flex flex-col gap-[4px]">
@@ -21,7 +19,7 @@ export function ActivityOverview() {
         </div>
 
         {/* Info Grid */}
-        <div className="flex items-center gap-[32px] w-full flex-wrap">
+        <div className="grid w-full grid-cols-1 gap-5 sm:grid-cols-2 lg:flex lg:flex-wrap lg:items-center lg:gap-8">
           <div className="flex flex-col gap-0 min-w-[72px]">
             <p className="font-['Nunito'] font-medium text-[12px] leading-[16px] text-[color:var(--text-primary\/300,#7d8488)] uppercase">
               Duration
@@ -61,7 +59,7 @@ export function ActivityOverview() {
       </div>
 
       {/* Learning Objective */}
-      <div className="flex flex-col gap-[12px] w-full max-w-[495px]">
+      <div className="flex w-full max-w-[495px] flex-col gap-3">
         <h2 className="font-['Nunito'] font-medium text-[20px] leading-[28px] text-[#263238]">
           Learning Objective
         </h2>

@@ -1,4 +1,3 @@
-import React from 'react';
 import Image from 'next/image';
 
 export function ActivitySidebar() {
@@ -9,9 +8,9 @@ export function ActivitySidebar() {
   const imgIcon = '/Home/figma-activity-detail-goal.svg';
 
   return (
-    <div className="flex flex-col gap-[24px] w-full max-w-[287px]">
+    <div className="flex w-full max-w-[287px] flex-col gap-6 max-lg:max-w-none">
       {/* Session Timer */}
-      <div className="bg-white border border-[var(--border\/300,#e8ebe8)] rounded-[16px] p-[32px] flex flex-col gap-[16px] w-full">
+      <div className="flex w-full flex-col gap-4 rounded-[16px] border border-[var(--border\/300,#e8ebe8)] bg-white p-4 sm:p-6 lg:p-8">
         <p className="font-['Nunito'] font-medium text-[12px] leading-[16px] text-[color:var(--text-primary\/300,#7d8488)] uppercase">
           Session Timer
         </p>
@@ -29,7 +28,7 @@ export function ActivitySidebar() {
       </div>
 
       {/* Ready to begin? */}
-      <div className="bg-white border border-[var(--border\/300,#e8ebe8)] rounded-[16px] p-[32px] flex flex-col gap-[16px] w-full">
+      <div className="flex w-full flex-col gap-4 rounded-[16px] border border-[var(--border\/300,#e8ebe8)] bg-white p-4 sm:p-6 lg:p-8">
         <p className="font-['Nunito'] font-medium text-[12px] leading-[16px] text-[color:var(--text-primary\/300,#7d8488)] uppercase">
           Ready to begin?
         </p>
@@ -51,7 +50,7 @@ export function ActivitySidebar() {
       </div>
 
       {/* Parent Tips */}
-      <div className="bg-white border border-[var(--border\/300,#e8ebe8)] drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] rounded-[16px] p-[32px] flex flex-col gap-[24px] w-full">
+      <div className="flex w-full flex-col gap-6 rounded-[16px] border border-[var(--border\/300,#e8ebe8)] bg-white p-4 shadow-[0px_1px_1px_rgba(0,0,0,0.05)] sm:p-6 lg:p-8">
         <h2 className="font-['Nunito'] font-medium text-[24px] leading-[32px] text-[#263238]">
           Parent Tips
         </h2>
@@ -78,7 +77,7 @@ export function ActivitySidebar() {
       </div>
 
       {/* Safety Notes */}
-      <div className="bg-[var(--yellow\/50,#fefce8)] border border-[var(--yellow\/100,#fef9c3)] drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] rounded-[16px] p-[32px] flex flex-col gap-[24px] w-full">
+      <div className="flex w-full flex-col gap-6 rounded-[16px] border border-[var(--yellow\/100,#fef9c3)] bg-[var(--yellow\/50,#fefce8)] p-4 shadow-[0px_1px_1px_rgba(0,0,0,0.05)] sm:p-6 lg:p-8">
         <h2 className="font-['Nunito'] font-medium text-[24px] leading-[32px] text-[#263238]">
           Safety Notes
         </h2>
@@ -99,7 +98,7 @@ export function ActivitySidebar() {
       </div>
 
       {/* Development Goal */}
-      <div className="bg-[var(--secondary\/200,#d2e3dc)] rounded-[16px] p-[32px] flex flex-col gap-[16px] w-full">
+      <div className="flex w-full flex-col gap-4 rounded-[16px] bg-[var(--secondary\/200,#d2e3dc)] p-4 sm:p-6 lg:p-8">
         <div className="flex items-center gap-[8px]">
           <Image src={imgIcon} alt="Development Goal" width={20} height={20} />
           <h2 className="font-['Nunito'] font-medium text-[20px] leading-[28px] text-[#263238]">
