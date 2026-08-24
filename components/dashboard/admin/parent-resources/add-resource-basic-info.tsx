@@ -3,6 +3,7 @@
 import { DynamicForm } from '@/components/ui/dynamic-form';
 import { ChevronDown, FileText, ImageUp } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -27,9 +28,11 @@ const inputClassName =
 
 export function AddResourceBasicInfo() {
   const [coverImageName, setCoverImageName] = useState('');
+  const router = useRouter();
 
   function saveBasicInfo(data: BasicInfoValues) {
     toast.success(`Basic information for “${data.title}” has been saved.`);
+    router.push('/dashboard/admin/parent-resources/add-resource/content');
   }
 
   return (
