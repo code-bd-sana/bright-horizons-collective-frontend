@@ -280,21 +280,21 @@ export function Header() {
 
   return (
     <header
-      className="sticky top-0 z-30 flex h-16 items-center gap-3 bg-[#fdfdfc] px-4 sm:h-18 sm:px-6 lg:px-10"
+      className="sticky top-0 z-30 grid h-16 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 bg-[#fdfdfc] px-4 sm:h-18 sm:gap-3 sm:px-6 lg:px-6 xl:px-10"
       aria-label="Dashboard header"
     >
       <button
         type="button"
         aria-label="Open navigation"
         onClick={() => setSidebarOpen(true)}
-        className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-[#e9f1ee] text-[#2f7d7e] lg:hidden"
+        className="col-start-1 flex size-10 shrink-0 items-center justify-center rounded-lg bg-[#e9f1ee] text-[#2f7d7e] lg:hidden"
       >
         <Menu size={22} strokeWidth={1.7} />
       </button>
       {isMessagesPage ? (
-        <span className="flex-1" aria-hidden="true" />
+        <span className="col-start-2 min-w-0" aria-hidden="true" />
       ) : (
-        <label className="flex h-10 min-w-0 flex-1 items-center overflow-hidden rounded-lg border border-[#fce9e3] bg-[#fbf6f4] px-3 py-3 sm:px-5.25 sm:py-4.25 lg:max-w-110.5">
+        <label className="col-start-2 flex h-10 min-w-0 items-center overflow-hidden rounded-lg border border-[#fce9e3] bg-[#fbf6f4] px-3 py-3 sm:px-5.25 sm:py-4.25 lg:max-w-110.5">
           <Image
             src="/Home/figma-dashboard-header-search.svg"
             alt=""
@@ -311,7 +311,7 @@ export function Header() {
         </label>
       )}
 
-      <div className="relative flex shrink-0 items-center gap-2 sm:gap-3">
+      <div className="relative col-start-3 flex shrink-0 items-center gap-2 sm:gap-3">
         <button
           ref={messagesButtonRef}
           type="button"
@@ -323,7 +323,7 @@ export function Header() {
             setProfilesOpen(false);
             setAccountOpen(false);
           }}
-          className="hidden size-10 items-center justify-center overflow-hidden rounded-lg bg-[#e9f1ee] p-1 min-[420px]:flex"
+          className="hidden size-10 items-center justify-center overflow-hidden rounded-lg bg-[#e9f1ee] p-1 sm:flex"
         >
           <Image src="/Home/figma-dashboard-header-chat.svg" alt="" width={25} height={24} />
         </button>
@@ -358,7 +358,7 @@ export function Header() {
             setNotificationsOpen(false);
             setAccountOpen(false);
           }}
-          className="flex h-10 items-center gap-2.5 overflow-hidden rounded-lg bg-[#d2e3dc] px-2 py-1 max-lg:hidden"
+          className="hidden h-10 w-10 items-center justify-center overflow-hidden rounded-lg bg-[#d2e3dc] p-1 lg:flex xl:w-auto xl:justify-start xl:gap-2.5 xl:px-2"
         >
           <span className="relative size-7 shrink-0 overflow-hidden rounded-full bg-[#accbcb]">
             <Image
@@ -369,7 +369,7 @@ export function Header() {
               className="object-cover object-[50%_20%]"
             />
           </span>
-          <span className="whitespace-nowrap font-nunito text-sm font-medium leading-5 tracking-[-0.084px] text-[#1e282d]">
+          <span className="hidden whitespace-nowrap font-nunito text-sm font-medium leading-5 tracking-[-0.084px] text-[#1e282d] xl:inline">
             {childProfiles[selectedProfile].name} · {selectedProfile === 0 ? '4y' : '3y'}
           </span>
           <Image
@@ -377,7 +377,7 @@ export function Header() {
             alt=""
             width={20}
             height={20}
-            className="shrink-0"
+            className="hidden shrink-0 xl:block"
           />
         </button>
         <button
