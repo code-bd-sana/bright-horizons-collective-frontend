@@ -3,6 +3,8 @@
 import { Plus } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
+import { ArchiveResourceModal } from './archive-resource-modal';
+import { DeleteResourceModal } from './delete-resource-modal';
 import { parentResources } from './parent-resources-data';
 import { ResourceFilters } from './resource-filters';
 import { ResourceSummary } from './resource-summary';
@@ -17,6 +19,8 @@ export function ParentResourcesPage() {
     membership: 'all',
     status: 'all',
   });
+  const [archiveTarget, setArchiveTarget] = useState<ParentResource | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<ParentResource | null>(null);
 
   const filteredResources = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -33,8 +37,29 @@ export function ParentResourcesPage() {
 
   const updateFilter = (filter: keyof typeof filters, value: string) =>
     setFilters((current) => ({ ...current, [filter]: value }));
-  const handleAction = (action: string, resource: ParentResource) =>
+  const handleAction = (action: string, resource: ParentResource) => {
+    if (action === 'Archive') {
+      setArchiveTarget(resource);
+      return;
+    }
+
+    if (action === 'Delete') {
+      setDeleteTarget(resource);
+      return;
+    }
+
     toast.success(`${action} is ready for “${resource.title}”.`);
+  };
+
+  const archiveResource = (resource: ParentResource) => {
+    setArchiveTarget(null);
+    toast.success(`“${resource.title}” has been archived.`);
+  };
+
+  const deleteResource = (resource: ParentResource) => {
+    setDeleteTarget(null);
+    toast.success(`“${resource.title}” has been deleted.`);
+  };
 
   return (
     <section className="mx-auto w-full max-w-383.5 pb-8 text-[#3d3d3d]">
@@ -72,6 +97,16 @@ export function ParentResourcesPage() {
           <ResourceTable resources={filteredResources} onAction={handleAction} />
         </div>
       </div>
+      <ArchiveResourceModal
+        resource={archiveTarget}
+        onClose={() => setArchiveTarget(null)}
+        onConfirm={archiveResource}
+      />
+      <DeleteResourceModal
+        resource={deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={deleteResource}
+      />
     </section>
   );
 }
