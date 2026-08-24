@@ -1,6 +1,7 @@
 'use client';
 
 import { Plus } from 'lucide-react';
+import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { ArchiveResourceModal } from './archive-resource-modal';
@@ -73,14 +74,13 @@ export function ParentResourcesPage() {
             parents.
           </p>
         </div>
-        <button
-          type="button"
-          onClick={() => toast.success('The resource editor is ready.')}
+        <Link
+          href="/dashboard/admin/parent-resources/add-resource"
           className="flex h-10 w-full items-center justify-center gap-2 rounded-full bg-[#2f7d7e] px-4 py-2.5 font-nunito text-sm font-medium leading-5 tracking-[-0.084px] text-white sm:w-auto"
         >
           <Plus aria-hidden="true" size={16} strokeWidth={2} />
           Add Resource
-        </button>
+        </Link>
       </header>
       <div className="mt-8 space-y-8">
         <ResourceSummary />
