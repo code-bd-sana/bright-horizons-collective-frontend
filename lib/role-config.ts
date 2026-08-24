@@ -17,6 +17,7 @@ type RoleProfile = {
 };
 
 export type RoleConfig = {
+  homePath: string;
   menuItems: RoleNavigationItem[];
   otherItems: RoleNavigationItem[];
   profile: RoleProfile;
@@ -29,6 +30,7 @@ export type RoleConfig = {
 
 export const roleConfigs: Record<DemoRole, RoleConfig> = {
   parent: {
+    homePath: '/dashboard',
     menuItems: [
       {
         name: 'Dashboard',
@@ -95,6 +97,7 @@ export const roleConfigs: Record<DemoRole, RoleConfig> = {
     },
   },
   admin: {
+    homePath: '/dashboard/admin',
     menuItems: [
       {
         name: 'Dashboard',

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { DEMO_SESSION_COOKIE, readDemoSession } from '@/lib/demo-session';
+import { getRoleConfig } from '@/lib/role-config';
 
 export async function proxy(request: NextRequest) {
   const session = await readDemoSession(request.cookies.get(DEMO_SESSION_COOKIE)?.value);
@@ -9,6 +10,14 @@ export async function proxy(request: NextRequest) {
 
   if (pathname.startsWith('/dashboard/admin') && session?.role !== 'admin') {
     return NextResponse.redirect(new URL(session ? '/dashboard' : '/login', request.url));
+  }
+
+  if (
+    session?.role === 'admin' &&
+    pathname.startsWith('/dashboard') &&
+    !pathname.startsWith('/dashboard/admin')
+  ) {
+    return NextResponse.redirect(new URL(getRoleConfig('admin').homePath, request.url));
   }
 
   // Protect dashboard routes
@@ -25,7 +34,7 @@ export async function proxy(request: NextRequest) {
     request.nextUrl.pathname.startsWith('/forgot-password')
   ) {
     if (isAuthenticated) {
-      return NextResponse.redirect(new URL('/dashboard', request.url));
+      return NextResponse.redirect(new URL(getRoleConfig(session?.role).homePath, request.url));
     }
   }
 
