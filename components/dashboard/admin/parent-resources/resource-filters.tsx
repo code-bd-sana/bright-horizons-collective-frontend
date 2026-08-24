@@ -1,4 +1,9 @@
+'use client';
+
 import { ChevronDown, Search } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+
+type FilterName = 'category' | 'type' | 'membership' | 'status';
 
 type ResourceFiltersProps = {
   search: string;
@@ -7,51 +12,114 @@ type ResourceFiltersProps = {
   membership: string;
   status: string;
   onSearchChange: (value: string) => void;
-  onFilterChange: (filter: 'category' | 'type' | 'membership' | 'status', value: string) => void;
+  onFilterChange: (filter: FilterName, value: string) => void;
 };
 
-function FilterSelect({
-  label,
+const filterOptions: Record<FilterName, { label: string; values: string[]; width: string }> = {
+  category: {
+    label: 'Category',
+    values: ['Fine Motor', 'Gross Motor', 'Sensory', 'Coordination', 'Visual-Motor'],
+    width: 'lg:w-47',
+  },
+  type: {
+    label: 'Type',
+    values: ['Article', 'Guide', 'PDF', 'Printable', 'Checklist'],
+    width: 'lg:w-26.75',
+  },
+  membership: {
+    label: 'Membership',
+    values: ['Little Steps', 'Grow Together', 'Personalized Pathways'],
+    width: 'lg:w-48.5',
+  },
+  status: { label: 'Status', values: ['Published', 'Draft', 'Archive'], width: 'lg:w-27.5' },
+};
+
+function FilterDropdown({
+  filter,
   value,
-  options,
+  isOpen,
+  onOpenChange,
   onChange,
-  className,
 }: {
-  label: string;
+  filter: FilterName;
   value: string;
-  options: string[];
+  isOpen: boolean;
+  onOpenChange: (filter: FilterName | null) => void;
   onChange: (value: string) => void;
-  className?: string;
 }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { label, values, width } = filterOptions[filter];
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const close = (event: MouseEvent) => {
+      if (!containerRef.current?.contains(event.target as Node)) onOpenChange(null);
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onOpenChange(null);
+    };
+    document.addEventListener('mousedown', close);
+    document.addEventListener('keydown', closeOnEscape);
+    return () => {
+      document.removeEventListener('mousedown', close);
+      document.removeEventListener('keydown', closeOnEscape);
+    };
+  }, [isOpen, onOpenChange]);
+
   return (
-    <label className={`relative h-9.5 ${className ?? ''}`}>
-      <span className="sr-only">Filter by {label}</span>
-      <select
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        className="h-full w-full appearance-none rounded-3.5 border border-[#e7eceb] bg-[#f4f8f6] px-2 pr-8 font-manrope text-[13px] leading-5 text-[#607d8b] outline-none focus:border-[#2f7d7e]"
+    <div ref={containerRef} className={`relative w-full ${width}`}>
+      <button
+        type="button"
+        aria-expanded={isOpen}
+        aria-haspopup="listbox"
+        onClick={() => onOpenChange(isOpen ? null : filter)}
+        className={`flex h-9.5 w-full items-center justify-between rounded-[14px] border px-2 font-manrope text-[13px] leading-5 transition-colors ${isOpen ? 'border-[#d5e5e5] bg-[#d5e5e5] text-[#0f1416]' : 'border-[#e7eceb] bg-[#f4f8f6] text-[#607d8b] hover:border-[#accbcb]'}`}
       >
-        <option value="all">{label}</option>
-        {options.map((option) => (
-          <option key={option} value={option}>
-            {option}
-          </option>
-        ))}
-      </select>
-      <ChevronDown
-        aria-hidden="true"
-        className="pointer-events-none absolute right-2 top-1/2 size-3.5 -translate-y-1/2 text-[#607d8b]"
-        strokeWidth={1.6}
-      />
-    </label>
+        <span className="truncate">{value === 'all' ? label : value}</span>
+        <ChevronDown
+          aria-hidden="true"
+          className={`size-3.5 shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+          strokeWidth={1.6}
+        />
+      </button>
+      {isOpen && (
+        <div
+          className="absolute left-0 top-[calc(100%+8px)] z-30 w-full min-w-40 rounded-2xl border border-[#e8ebe8] bg-white p-3 shadow-[0_8px_12px_rgba(38,50,56,0.12)]"
+          role="listbox"
+          aria-label={`${label} options`}
+        >
+          <div className="flex flex-col gap-2.5">
+            {['all', ...values].map((option) => {
+              const selected = value === option;
+              return (
+                <button
+                  key={option}
+                  type="button"
+                  role="option"
+                  aria-selected={selected}
+                  onClick={() => {
+                    onChange(option);
+                    onOpenChange(null);
+                  }}
+                  className={`flex min-h-9 w-full items-center rounded-lg px-3 py-2 text-left font-nunito text-sm font-medium leading-5 tracking-[-0.084px] transition-colors ${selected ? 'bg-[#e9f1ee] text-[#174a4d]' : 'text-[#263238] hover:bg-[#f4f8f6]'}`}
+                >
+                  {option === 'all' ? 'All' : option}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 
 export function ResourceFilters(props: ResourceFiltersProps) {
+  const [openFilter, setOpenFilter] = useState<FilterName | null>(null);
   return (
     <section className="rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)]">
       <div className="grid gap-3 lg:grid-cols-[minmax(192px,1fr)_188px_107px_194px_110px] lg:items-center">
-        <label className="flex h-9.5 min-w-0 items-center gap-2 rounded-3.5 border border-[#e7eceb] bg-[#f4f8f6] px-3">
+        <label className="flex h-9.5 min-w-0 items-center gap-2 rounded-[14px] border border-[#e7eceb] bg-[#f4f8f6] px-3">
           <Search aria-hidden="true" className="size-4 shrink-0 text-[#607d8b]" strokeWidth={1.7} />
           <span className="sr-only">Search resources</span>
           <input
@@ -61,40 +129,16 @@ export function ResourceFilters(props: ResourceFiltersProps) {
             className="min-w-0 flex-1 bg-transparent font-manrope text-sm text-[#263238] outline-none placeholder:text-[rgba(38,50,56,0.5)]"
           />
         </label>
-        <FilterSelect
-          label="Category"
-          value={props.category}
-          options={[
-            'Development',
-            'Daily Routines',
-            'Communication',
-            'Social-Emotional',
-            'Planning',
-          ]}
-          className="w-full"
-          onChange={(value) => props.onFilterChange('category', value)}
-        />
-        <FilterSelect
-          label="Type"
-          value={props.type}
-          options={['Article', 'Guide', 'Printable']}
-          className="w-full"
-          onChange={(value) => props.onFilterChange('type', value)}
-        />
-        <FilterSelect
-          label="Membership"
-          value={props.membership}
-          options={['All Members', 'Premium']}
-          className="w-full"
-          onChange={(value) => props.onFilterChange('membership', value)}
-        />
-        <FilterSelect
-          label="Status"
-          value={props.status}
-          options={['Published', 'Draft']}
-          className="w-full"
-          onChange={(value) => props.onFilterChange('status', value)}
-        />
+        {(Object.keys(filterOptions) as FilterName[]).map((filter) => (
+          <FilterDropdown
+            key={filter}
+            filter={filter}
+            value={props[filter]}
+            isOpen={openFilter === filter}
+            onOpenChange={setOpenFilter}
+            onChange={(value) => props.onFilterChange(filter, value)}
+          />
+        ))}
       </div>
     </section>
   );
