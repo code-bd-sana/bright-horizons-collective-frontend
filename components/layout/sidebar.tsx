@@ -2,6 +2,7 @@
 
 import { Logo } from '@/components/logo';
 import type { DemoRole } from '@/lib/demo-session';
+import { getRoleConfig, type RoleNavigationItem } from '@/lib/role-config';
 import { cn } from '@/lib/utils';
 import { useAppStore } from '@/store/use-app-store';
 import Image from 'next/image';
@@ -9,103 +10,20 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { X } from 'lucide-react';
 
-type NavigationItem = {
-  name: string;
-  href: string;
-  icon: string;
-  active?: (pathname: string) => boolean;
-};
-
-const parentMenuItems: NavigationItem[] = [
-  {
-    name: 'Dashboard',
-    href: '/dashboard',
-    icon: '/Home/figma-dashboard-nav-dashboard.svg',
-    active: (pathname) => pathname === '/dashboard',
-  },
-  {
-    name: 'Weekly Plans',
-    href: '/dashboard/weekly-plans',
-    icon: '/Home/figma-dashboard-nav-weekly.svg',
-  },
-  {
-    name: 'Explore',
-    href: '/dashboard/explore',
-    icon: '/Home/figma-dashboard-nav-explore.svg',
-    active: (pathname) => pathname.startsWith('/dashboard/explore'),
-  },
-  { name: 'Messages', href: '/dashboard/messages', icon: '/Home/figma-dashboard-nav-messages.svg' },
-  {
-    name: 'Child Profiles',
-    href: '/dashboard/child-profiles',
-    icon: '/Home/figma-dashboard-nav-child-profiles.svg',
-    active: (pathname) => pathname.startsWith('/dashboard/child-profiles'),
-  },
-];
-
-const parentOtherItems: NavigationItem[] = [
-  { name: 'Settings', href: '/dashboard/settings', icon: '/Home/figma-dashboard-nav-settings.svg' },
-  { name: 'Support', href: '/dashboard/support', icon: '/Home/figma-dashboard-nav-support.svg' },
-];
-
-const adminMenuItems: NavigationItem[] = [
-  {
-    name: 'Dashboard',
-    href: '/dashboard',
-    icon: '/Home/figma-admin-sidebar-dashboard.svg',
-    active: (pathname) => pathname === '/dashboard',
-  },
-  {
-    name: 'Activities Library',
-    href: '/dashboard/activities-library',
-    icon: '/Home/figma-admin-sidebar-activities.svg',
-  },
-  {
-    name: 'Weekly Plans',
-    href: '/dashboard/weekly-plans',
-    icon: '/Home/figma-admin-sidebar-weekly.svg',
-  },
-  { name: 'Families', href: '/dashboard/families', icon: '/Home/figma-admin-sidebar-families.svg' },
-  {
-    name: 'Parent Resources',
-    href: '/dashboard/parent-resources',
-    icon: '/Home/figma-admin-sidebar-resources.svg',
-  },
-  {
-    name: 'Therapy Toys',
-    href: '/dashboard/therapy-toys',
-    icon: '/Home/figma-admin-sidebar-toys.svg',
-  },
-  {
-    name: 'Messages',
-    href: '/dashboard/messages',
-    icon: '/Home/figma-admin-sidebar-messages.svg',
-  },
-  {
-    name: 'Memberships',
-    href: '/dashboard/memberships',
-    icon: '/Home/figma-admin-sidebar-memberships.svg',
-  },
-  {
-    name: 'Settings',
-    href: '/dashboard/settings',
-    icon: '/Home/figma-admin-sidebar-settings.svg',
-  },
-];
-
 function NavigationList({
   items,
   pathname,
   onNavigate,
 }: {
-  items: NavigationItem[];
+  items: RoleNavigationItem[];
   pathname: string;
   onNavigate?: () => void;
 }) {
   return (
     <div className="flex w-full flex-col gap-2 lg:w-50">
       {items.map((item) => {
-        const isActive = item.active?.(pathname) ?? pathname === item.href;
+        const isActive =
+          item.match === 'prefix' ? pathname.startsWith(item.href) : pathname === item.href;
         return (
           <Link
             key={item.name}
@@ -132,25 +50,8 @@ export function Sidebar({ role = 'parent' }: { role?: DemoRole }) {
   const router = useRouter();
   const { sidebarOpen, setSidebarOpen } = useAppStore();
   const isAdmin = role === 'admin';
-  const menuItems = isAdmin ? adminMenuItems : parentMenuItems;
-  const otherItems = isAdmin ? [] : parentOtherItems;
-  const profile = isAdmin
-    ? {
-        name: 'Jaicy',
-        role: 'Admin',
-        image: '/Home/figma-admin-sidebar-avatar.png',
-        imageClassName: 'object-cover',
-        chevron: '/Home/figma-admin-sidebar-chevron.svg',
-        logout: '/Home/figma-admin-sidebar-logout.svg',
-      }
-    : {
-        name: 'Sarah Johnson',
-        role: 'Parent',
-        image: '/Home/figma-dashboard-avatar.png',
-        imageClassName: 'object-cover object-[50%_10%]',
-        chevron: '/Home/figma-dashboard-chevron.svg',
-        logout: '/Home/figma-dashboard-logout.svg',
-      };
+  const roleConfig = getRoleConfig(role);
+  const { menuItems, otherItems, profile } = roleConfig;
 
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' });
@@ -255,7 +156,7 @@ export function Sidebar({ role = 'parent' }: { role?: DemoRole }) {
                   {profile.name}
                 </span>
                 <span className="font-manrope text-xs leading-4.5 text-[#7d8488]">
-                  {profile.role}
+                  {profile.roleLabel}
                 </span>
               </span>
               <Image
@@ -371,7 +272,7 @@ export function Sidebar({ role = 'parent' }: { role?: DemoRole }) {
               <span className="block font-nunito text-sm font-medium text-[#515b60]">
                 {profile.name}
               </span>
-              <span className="block font-manrope text-xs text-[#7d8488]">{profile.role}</span>
+              <span className="block font-manrope text-xs text-[#7d8488]">{profile.roleLabel}</span>
             </span>
           </div>
           <button

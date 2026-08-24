@@ -4,6 +4,8 @@ import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { Menu } from 'lucide-react';
+import type { DemoRole } from '@/lib/demo-session';
+import { getRoleConfig } from '@/lib/role-config';
 import { useAppStore } from '@/store/use-app-store';
 
 const notificationDescription =
@@ -50,13 +52,6 @@ const childProfiles: ChildProfile[] = [
     image: '/Home/figma-dashboard-switch-emma-3.png',
     imagePosition: '50% 25%',
   },
-];
-
-const accountMenuItems = [
-  { label: 'My Account', icon: '/Home/figma-dashboard-profile-account.svg' },
-  { label: 'Settings Overview', icon: '/Home/figma-dashboard-profile-settings.svg' },
-  { label: 'Support and Help', icon: '/Home/figma-dashboard-profile-support.svg' },
-  { label: 'Membership and Billing', icon: '/Home/figma-dashboard-profile-billing.svg' },
 ];
 
 const unreadThreads: MessageThread[] = [
@@ -213,10 +208,12 @@ function ChildProfileOption({
   );
 }
 
-export function Header() {
+export function Header({ role = 'parent' }: { role?: DemoRole }) {
   const { setSidebarOpen } = useAppStore();
   const pathname = usePathname();
   const router = useRouter();
+  const roleConfig = getRoleConfig(role);
+  const isAdmin = role === 'admin';
   const isMessagesPage = pathname === '/dashboard/messages';
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [messagesOpen, setMessagesOpen] = useState(false);
@@ -347,39 +344,41 @@ export function Header() {
             height={24}
           />
         </button>
-        <button
-          ref={profileButtonRef}
-          type="button"
-          aria-label="Selected child: Emma, 4 years old"
-          aria-expanded={profilesOpen}
-          onClick={() => {
-            setProfilesOpen((open) => !open);
-            setMessagesOpen(false);
-            setNotificationsOpen(false);
-            setAccountOpen(false);
-          }}
-          className="hidden h-10 w-10 items-center justify-center overflow-hidden rounded-lg bg-[#d2e3dc] p-1 lg:flex xl:w-auto xl:justify-start xl:gap-2.5 xl:px-2"
-        >
-          <span className="relative size-7 shrink-0 overflow-hidden rounded-full bg-[#accbcb]">
+        {roleConfig.header.showChildProfile && (
+          <button
+            ref={profileButtonRef}
+            type="button"
+            aria-label="Selected child: Emma, 4 years old"
+            aria-expanded={profilesOpen}
+            onClick={() => {
+              setProfilesOpen((open) => !open);
+              setMessagesOpen(false);
+              setNotificationsOpen(false);
+              setAccountOpen(false);
+            }}
+            className="hidden h-10 w-10 items-center justify-center overflow-hidden rounded-lg bg-[#d2e3dc] p-1 lg:flex xl:w-auto xl:justify-start xl:gap-2.5 xl:px-2"
+          >
+            <span className="relative size-7 shrink-0 overflow-hidden rounded-full bg-[#accbcb]">
+              <Image
+                src="/Home/figma-dashboard-header-child.png"
+                alt="Emma"
+                fill
+                sizes="28px"
+                className="object-cover object-[50%_20%]"
+              />
+            </span>
+            <span className="hidden whitespace-nowrap font-nunito text-sm font-medium leading-5 tracking-[-0.084px] text-[#1e282d] xl:inline">
+              {childProfiles[selectedProfile].name} · {selectedProfile === 0 ? '4y' : '3y'}
+            </span>
             <Image
-              src="/Home/figma-dashboard-header-child.png"
-              alt="Emma"
-              fill
-              sizes="28px"
-              className="object-cover object-[50%_20%]"
+              src="/Home/figma-dashboard-header-chevron.svg"
+              alt=""
+              width={20}
+              height={20}
+              className="hidden shrink-0 xl:block"
             />
-          </span>
-          <span className="hidden whitespace-nowrap font-nunito text-sm font-medium leading-5 tracking-[-0.084px] text-[#1e282d] xl:inline">
-            {childProfiles[selectedProfile].name} · {selectedProfile === 0 ? '4y' : '3y'}
-          </span>
-          <Image
-            src="/Home/figma-dashboard-header-chevron.svg"
-            alt=""
-            width={20}
-            height={20}
-            className="hidden shrink-0 xl:block"
-          />
-        </button>
+          </button>
+        )}
         <button
           ref={accountButtonRef}
           type="button"
@@ -394,11 +393,11 @@ export function Header() {
           className="relative size-10 shrink-0 overflow-hidden rounded-full bg-[#2f7d7e]"
         >
           <Image
-            src="/Home/figma-dashboard-header-avatar.png"
-            alt="Sarah Johnson"
+            alt={roleConfig.profile.name}
             fill
             sizes="40px"
-            className="object-cover object-[50%_10%]"
+            className={roleConfig.profile.imageClassName}
+            src={roleConfig.profile.image}
           />
         </button>
 
@@ -413,39 +412,41 @@ export function Header() {
                 <span className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-[#d8ddd9] bg-[#2f7d7e] p-0.5">
                   <span className="relative size-full overflow-hidden rounded-full">
                     <Image
-                      src="/Home/figma-dashboard-profile-avatar.png"
-                      alt="Sarah Lin"
+                      alt={roleConfig.profile.name}
                       fill
                       sizes="52px"
-                      className="scale-125 object-cover object-[50%_13%]"
+                      className={roleConfig.profile.imageClassName}
+                      src={roleConfig.profile.image}
                     />
                   </span>
                 </span>
                 <div className="flex min-w-0 flex-1 flex-col gap-1">
                   <p className="font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-[#263238]">
-                    Sarah Lin
+                    {roleConfig.profile.name}
                   </p>
                   <p className="truncate font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#7d8488]">
-                    sarahlin@gmail.com
+                    {roleConfig.header.accountEmail}
                   </p>
                 </div>
               </div>
 
               <div className="flex flex-col gap-3">
-                <div className="rounded-xl border-2 border-transparent bg-[linear-gradient(175.51deg,#fff_24.82%,#fbded5_128.91%,#fad6cb_202.39%,#f9d0c3_291.18%,#f6bdab_343.23%)] p-4">
-                  <p className="font-manrope text-[10px] font-medium uppercase leading-3.75 tracking-[0.2px] text-[#515b60]">
-                    Current Plan
-                  </p>
-                  <p className="mt-1 font-nunito text-lg font-semibold leading-6 tracking-[-0.27px] text-[#263238]">
-                    Grow Together
-                  </p>
-                  <p className="mt-1 font-manrope text-xs leading-4.5 text-[#515b60]">
-                    Renews Aug 1, 2026
-                  </p>
-                </div>
+                {!isAdmin && (
+                  <div className="rounded-xl border-2 border-transparent bg-[linear-gradient(175.51deg,#fff_24.82%,#fbded5_128.91%,#fad6cb_202.39%,#f9d0c3_291.18%,#f6bdab_343.23%)] p-4">
+                    <p className="font-manrope text-[10px] font-medium uppercase leading-3.75 tracking-[0.2px] text-[#515b60]">
+                      Current Plan
+                    </p>
+                    <p className="mt-1 font-nunito text-lg font-semibold leading-6 tracking-[-0.27px] text-[#263238]">
+                      Grow Together
+                    </p>
+                    <p className="mt-1 font-manrope text-xs leading-4.5 text-[#515b60]">
+                      Renews Aug 1, 2026
+                    </p>
+                  </div>
+                )}
 
                 <div className="flex flex-col gap-3">
-                  {accountMenuItems.map((item) => (
+                  {roleConfig.header.accountMenuItems.map((item) => (
                     <button
                       key={item.label}
                       type="button"
