@@ -7,6 +7,7 @@ import { resourceFormSteps, type ResourceFormStep } from './resource-form-steppe
 
 type ResourceFormNavigationProps = {
   currentStep: ResourceFormStep;
+  showNext?: boolean;
   nextButtonType?: 'button' | 'submit';
   saveChangesButtonType?: 'button' | 'submit';
   onNext?: () => void;
@@ -17,6 +18,7 @@ type ResourceFormNavigationProps = {
 
 export function ResourceFormNavigation({
   currentStep,
+  showNext = true,
   nextButtonType = 'button',
   saveChangesButtonType = 'button',
   onNext,
@@ -45,13 +47,15 @@ export function ResourceFormNavigation({
             ← Previous
           </button>
         )}
-        <button
-          type={nextButtonType}
-          onClick={nextButtonType === 'button' ? onNext : undefined}
-          className="h-10.5 rounded-[14px] border border-[#2f7d7e] px-4.25 font-manrope text-sm font-semibold leading-5 text-[#2f7d7e]"
-        >
-          Next →
-        </button>
+        {showNext && (
+          <button
+            type={nextButtonType}
+            onClick={nextButtonType === 'button' ? onNext : undefined}
+            className="h-10.5 rounded-[14px] border border-[#2f7d7e] px-4.25 font-manrope text-sm font-semibold leading-5 text-[#2f7d7e]"
+          >
+            Next →
+          </button>
+        )}
       </div>
       <div className="flex flex-wrap gap-2 sm:justify-end">
         <button

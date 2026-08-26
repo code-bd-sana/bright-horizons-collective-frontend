@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -11,6 +12,7 @@ const fieldClassName =
   'mt-1.5 w-full rounded-xl border border-[#e7eceb] bg-[#f4f8f6] px-3.75 font-manrope text-sm leading-5.25 text-[#263238] outline-none placeholder:text-[rgba(38,50,56,0.5)] focus:border-[#2f7d7e]';
 
 export function AddResourceSeo() {
+  const router = useRouter();
   const [metaTitle, setMetaTitle] = useState('');
   const [keywords, setKeywords] = useState('sensory, toddler, development');
   const [shortDescription, setShortDescription] = useState('');
@@ -18,6 +20,11 @@ export function AddResourceSeo() {
   function saveSeo() {
     const seoFields = [metaTitle, keywords, shortDescription].filter(Boolean).length;
     toast.success(seoFields ? 'SEO details saved.' : 'SEO details skipped.');
+  }
+
+  function saveAndContinue() {
+    saveSeo();
+    router.push('/dashboard/admin/parent-resources/add-resource/review');
   }
 
   return (
@@ -92,7 +99,7 @@ export function AddResourceSeo() {
         </div>
       </section>
 
-      <ResourceFormNavigation currentStep={6} onNext={saveSeo} onSaveChanges={saveSeo} />
+      <ResourceFormNavigation currentStep={6} onNext={saveAndContinue} onSaveChanges={saveSeo} />
     </section>
   );
 }

@@ -38,7 +38,7 @@ export function ResourceFormStepper({ currentStep }: { currentStep: ResourceForm
                 {complete ? <Check aria-hidden="true" size={14} strokeWidth={2} /> : stepNumber}
               </span>
               <span
-                className={`font-manrope text-[13px] leading-5 ${active ? 'font-semibold text-[#2f7d7e]' : complete ? 'text-[#263238]' : 'text-[#607d8b]'}`}
+                className={`font-manrope text-[13px] leading-[19.5px] ${active ? 'font-semibold text-[#2f7d7e]' : complete ? 'text-[#263238]' : 'text-[#607d8b]'}`}
               >
                 {label}
               </span>
