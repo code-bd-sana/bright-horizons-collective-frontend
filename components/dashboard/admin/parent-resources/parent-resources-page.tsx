@@ -2,6 +2,7 @@
 
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { ArchiveResourceModal } from './archive-resource-modal';
@@ -13,6 +14,7 @@ import { ResourceTable } from './resource-table';
 import type { ParentResource } from './parent-resources-types';
 
 export function ParentResourcesPage() {
+  const router = useRouter();
   const [search, setSearch] = useState('');
   const [filters, setFilters] = useState({
     category: 'all',
@@ -39,6 +41,11 @@ export function ParentResourcesPage() {
   const updateFilter = (filter: keyof typeof filters, value: string) =>
     setFilters((current) => ({ ...current, [filter]: value }));
   const handleAction = (action: string, resource: ParentResource) => {
+    if (action === 'Preview') {
+      router.push(`/dashboard/admin/parent-resources/${resource.id}`);
+      return;
+    }
+
     if (action === 'Archive') {
       setArchiveTarget(resource);
       return;
