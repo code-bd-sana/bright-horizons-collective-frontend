@@ -2,6 +2,7 @@
 
 import { ChevronDown } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -124,6 +125,7 @@ function RelatedField({ id, label, options, value, example, onChange }: RelatedF
 }
 
 export function AddResourceRelated() {
+  const router = useRouter();
   const [relatedActivities, setRelatedActivities] = useState('');
   const [relatedPlans, setRelatedPlans] = useState('');
   const [relatedToys, setRelatedToys] = useState('');
@@ -135,6 +137,11 @@ export function AddResourceRelated() {
         ? `${selectedCount} related item${selectedCount === 1 ? '' : 's'} saved.`
         : 'Related content saved.'
     );
+  }
+
+  function saveAndContinue() {
+    saveRelated();
+    router.push('/dashboard/admin/parent-resources/add-resource/membership');
   }
 
   return (
@@ -201,7 +208,11 @@ export function AddResourceRelated() {
         </div>
       </section>
 
-      <ResourceFormNavigation currentStep={4} onNext={saveRelated} onSaveChanges={saveRelated} />
+      <ResourceFormNavigation
+        currentStep={4}
+        onNext={saveAndContinue}
+        onSaveChanges={saveRelated}
+      />
     </section>
   );
 }
