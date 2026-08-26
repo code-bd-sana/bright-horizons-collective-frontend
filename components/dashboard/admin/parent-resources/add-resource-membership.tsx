@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -37,11 +38,17 @@ const membershipTiers = [
 type MembershipTier = (typeof membershipTiers)[number]['id'];
 
 export function AddResourceMembership() {
+  const router = useRouter();
   const [membershipTier, setMembershipTier] = useState<MembershipTier>('little-steps');
 
   function saveMembership() {
     const tier = membershipTiers.find(({ id }) => id === membershipTier);
     toast.success(`${tier?.name} access saved.`);
+  }
+
+  function saveAndContinue() {
+    saveMembership();
+    router.push('/dashboard/admin/parent-resources/add-resource/seo');
   }
 
   return (
@@ -114,7 +121,7 @@ export function AddResourceMembership() {
 
       <ResourceFormNavigation
         currentStep={5}
-        onNext={saveMembership}
+        onNext={saveAndContinue}
         onSaveChanges={saveMembership}
       />
     </section>
