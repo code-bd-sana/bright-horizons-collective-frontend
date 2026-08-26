@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { z } from 'zod';
+import { ResourceFormNavigation } from './resource-form-navigation';
 import { ResourceFormStepper } from './resource-form-stepper';
 
 const resourceTypes = ['Article', 'PDF', 'Printable', 'Checklist', 'Guide'] as const;
@@ -200,43 +201,11 @@ export function AddResourceBasicInfo() {
               </div>
             </section>
 
-            <footer className="mt-5 flex flex-col gap-4 rounded-2xl border border-[#e7eceb] bg-white p-5 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:flex-row sm:items-center sm:justify-between sm:p-5.25">
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  disabled
-                  className="h-10.5 rounded-[14px] border border-[#e7eceb] px-4.25 font-manrope text-sm font-semibold leading-5 text-[#9aa8ae] disabled:cursor-not-allowed"
-                >
-                  ← Previous
-                </button>
-                <button
-                  type="submit"
-                  className="h-10.5 rounded-[14px] border border-[#e7eceb] px-4.25 font-manrope text-sm font-semibold leading-5 text-[#607d8b] hover:bg-[#f4f8f6]"
-                >
-                  Next →
-                </button>
-              </div>
-              <div className="flex flex-wrap gap-2 sm:justify-end">
-                <button
-                  type="button"
-                  className="h-10.5 rounded-[14px] border border-[#e7eceb] px-4.25 font-manrope text-sm font-semibold leading-5 text-[#607d8b]"
-                >
-                  Save as Draft
-                </button>
-                <button
-                  type="button"
-                  className="h-10.5 rounded-[14px] border border-[#e7eceb] px-4.25 font-manrope text-sm font-semibold leading-5 text-[#607d8b]"
-                >
-                  Preview
-                </button>
-                <button
-                  type="submit"
-                  className="h-10.5 rounded-[14px] bg-[#2f7d7e] px-5 font-manrope text-sm font-semibold leading-5 text-white"
-                >
-                  Save Changes
-                </button>
-              </div>
-            </footer>
+            <ResourceFormNavigation
+              currentStep={1}
+              nextButtonType="submit"
+              saveChangesButtonType="submit"
+            />
           </>
         )}
       </DynamicForm>
