@@ -2,6 +2,7 @@
 
 import { DynamicForm } from '@/components/ui/dynamic-form';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import { ResourceFormStepper } from './resource-form-stepper';
@@ -24,8 +25,11 @@ const toolbarActions = [
 ];
 
 export function AddResourceContent() {
+  const router = useRouter();
+
   function saveContent() {
     toast.success('Resource content has been saved.');
+    router.push('/dashboard/admin/parent-resources/add-resource/attachments');
   }
 
   return (
