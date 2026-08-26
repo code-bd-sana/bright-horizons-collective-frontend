@@ -2,6 +2,7 @@
 
 import { Download, FileText, X } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -29,6 +30,7 @@ function formatFileSize(bytes: number) {
 
 export function AddResourceAttachments() {
   const inputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
   const [attachments, setAttachments] = useState<File[]>([]);
   const [isDragging, setIsDragging] = useState(false);
 
@@ -66,6 +68,11 @@ export function AddResourceAttachments() {
         ? `${attachments.length} attachment${attachments.length === 1 ? '' : 's'} saved.`
         : 'Attachments saved.'
     );
+  }
+
+  function saveAndContinue() {
+    saveAttachments();
+    router.push('/dashboard/admin/parent-resources/add-resource/related');
   }
 
   return (
@@ -176,7 +183,7 @@ export function AddResourceAttachments() {
 
       <ResourceFormNavigation
         currentStep={3}
-        onNext={saveAttachments}
+        onNext={saveAndContinue}
         onSaveChanges={saveAttachments}
       />
     </section>
