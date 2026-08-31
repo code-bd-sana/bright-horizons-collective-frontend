@@ -1,6 +1,7 @@
 'use client';
 
 import { Plus } from 'lucide-react';
+import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -56,14 +57,13 @@ export function TherapyToysPage() {
             Manage therapist-recommended toys and developmental tools available to parents.
           </p>
         </div>
-        <button
-          type="button"
-          onClick={() => toast.message('The Add Therapy Toy form will be available here.')}
+        <Link
+          href="/dashboard/admin/therapy-toys/add-toy"
           className="flex h-10 w-full items-center justify-center gap-2 rounded-full bg-[#2f7d7e] px-4 py-2.5 font-nunito text-sm font-medium leading-5 tracking-[-0.084px] text-white sm:w-auto"
         >
           <Plus aria-hidden="true" size={15} strokeWidth={2} />
           Add Therapy Toy
-        </button>
+        </Link>
       </header>
       <div className="mt-8 space-y-8">
         <TherapyToysSummary />
