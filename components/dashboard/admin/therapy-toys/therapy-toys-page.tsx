@@ -7,12 +7,14 @@ import { toast } from 'sonner';
 
 import { therapyToys } from './therapy-toys-data';
 import { TherapyToyFilters } from './therapy-toy-filters';
+import { TherapyToyPreviewModal } from './therapy-toy-preview-modal';
 import { TherapyToysSummary } from './therapy-toys-summary';
 import { TherapyToysTable } from './therapy-toys-table';
 import type { TherapyToy } from './therapy-toys-types';
 
 export function TherapyToysPage() {
   const [search, setSearch] = useState('');
+  const [isToyPreviewOpen, setIsToyPreviewOpen] = useState(false);
   const [filters, setFilters] = useState({
     category: 'all',
     age: 'all',
@@ -43,6 +45,11 @@ export function TherapyToysPage() {
   };
 
   const handleAction = (action: string, toy: TherapyToy) => {
+    if (action === 'View') {
+      setIsToyPreviewOpen(true);
+      return;
+    }
+
     toast.success(`${action} is ready for “${toy.title}”.`);
   };
 
@@ -80,6 +87,7 @@ export function TherapyToysPage() {
           <TherapyToysTable toys={filteredToys} onAction={handleAction} />
         </div>
       </div>
+      <TherapyToyPreviewModal isOpen={isToyPreviewOpen} onClose={setIsToyPreviewOpen} />
     </section>
   );
 }
