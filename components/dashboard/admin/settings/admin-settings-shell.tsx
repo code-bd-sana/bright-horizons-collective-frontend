@@ -1,6 +1,6 @@
 'use client';
 
-import { Bell, LogOut, ShieldCheck, UserRound } from 'lucide-react';
+import { Bell, ShieldCheck, UserRound } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
 
@@ -26,6 +26,7 @@ const settingsSections = [
     label: 'Notification Preferences',
     description: 'Email & in-app alerts',
     icon: Bell,
+    href: '/dashboard/admin/settings/notifications',
   },
 ] as const;
 
@@ -89,19 +90,6 @@ export function AdminSettingsShell({ activeSection, children }: AdminSettingsShe
               );
             })}
           </nav>
-
-          <div className="mt-4 border-t border-[#e7eceb] pt-4">
-            <button
-              type="button"
-              onClick={() => toast.message('Sign out is available from the account menu.')}
-              className="flex min-w-58 items-center gap-3 rounded-[14px] px-4 py-3.5 font-manrope text-sm font-medium leading-5.25 text-[#e57373] transition-colors hover:bg-[#fff5f4] xl:min-w-0"
-            >
-              <span className="flex size-8 items-center justify-center rounded-[10px] bg-[#fce9e2]">
-                <LogOut aria-hidden="true" size={16} strokeWidth={1.7} />
-              </span>
-              Sign Out
-            </button>
-          </div>
         </aside>
 
         <div className="min-w-0 border-[#e7eceb] xl:border-l xl:pl-6">{children}</div>
