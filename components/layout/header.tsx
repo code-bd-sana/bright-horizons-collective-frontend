@@ -214,7 +214,8 @@ export function Header({ role = 'parent' }: { role?: DemoRole }) {
   const router = useRouter();
   const roleConfig = getRoleConfig(role);
   const isAdmin = role === 'admin';
-  const isMessagesPage = pathname === '/dashboard/messages';
+  const isMessagesPage =
+    pathname === '/dashboard/messages' || pathname === '/dashboard/admin/messages';
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [messagesOpen, setMessagesOpen] = useState(false);
   const [profilesOpen, setProfilesOpen] = useState(false);
