@@ -1,9 +1,11 @@
 'use client';
 
 import { DynamicForm } from '@/components/ui/dynamic-form';
-import { Bell, Camera, LogOut, ShieldCheck, UserRound } from 'lucide-react';
+import { Camera } from 'lucide-react';
 import { toast } from 'sonner';
 import { z } from 'zod';
+
+import { AdminSettingsShell } from './admin-settings-shell';
 
 const profileSchema = z.object({
   firstName: z.string().trim().min(1, 'Please enter a first name.'),
@@ -15,27 +17,6 @@ const profileSchema = z.object({
 });
 
 type ProfileValues = z.infer<typeof profileSchema>;
-
-const settingsSections = [
-  {
-    label: 'My Profile',
-    description: 'Personal account information',
-    icon: UserRound,
-    active: true,
-  },
-  {
-    label: 'Account Security',
-    description: 'Password & login activity',
-    icon: ShieldCheck,
-    active: false,
-  },
-  {
-    label: 'Notification Preferences',
-    description: 'Email & in-app alerts',
-    icon: Bell,
-    active: false,
-  },
-] as const;
 
 const inputClassName =
   'h-[43px] w-full rounded-xl border border-[#e7eceb] bg-[#f4f8f6] px-3.5 py-2.5 font-manrope text-sm leading-[21px] text-[#263238] outline-none transition-colors focus:border-[#2f7d7e]';
@@ -69,184 +50,130 @@ export function AdminProfileSettingsPage() {
   }
 
   return (
-    <section className="w-full max-w-383.5 pb-8 text-[#263238]">
-      <div className="grid items-start gap-6 xl:grid-cols-[minmax(200px,250px)_minmax(0,768px)] xl:gap-6">
-        <aside className="w-full xl:pt-1">
-          <nav
-            aria-label="Admin settings navigation"
-            className="flex gap-2 overflow-x-auto xl:flex-col"
-          >
-            {settingsSections.map(({ label, description, icon: Icon, active }) => (
-              <button
-                key={label}
-                type="button"
-                onClick={() => {
-                  if (!active)
-                    toast.message(`${label} will be available in the next settings page.`);
-                }}
-                className={`flex min-w-43.5 shrink-0 items-center gap-2.5 rounded-xl px-3 py-2 text-left transition-colors xl:min-w-0 ${active ? 'bg-[rgba(47,125,126,0.07)] text-[#2f7d7e]' : 'text-[#607d8b] hover:bg-[#f4f8f6]'}`}
-              >
-                <span
-                  className={`flex size-6 shrink-0 items-center justify-center rounded-lg ${active ? 'bg-[rgba(47,125,126,0.1)]' : ''}`}
-                >
-                  <Icon aria-hidden="true" size={14} strokeWidth={1.6} />
-                </span>
-                <span className="min-w-0">
-                  <span
-                    className={`block font-manrope text-[13px] leading-[19.5px] ${active ? 'font-semibold' : 'font-medium'}`}
-                  >
-                    {label}
+    <AdminSettingsShell activeSection="profile">
+      <main className="w-full max-w-3xl">
+        <header>
+          <h1 className="font-nunito text-[22px] font-bold leading-8.25 text-[#263238]">
+            My Profile
+          </h1>
+          <p className="pt-0.5 font-manrope text-[13px] leading-[19.5px] text-[#607d8b]">
+            Manage your administrator account information. Distinct from editing a family&apos;s
+            parent account in the Families module.
+          </p>
+        </header>
+
+        <DynamicForm
+          defaultValues={{
+            firstName: 'Sarah',
+            lastName: 'K.',
+            displayName: 'Sarah K.',
+            email: 'sarah@brighthorizons.co',
+            phone: '+1 (555) 012-3456',
+            jobTitle: 'Head Administrator',
+          }}
+          fields={[]}
+          onSubmit={saveProfile}
+          schema={profileSchema}
+        >
+          {(form) => (
+            <>
+              <section className="mt-6 rounded-2xl border border-[#e7eceb] bg-white p-6 shadow-[0_4px_6px_rgba(0,0,0,0.06)]">
+                <div className="flex flex-wrap items-center gap-5">
+                  <span className="flex size-20 shrink-0 items-center justify-center rounded-2xl bg-[rgba(47,125,126,0.09)] font-nunito text-2xl font-bold leading-8 text-[#2f7d7e]">
+                    SK
                   </span>
-                  <span className="block truncate font-manrope text-[10px] leading-3.75 text-[#78909c]">
-                    {description}
-                  </span>
-                </span>
-              </button>
-            ))}
-          </nav>
-
-          <div className="my-5 hidden border-t border-[#e7eceb] xl:block" />
-          <button
-            type="button"
-            onClick={() => toast.message('Sign out is available from the account menu.')}
-            className="hidden h-9 items-center gap-2 rounded-xl px-3 font-manrope text-sm font-medium leading-5.25 text-[#e57373] transition-colors hover:bg-[#fff5f4] xl:flex"
-          >
-            <span className="flex size-5 items-center justify-center rounded-lg bg-[#fce9e3]">
-              <LogOut aria-hidden="true" size={12} strokeWidth={1.8} />
-            </span>
-            Sign Out
-          </button>
-        </aside>
-
-        <main className="min-w-0 border-[#e7eceb] xl:border-l xl:pl-6">
-          <header>
-            <h1 className="font-nunito text-[22px] font-bold leading-8.25 text-[#263238]">
-              My Profile
-            </h1>
-            <p className="pt-0.5 font-manrope text-[13px] leading-[19.5px] text-[#607d8b]">
-              Manage your administrator account information. Distinct from editing a family&apos;s
-              parent account in the Families module.
-            </p>
-          </header>
-
-          <DynamicForm
-            defaultValues={{
-              firstName: 'Sarah',
-              lastName: 'K.',
-              displayName: 'Sarah K.',
-              email: 'sarah@brighthorizons.co',
-              phone: '+1 (555) 012-3456',
-              jobTitle: 'Head Administrator',
-            }}
-            fields={[]}
-            onSubmit={saveProfile}
-            schema={profileSchema}
-          >
-            {(form) => (
-              <>
-                <section className="mt-6 rounded-2xl border border-[#e7eceb] bg-white p-6 shadow-[0_4px_6px_rgba(0,0,0,0.06)]">
-                  <div className="flex flex-wrap items-center gap-5">
-                    <span className="flex size-20 shrink-0 items-center justify-center rounded-2xl bg-[rgba(47,125,126,0.09)] font-nunito text-2xl font-bold leading-8 text-[#2f7d7e]">
-                      SK
-                    </span>
-                    <div className="min-w-40 flex-1">
-                      <p className="font-nunito text-xl font-bold leading-7.5 text-[#263238]">
-                        Sarah K.
-                      </p>
-                      <p className="pt-px font-manrope text-sm leading-5.25 text-[#607d8b]">
-                        Head Administrator
-                      </p>
-                      <p className="pt-px font-manrope text-[13px] leading-[19.5px] text-[#b0bec5]">
-                        sarah@brighthorizons.co
-                      </p>
-                    </div>
-                    <label className="flex h-9 cursor-pointer items-center gap-2 rounded-[14px] border border-[rgba(47,125,126,0.25)] bg-[rgba(47,125,126,0.03)] px-4 py-2 font-manrope text-sm font-semibold leading-5 text-[#2f7d7e] transition-colors hover:bg-[rgba(47,125,126,0.08)]">
-                      <Camera aria-hidden="true" size={14} strokeWidth={1.7} />
-                      Change Profile Photo
-                      <input
-                        accept="image/png,image/jpeg,image/webp"
-                        className="sr-only"
-                        type="file"
-                        onChange={(event) => {
-                          if (event.target.files?.[0]) toast.success('Profile photo selected.');
-                        }}
-                      />
-                    </label>
+                  <div className="min-w-40 flex-1">
+                    <p className="font-nunito text-xl font-bold leading-7.5 text-[#263238]">
+                      Sarah K.
+                    </p>
+                    <p className="pt-px font-manrope text-sm leading-5.25 text-[#607d8b]">
+                      Head Administrator
+                    </p>
+                    <p className="pt-px font-manrope text-[13px] leading-[19.5px] text-[#b0bec5]">
+                      sarah@brighthorizons.co
+                    </p>
                   </div>
-                </section>
-
-                <section className="mt-3.5 rounded-2xl border border-[#e7eceb] bg-white p-6 shadow-[0_4px_6px_rgba(0,0,0,0.06)]">
-                  <h2 className="font-nunito text-[17px] font-bold leading-[25.5px] text-[#263238]">
-                    Basic Information
-                  </h2>
-
-                  <div className="mt-5 space-y-5">
-                    <div className="grid gap-5 sm:grid-cols-2">
-                      <FormField
-                        label="First Name"
-                        required
-                        error={form.formState.errors.firstName?.message}
-                      >
-                        <input {...form.register('firstName')} className={inputClassName} />
-                      </FormField>
-                      <FormField
-                        label="Last Name"
-                        required
-                        error={form.formState.errors.lastName?.message}
-                      >
-                        <input {...form.register('lastName')} className={inputClassName} />
-                      </FormField>
-                    </div>
-
-                    <FormField
-                      label="Display Name"
-                      error={form.formState.errors.displayName?.message}
-                    >
-                      <input {...form.register('displayName')} className={inputClassName} />
-                      <span className="font-manrope text-xs leading-4.5 text-[#607d8b]">
-                        Shown in the admin header and activity logs
-                      </span>
-                    </FormField>
-
-                    <FormField
-                      label="Email Address"
-                      required
-                      error={form.formState.errors.email?.message}
-                    >
-                      <input {...form.register('email')} className={inputClassName} type="email" />
-                    </FormField>
-
-                    <div className="grid gap-5 sm:grid-cols-2">
-                      <FormField label="Phone Number" error={form.formState.errors.phone?.message}>
-                        <input {...form.register('phone')} className={inputClassName} type="tel" />
-                      </FormField>
-                      <FormField label="Job Title" error={form.formState.errors.jobTitle?.message}>
-                        <input {...form.register('jobTitle')} className={inputClassName} />
-                      </FormField>
-                    </div>
-                  </div>
-                </section>
-
-                <div className="mt-3 flex gap-3">
-                  <button
-                    type="submit"
-                    className="h-10 rounded-[14px] bg-[#2f7d7e] px-6 py-2.5 font-manrope text-sm font-semibold leading-5 text-white transition-colors hover:bg-[#266b6c]"
-                  >
-                    Save Changes
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => form.reset()}
-                    className="h-10 rounded-[14px] border border-[#e7eceb] bg-white px-5 py-2.5 font-manrope text-sm font-semibold leading-5 text-[#607d8b] transition-colors hover:bg-[#f4f8f6]"
-                  >
-                    Cancel
-                  </button>
+                  <label className="flex h-9 cursor-pointer items-center gap-2 rounded-[14px] border border-[rgba(47,125,126,0.25)] bg-[rgba(47,125,126,0.03)] px-4 py-2 font-manrope text-sm font-semibold leading-5 text-[#2f7d7e] transition-colors hover:bg-[rgba(47,125,126,0.08)]">
+                    <Camera aria-hidden="true" size={14} strokeWidth={1.7} />
+                    Change Profile Photo
+                    <input
+                      accept="image/png,image/jpeg,image/webp"
+                      className="sr-only"
+                      type="file"
+                      onChange={(event) => {
+                        if (event.target.files?.[0]) toast.success('Profile photo selected.');
+                      }}
+                    />
+                  </label>
                 </div>
-              </>
-            )}
-          </DynamicForm>
-        </main>
-      </div>
-    </section>
+              </section>
+
+              <section className="mt-3.5 rounded-2xl border border-[#e7eceb] bg-white p-6 shadow-[0_4px_6px_rgba(0,0,0,0.06)]">
+                <h2 className="font-nunito text-[17px] font-bold leading-[25.5px] text-[#263238]">
+                  Basic Information
+                </h2>
+                <div className="mt-5 space-y-5">
+                  <div className="grid gap-5 sm:grid-cols-2">
+                    <FormField
+                      label="First Name"
+                      required
+                      error={form.formState.errors.firstName?.message}
+                    >
+                      <input {...form.register('firstName')} className={inputClassName} />
+                    </FormField>
+                    <FormField
+                      label="Last Name"
+                      required
+                      error={form.formState.errors.lastName?.message}
+                    >
+                      <input {...form.register('lastName')} className={inputClassName} />
+                    </FormField>
+                  </div>
+                  <FormField
+                    label="Display Name"
+                    error={form.formState.errors.displayName?.message}
+                  >
+                    <input {...form.register('displayName')} className={inputClassName} />
+                    <span className="font-manrope text-xs leading-4.5 text-[#607d8b]">
+                      Shown in the admin header and activity logs
+                    </span>
+                  </FormField>
+                  <FormField
+                    label="Email Address"
+                    required
+                    error={form.formState.errors.email?.message}
+                  >
+                    <input {...form.register('email')} className={inputClassName} type="email" />
+                  </FormField>
+                  <div className="grid gap-5 sm:grid-cols-2">
+                    <FormField label="Phone Number" error={form.formState.errors.phone?.message}>
+                      <input {...form.register('phone')} className={inputClassName} type="tel" />
+                    </FormField>
+                    <FormField label="Job Title" error={form.formState.errors.jobTitle?.message}>
+                      <input {...form.register('jobTitle')} className={inputClassName} />
+                    </FormField>
+                  </div>
+                </div>
+              </section>
+              <div className="mt-3 flex gap-3">
+                <button
+                  type="submit"
+                  className="h-10 rounded-[14px] bg-[#2f7d7e] px-6 py-2.5 font-manrope text-sm font-semibold leading-5 text-white transition-colors hover:bg-[#266b6c]"
+                >
+                  Save Changes
+                </button>
+                <button
+                  type="button"
+                  onClick={() => form.reset()}
+                  className="h-10 rounded-[14px] border border-[#e7eceb] bg-white px-5 py-2.5 font-manrope text-sm font-semibold leading-5 text-[#607d8b] transition-colors hover:bg-[#f4f8f6]"
+                >
+                  Cancel
+                </button>
+              </div>
+            </>
+          )}
+        </DynamicForm>
+      </main>
+    </AdminSettingsShell>
   );
 }
