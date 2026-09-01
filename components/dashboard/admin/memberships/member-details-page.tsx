@@ -1,6 +1,7 @@
 import { ArrowLeft, TrendingUp, UserPlus } from 'lucide-react';
 import Link from 'next/link';
 
+import { CancelMembershipModal } from './cancel-membership-modal';
 import type { Member } from './member-directory-data';
 
 const benefitsByTier = {
@@ -197,12 +198,7 @@ export function MemberDetailsPage({ member }: { member: Member }) {
       </MemberCard>
 
       <div className="mt-6 flex justify-end">
-        <button
-          type="button"
-          className="inline-flex h-10.5 items-center justify-center rounded-[14px] border border-[rgba(229,115,115,0.25)] bg-[#fce9e2] px-4.25 py-2.75 font-manrope text-sm font-semibold leading-5 text-[#e57373] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e57373]"
-        >
-          Cancel Membership
-        </button>
+        <CancelMembershipModal memberName={member.name} />
       </div>
     </section>
   );
