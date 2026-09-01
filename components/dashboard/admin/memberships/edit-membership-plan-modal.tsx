@@ -92,7 +92,7 @@ export function EditMembershipPlanModal({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
         showCloseButton={false}
-        className="block h-180 w-134.5 max-w-[calc(100%-2rem)] overflow-y-auto rounded-2xl bg-white p-6 text-[#263238] shadow-[0_20px_30px_rgba(0,0,0,0.12)] ring-0 sm:max-w-134.5 md:max-h-[calc(100dvh-2rem)]"
+        className="block h-180 w-134.5 max-w-[calc(100%-2rem)] overflow-y-auto rounded-2xl bg-white p-6 text-[#263238] shadow-[0_20px_30px_rgba(0,0,0,0.12)] ring-0 scrollbar-none [&::-webkit-scrollbar]:hidden sm:max-w-134.5 md:max-h-[calc(100dvh-2rem)]"
       >
         <div className="flex flex-col gap-5">
           <header className="flex items-start justify-between">
@@ -121,12 +121,12 @@ export function EditMembershipPlanModal({
             <textarea
               value={description}
               onChange={(event) => setDescription(event.target.value)}
-              className="h-19 resize-none rounded-2xl border border-[#d8ddd9] bg-white p-4 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#515b60] shadow-[0_1px_2px_rgba(16,24,40,0.05)] outline-none transition-shadow focus:border-[#2f7d7e] focus:ring-2 focus:ring-[#2f7d7e]/15"
+              className="h-22 resize-none rounded-2xl border border-[#d8ddd9] bg-white p-4 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#515b60] shadow-[0_1px_2px_rgba(16,24,40,0.05)] outline-none transition-shadow focus:border-[#2f7d7e] focus:ring-2 focus:ring-[#2f7d7e]/15"
             />
           </label>
 
           <section
-            className="h-87.5 rounded-xl border border-[#d8ddd9] p-4"
+            className="h-87.5 rounded-xl border border-[#d8ddd9] p-4 pb-3.5"
             aria-labelledby="feature-list-heading"
           >
             <h2
@@ -145,7 +145,7 @@ export function EditMembershipPlanModal({
                 />
               ))}
             </div>
-            <div className="mt-8 flex gap-3">
+            <div className="mt-4 flex gap-3">
               <input
                 value={newFeature}
                 onChange={(event) => setNewFeature(event.target.value)}
