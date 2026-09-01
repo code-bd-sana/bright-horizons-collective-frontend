@@ -2,7 +2,7 @@ import { ArrowLeft, TrendingUp, UserPlus } from 'lucide-react';
 import Link from 'next/link';
 
 import { CancelMembershipModal } from './cancel-membership-modal';
-import type { Member } from './member-directory-data';
+import { memberSlug, type Member } from './member-directory-data';
 
 const benefitsByTier = {
   'Little Steps': [
@@ -92,7 +92,7 @@ export function MemberDetailsPage({ member }: { member: Member }) {
           </div>
         </div>
         <Link
-          href="/dashboard/admin/memberships/upgrade-downgrade"
+          href={`/dashboard/admin/memberships/upgrade-downgrade?member=${memberSlug(member)}`}
           className="inline-flex h-10.5 shrink-0 items-center justify-center gap-2 self-start rounded-[14px] border border-[rgba(47,125,126,0.19)] bg-[rgba(47,125,126,0.07)] px-4.25 py-2.75 font-manrope text-sm font-semibold leading-5 text-[#2f7d7e] transition-colors hover:bg-[#edf6f2] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2f7d7e] sm:self-center"
         >
           <TrendingUp aria-hidden="true" size={14} strokeWidth={1.8} />
