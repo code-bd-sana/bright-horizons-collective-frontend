@@ -1,5 +1,10 @@
+'use client';
+
 import { ArrowLeft, CircleAlert, Crown } from 'lucide-react';
 import Link from 'next/link';
+import { useState } from 'react';
+
+import { EditMembershipPlanModal } from './edit-membership-plan-modal';
 
 type MembershipPlan = {
   name: string;
@@ -106,7 +111,13 @@ function PlanFeatureList({ plan }: { plan: MembershipPlan }) {
   );
 }
 
-function MembershipPlanCard({ plan }: { plan: MembershipPlan }) {
+function MembershipPlanCard({
+  plan,
+  onEdit,
+}: {
+  plan: MembershipPlan;
+  onEdit: (plan: MembershipPlan) => void;
+}) {
   const theme = planThemes[plan.theme];
   const planSlug = plan.name.toLowerCase().replaceAll(' ', '-');
 
@@ -145,8 +156,8 @@ function MembershipPlanCard({ plan }: { plan: MembershipPlan }) {
           </Link>
           <button
             type="button"
-            disabled
-            className="mt-2 flex h-10.5 w-full items-center justify-center rounded-[14px] border border-[#e7eceb] bg-white font-manrope text-sm font-semibold leading-5 text-[#607d8b] disabled:cursor-default disabled:opacity-100"
+            onClick={() => onEdit(plan)}
+            className="mt-2 flex h-10.5 w-full items-center justify-center rounded-[14px] border border-[#e7eceb] bg-white font-manrope text-sm font-semibold leading-5 text-[#607d8b] transition-colors hover:bg-[#f8fbfa]"
           >
             Edit Plan
           </button>
@@ -157,6 +168,8 @@ function MembershipPlanCard({ plan }: { plan: MembershipPlan }) {
 }
 
 export function ManageMembershipPlansPage() {
+  const [editingPlan, setEditingPlan] = useState<MembershipPlan | null>(null);
+
   return (
     <section className="mx-auto w-full max-w-383.5 pb-8 text-[#263238]">
       <Link
@@ -186,9 +199,18 @@ export function ManageMembershipPlansPage() {
 
       <div className="mt-6 grid max-w-378 gap-6 lg:grid-cols-3">
         {membershipPlans.map((plan) => (
-          <MembershipPlanCard key={plan.name} plan={plan} />
+          <MembershipPlanCard key={plan.name} plan={plan} onEdit={setEditingPlan} />
         ))}
       </div>
+
+      <EditMembershipPlanModal
+        key={editingPlan?.name ?? 'closed'}
+        planName={editingPlan?.name ?? 'Grow Together'}
+        isOpen={editingPlan !== null}
+        onClose={(open) => {
+          if (!open) setEditingPlan(null);
+        }}
+      />
     </section>
   );
 }
