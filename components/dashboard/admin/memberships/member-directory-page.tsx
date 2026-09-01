@@ -12,112 +12,13 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-
-type MembershipTier = 'Little Steps' | 'Grow Together' | 'Personalized Pathways';
-type MemberStatus = 'Active' | 'Paused';
-
-type Member = {
-  initials: string;
-  name: string;
-  email: string;
-  children: string;
-  membershipTier: MembershipTier;
-  status: MemberStatus;
-  joinDate: string;
-  renewalDate: string;
-  currentPlan: 'Not Started' | 'In Progress' | 'Completed' | 'Paused';
-};
-
-const members: Member[] = [
-  {
-    initials: 'AO',
-    name: 'Amara Okonkwo',
-    email: 'amara.okonkwo@example.com',
-    children: 'Zara, Kofi',
-    membershipTier: 'Grow Together',
-    status: 'Active',
-    joinDate: 'Jan 12, 2025',
-    renewalDate: 'Jan 12, 2026',
-    currentPlan: 'In Progress',
-  },
-  {
-    initials: 'EM',
-    name: 'Elena Martinez',
-    email: 'elena.martinez@example.com',
-    children: 'Sofia',
-    membershipTier: 'Little Steps',
-    status: 'Active',
-    joinDate: 'Feb 3, 2025',
-    renewalDate: 'Feb 3, 2026',
-    currentPlan: 'Not Started',
-  },
-  {
-    initials: 'WC',
-    name: 'Wei Chen',
-    email: 'wei.chen@example.com',
-    children: 'Eli',
-    membershipTier: 'Personalized Pathways',
-    status: 'Active',
-    joinDate: 'Dec 15, 2024',
-    renewalDate: 'Dec 15, 2025',
-    currentPlan: 'In Progress',
-  },
-  {
-    initials: 'PP',
-    name: 'Priya Patel',
-    email: 'priya.patel@example.com',
-    children: 'Mia, Arjun',
-    membershipTier: 'Grow Together',
-    status: 'Active',
-    joinDate: 'Mar 7, 2025',
-    renewalDate: 'Mar 7, 2026',
-    currentPlan: 'In Progress',
-  },
-  {
-    initials: 'YT',
-    name: 'Yuki Tanaka',
-    email: 'yuki.tanaka@example.com',
-    children: 'Ren',
-    membershipTier: 'Little Steps',
-    status: 'Active',
-    joinDate: 'Jan 28, 2025',
-    renewalDate: 'Jan 28, 2026',
-    currentPlan: 'Completed',
-  },
-  {
-    initials: 'MW',
-    name: 'Marcus Williams',
-    email: 'marcus.williams@example.com',
-    children: 'Jade',
-    membershipTier: 'Grow Together',
-    status: 'Active',
-    joinDate: 'Nov 5, 2024',
-    renewalDate: 'Nov 5, 2025',
-    currentPlan: 'In Progress',
-  },
-  {
-    initials: 'LN',
-    name: 'Lan Nguyen',
-    email: 'lan.nguyen@example.com',
-    children: 'Linh, Bao',
-    membershipTier: 'Personalized Pathways',
-    status: 'Paused',
-    joinDate: 'Oct 20, 2024',
-    renewalDate: 'Oct 20, 2025',
-    currentPlan: 'Paused',
-  },
-  {
-    initials: 'FA',
-    name: 'Fatima Al-Rashid',
-    email: 'fatima.alrashid@example.com',
-    children: 'Omar',
-    membershipTier: 'Little Steps',
-    status: 'Active',
-    joinDate: 'Apr 2, 2025',
-    renewalDate: 'Apr 2, 2026',
-    currentPlan: 'Not Started',
-  },
-];
+import {
+  members,
+  memberSlug,
+  type Member,
+  type MemberStatus,
+  type MembershipTier,
+} from './member-directory-data';
 
 const tierStyles: Record<MembershipTier, string> = {
   'Little Steps': 'bg-[#edf6f2] text-[#2f7d7e]',
@@ -147,16 +48,22 @@ function StatusBadge({ status }: { status: MemberStatus }) {
   );
 }
 
-function MemberActions({ name }: { name: string }) {
-  const actions = [
-    { label: `View ${name}`, icon: Eye },
-    { label: `Edit ${name}`, icon: TrendingUp },
-    { label: `Remove ${name}`, icon: MessageSquare },
+function MemberActions({ member }: { member: Member }) {
+  const secondaryActions = [
+    { label: `Edit ${member.name}`, icon: TrendingUp },
+    { label: `Message ${member.name}`, icon: MessageSquare },
   ];
 
   return (
     <div className="flex items-center gap-1">
-      {actions.map(({ label, icon: Icon }) => (
+      <Link
+        href={`/dashboard/admin/memberships/member-directory/${memberSlug(member)}`}
+        aria-label={`View ${member.name}`}
+        className="flex size-7 items-center justify-center rounded-[10px] text-[#607d8b] transition-colors hover:bg-[#f4f8f6] hover:text-[#2f7d7e] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2f7d7e]"
+      >
+        <Eye aria-hidden="true" size={14} strokeWidth={1.6} />
+      </Link>
+      {secondaryActions.map(({ label, icon: Icon }) => (
         <button
           key={label}
           type="button"
@@ -237,7 +144,7 @@ function DirectoryTable({ directoryMembers }: { directoryMembers: Member[] }) {
                 {member.currentPlan}
               </TableCell>
               <TableCell className="px-3">
-                <MemberActions name={member.name} />
+                <MemberActions member={member} />
               </TableCell>
             </TableRow>
           ))}
@@ -267,7 +174,7 @@ function MobileMemberCards({ directoryMembers }: { directoryMembers: Member[] })
                 <p className="truncate font-manrope text-xs text-[#607d8b]">{member.children}</p>
               </div>
             </div>
-            <MemberActions name={member.name} />
+            <MemberActions member={member} />
           </div>
           <div className="mt-4 flex flex-wrap items-center gap-2">
             <MembershipTierBadge tier={member.membershipTier} />
