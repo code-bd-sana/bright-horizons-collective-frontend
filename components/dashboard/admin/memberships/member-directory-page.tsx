@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowLeft, ChevronDown, Eye, Pencil, Search, Trash2 } from 'lucide-react';
+import { ArrowLeft, ChevronDown, Eye, MessageSquare, Search, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 
@@ -150,8 +150,8 @@ function StatusBadge({ status }: { status: MemberStatus }) {
 function MemberActions({ name }: { name: string }) {
   const actions = [
     { label: `View ${name}`, icon: Eye },
-    { label: `Edit ${name}`, icon: Pencil },
-    { label: `Remove ${name}`, icon: Trash2 },
+    { label: `Edit ${name}`, icon: TrendingUp },
+    { label: `Remove ${name}`, icon: MessageSquare },
   ];
 
   return (
