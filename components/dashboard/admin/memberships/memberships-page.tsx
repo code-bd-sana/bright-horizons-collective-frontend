@@ -1,5 +1,4 @@
 import {
-  ArrowUpDown,
   BadgeDollarSign,
   ChartNoAxesCombined,
   CircleDollarSign,
@@ -7,6 +6,7 @@ import {
   Pause,
   Plus,
   Sparkles,
+  TrendingUp,
   UserPlus,
   UsersRound,
 } from 'lucide-react';
@@ -147,7 +147,7 @@ const quickActions = [
   {
     label: 'Upgrade / Downgrade',
     href: '/dashboard/admin/memberships/upgrade-downgrade',
-    icon: ArrowUpDown,
+    icon: TrendingUp,
   },
   {
     label: 'Manage Plans',
