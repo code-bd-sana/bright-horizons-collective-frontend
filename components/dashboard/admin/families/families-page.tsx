@@ -16,6 +16,7 @@ import {
   WalletCards,
 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
 type Membership = 'Little Steps' | 'Grow Together' | 'Personalized Pathways';
@@ -251,6 +252,7 @@ function FamilyFilterDropdown({
 }
 
 export function FamiliesPage() {
+  const router = useRouter();
   const [query, setQuery] = useState('');
   const [membership, setMembership] = useState('all');
   const [status, setStatus] = useState('all');
@@ -276,8 +278,13 @@ export function FamiliesPage() {
     setSelectedIds((current) =>
       current.includes(id) ? current.filter((selectedId) => selectedId !== id) : [...current, id]
     );
-  const action = (label: string, family: Family) =>
+  const action = (label: string, family: Family) => {
+    if (label === 'View') {
+      router.push(`/dashboard/admin/families/${family.id}`);
+      return;
+    }
     toast.success(`${label} is ready for ${family.name}.`);
+  };
 
   return (
     <section className="mx-auto w-full max-w-383.5 pb-8 text-[#263238]">
