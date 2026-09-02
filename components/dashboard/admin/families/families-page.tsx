@@ -18,6 +18,7 @@ import {
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { DeactivateFamilyModal } from './deactivate-family-modal';
 
 type Membership = 'Little Steps' | 'Grow Together' | 'Personalized Pathways';
 type Status = 'Active' | 'Inactive';
@@ -257,6 +258,7 @@ export function FamiliesPage() {
   const [membership, setMembership] = useState('all');
   const [status, setStatus] = useState('all');
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [deactivateTarget, setDeactivateTarget] = useState<Family | null>(null);
 
   const filteredFamilies = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -460,7 +462,7 @@ export function FamiliesPage() {
                     <button
                       type="button"
                       aria-label={`More actions for ${family.name}`}
-                      onClick={() => action('More actions', family)}
+                      onClick={() => setDeactivateTarget(family)}
                       className="flex size-7 items-center justify-center rounded-[10px] text-[#607d8b] hover:bg-[#f4f8f6]"
                     >
                       <Trash size={16} />
@@ -507,6 +509,15 @@ export function FamiliesPage() {
           <ChevronRight size={16} />
         </button>
       </nav>
+      <DeactivateFamilyModal
+        familyName={deactivateTarget?.name ?? null}
+        onClose={(open) => !open && setDeactivateTarget(null)}
+        onConfirm={() => {
+          if (deactivateTarget)
+            toast.success(`${deactivateTarget.name}'s account has been deactivated.`);
+          setDeactivateTarget(null);
+        }}
+      />
     </section>
   );
 }
