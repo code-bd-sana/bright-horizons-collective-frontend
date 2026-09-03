@@ -1,5 +1,6 @@
 import { Archive, Clock3, Copy, Eye, FileText, Layers3, PencilLine, Trash2 } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 import type { ActivityItem } from './activities-library-data';
 
 export function ActivityCard({ activity }: { activity: ActivityItem }) {
@@ -54,13 +55,13 @@ export function ActivityCard({ activity }: { activity: ActivityItem }) {
         </div>
         <div className="mt-auto -mx-4 -mb-4 flex h-15 items-center border-t border-[#e4e9e9] px-4">
           <div className="flex min-w-0 items-center gap-5 text-[#5f8096]">
-            <button
-              type="button"
+            <Link
+              href={`/dashboard/admin/activities-library/${activity.id}`}
               className="inline-flex items-center gap-1.5 font-manrope text-sm leading-5.5"
             >
               <Eye aria-hidden="true" size={15} strokeWidth={1.5} />
               View
-            </button>
+            </Link>
             <button
               type="button"
               className="inline-flex items-center gap-1.5 font-manrope text-sm leading-5.5"
