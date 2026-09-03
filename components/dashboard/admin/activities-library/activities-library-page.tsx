@@ -3,23 +3,41 @@
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
+import { toast } from 'sonner';
+import { ActivityArchiveModal } from './activity-archive-modal';
 import { ActivityCard } from './activity-card';
+import { ActivityDeleteModal } from './activity-delete-modal';
 import { ActivityLibraryControls } from './activity-library-controls';
-import { activityFilters, activityItems } from './activities-library-data';
+import { activityFilters, activityItems, type ActivityItem } from './activities-library-data';
 import { ActivitySummaryCards } from './activity-summary-cards';
 
 export function ActivitiesLibraryPage() {
   const [query, setQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<(typeof activityFilters)[number]>('All');
+  const [activities, setActivities] = useState(activityItems);
+  const [archiveTarget, setArchiveTarget] = useState<ActivityItem | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<ActivityItem | null>(null);
   const visibleActivities = useMemo(
     () =>
-      activityItems.filter(
+      activities.filter(
         (activity) =>
           (activeFilter === 'All' || activity.area === activeFilter) &&
           `${activity.title} ${activity.description}`.toLowerCase().includes(query.toLowerCase())
       ),
-    [activeFilter, query]
+    [activeFilter, activities, query]
   );
+
+  function archiveActivity(activity: ActivityItem) {
+    setActivities((current) => current.filter(({ id }) => id !== activity.id));
+    setArchiveTarget(null);
+    toast.success(`“${activity.title}” has been archived.`);
+  }
+
+  function deleteActivity(activity: ActivityItem) {
+    setActivities((current) => current.filter(({ id }) => id !== activity.id));
+    setDeleteTarget(null);
+    toast.success(`“${activity.title}” has been deleted permanently.`);
+  }
 
   return (
     <section className="mx-auto w-full max-w-382 pb-10 text-[#263238]">
@@ -53,7 +71,12 @@ export function ActivitiesLibraryPage() {
       </div>
       <div className="mt-8 grid gap-6 md:grid-cols-2 2xl:grid-cols-3">
         {visibleActivities.map((activity) => (
-          <ActivityCard key={activity.id} activity={activity} />
+          <ActivityCard
+            key={activity.id}
+            activity={activity}
+            onArchive={setArchiveTarget}
+            onDelete={setDeleteTarget}
+          />
         ))}
       </div>
       {visibleActivities.length === 0 && (
@@ -61,6 +84,16 @@ export function ActivitiesLibraryPage() {
           No activities match your search.
         </div>
       )}
+      <ActivityArchiveModal
+        activity={archiveTarget}
+        onClose={() => setArchiveTarget(null)}
+        onConfirm={archiveActivity}
+      />
+      <ActivityDeleteModal
+        activity={deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={deleteActivity}
+      />
     </section>
   );
 }

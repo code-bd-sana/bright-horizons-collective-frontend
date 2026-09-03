@@ -3,7 +3,15 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { ActivityItem } from './activities-library-data';
 
-export function ActivityCard({ activity }: { activity: ActivityItem }) {
+export function ActivityCard({
+  activity,
+  onArchive,
+  onDelete,
+}: {
+  activity: ActivityItem;
+  onArchive: (activity: ActivityItem) => void;
+  onDelete: (activity: ActivityItem) => void;
+}) {
   return (
     <article className="flex min-h-119.5 flex-col overflow-hidden rounded-2xl border border-[#d8dfdf] bg-white p-4 shadow-[0_1px_2px_rgba(38,50,56,0.03)]">
       <div className="relative h-52 shrink-0 overflow-hidden rounded-[18px] bg-[#e8e8e8]">
@@ -78,6 +86,7 @@ export function ActivityCard({ activity }: { activity: ActivityItem }) {
             </button>
             <button
               type="button"
+              onClick={() => onArchive(activity)}
               className="inline-flex items-center gap-1.5 font-manrope text-sm leading-5.5"
             >
               <Archive aria-hidden="true" size={15} strokeWidth={1.5} />
@@ -87,6 +96,7 @@ export function ActivityCard({ activity }: { activity: ActivityItem }) {
           <button
             type="button"
             aria-label={`Delete ${activity.title}`}
+            onClick={() => onDelete(activity)}
             className="ml-auto shrink-0 text-[#fb6464]"
           >
             <Trash2 aria-hidden="true" size={15} strokeWidth={1.5} />
