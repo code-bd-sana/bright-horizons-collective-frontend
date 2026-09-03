@@ -214,6 +214,7 @@ export function Header({ role = 'parent' }: { role?: DemoRole }) {
   const router = useRouter();
   const roleConfig = getRoleConfig(role);
   const isAdmin = role === 'admin';
+  const isAdminDashboard = pathname === '/dashboard/admin';
   const isMessagesPage =
     pathname === '/dashboard/messages' || pathname === '/dashboard/admin/messages';
   const [notificationsOpen, setNotificationsOpen] = useState(false);
@@ -279,9 +280,9 @@ export function Header({ role = 'parent' }: { role?: DemoRole }) {
   return (
     <header
       className={`z-30 grid h-16 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 px-4 sm:gap-3 sm:px-6 lg:px-6 xl:px-10 ${
-        isAdmin
+        isAdminDashboard
           ? 'absolute inset-x-0 top-0 h-22 bg-transparent'
-          : 'sticky top-0 bg-[#fdfdfc] sm:h-18'
+          : `sticky top-0 bg-[#fdfdfc] ${isAdmin ? 'h-22' : 'sm:h-18'}`
       }`}
       aria-label="Dashboard header"
     >
@@ -293,7 +294,7 @@ export function Header({ role = 'parent' }: { role?: DemoRole }) {
       >
         <Menu size={22} strokeWidth={1.7} />
       </button>
-      {isMessagesPage || isAdmin ? (
+      {isMessagesPage || isAdminDashboard ? (
         <span className="col-start-2 min-w-0" aria-hidden="true" />
       ) : (
         <label className="col-start-2 flex h-10 min-w-0 items-center overflow-hidden rounded-lg border border-[#fce9e3] bg-[#fbf6f4] px-3 py-3 sm:px-5.25 sm:py-4.25 lg:max-w-110.5">

@@ -1,4 +1,5 @@
 import { getRoleConfig } from '@/lib/role-config';
+import { ActivitiesLibraryPage } from '@/components/dashboard/admin/activities-library/activities-library-page';
 import { notFound } from 'next/navigation';
 
 export default async function AdminSectionPage({
@@ -12,6 +13,8 @@ export default async function AdminSectionPage({
   );
 
   if (!matchingItem) notFound();
+
+  if (section === 'activities-library') return <ActivitiesLibraryPage />;
 
   return (
     <section className="mx-auto w-full max-w-343.5 pb-8 text-[#263238]">
