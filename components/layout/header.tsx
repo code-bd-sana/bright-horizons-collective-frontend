@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { Menu } from 'lucide-react';
+import { Bell, Menu, MessageCircle } from 'lucide-react';
 import type { DemoRole } from '@/lib/demo-session';
 import { getRoleConfig } from '@/lib/role-config';
 import { useAppStore } from '@/store/use-app-store';
@@ -278,7 +278,11 @@ export function Header({ role = 'parent' }: { role?: DemoRole }) {
 
   return (
     <header
-      className="sticky top-0 z-30 grid h-16 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 bg-[#fdfdfc] px-4 sm:h-18 sm:gap-3 sm:px-6 lg:px-6 xl:px-10"
+      className={`z-30 grid h-16 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 px-4 sm:gap-3 sm:px-6 lg:px-6 xl:px-10 ${
+        isAdmin
+          ? 'absolute inset-x-0 top-0 h-22 bg-transparent'
+          : 'sticky top-0 bg-[#fdfdfc] sm:h-18'
+      }`}
       aria-label="Dashboard header"
     >
       <button
@@ -289,7 +293,7 @@ export function Header({ role = 'parent' }: { role?: DemoRole }) {
       >
         <Menu size={22} strokeWidth={1.7} />
       </button>
-      {isMessagesPage ? (
+      {isMessagesPage || isAdmin ? (
         <span className="col-start-2 min-w-0" aria-hidden="true" />
       ) : (
         <label className="col-start-2 flex h-10 min-w-0 items-center overflow-hidden rounded-lg border border-[#fce9e3] bg-[#fbf6f4] px-3 py-3 sm:px-5.25 sm:py-4.25 lg:max-w-110.5">
@@ -323,7 +327,10 @@ export function Header({ role = 'parent' }: { role?: DemoRole }) {
           }}
           className="hidden size-10 items-center justify-center overflow-hidden rounded-lg bg-[#e9f1ee] p-1 sm:flex"
         >
-          <Image src="/Home/figma-dashboard-header-chat.svg" alt="" width={25} height={24} />
+          <span className="relative flex size-6 items-center justify-center text-[#27494e]">
+            <MessageCircle aria-hidden="true" size={22} strokeWidth={1.7} />
+            <span className="absolute right-0.5 top-0.5 size-1.5 rounded-full bg-[#d4484a]" />
+          </span>
         </button>
         <button
           ref={notificationButtonRef}
@@ -338,12 +345,10 @@ export function Header({ role = 'parent' }: { role?: DemoRole }) {
           }}
           className="flex size-10 items-center justify-center overflow-hidden rounded-lg bg-[#e9f1ee] p-1"
         >
-          <Image
-            src="/Home/figma-dashboard-header-notification.svg"
-            alt=""
-            width={24}
-            height={24}
-          />
+          <span className="relative flex size-6 items-center justify-center text-[#27494e]">
+            <Bell aria-hidden="true" size={22} strokeWidth={1.7} />
+            <span className="absolute right-0.5 top-0.5 size-1.5 rounded-full bg-[#d4484a]" />
+          </span>
         </button>
         {roleConfig.header.showChildProfile && (
           <button
