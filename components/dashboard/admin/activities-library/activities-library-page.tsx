@@ -1,6 +1,7 @@
 'use client';
 
 import { Plus } from 'lucide-react';
+import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { ActivityCard } from './activity-card';
 import { ActivityLibraryControls } from './activity-library-controls';
@@ -31,13 +32,13 @@ export function ActivitiesLibraryPage() {
             94 published activities across 6 development areas
           </p>
         </div>
-        <button
-          type="button"
+        <Link
+          href="/dashboard/admin/activities-library/create"
           className="inline-flex h-10 items-center justify-center gap-2 rounded-full bg-[#2f7d7e] px-5 font-nunito text-sm font-medium leading-5 text-white shadow-[inset_0_-4px_3px_rgba(255,255,255,0.06)] transition-colors hover:bg-[#276d6e]"
         >
           <Plus aria-hidden="true" size={16} strokeWidth={1.8} />
           Create Activity
-        </button>
+        </Link>
       </header>
       <div className="mt-8">
         <ActivitySummaryCards />
