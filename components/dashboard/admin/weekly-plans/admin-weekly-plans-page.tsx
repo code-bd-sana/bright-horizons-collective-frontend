@@ -2,7 +2,8 @@
 import { Plus, UserPlus } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
-import { adminWeeklyPlans, type PlanStatus } from './weekly-plans-data';
+import { adminWeeklyPlans, type AdminWeeklyPlan, type PlanStatus } from './weekly-plans-data';
+import { WeeklyPlanConfirmationModal } from './weekly-plan-confirmation-modal';
 import { WeeklyPlanFilters } from './weekly-plan-filters';
 import { WeeklyPlansSummary } from './weekly-plans-summary';
 import { WeeklyPlansTable } from './weekly-plans-table';
@@ -12,6 +13,10 @@ export function AdminWeeklyPlansPage() {
   const [membership, setMembership] = useState('all');
   const [age, setAge] = useState('all');
   const [status, setStatus] = useState('all');
+  const [confirmation, setConfirmation] = useState<{
+    action: 'archive' | 'delete';
+    plan: AdminWeeklyPlan;
+  } | null>(null);
   const plans = useMemo(
     () =>
       adminWeeklyPlans.filter(
@@ -70,10 +75,31 @@ export function AdminWeeklyPlansPage() {
           />
           <WeeklyPlansTable
             plans={plans}
-            onAction={(action, plan) => toast.success(`${action} is ready for “${plan.title}”.`)}
+            onAction={(action, plan) => {
+              if (action === 'Archive' || action === 'Delete') {
+                setConfirmation({ action: action.toLowerCase() as 'archive' | 'delete', plan });
+                return;
+              }
+
+              toast.success(`${action} is ready for “${plan.title}”.`);
+            }}
           />
         </div>
       </div>
+      <WeeklyPlanConfirmationModal
+        action={confirmation?.action ?? null}
+        plan={confirmation?.plan ?? null}
+        onClose={(open) => {
+          if (!open) setConfirmation(null);
+        }}
+        onConfirm={() => {
+          if (!confirmation) return;
+          toast.success(
+            `“${confirmation.plan.title}” has been ${confirmation.action === 'archive' ? 'archived' : 'deleted'}.`
+          );
+          setConfirmation(null);
+        }}
+      />
     </section>
   );
 }
