@@ -118,7 +118,7 @@ export function WeeklyPlanMembershipPage() {
               ← Previous
             </FlowButton>
             <FlowButton
-              onClick={() => toast.success('Review is ready.')}
+              onClick={() => router.push('/dashboard/admin/weekly-plans/create/review')}
               className="border-[#2f7d7e] text-[#2f7d7e]"
             >
               Next →
