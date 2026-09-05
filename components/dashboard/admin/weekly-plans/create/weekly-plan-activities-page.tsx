@@ -253,7 +253,7 @@ export function WeeklyPlanActivitiesPage() {
               ← Previous
             </FlowButton>
             <FlowButton
-              onClick={() => toast.success('Schedule setup is ready.')}
+              onClick={() => router.push('/dashboard/admin/weekly-plans/create/schedule')}
               className="border-[#2f7d7e] text-[#2f7d7e]"
             >
               Next →
