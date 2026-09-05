@@ -52,7 +52,7 @@ export function AdminWeeklyPlansPage() {
           </button>
           <button
             type="button"
-            onClick={() => toast.success('Plan creation is ready.')}
+            onClick={() => router.push('/dashboard/admin/weekly-plans/create')}
             className="flex h-10 items-center gap-2 rounded-[14px] bg-[#2f7d7e] px-4 font-manrope text-sm font-semibold text-white"
           >
             <Plus size={15} />
