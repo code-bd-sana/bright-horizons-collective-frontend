@@ -116,7 +116,7 @@ export function WeeklyPlanSchedulePage() {
               ← Previous
             </FlowButton>
             <FlowButton
-              onClick={() => toast.success('Membership setup is ready.')}
+              onClick={() => router.push('/dashboard/admin/weekly-plans/create/membership')}
               className="border-[#2f7d7e] text-[#2f7d7e]"
             >
               Next →
