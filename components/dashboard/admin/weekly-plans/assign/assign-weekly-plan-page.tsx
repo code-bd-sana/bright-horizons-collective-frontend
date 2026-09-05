@@ -2,7 +2,6 @@
 
 import { ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
 import { AssignmentStepper } from './assignment-stepper';
 
 function AssignmentStat({ label, value }: { label: string; value: string }) {
@@ -43,7 +42,7 @@ export function AssignWeeklyPlanPage() {
         </div>
 
         <section className="overflow-x-auto rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)]">
-          <AssignmentStepper />
+          <AssignmentStepper currentStep={1} />
         </section>
 
         <section className="rounded-2xl border border-[#e7eceb] bg-white p-6 shadow-[0_4px_6px_rgba(0,0,0,0.06)]">
@@ -102,7 +101,7 @@ export function AssignWeeklyPlanPage() {
             </button>
             <button
               type="button"
-              onClick={() => toast.success('Family selection is ready.')}
+              onClick={() => router.push('/dashboard/admin/weekly-plans/assign/families')}
               className="rounded-[14px] bg-[#2f7d7e] px-5 py-2.5 font-manrope text-sm font-semibold leading-5 text-white"
             >
               Next →
