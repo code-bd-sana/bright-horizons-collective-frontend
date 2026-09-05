@@ -140,7 +140,10 @@ export function AssignWeeklyPlanSettingsPage() {
             </button>
             <button
               type="button"
-              onClick={() => toast.success('Assignment settings saved.')}
+              onClick={() => {
+                toast.success('Assignment settings saved.');
+                router.push('/dashboard/admin/weekly-plans/assign/review');
+              }}
               className="rounded-[14px] bg-[#2f7d7e] px-5 py-2.5 font-manrope text-sm font-semibold leading-5 text-white"
             >
               Next →
