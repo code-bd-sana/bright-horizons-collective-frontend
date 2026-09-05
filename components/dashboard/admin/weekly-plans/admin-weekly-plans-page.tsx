@@ -1,5 +1,6 @@
 'use client';
 import { Plus, UserPlus } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { adminWeeklyPlans, type AdminWeeklyPlan, type PlanStatus } from './weekly-plans-data';
@@ -9,6 +10,7 @@ import { WeeklyPlansSummary } from './weekly-plans-summary';
 import { WeeklyPlansTable } from './weekly-plans-table';
 
 export function AdminWeeklyPlansPage() {
+  const router = useRouter();
   const [search, setSearch] = useState('');
   const [membership, setMembership] = useState('all');
   const [age, setAge] = useState('all');
@@ -76,6 +78,11 @@ export function AdminWeeklyPlansPage() {
           <WeeklyPlansTable
             plans={plans}
             onAction={(action, plan) => {
+              if (action === 'View') {
+                router.push(`/dashboard/admin/weekly-plans/${plan.id}`);
+                return;
+              }
+
               if (action === 'Archive' || action === 'Delete') {
                 setConfirmation({ action: action.toLowerCase() as 'archive' | 'delete', plan });
                 return;

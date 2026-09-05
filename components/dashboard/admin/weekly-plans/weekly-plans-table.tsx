@@ -115,6 +115,7 @@ export function WeeklyPlansTable({
                 <TableCell>
                   <div className="flex gap-1">
                     {[
+                      [Eye, 'View'],
                       [Copy, 'Copy'],
                       [Archive, 'Archive'],
                       [Trash2, 'Delete'],
