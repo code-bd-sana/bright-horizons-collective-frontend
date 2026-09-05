@@ -60,6 +60,7 @@ export function WeeklyPlanBasicInfoPage() {
 
   function saveBasicInfo(data: BasicInfoValues) {
     toast.success(`Basic information for “${data.title}” has been saved.`);
+    router.push('/dashboard/admin/weekly-plans/create/activities');
   }
 
   return (
@@ -79,7 +80,7 @@ export function WeeklyPlanBasicInfoPage() {
         </h1>
 
         <section className="overflow-x-auto rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)]">
-          <WeeklyPlanFormStepper />
+          <WeeklyPlanFormStepper currentStep={1} />
         </section>
 
         <DynamicForm
