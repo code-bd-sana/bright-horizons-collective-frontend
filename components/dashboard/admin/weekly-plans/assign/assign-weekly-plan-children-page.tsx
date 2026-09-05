@@ -158,7 +158,10 @@ export function AssignWeeklyPlanChildrenPage() {
             </button>
             <button
               type="button"
-              onClick={() => toast.success(`${selectedChildren.size} children selected.`)}
+              onClick={() => {
+                toast.success(`${selectedChildren.size} children selected.`);
+                router.push('/dashboard/admin/weekly-plans/assign/settings');
+              }}
               className="rounded-[14px] bg-[#2f7d7e] px-5 py-2.5 font-manrope text-sm font-semibold leading-5 text-white"
             >
               Next →
