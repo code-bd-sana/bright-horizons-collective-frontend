@@ -44,7 +44,7 @@ export function AdminWeeklyPlansPage() {
         <div className="flex gap-2">
           <button
             type="button"
-            onClick={() => toast.success('Family assignment is ready.')}
+            onClick={() => router.push('/dashboard/admin/weekly-plans/assign')}
             className="flex h-10 items-center gap-2 rounded-[14px] border border-[#cfe0e0] bg-[#e9f1ee] px-4 font-manrope text-sm font-semibold text-[#2f7d7e]"
           >
             <UserPlus size={15} />
