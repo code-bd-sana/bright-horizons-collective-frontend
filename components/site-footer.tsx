@@ -221,7 +221,7 @@ function FooterForm({ className = 'w-[384px]' }: { className?: string }) {
         />
         <button
           type="submit"
-          className="h-full min-w-20 rounded-full bg-[#F2B59F] px-4 font-nunito text-sm font-medium leading-5 tracking-[-0.084px] text-[#F8FAFC]"
+          className="h-full shrink-0 min-w-20 rounded-full bg-[#F2B59F] px-4 font-nunito text-sm font-medium leading-5 tracking-[-0.084px] text-[#614840] hover:bg-[#F2B59F]/80 transition-colors"
         >
           Subscribe
         </button>
@@ -355,19 +355,63 @@ function DesktopFooter() {
   );
 }
 
+function CompactFooterDecoration() {
+  return (
+    <>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -left-[520px] -top-[190px] h-[930px] w-[1390px] opacity-70"
+      >
+        <Image
+          src="/Home/figma-home-1183-12076-img-image136.png"
+          alt=""
+          fill
+          sizes="1390px"
+          className="object-cover"
+        />
+      </div>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -left-10 bottom-[-34px] size-52 rotate-[-12deg] opacity-80 mix-blend-multiply sm:left-8 sm:size-64"
+      >
+        <Image
+          src="/Home/figma-home-1183-12076-img-image3.png"
+          alt=""
+          fill
+          sizes="256px"
+          className="object-contain"
+        />
+      </div>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-8 bottom-[-22px] h-36 w-36 overflow-hidden opacity-75 sm:right-8 sm:h-44 sm:w-44"
+      >
+        <Image
+          src="/Home/figma-home-1183-12076-img-image29.png"
+          alt=""
+          fill
+          sizes="176px"
+          className="object-cover object-top"
+        />
+      </div>
+    </>
+  );
+}
+
 function CompactFooter() {
   return (
     <footer
       id="contact-compact"
-      className="relative overflow-hidden bg-[#FDFDFC] px-5 py-20 sm:px-8 sm:py-28 min-[1600px]:hidden"
+      className="relative overflow-hidden bg-[#FDFDFC] px-4 py-16 sm:px-8 sm:py-24 min-[1600px]:hidden"
       style={{
         backgroundImage:
           'linear-gradient(180deg, rgba(224, 242, 254, 0) 0%, rgb(224, 242, 254) 35.577%, rgb(224, 242, 254) 100%)',
       }}
     >
-      <div className="relative z-10 mx-auto max-w-190">
-        <div className="grid gap-12 sm:grid-cols-2">
-          <div className="flex flex-col gap-4">
+      <CompactFooterDecoration />
+      <div className="relative z-10 mx-auto max-w-290">
+        <div className="grid gap-10 sm:grid-cols-2 sm:gap-12 lg:grid-cols-[1.5fr_1fr_1fr]">
+          <div className="flex flex-col gap-4 max-w-md">
             <FooterLogo />
             <p className="font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#515B60]">
               Personalized pediatric OT activities and weekly plans for families, created by a
@@ -376,7 +420,7 @@ function CompactFooter() {
             <FooterForm className="w-full" />
             <SocialLinks />
           </div>
-          <div className="grid grid-cols-2 gap-6">
+          <div className="col-span-1 grid grid-cols-2 gap-6 sm:col-span-1 sm:gap-8 lg:col-span-2">
             <FooterMenu title="Product" links={productLinks} width="w-full" />
             <FooterMenu title="Company" links={companyLinks} width="w-full" />
           </div>

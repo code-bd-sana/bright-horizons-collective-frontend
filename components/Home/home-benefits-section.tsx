@@ -237,54 +237,112 @@ const responsiveBenefits = [
   },
 ];
 
+function ResponsiveBenefitArtwork({ index }: { index: number }) {
+  if (index === 0) {
+    return (
+      <div className="absolute left-[4.98px] top-3 size-[406px]" style={weeklyMask}>
+        <Image
+          src={`${assetBase}-image108.png`}
+          alt=""
+          fill
+          sizes="406px"
+          className="pointer-events-none object-cover"
+        />
+      </div>
+    );
+  }
+
+  if (index === 1) {
+    return (
+      <div className="absolute -left-4 top-[-104px] flex size-[502.361px] items-center justify-center">
+        <div className="relative size-[469.089px] rotate-[4.22deg]" style={activityMask}>
+          <Image
+            src={`${assetBase}-image114.png`}
+            alt=""
+            fill
+            sizes="469px"
+            className="pointer-events-none object-cover"
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (index === 2) {
+    return (
+      <div className="absolute -left-[90px] top-[-132px] size-[530px]" style={developmentMask}>
+        <Image
+          src={`${assetBase}-image113.png`}
+          alt=""
+          fill
+          sizes="530px"
+          className="pointer-events-none object-cover"
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className="absolute left-1 top-[-14px] size-[416.606px]" style={parentMask}>
+      <Image
+        src={`${assetBase}-image112.png`}
+        alt=""
+        fill
+        sizes="417px"
+        className="pointer-events-none object-cover"
+      />
+    </div>
+  );
+}
+
+function ResponsiveBenefitCard({
+  benefit,
+  index,
+}: {
+  benefit: (typeof responsiveBenefits)[number];
+  index: number;
+}) {
+  const contentWidth = [293, 297, 278, 294][index];
+
+  return (
+    <article className="mx-auto h-[400px] w-[316px] max-[360px]:h-[362px] max-[360px]:w-[287px] sm:h-[533px] sm:w-[422px]">
+      <div className="relative h-[533px] w-[422px] origin-top-left scale-75 max-[360px]:scale-[0.68] sm:scale-100">
+        <ResponsiveBenefitArtwork index={index} />
+        <BenefitCaption
+          className="left-0 top-[251px]"
+          color={benefit.color}
+          contentWidth={contentWidth}
+          title={benefit.title}
+          description={benefit.description}
+        />
+      </div>
+    </article>
+  );
+}
+
 function ResponsiveHomeBenefits() {
   return (
-    <div className="px-5 py-28 min-[1600px]:hidden sm:px-8 sm:py-36">
+    <div className="px-4 py-16 min-[1600px]:hidden sm:px-8 sm:py-24 lg:py-32">
       <div className="mx-auto max-w-290">
-        <div className="max-w-3xl">
-          <span className="inline-flex rounded-xl border border-[#FAE1D9] bg-[#FCE9E3] px-2 py-1.5 font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#614840]">
-            Feature
-          </span>
-          <h2 className="mt-4 font-nunito text-[clamp(34px,5vw,48px)] font-semibold leading-[1.16] tracking-[-0.48px] text-[#263238]">
-            Designed to Make Every Week Easier
-          </h2>
-          <p className="mt-6 max-w-[571px] font-manrope text-base leading-6 tracking-[-0.176px] text-[#515B60]">
+        <div className="max-w-3xl lg:flex lg:max-w-none lg:items-start lg:justify-between lg:gap-12">
+          <div>
+            <span className="inline-flex rounded-xl border border-[#FAE1D9] bg-[#FCE9E3] px-2 py-1.5 font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#614840]">
+              Feature
+            </span>
+            <h2 className="mt-4 font-nunito text-[clamp(28px,5vw,48px)] font-semibold leading-[1.16] tracking-[-0.48px] text-[#263238]">
+              Designed to Make Every Week Easier
+            </h2>
+          </div>
+          <p className="mt-4 sm:mt-6 max-w-[571px] font-manrope text-sm sm:text-base leading-6 tracking-[-0.176px] text-[#515B60]">
             From customized weekly developmental plans to expert OT guidance and evidence-based
             resources, you&apos;ll have everything you need to confidently support your child&apos;s
             growth every step of the way.
           </p>
         </div>
 
-        <div className="mt-16 grid gap-6 sm:grid-cols-2">
-          {responsiveBenefits.map((benefit) => (
-            <article key={benefit.title} className="overflow-hidden text-center">
-              <div className="relative mx-auto -mb-12 aspect-square w-full max-w-[406px] overflow-hidden rounded-[42%_58%_40%_60%]">
-                <Image
-                  src={benefit.image}
-                  alt=""
-                  fill
-                  sizes="(max-width: 640px) 90vw, 45vw"
-                  className="object-cover"
-                />
-              </div>
-              <div
-                className="relative min-h-[282px] overflow-hidden"
-                style={{ backgroundColor: benefit.color }}
-              >
-                <div
-                  className="absolute left-1/2 top-[-265px] h-[547px] w-[422px] -translate-x-1/2 rounded-[249px]"
-                  style={{ backgroundColor: benefit.color }}
-                />
-                <div className="relative mx-auto flex max-w-[297px] flex-col items-center gap-3 px-4 pt-16">
-                  <h3 className="font-nunito text-xl font-medium leading-7 text-[#263238]">
-                    {benefit.title}
-                  </h3>
-                  <p className="font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#515B60]">
-                    {benefit.description}
-                  </p>
-                </div>
-              </div>
-            </article>
+        <div className="mt-12 grid gap-6 sm:mt-16 sm:grid-cols-2 sm:gap-8">
+          {responsiveBenefits.map((benefit, index) => (
+            <ResponsiveBenefitCard key={benefit.title} benefit={benefit} index={index} />
           ))}
         </div>
       </div>

@@ -135,29 +135,29 @@ function UpcomingActivity({
   artwork = 'star',
 }: UpcomingActivityData) {
   return (
-    <article className="flex min-h-[106px] items-center rounded-[14px] border border-l-[3px] border-[#E9F1EE] py-[21px] pl-[23px] pr-[21px]">
-      <div className="flex w-full items-start justify-between">
-        <div className="flex items-start gap-6">
-          <div className="flex w-8 shrink-0 flex-col items-center">
-            <span className="font-nunito text-xs font-bold leading-4 tracking-[-0.18px] text-[#174A4D]">
-              {day}
-            </span>
-            <span className="font-nunito text-[10px] font-medium uppercase leading-4 text-[#A8ADAF]">
-              {date}
-            </span>
-          </div>
-          <div className="flex items-start gap-4">
-            <ActivityArtwork variant={artwork} />
-            <div className="flex h-[60px] flex-col gap-2">
-              <h4 className="font-nunito text-base font-bold leading-4 tracking-[-0.24px] text-[#174A4D]">
-                {title}
-              </h4>
-              <p className="w-[281px] font-manrope text-xs leading-[18px] text-[#A8ADAF]">
-                {description}
-              </p>
-            </div>
+    <article className="flex min-h-[106px] flex-col sm:flex-row sm:items-center justify-between rounded-[14px] border border-l-[3px] border-[#E9F1EE] p-4 sm:py-[21px] sm:pl-[23px] sm:pr-[21px] gap-4">
+      <div className="flex items-start gap-3 sm:gap-6">
+        <div className="flex w-8 shrink-0 flex-col items-center">
+          <span className="font-nunito text-xs font-bold leading-4 tracking-[-0.18px] text-[#174A4D]">
+            {day}
+          </span>
+          <span className="font-nunito text-[10px] font-medium uppercase leading-4 text-[#A8ADAF]">
+            {date}
+          </span>
+        </div>
+        <div className="flex items-start gap-3 sm:gap-4">
+          <ActivityArtwork variant={artwork} />
+          <div className="flex flex-col gap-1 sm:gap-2">
+            <h4 className="font-nunito text-base font-bold leading-5 tracking-[-0.24px] text-[#174A4D]">
+              {title}
+            </h4>
+            <p className="max-w-[281px] font-manrope text-xs leading-[18px] text-[#A8ADAF]">
+              {description}
+            </p>
           </div>
         </div>
+      </div>
+      <div className="flex items-center justify-between sm:justify-end gap-2 pl-11 sm:pl-0">
         <div className="flex items-center gap-2">
           <DurationBadge />
           <DifficultyBadge />
@@ -170,9 +170,9 @@ function UpcomingActivity({
 
 function ExpandedActivity() {
   return (
-    <article className="h-[336px] rounded-[14px] border border-l-[3px] border-[#2F7D7E] py-[21px] pl-[23px] pr-[21px]">
-      <div className="flex items-start justify-between py-4">
-        <div className="flex items-start gap-6">
+    <article className="min-h-[336px] h-auto rounded-[14px] border border-l-[3px] border-[#2F7D7E] p-4 sm:py-[21px] sm:pl-[23px] sm:pr-[21px]">
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 py-2 sm:py-4">
+        <div className="flex items-start gap-3 sm:gap-6">
           <div className="flex w-8 shrink-0 flex-col items-center">
             <span className="font-nunito text-xs font-bold leading-4 tracking-[-0.18px] text-[#174A4D]">
               MON
@@ -181,27 +181,29 @@ function ExpandedActivity() {
               Jul 20
             </span>
           </div>
-          <div className="flex items-start gap-4">
+          <div className="flex items-start gap-3 sm:gap-4">
             <ActivityArtwork />
-            <div className="flex h-[60px] flex-col gap-2">
-              <h3 className="font-nunito text-base font-bold leading-4 tracking-[-0.24px] text-[#174A4D]">
+            <div className="flex flex-col gap-1 sm:gap-2">
+              <h3 className="font-nunito text-base font-bold leading-5 tracking-[-0.24px] text-[#174A4D]">
                 Animal Yoga Adventure
               </h3>
-              <p className="w-[281px] font-manrope text-xs leading-[18px] text-[#A8ADAF]">
+              <p className="max-w-[281px] font-manrope text-xs leading-[18px] text-[#A8ADAF]">
                 Move through fun animal poses to build balance and whole-body motor planning.
               </p>
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <DurationBadge />
-          <DifficultyBadge />
+        <div className="flex items-center justify-between sm:justify-end gap-2 pl-11 sm:pl-0">
+          <div className="flex items-center gap-2">
+            <DurationBadge />
+            <DifficultyBadge />
+          </div>
+          <FigmaIcon name="img-icon3" size={16} className="-rotate-90" />
         </div>
-        <FigmaIcon name="img-icon3" size={16} className="-rotate-90" />
       </div>
 
-      <div className="mt-1 flex items-start justify-between border-t border-[#D5E5E5] pt-6">
-        <div className="w-[294px]">
+      <div className="mt-3 flex flex-col md:flex-row items-start justify-between border-t border-[#D5E5E5] pt-6 gap-6">
+        <div className="w-full md:w-[294px]">
           <h4 className="font-nunito text-sm font-medium leading-5 tracking-[-0.084px] text-[#174A4D]">
             Each activity includes:
           </h4>
@@ -211,27 +213,27 @@ function ExpandedActivity() {
                 key={benefit}
                 className="flex items-start gap-[10px] font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#263238]"
               >
-                <span className="mt-px flex size-[18px] shrink-0 items-center justify-center rounded-full bg-[#DCEEEE]">
+                <span className="mt-0.5 flex size-[18px] shrink-0 items-center justify-center rounded-full bg-[#DCEEEE]">
                   <FigmaIcon name="img-icon4" size={11} />
                 </span>
-                <span className="whitespace-nowrap">{benefit}</span>
+                <span>{benefit}</span>
               </li>
             ))}
           </ul>
         </div>
 
-        <div className="w-[210px] rounded-[14px] bg-[#F0F8F5] p-5">
+        <div className="w-full md:w-[210px] rounded-[14px] bg-[#F0F8F5] p-5">
           <h4 className="font-nunito text-sm font-semibold leading-5 tracking-[-0.084px] text-[#2F7D7E]">
             Modifications preview:
           </h4>
           <div className="mt-4 space-y-2 font-manrope text-xs leading-[18px] text-[#263238]">
             <p>
-              <span className="text-[#2F7D7E]">Easier: </span>Reduce to 2 poses and demonstrate each
-              one slowly
+              <span className="font-medium text-[#2F7D7E]">Easier: </span>Reduce to 2 poses and
+              demonstrate each one slowly
             </p>
             <p>
-              <span className="text-[#2F7D7E]">Harder: </span>Hold each pose for 5–10 seconds before
-              moving on
+              <span className="font-medium text-[#2F7D7E]">Harder: </span>Hold each pose for 5–10
+              seconds before moving on
             </p>
           </div>
         </div>
@@ -252,7 +254,7 @@ function FeedbackPanel({ className = '' }: { className?: string }) {
 
   return (
     <aside
-      className={`flex flex-col gap-8 rounded-3xl border border-[#E8EBE8] bg-white p-8 shadow-sm ${className}`}
+      className={`flex flex-col gap-6 sm:gap-8 rounded-3xl border border-[#E8EBE8] bg-white p-5 sm:p-8 shadow-sm ${className}`}
     >
       <div className="flex flex-wrap justify-center gap-[5px]">
         {feedback.map(([emoji, label], index) => (
@@ -277,24 +279,24 @@ function FeedbackPanel({ className = '' }: { className?: string }) {
 function DashboardTabs({ className = '' }: { className?: string }) {
   return (
     <div
-      className={`flex h-[98px] w-[557px] flex-col items-start rounded-[20px] border border-white bg-[#D5E5E5] p-4 shadow-[0_7px_8px_rgba(174,171,163,0.1),0_30px_15px_rgba(174,171,163,0.09),0_67px_20px_rgba(174,171,163,0.05),0_119px_24px_rgba(174,171,163,0.01)] ${className}`}
+      className={`relative z-10 flex h-auto w-full max-w-[557px] flex-col items-start rounded-[20px] border border-white bg-[#D5E5E5] p-2 sm:p-4 min-[1600px]:h-[98px] min-[1600px]:w-[557px] min-[1600px]:max-w-none shadow-[0_7px_8px_rgba(174,171,163,0.1),0_30px_15px_rgba(174,171,163,0.09)] ${className}`}
     >
-      <div className="flex w-full shrink-0 items-center gap-1">
-        <div className="flex shrink-0 items-center gap-[10px] rounded-[16px] bg-white px-2 py-1.5">
-          <FigmaIcon name="img-icon" size={22} />
-          <span className="shrink-0 whitespace-nowrap px-1 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-[#2F7D7E]">
+      <div className="grid w-full grid-cols-3 items-stretch gap-1 sm:flex sm:items-center">
+        <div className="flex min-w-0 items-center justify-center gap-1 rounded-[12px] bg-white px-1.5 py-1.5 sm:gap-[10px] sm:rounded-[16px] sm:px-3 sm:py-2">
+          <FigmaIcon name="img-icon" size={18} className="scale-75 sm:scale-100" />
+          <span className="min-w-0 text-center font-nunito text-[10px] font-medium leading-3.5 tracking-[-0.08px] text-[#2F7D7E] sm:whitespace-nowrap sm:px-1 sm:text-base sm:leading-6 sm:tracking-[-0.176px]">
             Weekly Plans
           </span>
         </div>
-        <div className="flex shrink-0 items-center gap-[10px] px-2 py-1.5">
-          <FigmaIcon name="img-icon1" size={22} />
-          <span className="shrink-0 whitespace-nowrap px-1 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-[#7D8488]">
+        <div className="flex min-w-0 items-center justify-center gap-1 px-1 py-1.5 sm:gap-[10px] sm:px-3 sm:py-2">
+          <FigmaIcon name="img-icon1" size={18} className="scale-75 sm:scale-100" />
+          <span className="min-w-0 text-center font-nunito text-[10px] font-medium leading-3.5 tracking-[-0.08px] text-[#7D8488] sm:whitespace-nowrap sm:px-1 sm:text-base sm:leading-6 sm:tracking-[-0.176px]">
             Activity Library
           </span>
         </div>
-        <div className="flex shrink-0 items-center gap-[10px] px-2 py-1.5">
-          <FigmaIcon name="img-vector" size={17.424} className="scale-[1.1052]" />
-          <span className="shrink-0 whitespace-nowrap px-1 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-[#7D8488]">
+        <div className="flex min-w-0 items-center justify-center gap-1 px-1 py-1.5 sm:gap-[10px] sm:px-3 sm:py-2">
+          <FigmaIcon name="img-vector" size={16} className="scale-75 sm:scale-100" />
+          <span className="min-w-0 text-center font-nunito text-[10px] font-medium leading-3.5 tracking-[-0.08px] text-[#7D8488] sm:whitespace-nowrap sm:px-1 sm:text-base sm:leading-6 sm:tracking-[-0.176px]">
             Direct OT Messaging
           </span>
         </div>
@@ -369,7 +371,7 @@ function DesktopWeeklyPlan() {
               <span className="font-nunito text-xs font-medium uppercase leading-4 text-[#A8ADAF]">
                 Weekly Focus
               </span>
-              <span className="font-nunito text-lg font-bold leading-6 tracking-[-0.27px] text-[#174A4D]">
+              <span className="font-nunito text-lg font-bold tracking-[-0.27px] text-[#174A4D]">
                 Bilateral Coordination &amp; Motor Planning
               </span>
             </div>
@@ -406,7 +408,7 @@ function DesktopWeeklyPlan() {
 
 function ResponsiveWeeklyPlan() {
   return (
-    <div className="relative px-5 pb-24 pt-44 min-[1600px]:hidden sm:px-8 sm:pt-52">
+    <div className="relative px-4 pb-16 pt-28 min-[1600px]:hidden sm:px-8 sm:pb-24 sm:pt-40">
       <Image
         src={`${assetBase}-img-union.svg`}
         alt=""
@@ -415,7 +417,7 @@ function ResponsiveWeeklyPlan() {
         className="pointer-events-none absolute left-1/2 top-[-120px] h-[330px] w-[1400px] max-w-none -translate-x-1/2"
       />
       <div className="relative mx-auto max-w-290">
-        <div className="grid items-start gap-8 lg:grid-cols-[1fr_520px]">
+        <div className="grid items-start gap-6 lg:gap-8 lg:grid-cols-[1fr_520px]">
           <div className="relative pl-0 sm:pl-36">
             <Image
               src={`${assetBase}-img-image112.png`}
@@ -424,7 +426,7 @@ function ResponsiveWeeklyPlan() {
               height={120}
               className="absolute left-0 top-[-24px] hidden size-28 object-contain sm:block"
             />
-            <h2 className="font-nunito text-[clamp(34px,5vw,48px)] font-semibold leading-[1.16] tracking-[-0.48px]">
+            <h2 className="font-nunito text-[clamp(28px,5vw,48px)] font-semibold leading-[1.16] tracking-[-0.48px]">
               Guided play, delivered weekly
             </h2>
             <Link
@@ -434,48 +436,44 @@ function ResponsiveWeeklyPlan() {
               Learn More About Weekly Plans <FigmaIcon name="img-vector1" size={16} />
             </Link>
           </div>
-          <p className="font-manrope text-base leading-6 text-[#515B60]">
+          <p className="font-manrope text-sm sm:text-base leading-6 text-[#515B60]">
             Receive personalized weekly plans designed around your child&apos;s unique strengths,
             interests, routines, and developmental goals. Parents can choose the day of the week
             they would like their new plan to become available.
           </p>
         </div>
 
-        <div className="relative mt-16">
-          <div className="max-w-full overflow-x-auto pb-0">
+        <div className="relative mt-10 sm:mt-16">
+          <div className="w-full">
             <DashboardTabs />
           </div>
-          <div className="relative -mt-9 rounded-3xl border border-[#E8EBE8] bg-white p-5 pt-16 shadow-sm sm:p-8 sm:pt-20">
-            <div className="grid gap-5 sm:grid-cols-2">
+          <div className="relative -mt-6 sm:-mt-9 rounded-3xl border border-[#E8EBE8] bg-white p-4 pt-10 shadow-sm sm:p-8 sm:pt-16">
+            <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <p className="font-nunito text-xs uppercase text-[#A8ADAF]">Week of</p>
-                <p className="mt-2 font-nunito text-lg font-bold text-[#174A4D]">
+                <p className="mt-1 sm:mt-2 font-nunito text-base sm:text-lg font-bold text-[#174A4D]">
                   July 20 – July 26
                 </p>
               </div>
               <div>
                 <p className="font-nunito text-xs uppercase text-[#A8ADAF]">Weekly Focus</p>
-                <p className="mt-2 font-nunito text-lg font-bold text-[#174A4D]">
+                <p className="mt-1 sm:mt-2 font-nunito text-base sm:text-lg font-bold text-[#174A4D]">
                   Bilateral Coordination &amp; Motor Planning
                 </p>
               </div>
             </div>
 
-            <div className="mt-8 overflow-x-auto">
-              <div className="min-w-[730px]">
-                <ExpandedActivity />
-              </div>
+            <div className="mt-6 sm:mt-8">
+              <ExpandedActivity />
             </div>
 
             <div className="mt-5 grid gap-5 lg:grid-cols-[1fr_307px]">
-              <div className="space-y-5 overflow-hidden">
+              <div className="space-y-4 sm:space-y-5">
                 {upcomingActivities.slice(0, 2).map((activity) => (
-                  <div
+                  <UpcomingActivity
                     key={`${activity.day}-${activity.date}-${activity.title}`}
-                    className="min-w-[730px]"
-                  >
-                    <UpcomingActivity {...activity} />
-                  </div>
+                    {...activity}
+                  />
                 ))}
               </div>
               <FeedbackPanel />

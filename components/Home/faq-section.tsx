@@ -53,32 +53,32 @@ function FaqList({ compact = false }: { compact?: boolean }) {
   const [openIndex, setOpenIndex] = useState(0);
 
   return (
-    <div className={compact ? 'flex flex-col gap-3' : 'flex h-[462px] flex-col gap-4'}>
+    <div className={compact ? 'flex flex-col gap-3' : 'flex flex-col gap-4'}>
       {faqs.map((faq, index) => {
         const open = openIndex === index;
 
         return (
           <article
             key={faq.question}
-            className={
+            className={`rounded-[15px] border p-4 sm:p-5 transition-all ${
               open
-                ? `rounded-[15px] border border-[#E9F1EE] bg-white p-5 shadow-[0_2px_2px_rgba(198,202,209,0.10),0_2px_8px_rgba(198,202,209,0.22)] ${
-                    index === 0 && !compact ? 'h-[122px]' : ''
-                  }`
-                : `${compact ? '' : 'h-[69px] '}rounded-[15px] border border-[#D2E3DC] bg-white p-5`
-            }
+                ? 'border-[#E9F1EE] bg-white shadow-[0_2px_8px_rgba(198,202,209,0.22)]'
+                : 'border-[#D2E3DC] bg-white'
+            }`}
           >
             <button
               type="button"
               aria-expanded={open}
               onClick={() => setOpenIndex(open ? -1 : index)}
-              className="flex w-full items-center justify-between gap-5 text-left font-nunito text-[18px] font-medium leading-6 text-[#263238]"
+              className="flex w-full items-center justify-between gap-4 text-left font-nunito text-base sm:text-[18px] font-medium leading-6 text-[#263238]"
             >
               <span>{faq.question}</span>
               <FaqToggle open={open} />
             </button>
             {open && (
-              <p className="mt-2.5 font-manrope text-base leading-6 text-[#7D8488]">{faq.answer}</p>
+              <p className="mt-2.5 font-manrope text-xs sm:text-base leading-5 sm:leading-6 text-[#7D8488]">
+                {faq.answer}
+              </p>
             )}
           </article>
         );
@@ -139,43 +139,50 @@ function DesktopFaq() {
 
 function CompactFaq() {
   return (
-    <section id="faq" className="bg-[#FDFDFC] px-5 py-20 min-[1600px]:hidden sm:px-8 sm:py-28">
-      <div className="mx-auto max-w-[868px]">
-        <h2 className="font-nunito text-[clamp(32px,5vw,40px)] font-semibold leading-tight tracking-[-0.4px] text-[#263238]">
-          Frequently asked questions
-        </h2>
-        <p className="mt-4 max-w-[655px] font-manrope text-base leading-6 text-[#607077]">
-          Everything you need to know about Bright Horizons Collective and how we support your
-          family&apos;s journey.
-        </p>
-        <div className="mt-10">
-          <FaqList compact />
-        </div>
-        <div className="relative mt-10 h-[140px] w-[273px] overflow-hidden rounded-2xl bg-[#F6E6D4] text-center">
-          <Image
-            src="/Home/figma-home-1183-11826-img-image132-vectorized.svg"
-            alt=""
-            width={73}
-            height={81}
-            aria-hidden="true"
-            className="pointer-events-none absolute -left-2 -top-[49px]"
-          />
-          <p className="absolute left-0 top-[22px] w-full font-nunito text-[18px] font-semibold leading-[27px] text-[#614840]">
-            Still have questions?
-          </p>
-          <Link
-            href="/contact"
-            className="absolute left-[58px] top-[75px] inline-flex h-10 items-center gap-2 rounded-full bg-white px-5 font-nunito text-sm font-medium leading-5 text-[#263238]"
-          >
-            Get in touch
-            <Image
-              src="/Home/figma-home-1183-11826-img-vector.svg"
-              alt=""
-              width={16}
-              height={16}
-              aria-hidden="true"
-            />
-          </Link>
+    <section
+      id="faq"
+      className="bg-[#FDFDFC] px-4 py-16 min-[1600px]:hidden sm:px-8 sm:py-24 lg:py-32"
+    >
+      <div className="mx-auto max-w-290">
+        <div className="grid gap-10 lg:grid-cols-[1fr_1.3fr] lg:gap-16 items-start">
+          <div>
+            <h2 className="font-nunito text-[clamp(28px,5vw,40px)] font-semibold leading-tight tracking-[-0.4px] text-[#263238]">
+              Frequently asked questions
+            </h2>
+            <p className="mt-3 sm:mt-4 max-w-[655px] font-manrope text-sm sm:text-base leading-6 text-[#607077]">
+              Everything you need to know about Bright Horizons Collective and how we support your
+              family&apos;s journey.
+            </p>
+            <div className="relative mt-8 sm:mt-10 h-[140px] w-[273px] overflow-hidden rounded-2xl bg-[#F6E6D4] text-center">
+              <Image
+                src="/Home/figma-home-1183-11826-img-image132-vectorized.svg"
+                alt=""
+                width={73}
+                height={81}
+                aria-hidden="true"
+                className="pointer-events-none absolute -left-2 -top-[49px]"
+              />
+              <p className="absolute left-0 top-[22px] w-full font-nunito text-[18px] font-semibold leading-[27px] text-[#614840]">
+                Still have questions?
+              </p>
+              <Link
+                href="/contact"
+                className="absolute left-[58px] top-[75px] inline-flex h-10 items-center gap-2 rounded-full bg-white px-5 font-nunito text-sm font-medium leading-5 text-[#263238] hover:bg-white/90 transition-colors"
+              >
+                Get in touch
+                <Image
+                  src="/Home/figma-home-1183-11826-img-vector.svg"
+                  alt=""
+                  width={16}
+                  height={16}
+                  aria-hidden="true"
+                />
+              </Link>
+            </div>
+          </div>
+          <div>
+            <FaqList compact />
+          </div>
         </div>
       </div>
     </section>

@@ -27,7 +27,7 @@ export function SiteHeader({
       />
 
       <div
-        className={`pointer-events-auto absolute left-1/2 z-30 -translate-x-1/2 max-lg:top-4 max-lg:w-[min(92vw,662px)] max-sm:top-2 max-sm:w-[min(96vw,662px)] ${navbarPosition}`}
+        className={`pointer-events-auto absolute left-1/2 z-30 -translate-x-1/2 max-lg:top-4 max-lg:w-[min(92vw,662px)] max-sm:top-2 max-sm:w-[min(90vw,622px)] ${navbarPosition}`}
       >
         <Navbar />
       </div>
