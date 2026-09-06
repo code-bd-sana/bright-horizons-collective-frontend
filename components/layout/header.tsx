@@ -3,7 +3,9 @@
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { Menu } from 'lucide-react';
+import { Bell, Menu, MessageCircle } from 'lucide-react';
+import type { DemoRole } from '@/lib/demo-session';
+import { getRoleConfig } from '@/lib/role-config';
 import { useAppStore } from '@/store/use-app-store';
 
 const notificationDescription =
@@ -50,13 +52,6 @@ const childProfiles: ChildProfile[] = [
     image: '/Home/figma-dashboard-switch-emma-3.png',
     imagePosition: '50% 25%',
   },
-];
-
-const accountMenuItems = [
-  { label: 'My Account', icon: '/Home/figma-dashboard-profile-account.svg' },
-  { label: 'Settings Overview', icon: '/Home/figma-dashboard-profile-settings.svg' },
-  { label: 'Support and Help', icon: '/Home/figma-dashboard-profile-support.svg' },
-  { label: 'Membership and Billing', icon: '/Home/figma-dashboard-profile-billing.svg' },
 ];
 
 const unreadThreads: MessageThread[] = [
@@ -213,11 +208,15 @@ function ChildProfileOption({
   );
 }
 
-export function Header() {
+export function Header({ role = 'parent' }: { role?: DemoRole }) {
   const { setSidebarOpen } = useAppStore();
   const pathname = usePathname();
   const router = useRouter();
-  const isMessagesPage = pathname === '/dashboard/messages';
+  const roleConfig = getRoleConfig(role);
+  const isAdmin = role === 'admin';
+  const isAdminDashboard = pathname === '/dashboard/admin';
+  const isMessagesPage =
+    pathname === '/dashboard/messages' || pathname === '/dashboard/admin/messages';
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [messagesOpen, setMessagesOpen] = useState(false);
   const [profilesOpen, setProfilesOpen] = useState(false);
@@ -280,21 +279,25 @@ export function Header() {
 
   return (
     <header
-      className="sticky top-0 z-30 flex h-16 items-center gap-3 bg-[#fdfdfc] px-4 sm:h-18 sm:px-6 lg:px-10"
+      className={`z-30 grid h-16 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 px-4 sm:gap-3 sm:px-6 lg:px-6 xl:px-10 ${
+        isAdminDashboard
+          ? 'absolute inset-x-0 top-0 h-22 bg-transparent'
+          : `sticky top-0 bg-[#fdfdfc] ${isAdmin ? 'h-22' : 'sm:h-18'}`
+      }`}
       aria-label="Dashboard header"
     >
       <button
         type="button"
         aria-label="Open navigation"
         onClick={() => setSidebarOpen(true)}
-        className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-[#e9f1ee] text-[#2f7d7e] lg:hidden"
+        className="col-start-1 flex size-10 shrink-0 items-center justify-center rounded-lg bg-[#e9f1ee] text-[#2f7d7e] lg:hidden"
       >
         <Menu size={22} strokeWidth={1.7} />
       </button>
-      {isMessagesPage ? (
-        <span className="flex-1" aria-hidden="true" />
+      {isMessagesPage || isAdminDashboard ? (
+        <span className="col-start-2 min-w-0" aria-hidden="true" />
       ) : (
-        <label className="flex h-10 min-w-0 flex-1 items-center overflow-hidden rounded-lg border border-[#fce9e3] bg-[#fbf6f4] px-3 py-3 sm:px-5.25 sm:py-4.25 lg:max-w-110.5">
+        <label className="col-start-2 flex h-10 min-w-0 items-center overflow-hidden rounded-lg border border-[#fce9e3] bg-[#fbf6f4] px-3 py-3 sm:px-5.25 sm:py-4.25 lg:max-w-110.5">
           <Image
             src="/Home/figma-dashboard-header-search.svg"
             alt=""
@@ -311,7 +314,7 @@ export function Header() {
         </label>
       )}
 
-      <div className="relative flex shrink-0 items-center gap-2 sm:gap-3">
+      <div className="relative col-start-3 flex shrink-0 items-center gap-2 sm:gap-3">
         <button
           ref={messagesButtonRef}
           type="button"
@@ -323,9 +326,12 @@ export function Header() {
             setProfilesOpen(false);
             setAccountOpen(false);
           }}
-          className="hidden size-10 items-center justify-center overflow-hidden rounded-lg bg-[#e9f1ee] p-1 min-[420px]:flex"
+          className="hidden size-10 items-center justify-center overflow-hidden rounded-lg bg-[#e9f1ee] p-1 sm:flex"
         >
-          <Image src="/Home/figma-dashboard-header-chat.svg" alt="" width={25} height={24} />
+          <span className="relative flex size-6 items-center justify-center text-[#27494e]">
+            <MessageCircle aria-hidden="true" size={22} strokeWidth={1.7} />
+            <span className="absolute right-0.5 top-0.5 size-1.5 rounded-full bg-[#d4484a]" />
+          </span>
         </button>
         <button
           ref={notificationButtonRef}
@@ -340,46 +346,46 @@ export function Header() {
           }}
           className="flex size-10 items-center justify-center overflow-hidden rounded-lg bg-[#e9f1ee] p-1"
         >
-          <Image
-            src="/Home/figma-dashboard-header-notification.svg"
-            alt=""
-            width={24}
-            height={24}
-          />
+          <span className="relative flex size-6 items-center justify-center text-[#27494e]">
+            <Bell aria-hidden="true" size={22} strokeWidth={1.7} />
+            <span className="absolute right-0.5 top-0.5 size-1.5 rounded-full bg-[#d4484a]" />
+          </span>
         </button>
-        <button
-          ref={profileButtonRef}
-          type="button"
-          aria-label="Selected child: Emma, 4 years old"
-          aria-expanded={profilesOpen}
-          onClick={() => {
-            setProfilesOpen((open) => !open);
-            setMessagesOpen(false);
-            setNotificationsOpen(false);
-            setAccountOpen(false);
-          }}
-          className="flex h-10 items-center gap-2.5 overflow-hidden rounded-lg bg-[#d2e3dc] px-2 py-1 max-lg:hidden"
-        >
-          <span className="relative size-7 shrink-0 overflow-hidden rounded-full bg-[#accbcb]">
+        {roleConfig.header.showChildProfile && (
+          <button
+            ref={profileButtonRef}
+            type="button"
+            aria-label="Selected child: Emma, 4 years old"
+            aria-expanded={profilesOpen}
+            onClick={() => {
+              setProfilesOpen((open) => !open);
+              setMessagesOpen(false);
+              setNotificationsOpen(false);
+              setAccountOpen(false);
+            }}
+            className="hidden h-10 w-10 items-center justify-center overflow-hidden rounded-lg bg-[#d2e3dc] p-1 lg:flex xl:w-auto xl:justify-start xl:gap-2.5 xl:px-2"
+          >
+            <span className="relative size-7 shrink-0 overflow-hidden rounded-full bg-[#accbcb]">
+              <Image
+                src="/Home/figma-dashboard-header-child.png"
+                alt="Emma"
+                fill
+                sizes="28px"
+                className="object-cover object-[50%_20%]"
+              />
+            </span>
+            <span className="hidden whitespace-nowrap font-nunito text-sm font-medium leading-5 tracking-[-0.084px] text-[#1e282d] xl:inline">
+              {childProfiles[selectedProfile].name} · {selectedProfile === 0 ? '4y' : '3y'}
+            </span>
             <Image
-              src="/Home/figma-dashboard-header-child.png"
-              alt="Emma"
-              fill
-              sizes="28px"
-              className="object-cover object-[50%_20%]"
+              src="/Home/figma-dashboard-header-chevron.svg"
+              alt=""
+              width={20}
+              height={20}
+              className="hidden shrink-0 xl:block"
             />
-          </span>
-          <span className="whitespace-nowrap font-nunito text-sm font-medium leading-5 tracking-[-0.084px] text-[#1e282d]">
-            {childProfiles[selectedProfile].name} · {selectedProfile === 0 ? '4y' : '3y'}
-          </span>
-          <Image
-            src="/Home/figma-dashboard-header-chevron.svg"
-            alt=""
-            width={20}
-            height={20}
-            className="shrink-0"
-          />
-        </button>
+          </button>
+        )}
         <button
           ref={accountButtonRef}
           type="button"
@@ -394,11 +400,11 @@ export function Header() {
           className="relative size-10 shrink-0 overflow-hidden rounded-full bg-[#2f7d7e]"
         >
           <Image
-            src="/Home/figma-dashboard-header-avatar.png"
-            alt="Sarah Johnson"
+            alt={roleConfig.profile.name}
             fill
             sizes="40px"
-            className="object-cover object-[50%_10%]"
+            className={roleConfig.profile.imageClassName}
+            src={roleConfig.profile.image}
           />
         </button>
 
@@ -413,39 +419,41 @@ export function Header() {
                 <span className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-[#d8ddd9] bg-[#2f7d7e] p-0.5">
                   <span className="relative size-full overflow-hidden rounded-full">
                     <Image
-                      src="/Home/figma-dashboard-profile-avatar.png"
-                      alt="Sarah Lin"
+                      alt={roleConfig.profile.name}
                       fill
                       sizes="52px"
-                      className="scale-125 object-cover object-[50%_13%]"
+                      className={roleConfig.profile.imageClassName}
+                      src={roleConfig.profile.image}
                     />
                   </span>
                 </span>
                 <div className="flex min-w-0 flex-1 flex-col gap-1">
                   <p className="font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-[#263238]">
-                    Sarah Lin
+                    {roleConfig.profile.name}
                   </p>
                   <p className="truncate font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#7d8488]">
-                    sarahlin@gmail.com
+                    {roleConfig.header.accountEmail}
                   </p>
                 </div>
               </div>
 
               <div className="flex flex-col gap-3">
-                <div className="rounded-xl border-2 border-transparent bg-[linear-gradient(175.51deg,#fff_24.82%,#fbded5_128.91%,#fad6cb_202.39%,#f9d0c3_291.18%,#f6bdab_343.23%)] p-4">
-                  <p className="font-manrope text-[10px] font-medium uppercase leading-3.75 tracking-[0.2px] text-[#515b60]">
-                    Current Plan
-                  </p>
-                  <p className="mt-1 font-nunito text-lg font-semibold leading-6 tracking-[-0.27px] text-[#263238]">
-                    Grow Together
-                  </p>
-                  <p className="mt-1 font-manrope text-xs leading-4.5 text-[#515b60]">
-                    Renews Aug 1, 2026
-                  </p>
-                </div>
+                {!isAdmin && (
+                  <div className="rounded-xl border-2 border-transparent bg-[linear-gradient(175.51deg,#fff_24.82%,#fbded5_128.91%,#fad6cb_202.39%,#f9d0c3_291.18%,#f6bdab_343.23%)] p-4">
+                    <p className="font-manrope text-[10px] font-medium uppercase leading-3.75 tracking-[0.2px] text-[#515b60]">
+                      Current Plan
+                    </p>
+                    <p className="mt-1 font-nunito text-lg font-semibold leading-6 tracking-[-0.27px] text-[#263238]">
+                      Grow Together
+                    </p>
+                    <p className="mt-1 font-manrope text-xs leading-4.5 text-[#515b60]">
+                      Renews Aug 1, 2026
+                    </p>
+                  </div>
+                )}
 
                 <div className="flex flex-col gap-3">
-                  {accountMenuItems.map((item) => (
+                  {roleConfig.header.accountMenuItems.map((item) => (
                     <button
                       key={item.label}
                       type="button"

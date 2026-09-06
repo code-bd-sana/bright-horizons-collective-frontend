@@ -1,6 +1,7 @@
 'use client';
 
 import { Logo } from '@/components/logo';
+import { getRoleConfig } from '@/lib/role-config';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -43,7 +44,7 @@ export default function LoginPage() {
       }
 
       toast.success(`Successfully logged in as ${result.role}`);
-      router.replace('/dashboard');
+      router.replace(getRoleConfig(result.role === 'admin' ? 'admin' : 'parent').homePath);
       router.refresh();
     } catch {
       toast.error('Unable to sign in. Please check your connection and try again.');
