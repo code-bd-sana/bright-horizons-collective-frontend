@@ -118,32 +118,32 @@ function WelcomeBanner() {
         alt=""
         width={358}
         height={344}
-        className="pointer-events-none absolute left-127.25 -top-[235px] max-w-none rotate-[-131.21deg]"
+        className="pointer-events-none absolute left-127.25 -top-58.75 max-w-none rotate-[-131.21deg]"
       />
       <Image
         src="/Home/figma-parent-dashboard-hero-squiggle-right.svg"
         alt=""
         width={358}
         height={344}
-        className="pointer-events-none absolute -right-[66px] top-[138px] max-w-none rotate-[-34.13deg]"
+        className="pointer-events-none absolute -right-16.5 top-34.5 max-w-none rotate-[-34.13deg]"
       />
       <Image
         src="/Home/figma-parent-dashboard-hero-squiggle-left.svg"
         alt=""
         width={358}
         height={344}
-        className="pointer-events-none absolute -bottom-[56px] -left-[120px] max-w-none rotate-[-33.09deg]"
+        className="pointer-events-none absolute -bottom-14ft-[120px] max-w-none rotate-[-33.09deg]"
       />
 
       <div className="relative z-10 flex h-full min-w-0 flex-col justify-between xl:flex-row">
-        <div className="min-w-0 max-w-[442px]">
-          <p className="font-manrope text-sm font-medium leading-[22px] tracking-[0.084px] text-[#515b60]">
+        <div className="min-w-0 max-w-110.5">
+          <p className="font-manrope text-sm font-medium leading-5.5 tracking-[0.084px] text-[#515b60]">
             Good morning · Sunday, July 20, 2026
           </p>
           <h1 className="mt-2 font-nunito text-3xl font-semibold leading-10 tracking-[-0.3px] text-[#2f7d7e] sm:text-[40px] sm:leading-12 sm:tracking-[-0.4px]">
             Welcome back, Sarah!
           </h1>
-          <p className="mt-3 max-w-[442px] font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#7d8488]">
+          <p className="mt-3 max-w-110.5 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#7d8488]">
             Emma is making wonderful progress. Let&apos;s continue this week&apos;s Fine Motor
             Development plan!
           </p>
@@ -161,7 +161,7 @@ function WelcomeBanner() {
           </Link>
         </div>
 
-        <div className="mt-6 flex w-full min-w-0 max-w-[569px] gap-3 sm:gap-4 xl:mt-0 max-sm:flex-col">
+        <div className="mt-6 flex w-full min-w-0 max-w-142.25 gap-3 sm:gap-4 xl:mt-0 max-sm:flex-col">
           {stats.map((stat) => (
             <article
               key={stat.label}
@@ -174,7 +174,7 @@ function WelcomeBanner() {
                 <span className="block font-nunito text-2xl font-medium leading-8 text-[#272f3a]">
                   {stat.value}
                 </span>
-                <span className="block whitespace-nowrap font-manrope text-xs font-medium leading-[18px] tracking-[0.48px] text-[#515b60]">
+                <span className="block whitespace-nowrap font-manrope text-xs font-medium leading-4.5 tracking-[0.48px] text-[#515b60]">
                   {stat.label}
                 </span>
               </span>
@@ -188,7 +188,7 @@ function WelcomeBanner() {
 
 function TodayActivityCard() {
   return (
-    <Card className="flex min-h-[480px] flex-col gap-5 sm:gap-6 lg:h-[617px]">
+    <Card className="flex min-h-120 flex-col gap-5 sm:gap-6 lg:h-154.25">
       <div className="flex flex-col gap-3">
         <div className="flex items-start justify-between gap-4 max-sm:flex-col">
           <div className="min-w-0">
@@ -203,16 +203,16 @@ function TodayActivityCard() {
             Start Activity
           </ArrowLink>
         </div>
-        <p className="max-w-[404px] font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#515b60]">
+        <p className="max-w-101 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#515b60]">
           Move through fun animal poses to build balance and whole-body motor planning. Perfect for
           an energetic start to the week.
         </p>
       </div>
 
-      <div className="relative h-[250px] w-full overflow-hidden rounded-2xl bg-[#d2e3dc] sm:h-[329px]">
-        <div className="absolute left-1/2 top-1/2 h-[323px] w-[330.57px] -translate-x-1/2 -translate-y-1/2">
+      <div className="relative h-62.5 w-full overflow-hidden rounded-2xl bg-[#d2e3dc] sm:h-82.25">
+        <div className="absolute left-1/2 top-1/2 h-80.75 w-[330.57px] -translate-x-1/2 -translate-y-1/2">
           <div
-            className="absolute -left-[11.36px] -top-[131.22px] h-[612.357px] w-[360.603px]"
+            className="absolute left-[-11.36px] top-[-131.22px] h-[612.357px] w-[360.603px]"
             style={{
               WebkitMaskImage: `url(${yogaMask})`,
               maskImage: `url(${yogaMask})`,
@@ -235,12 +235,12 @@ function TodayActivityCard() {
         </div>
       </div>
 
-      <div className="h-[68px] w-[390px] max-w-full shrink-0">
+      <div className="h-17 w-97.5 max-w-full shrink-0">
         <div className="flex items-center gap-1.25">
           <span className="rounded-full border border-[#dceeee] bg-[#e0f0e9] px-2.25 py-1.75 font-nunito text-xs font-medium leading-4 text-[#263238]">
             Easy
           </span>
-          <span className="flex items-center gap-1 px-2 py-1.5 font-manrope text-xs leading-[18px] text-[#607077]">
+          <span className="flex items-center gap-1 px-2 py-1.5 font-manrope text-xs leading-4.5 text-[#607077]">
             <Clock3 aria-hidden="true" className="size-3 stroke-[1.5]" />
             20 min
           </span>
@@ -260,7 +260,7 @@ function TodayActivityCard() {
 
 function ProgressCard() {
   return (
-    <Card className="flex min-h-[480px] flex-col lg:h-[617px]">
+    <Card className="flex min-h-120 flex-col lg:h-154.25">
       <p className="font-nunito text-xs font-medium leading-4 text-[#2f7d7e]">
         Development Tracking
       </p>
@@ -268,34 +268,34 @@ function ProgressCard() {
         Emma&apos;s Progress
       </h2>
 
-      <div className="relative mx-auto mt-6 size-[152px]" aria-label="Development progress chart">
+      <div className="relative mx-auto mt-6 size-38" aria-label="Development progress chart">
         <Image
           src="/Home/figma-parent-dashboard-progress-top-right.svg"
           alt=""
           width={88}
           height={76}
-          className="absolute left-[64px] top-0"
+          className="absolute left-16 top-0"
         />
         <Image
           src="/Home/figma-parent-dashboard-progress-top-left.svg"
           alt=""
           width={66}
           height={76}
-          className="absolute left-0 top-[2px]"
+          className="absolute left-0 top-0.5"
         />
         <Image
           src="/Home/figma-parent-dashboard-progress-bottom-left.svg"
           alt=""
           width={100}
           height={73}
-          className="absolute left-0 top-[79px]"
+          className="absolute left-0 top-19.75"
         />
         <Image
           src="/Home/figma-parent-dashboard-progress-bottom-right.svg"
           alt=""
           width={58}
           height={68}
-          className="absolute left-[94px] top-[79px]"
+          className="absolute left-23.5 top-19.75"
         />
       </div>
 
@@ -327,7 +327,7 @@ function ProgressCard() {
 
 function WeeklyPlanCard() {
   return (
-    <Card className="flex min-h-[480px] flex-col lg:h-[617px]">
+    <Card className="flex min-h-120 flex-col lg:h-154.25">
       <p className="font-nunito text-xs font-medium leading-4 text-[#2f7d7e]">
         Week 3 · July 20–26
       </p>
@@ -348,9 +348,9 @@ function WeeklyPlanCard() {
           {days.map((day) => {
             const active = day.state !== 'upcoming';
             return (
-              <div key={day.label} className="flex w-[30px] flex-col items-center gap-1">
+              <div key={day.label} className="flex w-7.5 flex-col items-center gap-1">
                 <span
-                  className={`grid size-[30px] place-items-center rounded-full border-2 ${
+                  className={`grid size-7.5 place-items-center rounded-full border-2 ${
                     active ? 'border-[#2f7d7e] bg-[#2f7d7e]' : 'border-[#d4d6d7] bg-[#d4d6d7]'
                   }`}
                 >
@@ -361,7 +361,7 @@ function WeeklyPlanCard() {
                   )}
                 </span>
                 <span
-                  className={`font-manrope text-xs font-medium leading-[18px] tracking-[0.48px] ${active ? 'text-[#2f7d7e]' : 'text-[#7d8488]'}`}
+                  className={`font-manrope text-xs font-medium leading-4.5 tracking-[0.48px] ${active ? 'text-[#2f7d7e]' : 'text-[#7d8488]'}`}
                 >
                   {day.label}
                 </span>
@@ -403,7 +403,7 @@ function WeeklyPlanCard() {
 
 function RecentActivityCard() {
   return (
-    <Card className="min-h-[360px] lg:h-[444px]">
+    <Card className="min-h-90 lg:h-111">
       <div className="flex items-center justify-between gap-3">
         <h2 className="min-w-0 font-nunito text-2xl font-medium leading-8 text-[#263238]">
           Recent activity
@@ -423,7 +423,7 @@ function RecentActivityCard() {
           >
             <div className="flex min-w-0 items-center gap-2">
               <span
-                className="relative size-[54px] shrink-0"
+                className="relative size-13.5 shrink-0"
                 style={{
                   WebkitMaskImage: `url(${activityMask})`,
                   maskImage: `url(${activityMask})`,
@@ -441,13 +441,13 @@ function RecentActivityCard() {
                 <span className="block truncate font-nunito text-lg font-medium leading-6 tracking-[-0.27px] text-[#263238]">
                   {activity.title}
                 </span>
-                <span className="mt-2 block font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#515b60]">
+                <span className="mt-2 block font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#515b60]">
                   {activity.detail}
                 </span>
               </span>
             </div>
-            <span className="flex shrink-0 items-center gap-1 font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#2f7d7e]">
-              <Check aria-hidden="true" className="size-4 stroke-[2]" /> Done
+            <span className="flex shrink-0 items-center gap-1 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#2f7d7e]">
+              <Check aria-hidden="true" className="size-4 stroke-2" /> Done
             </span>
           </article>
         ))}
@@ -477,7 +477,7 @@ function MessagesCard() {
   ];
 
   return (
-    <Card className="flex min-h-[360px] flex-col min-[1750px]:h-[444px]">
+    <Card className="flex min-h-90 flex-col min-[1750px]:h-111">
       <div className="flex items-center justify-between gap-3">
         <h2 className="min-w-0 font-nunito text-2xl font-medium leading-8 text-[#263238]">
           Messages
@@ -491,7 +491,7 @@ function MessagesCard() {
           <article key={message.name} className="flex items-start justify-between gap-4">
             <div className="flex min-w-0 gap-2">
               <span
-                className={`grid size-[54px] shrink-0 place-items-center rounded-full font-nunito text-lg font-medium ${message.tone}`}
+                className={`grid size-13.5 shrink-0 place-items-center rounded-full font-nunito text-lg font-medium ${message.tone}`}
               >
                 {message.initials}
               </span>
@@ -499,12 +499,12 @@ function MessagesCard() {
                 <span className="block font-nunito text-lg font-medium leading-6 tracking-[-0.27px] text-[#263238]">
                   {message.name}
                 </span>
-                <span className="mt-2 block font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#515b60]">
+                <span className="mt-2 block font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#515b60]">
                   {message.message}
                 </span>
               </span>
             </div>
-            <span className="shrink-0 font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#7d8488]">
+            <span className="shrink-0 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#7d8488]">
               {message.time}
             </span>
           </article>
@@ -521,7 +521,7 @@ function MessagesCard() {
 
 function RecommendationsCard() {
   return (
-    <Card className="min-h-[360px] min-[1750px]:h-[444px]">
+    <Card className="min-h-90 min-[1750px]:h-111">
       <p className="font-nunito text-xs font-medium leading-4 text-[#2f7d7e]">
         Personalised For Emma
       </p>
@@ -533,7 +533,7 @@ function RecommendationsCard() {
           <article key={item.title} className="relative flex min-w-0 items-start pr-6">
             <div className="flex min-w-0 w-full gap-3 sm:gap-4">
               <span
-                className="relative mt-1 size-[119px] shrink-0"
+                className="relative mt-1 size-29.75 shrink-0"
                 style={{
                   WebkitMaskImage: `url(${recommendationMask})`,
                   maskImage: `url(${recommendationMask})`,
@@ -556,12 +556,12 @@ function RecommendationsCard() {
                 <span className="mt-2 block font-nunito text-lg font-medium leading-6 tracking-[-0.27px] text-[#263238]">
                   {item.title}
                 </span>
-                <span className="mt-2 block font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#515b60]">
+                <span className="mt-2 block font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#515b60]">
                   {item.description}
                 </span>
                 <Link
                   href="/explore"
-                  className="mt-2 inline-block font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#2f7d7e]"
+                  className="mt-2 inline-block font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#2f7d7e]"
                 >
                   Quick View
                 </Link>
@@ -583,7 +583,7 @@ function RecommendationsCard() {
 
 export function ParentDashboardPage() {
   return (
-    <div className="-mt-4 mx-auto w-full min-w-0 max-w-[1529px] space-y-4 overflow-x-clip sm:space-y-6">
+    <div className="-mt-4 mx-auto w-full min-w-0 max-w-382.25 space-y-4 overflow-x-clip sm:space-y-6">
       <WelcomeBanner />
       <div className="grid min-w-0 grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 2xl:grid-cols-3">
         <TodayActivityCard />
