@@ -66,7 +66,7 @@ const recommendations = [
 function Card({ children, className = '' }: { children: React.ReactNode; className?: string }) {
   return (
     <section
-      className={`rounded-2xl border border-[#e8ebe8] bg-[#fffdf8] p-4 sm:p-6 lg:p-8 shadow-[0_1px_2px_rgba(0,0,0,0.05)] ${className}`}
+      className={`min-w-0 rounded-2xl border border-[#e8ebe8] bg-[#fffdf8] p-4 sm:p-6 lg:p-8 shadow-[0_1px_2px_rgba(0,0,0,0.05)] ${className}`}
     >
       {children}
     </section>
@@ -105,20 +105,20 @@ function WelcomeBanner() {
   ];
 
   return (
-    <section className="relative min-h-[340px] overflow-hidden rounded-2xl border border-[#fce9e3] bg-[#fffdf8] p-4 sm:p-6 lg:h-[340px] lg:p-8">
+    <section className="relative min-h-85 overflow-hidden rounded-2xl border border-[#fce9e3] bg-[#fffdf8] p-4 sm:p-6 lg:h-85 lg:p-8">
       <Image
         src="/Home/figma-parent-dashboard-hero-background.svg"
         alt=""
         width={1893}
         height={1454}
-        className="pointer-events-none absolute -left-8 -top-[544px] max-w-none"
+        className="pointer-events-none absolute -left-8 -top-136 max-w-none"
       />
       <Image
         src="/Home/figma-parent-dashboard-hero-wave.svg"
         alt=""
         width={358}
         height={344}
-        className="pointer-events-none absolute left-[509px] -top-[235px] max-w-none rotate-[-131.21deg]"
+        className="pointer-events-none absolute left-127.25 -top-[235px] max-w-none rotate-[-131.21deg]"
       />
       <Image
         src="/Home/figma-parent-dashboard-hero-squiggle-right.svg"
@@ -135,12 +135,12 @@ function WelcomeBanner() {
         className="pointer-events-none absolute -bottom-[56px] -left-[120px] max-w-none rotate-[-33.09deg]"
       />
 
-      <div className="relative z-10 flex h-full flex-col justify-between min-[1050px]:flex-row">
-        <div className="max-w-[442px]">
+      <div className="relative z-10 flex h-full min-w-0 flex-col justify-between xl:flex-row">
+        <div className="min-w-0 max-w-[442px]">
           <p className="font-manrope text-sm font-medium leading-[22px] tracking-[0.084px] text-[#515b60]">
             Good morning · Sunday, July 20, 2026
           </p>
-          <h1 className="mt-2 font-nunito text-[40px] font-semibold leading-12 tracking-[-0.4px] text-[#2f7d7e]">
+          <h1 className="mt-2 font-nunito text-3xl font-semibold leading-10 tracking-[-0.3px] text-[#2f7d7e] sm:text-[40px] sm:leading-12 sm:tracking-[-0.4px]">
             Welcome back, Sarah!
           </h1>
           <p className="mt-3 max-w-[442px] font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#7d8488]">
@@ -161,11 +161,11 @@ function WelcomeBanner() {
           </Link>
         </div>
 
-        <div className="mt-6 flex w-full max-w-[569px] gap-3 sm:gap-4 min-[1050px]:mt-0 max-sm:flex-col">
+        <div className="mt-6 flex w-full min-w-0 max-w-[569px] gap-3 sm:gap-4 xl:mt-0 max-sm:flex-col">
           {stats.map((stat) => (
             <article
               key={stat.label}
-              className="flex h-[82px] min-w-0 flex-1 items-center justify-center gap-3 rounded-2xl border border-white bg-transparent p-4"
+              className="flex h-20 min-w-0 flex-1 items-center justify-center gap-3 rounded-2xl border border-white bg-transparent p-4 sm:h-20.5"
             >
               <span className="grid size-8 shrink-0 place-items-center overflow-hidden rounded-lg border border-[#fafafa] bg-white">
                 <Image src={stat.icon} alt="" width={16} height={16} />
@@ -188,10 +188,10 @@ function WelcomeBanner() {
 
 function TodayActivityCard() {
   return (
-    <Card className="flex min-h-[480px] flex-col gap-6 lg:h-[617px]">
+    <Card className="flex min-h-[480px] flex-col gap-5 sm:gap-6 lg:h-[617px]">
       <div className="flex flex-col gap-3">
-        <div className="flex items-start justify-between gap-4">
-          <div>
+        <div className="flex items-start justify-between gap-4 max-sm:flex-col">
+          <div className="min-w-0">
             <p className="font-nunito text-xs font-medium leading-4 text-[#2f7d7e]">
               Today&apos;s Activity · Mon, Jul 20
             </p>
@@ -404,8 +404,8 @@ function WeeklyPlanCard() {
 function RecentActivityCard() {
   return (
     <Card className="min-h-[360px] lg:h-[444px]">
-      <div className="flex items-center justify-between">
-        <h2 className="font-nunito text-2xl font-medium leading-8 text-[#263238]">
+      <div className="flex items-center justify-between gap-3">
+        <h2 className="min-w-0 font-nunito text-2xl font-medium leading-8 text-[#263238]">
           Recent activity
         </h2>
         <Link
@@ -477,9 +477,11 @@ function MessagesCard() {
   ];
 
   return (
-    <Card className="flex min-h-[360px] flex-col lg:h-[444px]">
-      <div className="flex items-center justify-between">
-        <h2 className="font-nunito text-2xl font-medium leading-8 text-[#263238]">Messages</h2>
+    <Card className="flex min-h-[360px] flex-col min-[1750px]:h-[444px]">
+      <div className="flex items-center justify-between gap-3">
+        <h2 className="min-w-0 font-nunito text-2xl font-medium leading-8 text-[#263238]">
+          Messages
+        </h2>
         <span className="rounded-full bg-[#2f7d7e] px-3 py-1 font-nunito text-xs font-medium leading-4 text-white">
           2 New
         </span>
@@ -508,7 +510,7 @@ function MessagesCard() {
           </article>
         ))}
       </div>
-      <div className="mt-auto">
+      <div className="mt-auto max-[1749px]:mt-6">
         <ArrowLink href="/dashboard/messages" full>
           Open Inbox
         </ArrowLink>
@@ -519,7 +521,7 @@ function MessagesCard() {
 
 function RecommendationsCard() {
   return (
-    <Card className="min-h-[360px] lg:h-[444px]">
+    <Card className="min-h-[360px] min-[1750px]:h-[444px]">
       <p className="font-nunito text-xs font-medium leading-4 text-[#2f7d7e]">
         Personalised For Emma
       </p>
@@ -528,11 +530,8 @@ function RecommendationsCard() {
       </h2>
       <div className="mt-6 space-y-6">
         {recommendations.map((item) => (
-          <article
-            key={item.title}
-            className="flex items-start justify-between gap-4 max-sm:flex-col"
-          >
-            <div className="flex min-w-0 gap-3 sm:gap-4">
+          <article key={item.title} className="relative flex min-w-0 items-start pr-6">
+            <div className="flex min-w-0 w-full gap-3 sm:gap-4">
               <span
                 className="relative mt-1 size-[119px] shrink-0"
                 style={{
@@ -573,7 +572,7 @@ function RecommendationsCard() {
               alt="Save recommendation"
               width={16}
               height={16}
-              className="mt-1 shrink-0"
+              className="absolute right-0 top-1 shrink-0"
             />
           </article>
         ))}
@@ -584,14 +583,12 @@ function RecommendationsCard() {
 
 export function ParentDashboardPage() {
   return (
-    <div className="-mt-4 mx-auto w-full max-w-[1529px] space-y-6">
+    <div className="-mt-4 mx-auto w-full min-w-0 max-w-[1529px] space-y-4 overflow-x-clip sm:space-y-6">
       <WelcomeBanner />
-      <div className="grid gap-6 min-[1750px]:grid-cols-[1.35fr_1fr_1fr]">
+      <div className="grid min-w-0 grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 2xl:grid-cols-3">
         <TodayActivityCard />
         <ProgressCard />
         <WeeklyPlanCard />
-      </div>
-      <div className="grid gap-6 min-[1750px]:grid-cols-[1.089fr_1fr_1.055fr]">
         <RecentActivityCard />
         <MessagesCard />
         <RecommendationsCard />
