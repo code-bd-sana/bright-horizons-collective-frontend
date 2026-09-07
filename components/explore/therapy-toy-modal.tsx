@@ -38,7 +38,7 @@ export function TherapyToyModal({ isOpen, onClose }: TherapyToyModalProps) {
               alt="Pink wooden play kitchen"
               fill
               className="object-cover"
-              sizes="257px"
+              sizes="(max-width: 767px) 100vw, 257px"
             />
           </div>
 
@@ -81,12 +81,12 @@ export function TherapyToyModal({ isOpen, onClose }: TherapyToyModalProps) {
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 max-sm:flex-col max-sm:items-stretch">
               <button
                 type="button"
                 onClick={() => setSaved((value) => !value)}
                 aria-label={saved ? 'Remove toy from saved' : 'Save toy'}
-                className="flex size-10 shrink-0 items-center justify-center rounded-full border-2 border-[#D8DDD9] bg-white text-[#607077]"
+                className="flex size-10 shrink-0 items-center justify-center rounded-full border-2 border-[#D8DDD9] bg-white text-[#607077] max-sm:self-center"
               >
                 <ReiconIcon
                   icon={Heart}

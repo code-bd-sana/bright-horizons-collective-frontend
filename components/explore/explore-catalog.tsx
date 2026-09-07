@@ -167,13 +167,13 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
   return (
     <section className="bg-[#FDFDFC] pb-20 pt-12">
       <div className="mx-auto flex max-w-480 items-center gap-9 px-20 max-xl:px-8 max-md:flex-col max-md:items-stretch max-md:gap-5 max-md:px-5">
-        <div className="flex shrink-0 items-center gap-1.75 max-md:w-full">
+        <div className="grid w-full grid-cols-3 gap-1.75 md:flex md:w-auto md:shrink-0">
           {contentTypes.map((type) => (
             <button
               type="button"
               key={type}
               onClick={() => onActiveTypeChange(type)}
-              className={`flex h-12 flex-1 items-center justify-center whitespace-nowrap rounded-full px-4 max-sm:px-1 font-nunito text-sm font-medium leading-5 tracking-[-0.084px] transition-colors max-sm:text-[11px] ${activeType === type ? 'bg-[#2F7D7E] text-white' : 'bg-[#EFEFEF] text-[#64748B] hover:bg-[#E3F7EC]'}`}
+              className={`flex h-12 min-w-0 items-center justify-center rounded-full px-2 text-center font-nunito text-xs font-medium leading-4.5 tracking-[-0.084px] transition-colors sm:px-3 sm:leading-5 md:flex-1 md:whitespace-nowrap md:px-4 md:text-sm ${activeType === type ? 'bg-[#2F7D7E] text-white' : 'bg-[#EFEFEF] text-[#64748B] hover:bg-[#E3F7EC]'}`}
             >
               {type}
             </button>

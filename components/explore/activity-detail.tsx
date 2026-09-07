@@ -52,7 +52,7 @@ export function ActivityDetail() {
         <section className="flex flex-col gap-8">
           <nav
             aria-label="Breadcrumb"
-            className="flex flex-wrap items-center gap-1.5 font-nunito text-2xl font-medium leading-8 max-md:text-lg"
+            className="flex flex-wrap items-center gap-1.5 font-nunito text-2xl font-medium leading-8 max-md:text-lg max-sm:text-base max-sm:leading-6"
           >
             <Link href="/explore" className="text-[#2F7D7E] hover:underline">
               Explore
@@ -65,7 +65,7 @@ export function ActivityDetail() {
             <span>Bubble Wrap Stomp Counting</span>
           </nav>
 
-          <div className="relative h-101.25 overflow-hidden rounded-2xl bg-[#DCEEEE] max-md:h-64">
+          <div className="relative h-60 overflow-hidden rounded-2xl bg-[#DCEEEE] sm:h-80 md:h-101.25">
             <Image
               src="/Home/activity-bubble-wrap-stomp.png"
               alt="Colourful toy numbers and vehicles"
@@ -79,7 +79,7 @@ export function ActivityDetail() {
 
         <section className="flex flex-col gap-8">
           <div className="border-b border-[#ADB1AE] pb-6">
-            <h1 className="font-nunito text-[40px] font-medium leading-12 tracking-[-0.4px] text-[#174A4D] max-md:text-[32px] max-md:leading-10">
+            <h1 className="font-nunito text-[40px] font-medium leading-12 tracking-[-0.4px] text-[#174A4D] max-md:text-[32px] max-md:leading-10 max-sm:text-3xl max-sm:leading-9">
               Bubble Wrap Stomp Counting
             </h1>
             <div className="mt-6 flex flex-col gap-4">
@@ -170,7 +170,7 @@ export function ActivityDetail() {
         <section className="flex flex-col gap-8">
           <div className="flex flex-col gap-6">
             <h2 className="font-nunito text-xl font-bold leading-7">Modifications</h2>
-            <div className="grid max-w-180.5 grid-cols-2 gap-4 max-md:grid-cols-1">
+            <div className="grid max-w-180.5 grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="rounded-[14px] bg-[#F6E6D4] p-4">
                 <h3 className="font-nunito text-sm font-bold leading-5">Easier Version</h3>
                 <p className="pt-2 font-manrope text-sm leading-5.5 tracking-[-0.084px]">
@@ -187,7 +187,7 @@ export function ActivityDetail() {
           </div>
 
           <blockquote className="rounded-[14px] border-l-4 border-[#F2B59F] bg-[#FFF8F5] py-5 pl-6 pr-5">
-            <p className="font-(family-name:--font-lora) text-base italic leading-7">
+            <p className="font-lora text-base italic leading-7">
               “This is a great “alerting” activity for sluggish mornings or pre-homework energy
               regulation. The proprioceptive input typically lasts 30–60 minutes.”
             </p>
@@ -199,7 +199,7 @@ export function ActivityDetail() {
 
         <section className="flex flex-col gap-6">
           <h2 className="font-nunito text-xl font-bold leading-7">Related Activities</h2>
-          <div className="grid grid-cols-3 gap-4 max-lg:grid-cols-2 max-md:grid-cols-1">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {relatedActivities.map((activity) => (
               <Link
                 href="/explore/activities/bubble-wrap-stomp-counting"
@@ -212,7 +212,7 @@ export function ActivityDetail() {
                     alt=""
                     fill
                     className="object-cover"
-                    sizes="(min-width: 1280px) 404px, 50vw"
+                    sizes="(min-width: 1280px) 404px, (min-width: 640px) 50vw, 100vw"
                   />
                 </div>
                 <div className="p-3">
