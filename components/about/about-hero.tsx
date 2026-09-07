@@ -38,7 +38,7 @@ const verticalGridMaskStyle = {
 
 function RatingBadge() {
   return (
-    <div className="flex w-[178px] items-center gap-2.5 rounded-xl border border-[#E8EBE8] bg-white px-2 py-1.5 font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#263238]">
+    <div className="flex w-44.5 items-center gap-2.5 rounded-xl border border-[#E8EBE8] bg-white px-2 py-1.5 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#263238]">
       <span className="flex items-center gap-1">
         <Image src={aboutAssets.ratingStar} alt="" width={16} height={16} />
         4.9
@@ -72,16 +72,24 @@ function SecondaryButton() {
   );
 }
 
-function AboutArtwork({ compact = false }: { compact?: boolean }) {
+function AboutArtwork({
+  compact = false,
+  className = '',
+}: {
+  compact?: boolean;
+  className?: string;
+}) {
   if (compact) {
     return (
-      <div className="relative mx-auto mt-12 h-[300px] w-full max-w-[520px]">
+      <div
+        className={`relative mx-auto h-75 w-full max-w-130 sm:h-90 lg:h-105 lg:max-w-150 ${className}`}
+      >
         <Image
           src={aboutAssets.photoLeft}
           alt="Family sharing a happy moment"
           width={357}
           height={356}
-          className="absolute left-[2%] top-[24%] w-[45%] -rotate-[12.48deg]"
+          className="absolute left-[2%] top-[24%] w-[45%] rotate-[-12.48deg]"
         />
         <Image
           src={aboutAssets.photoCenter}
@@ -109,8 +117,8 @@ function AboutArtwork({ compact = false }: { compact?: boolean }) {
   }
 
   return (
-    <div className="absolute left-[calc(50%+28px)] top-[245px] z-10 h-[480px] w-[842px]">
-      <div className="absolute left-[352px] top-[239.5px] flex h-[313.915px] w-[294.067px] items-center justify-center">
+    <div className="absolute left-[calc(50%+28px)] top-61.25 z-10 h-120 w-210.5">
+      <div className="absolute left-88 top-[239.5px] flex h-[313.915px] w-[294.067px] items-center justify-center">
         <Image
           src={aboutAssets.photoBottom}
           alt="Child playing with developmental toys"
@@ -119,7 +127,7 @@ function AboutArtwork({ compact = false }: { compact?: boolean }) {
           className="max-w-none rotate-[10.71deg]"
         />
       </div>
-      <div className="absolute left-[352px] top-[-59.5px] flex h-[320.006px] w-[318.797px] items-center justify-center">
+      <div className="absolute left-88[-59.5px] flex h-[320.006px] w-[318.797px] items-center justify-center">
         <Image
           src={aboutAssets.photoCenter}
           alt="Child learning at a table"
@@ -128,22 +136,22 @@ function AboutArtwork({ compact = false }: { compact?: boolean }) {
           className="max-w-none rotate-[12.7deg]"
         />
       </div>
-      <div className="absolute left-[-21px] top-[82.5px] flex h-[424.749px] w-[425.371px] items-center justify-center">
+      <div className="absolute -left-5.25 top-[82.5px] flex h-[424.749px] w-[425.371px] items-center justify-center">
         <Image
           src={aboutAssets.photoLeft}
           alt="Family sharing a happy moment"
           width={356.871}
           height={356.053}
-          className="max-w-none -rotate-[12.48deg]"
+          className="max-w-none rotate-[-12.48deg]"
         />
       </div>
-      <div className="absolute left-[591px] top-[150.5px] flex size-[177.031px] items-center justify-center">
+      <div className="absolute left-147.75 top-[150.5px] flex size-[177.031px] items-center justify-center">
         <Image
           src={aboutAssets.stars}
           alt=""
           width={134}
           height={134}
-          className="size-[134px] rotate-[24.1deg] object-cover"
+          className="size-33.5 rotate-[24.1deg] object-cover"
         />
       </div>
     </div>
@@ -155,7 +163,7 @@ function AboutHeroGrid() {
     <>
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-[238px] top-[597.1px] h-[340.933px] w-[1417.001px]"
+        className="pointer-events-none absolute left-59.5 top-[597.1px] h-[340.933px] w-[1417.001px]"
         style={horizontalGridMaskStyle}
       >
         <Image src={aboutAssets.horizontalGrid} alt="" fill className="object-fill" />
@@ -165,7 +173,7 @@ function AboutHeroGrid() {
         className="pointer-events-none absolute left-[353.86px] top-[502.73px] flex h-[528.973px] w-[1193.264px] items-center justify-center"
       >
         <div
-          className="relative h-[1193.264px] w-[528.973px] rotate-[-90deg]"
+          className="relative h-[1193.264px] w-[528.973px] -rotate-90"
           style={verticalGridMaskStyle}
         >
           <Image src={aboutAssets.verticalGrid} alt="" fill className="object-fill" />
@@ -177,17 +185,17 @@ function AboutHeroGrid() {
 
 function DesktopAboutHero() {
   return (
-    <div className="relative mx-auto hidden aspect-[1920/789] w-full max-w-[1920px] lg:block">
+    <div className="relative mx-auto hidden aspect-1920/789 w-full max-w-[1920px] min-[1600px]:block">
       <div
-        className="relative h-[789px] w-[1920px] origin-top-left"
+        className="relative h-197.25 w-[1920px] origin-top-left"
         style={{ transform: 'scale(min(1, calc(100vw / 1920px)))' }}
       >
         <AboutHeroGrid />
-        <div className="absolute left-[calc(50%-874px)] top-[245px] z-10 flex h-[467px] w-[1744px] items-center justify-between">
-          <div className="flex w-[822px] flex-col items-start gap-8">
+        <div className="absolute left-[calc(50%-874px)] top-61.25 z-10 flex h-116.75 w-[1744px] items-center justify-between">
+          <div className="flex w-205.5 flex-col items-start gap-8">
             <div className="flex w-full flex-col items-start gap-4">
               <RatingBadge />
-              <h1 className="h-[184px] w-[691px] font-nunito text-[56px] font-semibold leading-16 tracking-[-0.56px] text-[#263238]">
+              <h1 className="h-46 w-172.75 font-nunito text-[56px] font-semibold leading-16 tracking-[-0.56px] text-[#263238]">
                 <span className="block">Supporting Families</span>
                 <span className="block">
                   Through Every <span className="text-[#F2B59F]">Stage of</span>
@@ -196,7 +204,7 @@ function DesktopAboutHero() {
                   <span className="text-[#F2B59F]">Childhood</span> Development
                 </span>
               </h1>
-              <p className="w-[601px] font-manrope text-base leading-6 tracking-[-0.176px] text-[#607077]">
+              <p className="w-150.25 font-manrope text-base leading-6 tracking-[-0.176px] text-[#607077]">
                 Bright Horizons Collective exists to help families confidently support their
                 children&apos;s development through expert guidance, meaningful activities,
                 personalized plans, and trusted educational resources.
@@ -216,23 +224,25 @@ function DesktopAboutHero() {
 
 function CompactAboutHero() {
   return (
-    <div className="overflow-hidden px-5 pb-16 pt-36 sm:px-8 lg:hidden">
-      <div className="mx-auto max-w-[601px]">
-        <RatingBadge />
-        <h1 className="mt-4 font-nunito text-[clamp(36px,8vw,52px)] font-semibold leading-[1.14] tracking-[-0.56px] text-[#263238]">
-          Supporting Families Through Every{' '}
-          <span className="text-[#F2B59F]">Stage of Childhood</span> Development
-        </h1>
-        <p className="mt-4 font-manrope text-base leading-6 tracking-[-0.176px] text-[#607077]">
-          Bright Horizons Collective exists to help families confidently support their
-          children&apos;s development through expert guidance, meaningful activities, personalized
-          plans, and trusted educational resources.
-        </p>
-        <div className="mt-8 flex flex-wrap gap-3">
-          <PrimaryButton />
-          <SecondaryButton />
+    <div className="overflow-hidden px-5 pb-16 pt-32 sm:px-8 sm:pb-20 sm:pt-40 lg:px-12 lg:pb-24 lg:pt-48 min-[1600px]:hidden">
+      <div className="mx-auto max-w-300 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(380px,0.9fr)] lg:items-center lg:gap-10 xl:gap-16">
+        <div className="max-w-150.25">
+          <RatingBadge />
+          <h1 className="mt-4 font-nunito text-[clamp(36px,8vw,52px)] font-semibold leading-[1.14] tracking-[-0.56px] text-[#263238]">
+            Supporting Families Through Every{' '}
+            <span className="text-[#F2B59F]">Stage of Childhood</span> Development
+          </h1>
+          <p className="mt-4 font-manrope text-base leading-6 tracking-[-0.176px] text-[#607077]">
+            Bright Horizons Collective exists to help families confidently support their
+            children&apos;s development through expert guidance, meaningful activities, personalized
+            plans, and trusted educational resources.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <PrimaryButton />
+            <SecondaryButton />
+          </div>
         </div>
-        <AboutArtwork compact />
+        <AboutArtwork compact className="mt-12 lg:mt-0" />
       </div>
     </div>
   );

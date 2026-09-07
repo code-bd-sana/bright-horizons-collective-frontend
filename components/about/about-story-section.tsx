@@ -62,7 +62,7 @@ function DesktopStoryPhoto() {
   return (
     <div className="inline-grid shrink-0 grid-cols-[max-content] grid-rows-[max-content] place-items-start leading-none">
       <div
-        className="col-start-1 row-start-1 relative -ml-[329.39px] -mt-[15.01px] h-[711.993px] w-[1154.707px]"
+        className="col-start-1 row-start-1 relative ml-[-329.39px] mt-[-15.01px] h-[711.993px] w-[1154.707px]"
         style={desktopPhotoMaskStyle}
       >
         <Image
@@ -80,7 +80,7 @@ function DesktopStoryPhoto() {
 function ResponsiveStoryPhoto() {
   return (
     <div
-      className="relative mx-auto aspect-[710/690.856] w-full max-w-[560px]"
+      className="relative mx-auto aspect-[710/690.856] w-full max-w-140"
       style={compactPhotoMaskStyle}
     >
       <Image
@@ -97,12 +97,12 @@ function ResponsiveStoryPhoto() {
 function StoryTimeline({ desktop = false }: { desktop?: boolean }) {
   return (
     <div
-      className={`w-full border-l-2 border-dashed border-[#A8C5A0] ${desktop ? 'pl-[26px]' : 'pl-4 sm:pl-5'}`}
+      className={`w-full border-l-2 border-dashed border-[#A8C5A0] ${desktop ? 'pl-6.5' : 'pl-4 sm:pl-5'}`}
     >
       {milestones.map((milestone, index) => (
         <div
           key={milestone.year}
-          className={`${desktop ? 'w-[705px] pl-4' : 'w-full pl-3.5 sm:pl-4'} ${index === 0 ? '' : desktop ? 'pt-8' : 'pt-6 sm:pt-8'}`}
+          className={`${desktop ? 'w-176.25 pl-4' : 'w-full pl-3.5 sm:pl-4'} ${index === 0 ? '' : desktop ? 'pt-8' : 'pt-6 sm:pt-8'}`}
         >
           <article className={`rounded-2xl p-5 ${milestone.background}`}>
             <p className="h-6 pt-1 font-nunito text-xs font-bold uppercase leading-4 tracking-[1.2px] text-[#F4845F]">
@@ -124,14 +124,14 @@ function StoryTimeline({ desktop = false }: { desktop?: boolean }) {
 function StoryContent({ desktop = false }: { desktop?: boolean }) {
   return (
     <div
-      className={`flex flex-col ${desktop ? 'h-[902px] w-[731px] shrink-0 justify-center gap-12' : 'w-full max-w-[731px] gap-10'}`}
+      className={`flex flex-col ${desktop ? 'h-225.5 w-182.75 shrink-0 justify-center gap-12' : 'w-full max-w-182.75 gap-10'}`}
     >
       <header className="flex flex-col items-start gap-4">
-        <span className="rounded-xl border border-[#FAE1D9] bg-[#FCE9E3] px-2 py-1.5 font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#614840]">
+        <span className="rounded-xl border border-[#FAE1D9] bg-[#FCE9E3] px-2 py-1.5 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#614840]">
           Our Story
         </span>
         <h2
-          className={`font-nunito font-semibold tracking-[-0.48px] text-[#263238] ${desktop ? 'text-[48px] leading-14' : 'text-[32px] leading-[38px] sm:text-4xl sm:leading-11'}`}
+          className={`font-nunito font-semibold tracking-[-0.48px] text-[#263238] ${desktop ? 'text-[48px] leading-14' : 'text-[32px] leading-9.5 sm:text-4xl sm:leading-11'}`}
         >
           A Journey Built on Love &amp; Learning
         </h2>
@@ -145,13 +145,13 @@ function StoryContent({ desktop = false }: { desktop?: boolean }) {
 export function AboutStorySection() {
   return (
     <section aria-label="Our Story" className="bg-[#FDFDFC]">
-      <div className="relative mx-auto hidden aspect-[1920/1325] w-full max-w-[1920px] lg:block">
+      <div className="relative mx-auto hidden aspect-1920/1325 w-full max-w-[1920px] min-[1600px]:block">
         <div
-          className="relative h-[1325px] w-[1920px] origin-top-left"
+          className="relative h-331.25 w-[1920px] origin-top-left"
           style={{ transform: 'scale(min(1, calc(100vw / 1920px)))' }}
         >
-          <div className="flex h-[1325px] items-start justify-center px-20 py-[120px]">
-            <div className="flex items-end gap-[131px]">
+          <div className="flex h-331.25 items-start justify-center px-20 py-30">
+            <div className="flex items-end gap-32.75">
               <DesktopStoryPhoto />
               <StoryContent desktop />
             </div>
@@ -159,7 +159,7 @@ export function AboutStorySection() {
         </div>
       </div>
 
-      <div className="mx-auto flex max-w-[731px] flex-col gap-12 px-5 py-16 sm:px-8 sm:py-20 md:px-12 md:py-24 lg:hidden">
+      <div className="mx-auto flex max-w-182.75 flex-col gap-12 px-5 py-16 sm:px-8 sm:py-20 md:px-12 md:py-24 lg:grid lg:max-w-300 lg:grid-cols-2 lg:items-center lg:gap-12 lg:px-16 lg:py-28 xl:gap-20 xl:px-20 min-[1600px]:hidden">
         <ResponsiveStoryPhoto />
         <StoryContent />
       </div>
