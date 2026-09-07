@@ -53,9 +53,7 @@ function FaqIcon({ open }: { open: boolean }) {
         width={18}
         height={open ? 2 : 18}
         className={
-          open
-            ? 'absolute top-[11px] left-[3px] h-0.5 w-[18px]'
-            : 'absolute top-[3px] left-[3px] size-[18px]'
+          open ? 'absolute top-2.75 left-0.75 h-0.5 w-4.5' : 'absolute top-0.75 left-0.75 size-4.5'
         }
       />
     </span>
@@ -77,7 +75,7 @@ function MembershipFaqList() {
             className={
               open
                 ? 'flex flex-col gap-2.5 rounded-[15px] border border-[#E9F1EE] bg-white p-5 shadow-[0_2px_2px_rgba(198,202,209,0.10),0_2px_8px_rgba(198,202,209,0.22)]'
-                : 'flex h-[69px] items-center rounded-[15px] border border-[#D2E3DC] bg-white p-5'
+                : 'flex h-17.25 items-center rounded-[15px] border border-[#D2E3DC] bg-white p-5'
             }
           >
             <button
@@ -107,16 +105,16 @@ function MembershipFaqList() {
 
 function ContactCard() {
   return (
-    <aside className="relative flex h-[152px] w-[273px] flex-col items-center gap-4 rounded-[16px] bg-[#F6E6D4] p-8 text-center shadow-[0_1px_1.5px_rgba(0,0,0,0.10),0_1px_1px_rgba(0,0,0,0.10)]">
+    <aside className="relative flex h-38 w-68.25 flex-col items-center gap-4 rounded-[16px] bg-[#F6E6D4] p-8 text-center shadow-[0_1px_1.5px_rgba(0,0,0,0.10),0_1px_1px_rgba(0,0,0,0.10)]">
       <Image
         src={FAQ_ASSETS.flower}
         alt=""
         width={73}
         height={81}
         aria-hidden="true"
-        className="pointer-events-none absolute -top-[49px] -left-2"
+        className="pointer-events-none absolute -top-12.25 -left-2"
       />
-      <p className="font-nunito text-lg font-medium leading-[27px] text-[#263238]">
+      <p className="font-nunito text-lg font-medium leading-6.75 text-[#263238]">
         Have more questions?
       </p>
       <Link
@@ -144,8 +142,8 @@ export function MembershipFaqSection() {
       aria-labelledby="membership-faq-heading"
       className="bg-[#FCE9E3] px-5 py-20 sm:px-8 md:py-40 min-[1600px]:px-40"
     >
-      <div className="mx-auto grid w-full max-w-[1600px] grid-cols-1 gap-12 min-[1600px]:grid-cols-[571px_719px] min-[1600px]:justify-between">
-        <div className="flex min-[1600px]:min-h-full min-[1600px]:flex-col min-[1600px]:justify-between">
+      <div className="mx-auto grid w-full max-w-[1600px] grid-cols-1 gap-12 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1fr)] lg:gap-16 min-[1600px]:grid-cols-[571px_719px] min-[1600px]:justify-between">
+        <div className="flex lg:min-h-full lg:flex-col lg:justify-between">
           <header className="flex flex-col gap-4">
             <h2
               id="membership-faq-heading"
@@ -158,7 +156,7 @@ export function MembershipFaqSection() {
               Bright Horizons Collective works.
             </p>
           </header>
-          <div className="mt-20 min-[1600px]:mt-0">
+          <div className="mt-16 lg:mt-0">
             <ContactCard />
           </div>
         </div>
