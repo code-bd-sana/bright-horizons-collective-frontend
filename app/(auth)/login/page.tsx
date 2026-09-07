@@ -59,11 +59,11 @@ export default function LoginPage() {
         href="/"
         width={123}
         height={123}
-        showBackdrop
+        // showBackdrop
         className="z-20 mt-6 ml-6 shrink-0 xl:absolute xl:left-[calc(8.333333%+34px)] xl:top-4 xl:z-0 xl:m-0 2xl:z-20 max-md:ml-4 max-md:mt-4 max-xl:w-22! max-xl:h-22! max-md:w-16! max-md:h-16! [&_span[aria-hidden]]:max-xl:hidden"
       />
 
-      <section className="relative z-10 mx-auto flex w-full max-w-123 flex-1 flex-col items-center justify-center px-6 py-12 max-sm:px-5 max-sm:py-8 xl:ml-[calc(8.333333%+69px)] xl:mx-0 xl:h-dvh xl:flex-none xl:justify-start xl:overflow-y-auto xl:px-0 xl:py-12 scrollbar-none [&::-webkit-scrollbar]:hidden 2xl:h-auto 2xl:overflow-visible 2xl:py-0">
+      <section className="relative z-10 mx-auto flex w-full max-w-123 flex-1 flex-col items-center justify-center px-6 py-12 max-sm:px-5 max-sm:py-8 xl:ml-[calc(8.333333%+69px)] xl:mx-0 xl:h-dvh xl:flex-none xl:justify-center-safe xl:overflow-y-auto xl:px-0 xl:py-12 scrollbar-none [&::-webkit-scrollbar]:hidden 2xl:h-auto 2xl:overflow-visible 2xl:py-0">
         <div className="mb-8 text-center xl:mb-12">
           <h1 className="font-nunito text-[32px] font-medium leading-10 tracking-[-0.64px] text-[#263238]">
             Welcome Back

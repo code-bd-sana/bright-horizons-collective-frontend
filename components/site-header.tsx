@@ -21,7 +21,7 @@ export function SiteHeader({
       <Logo
         width={123}
         height={123}
-        showBackdrop
+        // showBackdrop
         backdropSrc={backdropSrc}
         className="pointer-events-auto absolute left-[calc(50%-766px)] top-4 z-20 max-[1600px]:left-8 max-xl:left-4 max-lg:hidden"
       />

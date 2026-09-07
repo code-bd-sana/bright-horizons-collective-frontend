@@ -75,15 +75,15 @@ export default function ForgotPasswordPage() {
         href="/"
         width={123}
         height={123}
-        showBackdrop
+        // showBackdrop
         className="z-20 mt-6 ml-6 shrink-0 xl:absolute xl:left-[calc(8.333333%+34px)] xl:top-4 xl:z-0 xl:m-0 2xl:z-20 max-md:ml-4 max-md:mt-4 max-xl:w-22! max-xl:h-22! max-md:w-16! max-md:h-16! [&_span[aria-hidden]]:max-xl:hidden"
       />
 
       <section
         className={
           otpVisual
-            ? 'relative z-10 mx-auto my-8 flex w-[calc(100%-3rem)] max-w-122.5 flex-none flex-col items-center justify-center gap-8 rounded-2xl border border-[#e8ebe8] bg-white p-6 shadow-[0_1px_1px_rgba(0,0,0,0.05)] max-sm:my-5 max-sm:w-[calc(100%-2.5rem)] max-sm:gap-6 max-sm:p-4 xl:mx-0 xl:my-0 xl:ml-[calc(8.333333%+69px)] xl:h-dvh xl:justify-start xl:overflow-y-auto xl:py-12 scrollbar-none [&::-webkit-scrollbar]:hidden 2xl:h-auto 2xl:overflow-visible 2xl:py-0'
-            : 'relative z-10 mx-auto flex w-full max-w-123 flex-1 flex-col items-center justify-center px-6 py-12 max-sm:px-5 max-sm:py-8 xl:mx-0 xl:ml-[calc(8.333333%+69px)] xl:h-dvh xl:flex-none xl:justify-start xl:overflow-y-auto xl:px-0 xl:py-12 scrollbar-none [&::-webkit-scrollbar]:hidden 2xl:h-auto 2xl:overflow-visible 2xl:py-0'
+            ? 'relative z-10 mx-auto my-8 flex w-[calc(100%-3rem)] max-w-122.5 flex-none flex-col items-center justify-center gap-8 rounded-2xl border border-[#e8ebe8] bg-white p-6 shadow-[0_1px_1px_rgba(0,0,0,0.05)] max-sm:my-5 max-sm:w-[calc(100%-2.5rem)] max-sm:gap-6 max-sm:p-4 xl:mx-0 xl:my-0 xl:ml-[calc(8.333333%+69px)] xl:h-dvh xl:justify-center-safe xl:overflow-y-auto xl:py-12 scrollbar-none [&::-webkit-scrollbar]:hidden 2xl:h-auto 2xl:overflow-visible 2xl:py-0'
+            : 'relative z-10 mx-auto flex w-full max-w-123 flex-1 flex-col items-center justify-center px-6 py-12 max-sm:px-5 max-sm:py-8 xl:mx-0 xl:ml-[calc(8.333333%+69px)] xl:h-dvh xl:flex-none xl:justify-center-safe xl:overflow-y-auto xl:px-0 xl:py-12 scrollbar-none [&::-webkit-scrollbar]:hidden 2xl:h-auto 2xl:overflow-visible 2xl:py-0'
         }
       >
         {current && (
