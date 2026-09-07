@@ -47,21 +47,21 @@ export default function RegisterPage() {
   };
 
   return (
-    <main className="relative flex min-h-dvh flex-col overflow-y-auto overflow-x-hidden bg-[#fffdf8] text-[#263238] xl:h-dvh xl:flex-row xl:items-center xl:overflow-hidden">
+    <main className="relative flex min-h-dvh flex-col overflow-y-auto overflow-x-hidden bg-[#fffdf8] text-[#263238] scrollbar-none [&::-webkit-scrollbar]:hidden xl:h-dvh xl:flex-row xl:items-center xl:overflow-hidden 2xl:overflow-hidden">
       <Logo
         href="/"
         width={123}
         height={123}
         showBackdrop
-        className="z-20 mt-6 ml-6 shrink-0 xl:absolute xl:left-[calc(8.333333%+34px)] xl:top-4 xl:m-0 max-md:ml-4 max-md:mt-4 max-xl:w-22! max-xl:h-22! max-md:w-16! max-md:h-16! [&_span[aria-hidden]]:max-xl:hidden"
+        className="z-20 mt-6 ml-6 shrink-0 xl:absolute xl:left-[calc(8.333333%+34px)] xl:top-4 xl:z-0 xl:m-0 2xl:z-20 max-md:ml-4 max-md:mt-4 max-xl:w-22! max-xl:h-22! max-md:w-16! max-md:h-16! [&_span[aria-hidden]]:max-xl:hidden"
       />
 
-      <section className="mx-auto flex w-full max-w-123 flex-1 flex-col items-center justify-center px-6 py-12 xl:ml-[calc(8.333333%+69px)] xl:mx-0 xl:flex-none xl:justify-start xl:px-0 xl:py-0">
+      <section className="relative z-10 mx-auto flex w-full max-w-123 flex-1 flex-col items-center justify-center px-6 py-12 max-sm:px-5 max-sm:py-8 xl:ml-[calc(8.333333%+69px)] xl:mx-0 xl:h-dvh xl:flex-none xl:justify-start xl:overflow-y-auto xl:px-0 xl:py-12 scrollbar-none [&::-webkit-scrollbar]:hidden 2xl:h-auto 2xl:overflow-visible 2xl:py-0">
         <div className="mb-8 flex w-full flex-col items-center gap-3 text-center xl:mb-12">
           <h1 className="font-nunito text-[32px] font-medium leading-10 tracking-[-0.16px] text-[#263238]">
             Create Your Account
           </h1>
-          <p className="w-85 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#7d8488]">
+          <p className="w-full max-w-85 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#7d8488]">
             Your account will be used to manage memberships, child profiles, and personalized plans.
           </p>
           <p className="font-manrope text-base leading-6 tracking-[-0.176px] text-[#515b60]">
@@ -185,7 +185,7 @@ export default function RegisterPage() {
         </form>
       </section>
 
-      <aside className="absolute right-8 top-8 hidden h-[calc(100dvh-4rem)] w-[calc(50%-68px)] max-w-223 overflow-hidden rounded-2xl bg-[#e9f1ee] shadow-[0_1px_2px_rgba(0,0,0,0.05)] xl:block">
+      <aside className="absolute right-8 top-8 hidden h-[calc(100dvh-4rem)] w-[calc(50%-5rem)] max-w-223 overflow-hidden rounded-2xl bg-[#e9f1ee] shadow-[0_1px_2px_rgba(0,0,0,0.05)] xl:fixed xl:block 2xl:absolute 2xl:w-[calc(50%-68px)]">
         <div
           className="absolute -left-10.75 top-26.75 h-362.25 w-241.5"
           style={{
