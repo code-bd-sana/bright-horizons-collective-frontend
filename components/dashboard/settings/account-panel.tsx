@@ -45,7 +45,7 @@ export function AccountPanel() {
   return (
     <form onSubmit={saveAccount}>
       <section className="flex min-h-41 items-center rounded-2xl border border-[#e8ebe8] bg-white p-4 sm:p-8">
-        <div className="flex items-center gap-3 sm:gap-4">
+        <div className="flex w-full flex-col items-center gap-3 text-center min-[420px]:flex-row min-[420px]:text-left sm:gap-4">
           <span className="relative size-25 shrink-0 overflow-hidden rounded-2xl border-2 border-[#d5e5e5] bg-[#2f7d7e] p-1">
             <Image
               src="/Home/figma-dashboard-profile-avatar.png"
@@ -55,14 +55,14 @@ export function AccountPanel() {
               className="object-cover object-[50%_12%]"
             />
           </span>
-          <div>
-            <p className="font-nunito text-2xl font-medium leading-8 tracking-[-0.16px] text-[#263238]">
+          <div className="min-w-0">
+            <p className="font-nunito text-xl font-medium leading-7 tracking-[-0.16px] text-[#263238] sm:text-2xl sm:leading-8">
               Sarah Lin
             </p>
             <p className="mt-1 font-manrope text-xs leading-4.5 text-[#7d8488]">
               JPG or PNG. Max 5MB
             </p>
-            <label className="mt-2 flex h-6.5 w-fit cursor-pointer items-center gap-1 rounded-full border border-[#d5e5e5] bg-white px-2 font-nunito text-xs font-medium text-[#2f7d7e]">
+            <label className="mx-auto mt-2 flex min-h-8 w-fit cursor-pointer items-center gap-1 rounded-full border border-[#d5e5e5] bg-white px-2.5 font-nunito text-xs font-medium text-[#2f7d7e] min-[420px]:mx-0">
               <Upload size={14} strokeWidth={1.7} aria-hidden="true" />
               Upload photo
               <input type="file" accept="image/png,image/jpeg" className="sr-only" />
@@ -71,7 +71,7 @@ export function AccountPanel() {
         </div>
       </section>
       <section className="mt-6 rounded-2xl border border-[#e8ebe8] bg-white p-4 sm:p-8">
-        <h2 className="font-nunito text-2xl font-medium leading-8 tracking-[-0.16px] text-[#263238]">
+        <h2 className="font-nunito text-xl font-medium leading-7 tracking-[-0.16px] text-[#263238] sm:text-2xl sm:leading-8">
           Basic Information
         </h2>
         <div className="mt-6 grid gap-x-4 gap-y-6 sm:mt-8 sm:gap-y-7 md:grid-cols-2">
@@ -117,7 +117,7 @@ export function AccountPanel() {
         </div>
       </section>
       <section className="mt-6 rounded-2xl border border-[#e8ebe8] bg-white p-4 sm:p-8">
-        <h2 className="font-nunito text-2xl font-medium leading-8 tracking-[-0.16px] text-[#263238]">
+        <h2 className="font-nunito text-xl font-medium leading-7 tracking-[-0.16px] text-[#263238] sm:text-2xl sm:leading-8">
           Preferences
         </h2>
         <div className="mt-6 grid gap-4 sm:mt-8 md:grid-cols-2">

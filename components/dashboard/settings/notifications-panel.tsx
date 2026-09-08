@@ -80,7 +80,7 @@ export function NotificationsPanel() {
 
   return (
     <section className="w-full max-w-227 rounded-[20px] border-2 border-[#e8ebe8] bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.05)] sm:p-8.5">
-      <h2 className="font-nunito text-2xl font-semibold leading-8 text-[#263238]">
+      <h2 className="font-nunito text-xl font-semibold leading-7 text-[#263238] sm:text-2xl sm:leading-8">
         Email &amp; Push Alert Controls
       </h2>
 
@@ -90,22 +90,15 @@ export function NotificationsPanel() {
 
           return (
             <article
-              className="flex items-start justify-between gap-4 rounded-2xl border border-[#e8ebe8] bg-white p-4"
+              className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-x-2.5 gap-y-1 rounded-2xl border border-[#e8ebe8] bg-white p-3 sm:p-4"
               key={id}
             >
-              <div className="flex min-w-0 items-center gap-2.5">
-                <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-[#f1f3f3] text-[#515b60]">
-                  <Icon aria-hidden="true" size={20} strokeWidth={1.5} />
-                </span>
-                <div className="min-w-0">
-                  <h3 className="font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-[#263238]">
-                    {title}
-                  </h3>
-                  <p className="mt-1 max-w-140 font-manrope text-xs leading-4.5 text-[#515b60]">
-                    {description}
-                  </p>
-                </div>
-              </div>
+              <span className="row-span-2 flex size-10 shrink-0 items-center justify-center rounded-lg bg-[#f1f3f3] text-[#515b60]">
+                <Icon aria-hidden="true" size={20} strokeWidth={1.5} />
+              </span>
+              <h3 className="min-w-0 font-nunito text-sm font-medium leading-5 tracking-[-0.176px] text-[#263238] sm:text-base sm:leading-6">
+                {title}
+              </h3>
               <NotificationToggle
                 checked={checked}
                 label={`${checked ? 'Disable' : 'Enable'} ${title} notifications`}
@@ -113,6 +106,9 @@ export function NotificationsPanel() {
                   setNotificationSettings((settings) => ({ ...settings, [id]: !settings[id] }))
                 }
               />
+              <p className="col-start-2 col-end-4 max-w-140 pr-1 font-manrope text-xs leading-4.5 text-[#515b60]">
+                {description}
+              </p>
             </article>
           );
         })}

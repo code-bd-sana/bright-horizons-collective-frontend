@@ -29,7 +29,7 @@ export function SettingsPage() {
   const [activeSection, setActiveSection] = useState<SettingsSection>('account');
 
   return (
-    <section className="-mt-3 mx-auto w-full max-w-343.5 pb-8 text-[#263238]">
+    <section className="mx-auto w-full max-w-343.5 min-w-0 pb-12 text-[#263238] sm:-mt-3 sm:pb-8">
       <header>
         <h1 className="font-nunito text-2xl font-medium leading-8 tracking-[-0.16px] sm:text-[32px] sm:leading-10">
           Settings & Account Management
@@ -39,9 +39,9 @@ export function SettingsPage() {
           legal terms.
         </p>
       </header>
-      <div className="mt-6 grid items-start gap-6 sm:mt-10 xl:grid-cols-[286px_minmax(0,1fr)]">
+      <div className="mt-6 grid min-w-0 items-start gap-6 sm:mt-10 min-[1500px]:grid-cols-[286px_minmax(0,1fr)]">
         <SettingsSidebar activeSection={activeSection} onSectionChange={setActiveSection} />
-        <div>
+        <div className="min-w-0">
           <ActiveSettingsPanel section={activeSection} />
         </div>
       </div>

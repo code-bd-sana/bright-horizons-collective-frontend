@@ -70,7 +70,7 @@ function CurrentPlanCard() {
 function PaymentMethodCard() {
   return (
     <section className="rounded-2xl border border-[#e8ebe8] bg-white p-4 sm:p-8">
-      <h2 className="font-nunito text-2xl font-semibold leading-8 text-[#263238]">
+      <h2 className="font-nunito text-xl font-semibold leading-7 text-[#263238] sm:text-2xl sm:leading-8">
         Payment Method
       </h2>
       <div className="mt-6 h-46 w-full max-w-full rounded-xl bg-[#04342c] px-4 pb-4 pt-8 text-white shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1),0_4px_6px_-4px_rgba(0,0,0,0.1)] sm:mt-8 sm:max-w-85.75">
@@ -106,7 +106,7 @@ function BillingHistoryTable() {
   return (
     <section className="overflow-hidden rounded-xl border border-[#e8ebe8] bg-white">
       <header className="flex items-center justify-between gap-4 border-b border-[#bbcac6] px-4 py-5 sm:px-8 sm:py-8">
-        <h2 className="font-nunito text-2xl font-semibold leading-8 text-[#1a1c1c]">
+        <h2 className="font-nunito text-xl font-semibold leading-7 text-[#1a1c1c] sm:text-2xl sm:leading-8">
           Billing History
         </h2>
         <button
@@ -117,7 +117,7 @@ function BillingHistoryTable() {
           Export All
         </button>
       </header>
-      <div className="divide-y divide-[#e8ebe8] md:hidden">
+      <div className="divide-y divide-[#e8ebe8] min-[1500px]:hidden">
         {billingHistory.map(([date, plan, amount]) => (
           <article className="space-y-4 px-4 py-5" key={date}>
             <div className="flex items-start justify-between gap-4">
@@ -149,7 +149,7 @@ function BillingHistoryTable() {
           </article>
         ))}
       </div>
-      <div className="hidden overflow-x-auto md:block">
+      <div className="hidden overflow-x-auto min-[1500px]:block">
         <table className="min-w-205 w-full border-collapse text-left">
           <thead className="bg-[#e8ebe8] font-nunito text-sm font-semibold leading-5 tracking-[-0.084px] text-[#515b60]">
             <tr>
