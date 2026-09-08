@@ -27,6 +27,7 @@ type ExploreCardProps = {
   className?: string;
   saving?: boolean;
   onSavedChange?: (item: ExploreCardItem, saved: boolean) => void;
+  onOpenTherapyToy?: () => void;
 };
 
 type RecipeCardProps<T extends ExploreCardItem> = Omit<ExploreCardProps, 'item'> & { item: T };
@@ -215,6 +216,7 @@ function TherapyToyCard({
   className,
   saving,
   onSavedChange,
+  onOpenTherapyToy,
 }: RecipeCardProps<TherapyToyExploreItem>) {
   return (
     <UniversalCard
@@ -266,8 +268,9 @@ function TherapyToyCard({
             ))}
           </div>
         </div>
-        <Link
-          href={item.href}
+        <button
+          type="button"
+          onClick={onOpenTherapyToy}
           className="inline-flex w-fit max-w-full items-center gap-1 rounded-[10px] p-2.5 font-manrope text-base font-semibold leading-6.75 tracking-[-0.24px] text-[#f2b59f] outline-none focus-visible:ring-2 focus-visible:ring-white"
         >
           See Why We Recommend It
@@ -282,7 +285,7 @@ function TherapyToyCard({
             height={20}
             className="shrink-0"
           />
-        </Link>
+        </button>
       </UniversalCardBody>
     </UniversalCard>
   );

@@ -6,6 +6,7 @@ import { Check, ChevronDown } from 'lucide-react';
 import { FormEvent, useEffect, useRef, useState } from 'react';
 
 import { ExploreCard } from '@/components/dashboard/explore/explore-card';
+import { TherapyToyModal } from '@/components/explore/therapy-toy-modal';
 import { useExploreCatalog } from '@/features/explore/hooks/use-explore-catalog';
 import { figmaExploreUiAssets } from '@/features/explore/data/figma-explore-assets';
 import {
@@ -179,11 +180,13 @@ function CardsGrid({
   columns = 4,
   savingItemId,
   onSavedChange,
+  onOpenTherapyToy,
 }: {
   items: ExploreItem[];
   columns?: 3 | 4;
   savingItemId: string | null;
   onSavedChange: (item: ExploreCardItem, saved: boolean) => void;
+  onOpenTherapyToy?: () => void;
 }) {
   return (
     <div
@@ -198,6 +201,7 @@ function CardsGrid({
           item={item}
           saving={savingItemId === item.id}
           onSavedChange={onSavedChange}
+          onOpenTherapyToy={onOpenTherapyToy}
         />
       ))}
     </div>
@@ -211,6 +215,7 @@ function SavedPanel({
   className,
   savingItemId,
   onSavedChange,
+  onOpenTherapyToy,
 }: {
   title: string;
   items: ExploreItem[];
@@ -218,6 +223,7 @@ function SavedPanel({
   className?: string;
   savingItemId: string | null;
   onSavedChange: (item: ExploreCardItem, saved: boolean) => void;
+  onOpenTherapyToy?: () => void;
 }) {
   return (
     <section
@@ -235,6 +241,7 @@ function SavedPanel({
           columns={columns}
           savingItemId={savingItemId}
           onSavedChange={onSavedChange}
+          onOpenTherapyToy={onOpenTherapyToy}
         />
       ) : (
         <p className="font-manrope text-sm leading-6 text-[#7d8488]">
@@ -312,10 +319,12 @@ function TherapyToyColumns({
   items,
   savingItemId,
   onSavedChange,
+  onOpenTherapyToy,
 }: {
   items: ExploreItem[];
   savingItemId: string | null;
   onSavedChange: (item: ExploreCardItem, saved: boolean) => void;
+  onOpenTherapyToy: () => void;
 }) {
   return (
     <div className="columns-1 gap-6 sm:columns-2 2xl:columns-3">
@@ -325,6 +334,7 @@ function TherapyToyColumns({
             item={item}
             saving={savingItemId === item.id}
             onSavedChange={onSavedChange}
+            onOpenTherapyToy={onOpenTherapyToy}
           />
         </div>
       ))}
@@ -333,6 +343,7 @@ function TherapyToyColumns({
 }
 
 export function DashboardExplorePage({ initialTab }: { initialTab: ExploreTab }) {
+  const [isToyModalOpen, setToyModalOpen] = useState(false);
   const [filters, setFilters] = useState<ExploreFilters>(() => ({
     ...emptyExploreFilters,
     age: [],
@@ -430,6 +441,7 @@ export function DashboardExplorePage({ initialTab }: { initialTab: ExploreTab })
             items={data.items}
             savingItemId={savingItemId}
             onSavedChange={handleSavedChange}
+            onOpenTherapyToy={() => setToyModalOpen(true)}
           />
         ) : (
           <CardsGrid
@@ -488,8 +500,11 @@ export function DashboardExplorePage({ initialTab }: { initialTab: ExploreTab })
           className="mt-12 sm:mt-16 2xl:mt-24"
           savingItemId={savingItemId}
           onSavedChange={handleSavedChange}
+          onOpenTherapyToy={() => setToyModalOpen(true)}
         />
       ) : null}
+
+      <TherapyToyModal isOpen={isToyModalOpen} onClose={setToyModalOpen} />
     </div>
   );
 }
