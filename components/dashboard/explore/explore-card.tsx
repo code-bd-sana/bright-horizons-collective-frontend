@@ -42,7 +42,7 @@ function ActivityCard({
     <UniversalCard
       recipe="activity"
       state={item.highlighted ? 'highlighted' : item.saved ? 'saved' : 'default'}
-      className={className}
+      className={cn('cursor-pointer', className)}
     >
       <UniversalCardMedia recipe="activity">
         <UniversalCardArtwork
@@ -54,7 +54,7 @@ function ActivityCard({
           frameClassName="left-1/2 top-[-172px] h-[516px] w-[344px] -translate-x-1/2"
           sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
         />
-        <UniversalCardOverlay>
+        <UniversalCardOverlay className="pointer-events-none z-30">
           <UniversalCardBadge tone="activity">{item.badge}</UniversalCardBadge>
           <UniversalCardSaveButton
             label={item.title}
@@ -63,6 +63,7 @@ function ActivityCard({
             onSavedChange={(saved) => onSavedChange?.(item, saved)}
             iconSrc={figmaExploreUiAssets.activity.bookmark}
             savedIconSrc={figmaExploreUiAssets.activity.bookmarkSaved}
+            className="pointer-events-auto"
           />
         </UniversalCardOverlay>
       </UniversalCardMedia>
@@ -94,6 +95,11 @@ function ActivityCard({
           </div>
         </div>
       </UniversalCardBody>
+      <Link
+        href={item.href}
+        aria-label={`View ${item.title}`}
+        className="absolute inset-0 z-20 rounded-3xl outline-none focus-visible:ring-2 focus-visible:ring-(--explore-primary) focus-visible:ring-inset"
+      />
     </UniversalCard>
   );
 }

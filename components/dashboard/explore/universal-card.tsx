@@ -232,6 +232,7 @@ function UniversalCardSaveButton({
         className
       )}
       onClick={(event) => {
+        event.stopPropagation();
         onClick?.(event);
         if (!event.defaultPrevented) onSavedChange?.(!saved);
       }}
