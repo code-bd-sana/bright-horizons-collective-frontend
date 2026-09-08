@@ -141,7 +141,7 @@ function ThreadList({
 function DateSeparator({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex w-full justify-center">
-      <span className="rounded-full bg-[#eeeeee] px-4 pb-[4.5px] pt-0.75 font-manrope text-[11px] font-medium leading-[15px] tracking-[0.22px] text-[#515b60]">
+      <span className="rounded-full bg-[#eeeeee] px-4 pb-[4.5px] pt-0.75 font-manrope text-[11px] font-medium leading-3.75 tracking-[0.22px] text-[#515b60]">
         {children}
       </span>
     </div>
@@ -152,7 +152,7 @@ function ReceivedMessage({ children, time }: { children: React.ReactNode; time: 
   return (
     <div className="flex items-start gap-3 sm:gap-5">
       <Avatar initial="J" size="small" />
-      <div className="flex min-w-0 max-w-112 flex-1 flex-col items-start gap-1">
+      <div className="flex min-w-0 max-w-md flex-1 flex-col items-start gap-1">
         <div className="rounded-bl-2xl rounded-br-2xl rounded-tr-2xl border border-[#e8ebe8] bg-white px-4 py-3 font-manrope text-sm leading-6 tracking-[-0.176px] text-[#272f3a] sm:text-base">
           {children}
         </div>
@@ -165,7 +165,7 @@ function ReceivedMessage({ children, time }: { children: React.ReactNode; time: 
 function SentBubble({ children, time }: { children: React.ReactNode; time: string }) {
   return (
     <div className="flex w-full justify-end">
-      <div className="flex max-w-[85%] min-w-0 flex-col items-end gap-1 sm:max-w-112">
+      <div className="flex max-w-[85%] min-w-0 flex-col items-end gap-1 sm:max-w-md">
         <div className="rounded-bl-2xl rounded-tl-2xl rounded-tr-2xl bg-[#d5e5e5] px-4 py-3 font-manrope text-sm leading-6 tracking-[-0.176px] text-[#272f3a] sm:text-base">
           {children}
         </div>
@@ -320,7 +320,7 @@ function Conversation({
           <span className="relative">
             <Avatar initial={thread.initial} tone={thread.tone} />
             <span
-              className="absolute bottom-[3px] right-0 size-2.5 rounded-full border-2 border-white bg-[#22c55e]"
+              className="absolute bottom-0.75 right-0 size-2.5 rounded-full border-2 border-white bg-[#22c55e]"
               aria-label="Online"
             />
           </span>
@@ -328,7 +328,7 @@ function Conversation({
             <span className="truncate font-nunito font-semibold leading-5 text-[#263238]">
               {thread.name}
             </span>
-            <span className="font-manrope leading-[22px] text-[#7d8488]">Active Now</span>
+            <span className="font-manrope leading-5.5 text-[#7d8488]">Active Now</span>
           </span>
         </header>
 
@@ -344,7 +344,7 @@ function Conversation({
           </SentBubble>
           <div className="flex items-start gap-3 sm:gap-5">
             <Avatar initial="J" size="small" />
-            <div className="flex min-w-0 max-w-112 flex-1 flex-col items-start gap-1">
+            <div className="flex min-w-0 max-w-md flex-1 flex-col items-start gap-1">
               <div className="rounded-bl-2xl rounded-br-2xl rounded-tr-2xl border border-[#e8ebe8] bg-white px-4 py-3 font-manrope text-sm leading-6 tracking-[-0.176px] text-[#272f3a] sm:text-base">
                 That&apos;s great progress! 12 minutes is a significant improvement in focus. For
                 the smaller blocks, try using the “Hand-over Hand” technique I&apos;ve outlined in
@@ -384,7 +384,7 @@ export function MessagesPage() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-320 min-w-0">
+    <div className="mx-auto w-full max-w-7xl min-w-0">
       <div className="grid min-w-0 items-stretch gap-6 xl:grid-cols-[minmax(280px,368px)_minmax(0,1fr)] min-[1800px]:grid-cols-[408px_848px]">
         <ThreadList
           activeId={activeThread.id}
