@@ -6,46 +6,44 @@ const yogaMask = '/Home/figma-parent-dashboard-star-mask.svg';
 
 export function TodayActivityCard() {
   return (
-    <section className="flex min-h-0 flex-col rounded-[16px] border border-[#e8ebe8] bg-[#fffdf8] p-4 shadow-[0_1px_2px_rgba(0,0,0,0.05)] sm:p-6 lg:min-h-[699px] lg:gap-6 lg:p-8">
-      <div className="flex flex-col gap-6">
-        <h2 className="font-nunito text-2xl font-medium leading-8 text-[#263238]">
+    <section className="flex min-h-0 min-w-0 flex-col rounded-2xl border border-[#e8ebe8] bg-[#fffdf8] p-4 shadow-[0_1px_2px_rgba(0,0,0,0.05)] sm:p-6 min-[1800px]:min-h-174.75 min-[1800px]:p-8">
+      <div className="flex flex-col gap-5 sm:gap-6">
+        <h2 className="font-nunito text-xl font-medium leading-7 text-[#263238] sm:text-2xl sm:leading-8">
           Today&apos;s Activity
         </h2>
 
         <div className="flex flex-col gap-6">
-          <div className="relative h-[260px] w-full overflow-hidden rounded-2xl bg-[#d2e3dc] sm:h-[329px]">
-            <div className="absolute left-[calc(50%-0.21px)] top-1/2 h-[323px] w-[330.57px] -translate-x-1/2 -translate-y-1/2">
-              <div
-                className="absolute -left-[11.36px] -top-[131.22px] h-[612.357px] w-[360.603px]"
-                style={{
-                  WebkitMaskImage: `url(${yogaMask})`,
-                  maskImage: `url(${yogaMask})`,
-                  WebkitMaskPosition: '14.157px 138.729px',
-                  maskPosition: '14.157px 138.729px',
-                  WebkitMaskRepeat: 'no-repeat',
-                  maskRepeat: 'no-repeat',
-                  WebkitMaskSize: '322.443px 309.926px',
-                  maskSize: '322.443px 309.926px',
-                }}
-              >
-                <Image
-                  src="/Home/figma-parent-dashboard-yoga.png"
-                  alt="Panda practicing an animal yoga pose"
-                  fill
-                  sizes="361px"
-                  className="object-cover"
-                />
-              </div>
+          <div className="relative aspect-[322.443/309.925] w-full max-h-82.25 overflow-hidden rounded-2xl bg-[#d2e3dc]">
+            <div
+              className="absolute inset-2 sm:inset-2.5"
+              style={{
+                WebkitMaskImage: `url(${yogaMask})`,
+                maskImage: `url(${yogaMask})`,
+                WebkitMaskPosition: 'center',
+                maskPosition: 'center',
+                WebkitMaskRepeat: 'no-repeat',
+                maskRepeat: 'no-repeat',
+                WebkitMaskSize: 'contain',
+                maskSize: 'contain',
+              }}
+            >
+              <Image
+                src="/Home/figma-parent-dashboard-yoga.png"
+                alt="Panda practicing an animal yoga pose"
+                fill
+                sizes="(max-width: 639px) calc(100vw - 64px), 560px"
+                className="object-cover"
+              />
             </div>
           </div>
 
           <div className="flex flex-col gap-3">
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex flex-col gap-1">
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0 flex flex-col gap-1">
                 <p className="font-nunito text-xs font-medium leading-4 text-[#2f7d7e]">
                   Wed, Jul 20
                 </p>
-                <h3 className="font-nunito text-[24px] font-medium leading-8 text-[#263238]">
+                <h3 className="font-nunito text-xl font-medium leading-7 text-[#263238] sm:text-2xl sm:leading-8">
                   Animal Yoga Adventure
                 </h3>
               </div>
@@ -54,7 +52,7 @@ export function TodayActivityCard() {
               </span>
             </div>
 
-            <p className="max-w-[489px] font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#515b60]">
+            <p className="max-w-122.25 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#515b60]">
               Move through fun animal poses to build balance and whole-body motor planning. Perfect
               for an energetic start to the week.
             </p>
@@ -78,10 +76,10 @@ export function TodayActivityCard() {
 
         <Link
           href="/explore/activities/animal-yoga-adventure"
-          className="flex h-10 w-full items-center justify-center gap-1 rounded-full bg-[#2f7d7e] px-3 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-white shadow-[inset_0_-6px_2px_rgba(255,255,255,0.07)] transition-colors hover:bg-[#235d5d]"
+          className="flex min-h-11 w-full items-center justify-center gap-1 rounded-full bg-[#2f7d7e] px-3 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-white shadow-[inset_0_-6px_2px_rgba(255,255,255,0.07)] transition-colors hover:bg-[#235d5d]"
         >
           Start Activity
-          <ArrowRight className="size-4 stroke-[2]" />
+          <ArrowRight className="size-4 stroke-2" />
         </Link>
       </div>
     </section>
