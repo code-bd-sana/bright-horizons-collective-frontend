@@ -39,7 +39,7 @@ export function PastWeeklyPlans() {
           Weekly Plans
         </h2>
         <Link
-          href="/dashboard/weekly-plans/history"
+          href="/dashboard/weekly-plans/all"
           className="flex min-w-16 items-center justify-center overflow-hidden rounded-full border border-[#d8ddd9] px-2 py-1.5 transition-colors hover:bg-[#f6fbfa]"
         >
           <span className="px-1 font-nunito text-[16px] font-medium leading-6 tracking-[-0.176px] text-[#2f7d7e]">

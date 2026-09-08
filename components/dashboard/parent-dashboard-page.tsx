@@ -393,7 +393,7 @@ function WeeklyPlanCard() {
       </div>
 
       <div className="mt-6">
-        <ArrowLink href="/dashboard/weekly-plans/view" full>
+        <ArrowLink href="/dashboard/weekly-plans" full>
           View Full Weekly Plan
         </ArrowLink>
       </div>

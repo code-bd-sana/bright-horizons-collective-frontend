@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import { Clock3 } from 'lucide-react';
 
 const activityMask = '/Home/figma-parent-dashboard-activity-mask.svg';
@@ -110,6 +111,42 @@ export function WeeklyCalendar({ title = 'Weekly Calendar' }: WeeklyCalendarProp
                       'border-t border-r border-b border-l-[3px] border-[#e9f1ee] border-solid';
                   }
 
+                  const actionClassName =
+                    'relative col-start-2 flex min-h-10 w-full min-w-20 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#d2e3dc] px-3 py-2 sm:col-start-4 sm:row-start-1 sm:min-h-0 sm:w-auto';
+
+                  const actionContent = (
+                    <>
+                      {activity.status === 'completed' && (
+                        <span
+                          aria-hidden="true"
+                          className="pointer-events-none absolute inset-0 rounded-full bg-[#bcd5cb]"
+                        />
+                      )}
+                      {activity.status === 'current' && (
+                        <span
+                          aria-hidden="true"
+                          className="pointer-events-none absolute inset-0 rounded-full bg-[#2f7d7e]"
+                        />
+                      )}
+
+                      <span
+                        className={`relative shrink-0 whitespace-nowrap px-1 font-nunito text-[14px] font-medium leading-5 tracking-[-0.084px] ${
+                          activity.status === 'current' ? 'text-white' : 'text-[#263238]'
+                        }`}
+                      >
+                        {activity.status === 'completed'
+                          ? 'Completed'
+                          : activity.status === 'current'
+                            ? 'Continue'
+                            : 'Start Activity'}
+                      </span>
+
+                      {activity.status === 'completed' && (
+                        <span className="pointer-events-none absolute inset-0 rounded-full shadow-[inset_0px_-6px_2px_0px_rgba(255,255,255,0.07)]" />
+                      )}
+                    </>
+                  );
+
                   return (
                     <article
                       key={index}
@@ -194,38 +231,16 @@ export function WeeklyCalendar({ title = 'Weekly Calendar' }: WeeklyCalendarProp
                         </div>
                       </div>
                       {/* Action Button */}
-                      <div className="relative col-start-2 flex min-h-10 w-full min-w-20 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#d2e3dc] px-3 py-2 sm:col-start-4 sm:row-start-1 sm:min-h-0 sm:w-auto">
-                        {activity.status === 'completed' && (
-                          <div
-                            aria-hidden
-                            className="absolute inset-0 pointer-events-none rounded-[9999px] bg-[#bcd5cb]"
-                          />
-                        )}
-                        {activity.status === 'current' && (
-                          <div
-                            aria-hidden
-                            className="absolute inset-0 pointer-events-none rounded-[9999px] bg-[#2f7d7e]"
-                          />
-                        )}
-
-                        <div className="flex shrink-0 items-start px-1 py-0 relative">
-                          <p
-                            className={`shrink-0 whitespace-nowrap font-nunito text-[14px] font-medium leading-5 tracking-[-0.084px] ${
-                              activity.status === 'current' ? 'text-white' : 'text-[#263238]'
-                            }`}
-                          >
-                            {activity.status === 'completed'
-                              ? 'Completed'
-                              : activity.status === 'current'
-                                ? 'Continue'
-                                : 'Start Activity'}
-                          </p>
-                        </div>
-
-                        {activity.status === 'completed' && (
-                          <div className="absolute inset-0 pointer-events-none rounded-[inherit] shadow-[inset_0px_-6px_2px_0px_rgba(255,255,255,0.07)]" />
-                        )}
-                      </div>
+                      {activity.status === 'completed' ? (
+                        <div className={actionClassName}>{actionContent}</div>
+                      ) : (
+                        <Link
+                          href="/dashboard/weekly-plans/activity-detail"
+                          className={actionClassName}
+                        >
+                          {actionContent}
+                        </Link>
+                      )}
                     </article>
                   );
                 })}

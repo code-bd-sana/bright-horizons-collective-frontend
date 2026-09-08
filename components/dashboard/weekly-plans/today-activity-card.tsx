@@ -75,7 +75,7 @@ export function TodayActivityCard() {
         </div>
 
         <Link
-          href="/explore/activities/animal-yoga-adventure"
+          href="/dashboard/weekly-plans/activity-detail"
           className="flex min-h-11 w-full items-center justify-center gap-1 rounded-full bg-[#2f7d7e] px-3 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-white shadow-[inset_0_-6px_2px_rgba(255,255,255,0.07)] transition-colors hover:bg-[#235d5d]"
         >
           Start Activity
