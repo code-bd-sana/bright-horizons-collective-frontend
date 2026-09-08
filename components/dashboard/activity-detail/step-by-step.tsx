@@ -67,46 +67,46 @@ export function StepByStepInstructions() {
   };
 
   return (
-    <div className="flex w-full flex-col rounded-[16px] border border-[#fafafa] bg-white p-4 shadow-[0px_1px_1px_rgba(0,0,0,0.05)] sm:p-6 lg:p-8">
-      <div className="flex flex-col gap-[24px] w-full">
-        <div className="flex items-start justify-between gap-4 w-full">
-          <h2 className="font-['Nunito'] font-medium text-[24px] leading-[32px] text-[#263238]">
+    <div className="flex w-full flex-col rounded-2xl border border-[#fafafa] bg-white p-4 shadow-[0_1px_1px_rgba(0,0,0,0.05)] sm:p-6 2xl:p-8">
+      <div className="flex w-full flex-col gap-6">
+        <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+          <h2 className="font-nunito text-2xl font-medium leading-8 text-[#263238]">
             Step-by-Step Instructions
           </h2>
-          <p className="w-[124px] font-['Nunito'] text-[12px] font-medium leading-[16px] text-[#2f7d7e]">
+          <p className="font-nunito text-xs font-medium leading-4 whitespace-nowrap text-[#2f7d7e] sm:w-31">
             7 steps · tap to expand
           </p>
         </div>
 
-        <div className="flex flex-col gap-[20px] w-full">
+        <div className="flex w-full flex-col gap-5">
           {stepsState.map((step, idx) => (
             <button
               type="button"
               key={idx}
               onClick={() => toggleStep(idx)}
-              className={`bg-[var(--bg\/-white,white)] border ${step.isOpen ? 'border-[#dceeee] shadow-[0px_1px_1.5px_rgba(0,0,0,0.1),0px_1px_1px_rgba(0,0,0,0.1)]' : 'border-[var(--border\/300,#e8ebe8)]'} flex w-full flex-col gap-[10px] rounded-[16px] p-4 text-left transition-all duration-200 sm:p-5`}
+              className={`border bg-(--bg\/-white,white) ${step.isOpen ? 'border-[#dceeee] shadow-[0_1px_1.5px_rgba(0,0,0,0.1),0_1px_1px_rgba(0,0,0,0.1)]' : 'border-(--border\/300,#e8ebe8)'} flex w-full flex-col gap-2.5 rounded-2xl p-4 text-left transition-all duration-200 sm:p-5`}
             >
-              <div className="flex items-center justify-between w-full">
-                <div className="flex items-center gap-[12px]">
-                  <div className="bg-[#dceeee] rounded-[15px] w-[24px] h-[24px] flex items-center justify-center shrink-0">
-                    <p className="font-['Nunito'] font-medium text-[14px] leading-[20px] text-[#174a4d] tracking-[-0.084px]">
+              <div className="flex w-full items-center justify-between gap-2">
+                <div className="flex min-w-0 items-center gap-3">
+                  <div className="flex size-6 shrink-0 items-center justify-center rounded-[15px] bg-[#dceeee]">
+                    <p className="font-nunito text-sm font-medium leading-5 tracking-[-0.084px] text-[#174a4d]">
                       {step.num}
                     </p>
                   </div>
-                  <p className="font-['Nunito'] font-medium text-[18px] leading-[24px] text-[#263238] tracking-[-0.27px]">
+                  <p className="min-w-0 font-nunito text-base font-medium leading-6 tracking-[-0.27px] text-[#263238] sm:text-lg">
                     {step.title}
                   </p>
                 </div>
                 <div
                   className={`flex items-center justify-center shrink-0 transition-transform duration-200 ${step.isOpen ? 'rotate-180' : ''}`}
                 >
-                  <div className="w-[24px] h-[24px] rounded-[6px] flex items-center justify-center p-[2px]">
+                  <div className="flex size-6 items-center justify-center rounded-md p-0.5">
                     <Image src={imgVector} alt="Chevron" width={16} height={16} />
                   </div>
                 </div>
               </div>
               {step.isOpen && step.description && (
-                <p className="font-['Manrope'] font-normal text-[14px] leading-[22px] text-[color:var(--text-primary\/400,#515b60)] tracking-[-0.084px] w-full">
+                <p className="w-full font-manrope text-sm leading-5.5 tracking-[-0.084px] text-(--text-primary\/400,#515b60)">
                   {step.description}
                 </p>
               )}

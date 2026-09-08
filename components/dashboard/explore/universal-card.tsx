@@ -7,16 +7,16 @@ import * as React from 'react';
 import { cn } from '@/lib/utils';
 
 const universalCardVariants = cva(
-  'group/universal-card relative overflow-hidden rounded-[24px] border bg-[var(--explore-surface)] text-[var(--explore-text-primary)]',
+  'group/universal-card relative overflow-hidden rounded-3xl border bg-[var(--explore-surface)] text-[var(--explore-text-primary)]',
   {
     variants: {
       recipe: {
-        activity: 'h-[434px] w-full',
-        resource: 'h-[428px] w-full',
+        activity: 'h-108.5 w-full',
+        resource: 'h-107 w-full',
         printable:
-          'flex min-h-[274px] w-full items-center gap-6 max-[700px]:flex-col max-[700px]:items-stretch max-[700px]:gap-0',
+          'flex min-h-68.5 w-full items-center gap-6 max-[700px]:flex-col max-[700px]:items-stretch max-[700px]:gap-0',
         therapyToy:
-          'h-[540px] w-full rounded-[16px] border-[#edeef0] shadow-[0_2px_4px_1px_rgba(198,202,209,0.1),0_2px_16px_rgba(198,202,209,0.22)]',
+          'w-full rounded-2xl border-[#edeef0] shadow-[0_2px_4px_1px_rgba(198,202,209,0.1),0_2px_16px_rgba(198,202,209,0.22)]',
         custom: 'w-full',
       },
       state: {
@@ -34,14 +34,14 @@ const universalCardVariants = cva(
   }
 );
 
-const universalCardMediaVariants = cva('relative shrink-0 overflow-hidden rounded-[24px]', {
+const universalCardMediaVariants = cva('relative shrink-0 overflow-hidden rounded-3xl', {
   variants: {
     recipe: {
-      activity: 'absolute -left-px -right-px -top-px h-[286px] bg-[var(--explore-activity-media)]',
-      resource: 'absolute -left-px -right-px -top-px h-[274px] bg-[var(--explore-resource-media)]',
+      activity: 'absolute -left-px -right-px -top-px h-71.5 bg-[var(--explore-activity-media)]',
+      resource: 'absolute -left-px -right-px -top-px h-68.5 bg-[var(--explore-resource-media)]',
       printable:
-        'h-[274px] w-[42%] max-w-[259px] bg-[var(--explore-printable-media)] max-[700px]:w-full max-[700px]:max-w-none',
-      therapyToy: 'absolute inset-0 rounded-[16px]',
+        'h-68.5 w-[42%] max-w-[259px] bg-[var(--explore-printable-media)] max-[700px]:w-full max-[700px]:max-w-none',
+      therapyToy: 'absolute inset-0 rounded-2xl',
       custom: 'w-full',
     },
   },
@@ -194,8 +194,8 @@ function UniversalCardBadge({ tone = 'surface', className, ...props }: Universal
     <span
       data-slot="universal-card-badge"
       className={cn(
-        'inline-flex min-h-[22px] items-center rounded-full px-2.5 py-[3px] font-nunito text-xs font-medium leading-4 whitespace-nowrap text-[#174a4d]',
-        tone === 'activity' ? 'bg-[var(--explore-accent-soft)]' : 'bg-white',
+        'inline-flex min-h-5.5 items-center rounded-full px-2.5 py-0.75 font-nunito text-xs font-medium leading-4 whitespace-nowrap text-[#174a4d]',
+        tone === 'activity' ? 'bg-(--explore-accent-soft)' : 'bg-white',
         className
       )}
       {...props}
@@ -228,7 +228,7 @@ function UniversalCardSaveButton({
       aria-pressed={saved}
       data-slot="universal-card-save"
       className={cn(
-        'flex size-6 shrink-0 items-center justify-center rounded-full bg-white/90 shadow-[0_1px_4px_rgba(0,0,0,0.12)] outline-none focus-visible:ring-2 focus-visible:ring-[var(--explore-primary)] focus-visible:ring-offset-2',
+        'flex size-9 shrink-0 items-center justify-center rounded-full bg-white/90 shadow-[0_1px_4px_rgba(0,0,0,0.12)] outline-none focus-visible:ring-2 focus-visible:ring-(--explore-primary) focus-visible:ring-offset-2 sm:size-8',
         className
       )}
       onClick={(event) => {

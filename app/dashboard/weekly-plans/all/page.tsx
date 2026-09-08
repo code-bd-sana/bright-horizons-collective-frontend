@@ -126,28 +126,28 @@ export default function AllWeeklyPlansPage() {
   ];
 
   return (
-    <div className="flex min-h-screen w-full flex-col items-center pb-[100px]">
-      <div className="flex w-full max-w-[1529px] flex-col gap-10 lg:gap-14">
+    <div className="flex min-h-screen w-full flex-col items-center pb-25">
+      <div className="flex w-full max-w-382.25 flex-col gap-10 lg:gap-14">
         {/* Top Breadcrumb & Header */}
         <div className="flex flex-col gap-10">
-          <div className="flex items-center gap-[8px]">
+          <div className="flex items-center gap-2">
             <Link
               href="/dashboard/weekly-plans"
-              className="font-['Nunito'] font-medium text-[12px] leading-[16px] text-[#2f7d7e]"
+              className="font-['Nunito'] font-medium text-[12px] leading-4 text-[#2f7d7e]"
             >
               Weekly Plans
             </Link>
-            <span className="font-['Nunito'] font-medium text-[12px] leading-[16px] text-[color:var(--text-primary\/200,#8f9b99)]">
+            <span className="font-['Nunito'] font-medium text-[12px] leading-4 text-(--text-primary\/200,#8f9b99)">
               /
             </span>
-            <span className="font-['Nunito'] font-medium text-[12px] leading-[16px] text-[#263238]">
+            <span className="font-['Nunito'] font-medium text-[12px] leading-4 text-[#263238]">
               All Weekly Plans
             </span>
           </div>
           <AllPlansHeader />
         </div>
 
-        <div className="flex w-full flex-col gap-4 rounded-[16px] border border-[#e8ebe8] bg-white p-4 sm:p-6 lg:gap-6 lg:p-[32px]">
+        <div className="flex w-full flex-col gap-4 rounded-[16px] border border-[#e8ebe8] bg-white p-4 sm:p-6 lg:gap-6 lg:p-8">
           <PlanSection title="Current Weeks">
             {currentWeeks.map((plan) => (
               <PlanCard
@@ -165,7 +165,7 @@ export default function AllWeeklyPlansPage() {
           </PlanSection>
         </div>
 
-        <div className="flex w-full flex-col gap-4 rounded-[16px] border border-[#e8ebe8] p-4 sm:p-6 lg:gap-6 lg:p-[32px]">
+        <div className="flex w-full flex-col gap-4 rounded-[16px] border border-[#e8ebe8] p-4 sm:p-6 lg:gap-6 lg:p-8">
           <PlanSection title="Upcoming Weeks">
             {upcomingWeeks.map((plan) => (
               <PlanCard
@@ -183,7 +183,7 @@ export default function AllWeeklyPlansPage() {
           </PlanSection>
         </div>
 
-        <div className="flex w-full flex-col gap-4 rounded-[16px] border border-[#e8ebe8] p-4 sm:p-6 lg:gap-6 lg:p-[32px]">
+        <div className="flex w-full flex-col gap-4 rounded-[16px] border border-[#e8ebe8] p-4 sm:p-6 lg:gap-6 lg:p-8">
           <PlanSection title="Previous Weekly Plan">
             {previousWeeks.map((plan) => (
               <PlanCard
