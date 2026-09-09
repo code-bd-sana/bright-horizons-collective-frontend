@@ -37,7 +37,7 @@ export function AddResourceBasicInfo() {
   }
 
   return (
-    <section className="mx-auto w-full max-w-231.5 pb-8 pt-6 text-[#263238] lg:pt-0">
+    <section className="mx-auto w-full min-w-0 max-w-231.5 pb-8 pt-6 text-[#263238] lg:pt-0 2xl:pt-0">
       <Link
         href="/dashboard/admin/parent-resources"
         className="inline-flex items-center gap-1.5 font-manrope text-sm font-medium leading-5 text-[#607d8b]"
@@ -68,7 +68,7 @@ export function AddResourceBasicInfo() {
       >
         {(form) => (
           <>
-            <section className="mt-5 rounded-2xl border border-[#e7eceb] bg-white p-5 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:p-6.25">
+            <section className="mt-5 rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:p-5 2xl:p-6.25">
               <h2 className="font-nunito text-xl font-bold leading-6.75">1. Basic Info</h2>
 
               <div className="mt-5 space-y-5">
@@ -107,7 +107,7 @@ export function AddResourceBasicInfo() {
                   )}
                 </label>
 
-                <div className="grid max-w-179.5 gap-5 md:grid-cols-2">
+                <div className="grid max-w-179.5 gap-5 md:grid-cols-2 2xl:grid-cols-2">
                   <label className="block">
                     <span className="font-manrope text-sm font-semibold leading-5">Category *</span>
                     <span className="relative mt-1.5 block">
@@ -141,7 +141,7 @@ export function AddResourceBasicInfo() {
                     <legend className="font-manrope text-sm font-semibold leading-5">
                       Resource Type *
                     </legend>
-                    <div className="mt-1.5 grid grid-cols-3 gap-2">
+                    <div className="mt-1.5 grid gap-2 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-3">
                       {resourceTypes.map((type) => {
                         const selected = form.watch('resourceType') === type;
                         return (
@@ -164,7 +164,7 @@ export function AddResourceBasicInfo() {
                   </fieldset>
                 </div>
 
-                <div className="grid max-w-179.5 gap-5 md:grid-cols-2">
+                <div className="grid max-w-179.5 gap-5 md:grid-cols-2 2xl:grid-cols-2">
                   <label className="block">
                     <span className="font-manrope text-sm font-semibold leading-5">Author</span>
                     <input {...form.register('author')} className={`mt-1.5 ${inputClassName}`} />
@@ -183,9 +183,11 @@ export function AddResourceBasicInfo() {
 
                 <label className="block">
                   <span className="font-manrope text-sm font-semibold leading-5">Cover Image</span>
-                  <span className="mt-1.5 flex h-14 cursor-pointer items-center gap-3 rounded-[14px] border border-dashed border-[#c8d3d1] px-4.5 font-manrope text-sm leading-5 text-[#607d8b] hover:bg-[#f8fbfa]">
-                    <ImageUp aria-hidden="true" size={18} strokeWidth={1.7} />
-                    {coverImageName || 'Click to upload cover image'}
+                  <span className="mt-1.5 flex h-14 min-w-0 cursor-pointer items-center gap-3 rounded-[14px] border border-dashed border-[#c8d3d1] px-4.5 font-manrope text-sm leading-5 text-[#607d8b] hover:bg-[#f8fbfa]">
+                    <ImageUp aria-hidden="true" className="shrink-0" size={18} strokeWidth={1.7} />
+                    <span className="truncate">
+                      {coverImageName || 'Click to upload cover image'}
+                    </span>
                     <input
                       accept="image/png,image/jpeg,image/webp"
                       className="sr-only"
