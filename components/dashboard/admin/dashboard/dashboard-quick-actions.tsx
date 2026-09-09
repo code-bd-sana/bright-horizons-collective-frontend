@@ -16,12 +16,12 @@ export function DashboardQuickActions() {
       >
         Quick Actions
       </h2>
-      <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-6">
+      <div className="mt-5 grid grid-cols-1 gap-3 min-[400px]:grid-cols-2 sm:gap-5 lg:grid-cols-3 2xl:grid-cols-6">
         {quickActions.map(({ label, href, icon: Icon, tone }) => (
           <Link
             key={label}
             href={href}
-            className="flex h-30 flex-col items-center justify-center gap-3 rounded-2xl border border-[#e3e9e8] bg-white px-3 shadow-[0_4px_8px_rgba(38,50,56,0.05)] transition-colors hover:bg-[#fbfdfc]"
+            className="flex min-h-26 min-w-0 flex-col items-center justify-center gap-3 rounded-2xl border border-[#e3e9e8] bg-white px-3 py-4 shadow-[0_4px_8px_rgba(38,50,56,0.05)] transition-colors hover:bg-[#fbfdfc] 2xl:h-30 2xl:py-0"
           >
             <span
               className={`flex size-12 items-center justify-center rounded-xl ${iconTones[tone]}`}

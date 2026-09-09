@@ -10,12 +10,12 @@ const tones = {
 export function RecentActivity() {
   return (
     <section
-      className="min-h-97.5 rounded-2xl border border-[#e3e9e8] bg-white p-6 shadow-[0_4px_8px_rgba(38,50,56,0.05)] 2xl:min-h-120.5"
+      className="min-w-0 rounded-2xl border border-[#e3e9e8] bg-white p-4 shadow-[0_4px_8px_rgba(38,50,56,0.05)] sm:p-6 2xl:min-h-120.5"
       aria-labelledby="recent-activity-heading"
     >
       <h2
         id="recent-activity-heading"
-        className="font-nunito text-2xl font-medium leading-8 text-[#263238]"
+        className="font-nunito text-xl font-medium leading-7 text-[#263238] sm:text-2xl sm:leading-8"
       >
         Recent Activity
       </h2>
@@ -35,9 +35,9 @@ export function RecentActivity() {
             </span>
             <div className="min-w-0 pt-0.5">
               <p className="font-manrope text-sm leading-5.5 text-[#263238]">{title}</p>
-              <p className="mt-0.5 font-manrope text-xs leading-4.5 text-[#7893a5]">
+              <p className="mt-0.5 flex flex-wrap items-center gap-x-2 font-manrope text-xs leading-4.5 text-[#7893a5]">
                 {actor}
-                <span className="mx-2 text-[#c4d0d4]">·</span>
+                <span className="text-[#c4d0d4]">·</span>
                 {time}
               </p>
             </div>
