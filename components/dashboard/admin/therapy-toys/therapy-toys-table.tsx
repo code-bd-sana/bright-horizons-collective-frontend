@@ -35,15 +35,7 @@ const actions = [
   { label: 'Delete', icon: Trash2 },
 ] as const;
 
-const rowHeights = [
-  'h-[89px]',
-  'h-[89px]',
-  'h-[89px]',
-  'h-[110px]',
-  'h-[110px]',
-  'h-[89px]',
-  'h-[109px]',
-];
+const rowHeights = ['h-22.25', 'h-22.25', 'h-22.25', 'h-27.5', 'h-27.5', 'h-22.25', 'h-27.25'];
 
 function ToyBadge({ children, status = false }: { children: React.ReactNode; status?: boolean }) {
   return (
@@ -63,14 +55,14 @@ function ToyActions({
   onAction: TherapyToysTableProps['onAction'];
 }) {
   return (
-    <div className="flex w-39 items-center gap-1">
+    <div className="grid w-full grid-cols-5 gap-1 2xl:flex 2xl:w-39">
       {actions.map(({ label, icon: Icon }) => (
         <button
           key={label}
           type="button"
           aria-label={`${label} ${toy.title}`}
           onClick={() => onAction(label, toy)}
-          className="flex size-7 items-center justify-center rounded-[10px] text-[#607d8b] transition-colors hover:bg-[#e9f1ee] hover:text-[#2f7d7e]"
+          className="flex h-9 min-w-0 items-center justify-center rounded-[10px] border border-[#e7eceb] text-[#607d8b] transition-colors hover:bg-[#e9f1ee] hover:text-[#2f7d7e] 2xl:size-7 2xl:border-0"
         >
           <Icon aria-hidden="true" size={14} strokeWidth={1.6} />
         </button>
@@ -91,11 +83,14 @@ function ToyCheckbox({ label }: { label: string }) {
 
 export function TherapyToysTable({ toys, onAction }: TherapyToysTableProps) {
   return (
-    <div className="flex flex-col gap-6">
-      <section className="overflow-hidden rounded-2xl border border-[#e7eceb] bg-white shadow-[0_4px_12px_rgba(0,0,0,0.06)]">
-        <div className="divide-y divide-[#e7eceb] lg:hidden">
+    <div className="flex min-w-0 flex-col gap-6">
+      <section className="grid gap-3 xl:grid-cols-2 2xl:block">
+        <div className="contents 2xl:hidden">
           {toys.map((toy) => (
-            <article key={toy.id} className="space-y-4 p-4">
+            <article
+              key={toy.id}
+              className="min-w-0 space-y-4 rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_12px_rgba(0,0,0,0.06)]"
+            >
               <div className="flex items-center gap-3">
                 <span className="flex size-10 shrink-0 items-center justify-center rounded-[14px] bg-[rgba(47,125,126,0.09)]">
                   <Blocks
@@ -126,14 +121,22 @@ export function TherapyToysTable({ toys, onAction }: TherapyToysTableProps) {
                   Updated<span className="mt-1 block text-[#263238]">{toy.updatedAt}</span>
                 </p>
               </div>
-              <div className="flex items-center justify-between gap-3">
-                <ToyBadge status>{toy.status}</ToyBadge>
+              <div className="flex flex-wrap items-center gap-2">
+                <ToyBadge>{toy.membership}</ToyBadge>
+                <ToyBadge status={toy.status === 'Published'}>{toy.status}</ToyBadge>
+              </div>
+              <div className="border-t border-[#e7eceb] pt-3">
                 <ToyActions toy={toy} onAction={onAction} />
               </div>
             </article>
           ))}
+          {toys.length === 0 ? (
+            <p className="rounded-2xl border border-[#e7eceb] bg-white p-8 text-center font-manrope text-sm text-[#607d8b] xl:col-span-2">
+              No therapy toys match these filters.
+            </p>
+          ) : null}
         </div>
-        <div className="hidden lg:block">
+        <div className="hidden overflow-x-auto rounded-2xl border border-[#e7eceb] bg-white shadow-[0_4px_12px_rgba(0,0,0,0.06)] 2xl:block">
           <Table className="min-w-381.75 table-fixed border-collapse">
             <colgroup>
               <col className="w-71" />
@@ -200,16 +203,16 @@ export function TherapyToysTable({ toys, onAction }: TherapyToysTableProps) {
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell className="p-0 font-manrope text-[13px] leading-[19.5px] text-[#607d8b]">
+                  <TableCell className="p-0 font-manrope text-[13px] leading-4.875 text-[#607d8b]">
                     {toy.category}
                   </TableCell>
                   <TableCell className="p-0 align-middle whitespace-normal">
-                    <span className="block w-25 font-manrope text-[13px] leading-[19.5px] text-[#607d8b]">
+                    <span className="block w-25 font-manrope text-[13px] leading-4.875 text-[#607d8b]">
                       {toy.ageRange}
                     </span>
                   </TableCell>
                   <TableCell className="p-0">
-                    <div className="flex items-center gap-1.5 font-manrope text-[13px] leading-[19.5px] text-[#263238]">
+                    <div className="flex items-center gap-1.5 font-manrope text-[13px] leading-4.875 text-[#263238]">
                       <Activity
                         aria-hidden="true"
                         size={13}
@@ -239,9 +242,9 @@ export function TherapyToysTable({ toys, onAction }: TherapyToysTableProps) {
       </section>
       <nav
         aria-label="Therapy toy table pagination"
-        className="flex w-full justify-center lg:justify-end"
+        className="flex w-full max-w-full justify-start overflow-x-auto pb-1 sm:justify-end 2xl:justify-end 2xl:overflow-visible 2xl:pb-0"
       >
-        <div className="flex items-center gap-1">
+        <div className="flex shrink-0 items-center gap-1">
           <button
             type="button"
             disabled

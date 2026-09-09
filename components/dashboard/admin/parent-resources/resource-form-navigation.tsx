@@ -29,8 +29,8 @@ export function ResourceFormNavigation({
   const previousStep = resourceFormSteps.find(({ number }) => number === currentStep - 1);
 
   return (
-    <footer className="mt-5 flex flex-col gap-4 rounded-2xl border border-[#e7eceb] bg-white p-5 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:flex-row sm:items-center sm:justify-between sm:p-5.25">
-      <div className="flex gap-2">
+    <footer className="mt-5 flex flex-col gap-4 rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:flex-row sm:items-center sm:justify-between sm:p-5.25 2xl:flex-row 2xl:items-center 2xl:justify-between 2xl:p-5.25">
+      <div className="grid grid-cols-2 gap-2 sm:flex 2xl:flex">
         {previousStep ? (
           <Link
             href={previousStep.href}
@@ -57,7 +57,7 @@ export function ResourceFormNavigation({
           </button>
         )}
       </div>
-      <div className="flex flex-wrap gap-2 sm:justify-end">
+      <div className="grid gap-2 sm:flex sm:flex-wrap sm:justify-end 2xl:flex 2xl:flex-wrap 2xl:justify-end">
         <button
           type="button"
           onClick={onSaveDraft ?? (() => toast.success('Resource saved as a draft.'))}

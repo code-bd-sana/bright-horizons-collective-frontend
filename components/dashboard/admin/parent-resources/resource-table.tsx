@@ -51,14 +51,14 @@ function ResourceActions({
   onAction: ResourceTableProps['onAction'];
 }) {
   return (
-    <div className="flex items-center gap-1">
+    <div className="grid w-full grid-cols-5 gap-1 2xl:flex 2xl:w-auto">
       {actions.map(({ label, icon: Icon }) => (
         <button
           key={label}
           type="button"
           aria-label={`${label} ${resource.title}`}
           onClick={() => onAction(label, resource)}
-          className="flex size-7 items-center justify-center rounded-[10px] text-[#607d8b] transition-colors hover:bg-[#e9f1ee] hover:text-[#2f7d7e]"
+          className="flex h-9 min-w-0 items-center justify-center rounded-[10px] border border-[#e7eceb] text-[#607d8b] transition-colors hover:bg-[#e9f1ee] hover:text-[#2f7d7e] 2xl:size-7 2xl:border-0"
         >
           <Icon aria-hidden="true" size={14} strokeWidth={1.6} />
         </button>
@@ -79,11 +79,14 @@ function ResourceCheckbox({ label }: { label: string }) {
 
 export function ResourceTable({ resources, onAction }: ResourceTableProps) {
   return (
-    <div className="flex flex-col gap-6">
-      <section className="overflow-hidden rounded-2xl border border-[#e7eceb] bg-white shadow-[0_4px_12px_rgba(0,0,0,0.06)]">
-        <div className="divide-y divide-[#e8ebe8] lg:hidden">
+    <div className="flex min-w-0 flex-col gap-6">
+      <section className="grid gap-3 xl:grid-cols-2 2xl:block">
+        <div className="contents 2xl:hidden">
           {resources.map((resource) => (
-            <article key={resource.id} className="space-y-4 p-4">
+            <article
+              key={resource.id}
+              className="min-w-0 space-y-4 rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_12px_rgba(0,0,0,0.06)]"
+            >
               <div className="flex gap-3">
                 <FileText
                   aria-hidden="true"
@@ -113,14 +116,22 @@ export function ResourceTable({ resources, onAction }: ResourceTableProps) {
                   Updated <span className="mt-1 block text-[#263238]">{resource.updatedAt}</span>
                 </p>
               </div>
-              <div className="flex items-center justify-between gap-3">
-                <StatusBadge status={resource.status} />
+              <div className="flex flex-col gap-3 border-t border-[#e7eceb] pt-3">
+                <div className="flex flex-wrap items-center gap-2">
+                  <StatusBadge status={resource.status} />
+                  <MembershipBadge membership={resource.membership} />
+                </div>
                 <ResourceActions resource={resource} onAction={onAction} />
               </div>
             </article>
           ))}
+          {resources.length === 0 ? (
+            <p className="rounded-2xl border border-[#e7eceb] bg-white p-8 text-center font-manrope text-sm text-[#607d8b] xl:col-span-2">
+              No resources match these filters.
+            </p>
+          ) : null}
         </div>
-        <div className="hidden overflow-x-auto lg:block">
+        <div className="hidden overflow-x-auto rounded-2xl border border-[#e7eceb] bg-white shadow-[0_4px_12px_rgba(0,0,0,0.06)] 2xl:block">
           <div role="table" className="min-w-379.25">
             <div
               role="row"
@@ -217,9 +228,9 @@ export function ResourceTable({ resources, onAction }: ResourceTableProps) {
       </section>
       <nav
         aria-label="Resource table pagination"
-        className="flex w-full justify-center lg:justify-end"
+        className="flex w-full max-w-full justify-start overflow-x-auto pb-1 sm:justify-end 2xl:justify-end 2xl:overflow-visible 2xl:pb-0"
       >
-        <div className="flex items-center gap-1">
+        <div className="flex shrink-0 items-center gap-1">
           <button
             type="button"
             aria-label="Previous page"

@@ -13,14 +13,17 @@ const iconTones = [
 
 export function TherapyToysSummary() {
   return (
-    <section className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4" aria-label="Therapy toy overview">
+    <section
+      className="grid min-w-0 gap-4 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-4 2xl:gap-6"
+      aria-label="Therapy toy overview"
+    >
       {therapyToyMetrics.map((metric, index) => {
         const Icon = metricIcons[index];
 
         return (
           <article
             key={metric.label}
-            className="flex h-38.5 items-center rounded-2xl border border-[#e8ebe8] bg-white p-4 shadow-[0_1px_1px_rgba(0,0,0,0.05)]"
+            className="flex min-h-28 min-w-0 items-center rounded-2xl border border-[#e8ebe8] bg-white p-4 shadow-[0_1px_1px_rgba(0,0,0,0.05)] 2xl:h-38.5"
           >
             <div className="flex items-start gap-3">
               <span
@@ -28,7 +31,7 @@ export function TherapyToysSummary() {
               >
                 <Icon aria-hidden="true" size={18} strokeWidth={1.6} />
               </span>
-              <div>
+              <div className="min-w-0">
                 <p className="font-nunito text-2xl font-medium leading-8 text-[#272f3a]">
                   {metric.value}
                 </p>
