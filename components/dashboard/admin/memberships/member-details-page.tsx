@@ -34,7 +34,7 @@ function MemberCard({
 }) {
   return (
     <section
-      className={`rounded-2xl border border-[#e7eceb] bg-white p-6.25 shadow-[0_4px_6px_rgba(0,0,0,0.06)] ${className}`}
+      className={`rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:p-5 2xl:p-6.25 ${className}`}
     >
       {children}
     </section>
@@ -48,7 +48,7 @@ function CardTitle({ children }: { children: React.ReactNode }) {
 function DetailTile({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-[14px] bg-[#f4f8f6] p-3">
-      <p className="font-manrope text-[11px] font-semibold leading-[16.5px] tracking-wider text-[#607d8b] uppercase">
+      <p className="font-manrope text-[11px] font-semibold leading-4.125 tracking-wider text-[#607d8b] uppercase">
         {label}
       </p>
       <p className="pt-1 font-manrope text-sm font-semibold leading-5.25 text-[#263238]">{value}</p>
@@ -60,7 +60,7 @@ export function MemberDetailsPage({ member }: { member: Member }) {
   const benefits = benefitsByTier[member.membershipTier];
 
   return (
-    <section className="mx-auto w-full max-w-3xl pb-8">
+    <section className="mx-auto w-full min-w-0 max-w-3xl pb-8">
       <Link
         href="/dashboard/admin/memberships/member-directory"
         className="inline-flex items-center gap-1.5 font-manrope text-sm font-medium leading-5 text-[#607d8b] transition-colors hover:text-[#2f7d7e] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#2f7d7e]"
@@ -69,7 +69,7 @@ export function MemberDetailsPage({ member }: { member: Member }) {
         Back
       </Link>
 
-      <MemberCard className="mt-6 flex min-h-32.75 flex-col gap-5 sm:flex-row sm:items-center">
+      <MemberCard className="mt-6 flex min-h-32.75 flex-col gap-5 xl:flex-row xl:items-center 2xl:flex-row 2xl:items-center">
         <span className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-[rgba(47,125,126,0.09)] font-nunito text-xl font-bold leading-7 text-[#2f7d7e]">
           {member.initials}
         </span>
@@ -77,7 +77,7 @@ export function MemberDetailsPage({ member }: { member: Member }) {
           <h1 className="truncate font-nunito text-[22px] font-bold leading-8.25 text-[#263238]">
             {member.name}
           </h1>
-          <p className="truncate font-manrope text-[13px] leading-[19.5px] text-[#607d8b]">
+          <p className="break-all font-manrope text-[13px] leading-4.875 text-[#607d8b] sm:break-normal sm:truncate">
             {member.email}
           </p>
           <div className="flex flex-wrap gap-2 pt-2">
@@ -93,24 +93,24 @@ export function MemberDetailsPage({ member }: { member: Member }) {
         </div>
         <Link
           href={`/dashboard/admin/memberships/upgrade-downgrade?member=${memberSlug(member)}`}
-          className="inline-flex h-10.5 shrink-0 items-center justify-center gap-2 self-start rounded-[14px] border border-[rgba(47,125,126,0.19)] bg-[rgba(47,125,126,0.07)] px-4.25 py-2.75 font-manrope text-sm font-semibold leading-5 text-[#2f7d7e] transition-colors hover:bg-[#edf6f2] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2f7d7e] sm:self-center"
+          className="inline-flex h-10.5 w-full shrink-0 items-center justify-center gap-2 rounded-[14px] border border-[rgba(47,125,126,0.19)] bg-[rgba(47,125,126,0.07)] px-4.25 py-2.75 font-manrope text-sm font-semibold leading-5 text-[#2f7d7e] transition-colors hover:bg-[#edf6f2] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2f7d7e] sm:w-auto xl:self-center 2xl:w-auto 2xl:self-center"
         >
           <TrendingUp aria-hidden="true" size={14} strokeWidth={1.8} />
           Upgrade / Downgrade
         </Link>
       </MemberCard>
 
-      <MemberCard className="mt-6 lg:h-86">
+      <MemberCard className="mt-6 2xl:h-86">
         <CardTitle>Current Membership</CardTitle>
-        <div className="mt-4 flex h-22 items-center justify-between gap-4 rounded-[14px] border border-[rgba(47,125,126,0.19)] bg-[#edf6f2] p-4.25">
+        <div className="mt-4 flex min-h-22 flex-col items-start justify-between gap-3 rounded-[14px] border border-[rgba(47,125,126,0.19)] bg-[#edf6f2] p-4 sm:flex-row sm:items-center sm:p-4.25 2xl:h-22 2xl:flex-row 2xl:items-center 2xl:p-4.25">
           <div>
             <p className="font-nunito text-xl font-bold leading-7.5 text-[#2f7d7e]">
               {member.membershipTier}
             </p>
-            <p className="pt-1 font-manrope text-[13px] leading-[19.5px] text-[#607d8b]">Free</p>
+            <p className="pt-1 font-manrope text-[13px] leading-4.875 text-[#607d8b]">Free</p>
           </div>
-          <div className="text-right">
-            <p className="font-manrope text-[11px] font-semibold leading-[16.5px] tracking-wider text-[#607d8b] uppercase">
+          <div className="text-left sm:text-right 2xl:text-right">
+            <p className="font-manrope text-[11px] font-semibold leading-4.125 tracking-wider text-[#607d8b] uppercase">
               Renews
             </p>
             <p className="font-manrope text-sm font-semibold leading-5.25 text-[#263238]">
@@ -118,7 +118,7 @@ export function MemberDetailsPage({ member }: { member: Member }) {
             </p>
           </div>
         </div>
-        <div className="mt-4 grid auto-rows-[65.5px] gap-4 sm:grid-cols-2">
+        <div className="mt-4 grid auto-rows-min gap-3 sm:grid-cols-2 sm:gap-4 2xl:auto-rows-16.375 2xl:gap-4">
           <DetailTile label="Start Date" value={member.joinDate} />
           <DetailTile label="Renewal Date" value={member.renewalDate} />
           <DetailTile label="Status" value={member.status} />
@@ -126,7 +126,7 @@ export function MemberDetailsPage({ member }: { member: Member }) {
         </div>
       </MemberCard>
 
-      <MemberCard className="mt-6 lg:h-48.5">
+      <MemberCard className="mt-6 2xl:h-48.5">
         <CardTitle>Subscription Timeline</CardTitle>
         <p className="pt-1 font-manrope text-xs leading-4.5 text-[#607d8b]">
           This family&apos;s filtered slice of the global Subscription History.
@@ -151,7 +151,7 @@ export function MemberDetailsPage({ member }: { member: Member }) {
         </div>
       </MemberCard>
 
-      <MemberCard className="mt-6 lg:h-53.25">
+      <MemberCard className="mt-6 2xl:h-53.25">
         <CardTitle>Benefits Available</CardTitle>
         <ul className="mt-4 space-y-3" aria-label="Membership benefits">
           {benefits.map((benefit) => (
@@ -171,7 +171,7 @@ export function MemberDetailsPage({ member }: { member: Member }) {
         </ul>
       </MemberCard>
 
-      <MemberCard className="mt-6 lg:h-77">
+      <MemberCard className="mt-6 2xl:h-77">
         <CardTitle>Activity Log</CardTitle>
         <div className="mt-4">
           {[
@@ -181,13 +181,13 @@ export function MemberDetailsPage({ member }: { member: Member }) {
           ].map(([description, author, date], index) => (
             <div
               key={description}
-              className={`flex items-start justify-between gap-4 py-3 ${index < 2 ? 'border-b border-[#e7eceb]' : ''}`}
+              className={`flex flex-col items-start gap-1 py-3 sm:flex-row sm:justify-between sm:gap-4 2xl:flex-row 2xl:justify-between 2xl:gap-4 ${index < 2 ? 'border-b border-[#e7eceb]' : ''}`}
             >
               <div>
-                <p className="font-manrope text-[13px] leading-[19.5px] text-[#263238]">
+                <p className="font-manrope text-[13px] leading-4.875 text-[#263238]">
                   {description}
                 </p>
-                <p className="pt-0.5 font-manrope text-[11px] leading-[16.5px] text-[#607d8b]">
+                <p className="pt-0.5 font-manrope text-[11px] leading-4.125 text-[#607d8b]">
                   {author}
                 </p>
               </div>
@@ -197,7 +197,7 @@ export function MemberDetailsPage({ member }: { member: Member }) {
         </div>
       </MemberCard>
 
-      <div className="mt-6 flex justify-end">
+      <div className="mt-6 flex justify-start sm:justify-end 2xl:justify-end">
         <CancelMembershipModal memberName={member.name} />
       </div>
     </section>

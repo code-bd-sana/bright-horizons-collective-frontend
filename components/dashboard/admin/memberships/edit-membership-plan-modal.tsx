@@ -34,7 +34,7 @@ function FeatureRow({
   const isLongFeature = feature.length > 55;
 
   return (
-    <div className="grid grid-cols-[minmax(0,1fr)_77px] gap-4 overflow-hidden rounded-xl border border-[#d8ddd9] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.05)]">
+    <div className="grid grid-cols-[minmax(0,1fr)_64px] gap-2 overflow-hidden rounded-xl border border-[#d8ddd9] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.05)] sm:grid-cols-[minmax(0,1fr)_77px] sm:gap-4 2xl:grid-cols-[minmax(0,1fr)_77px] 2xl:gap-4">
       <textarea
         aria-label="Included feature"
         value={feature}
@@ -45,7 +45,7 @@ function FeatureRow({
       <button
         type="button"
         onClick={onRemove}
-        className="flex items-center justify-center px-4 font-manrope text-xs leading-4.5 text-[#b24b4b] transition-colors hover:bg-[#fff5f4]"
+        className="flex items-center justify-center px-2 font-manrope text-xs leading-4.5 text-[#b24b4b] transition-colors hover:bg-[#fff5f4] sm:px-4 2xl:px-4"
       >
         Remove
       </button>
@@ -92,11 +92,11 @@ export function EditMembershipPlanModal({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
         showCloseButton={false}
-        className="block h-180 w-134.5 max-w-[calc(100%-2rem)] overflow-y-auto rounded-2xl bg-white p-6 text-[#263238] shadow-[0_20px_30px_rgba(0,0,0,0.12)] ring-0 scrollbar-none [&::-webkit-scrollbar]:hidden sm:max-w-134.5 md:max-h-[calc(100dvh-2rem)]"
+        className="block h-auto max-h-[80vh] w-[calc(100%-2rem)] max-w-134.5 overflow-y-auto overscroll-contain rounded-2xl bg-white p-4 text-[#263238] shadow-[0_20px_30px_rgba(0,0,0,0.12)] ring-0 sm:p-5 2xl:w-134.5 2xl:p-6"
       >
         <div className="flex flex-col gap-5">
-          <header className="flex items-start justify-between">
-            <DialogTitle className="font-nunito text-xl font-semibold leading-7.5 text-[#263238]">
+          <header className="flex items-start justify-between gap-3 2xl:gap-0">
+            <DialogTitle className="min-w-0 font-nunito text-lg font-semibold leading-6.75 text-[#263238] sm:text-xl sm:leading-7.5 2xl:text-xl 2xl:leading-7.5">
               Edit Plan Features- {planName}
             </DialogTitle>
             <DialogClose
@@ -126,7 +126,7 @@ export function EditMembershipPlanModal({
           </label>
 
           <section
-            className="h-87.5 rounded-xl border border-[#d8ddd9] p-4 pb-3.5"
+            className="rounded-xl border border-[#d8ddd9] p-3 pb-3.5 sm:p-4 2xl:h-87.5 2xl:p-4 2xl:pb-3.5"
             aria-labelledby="feature-list-heading"
           >
             <h2
@@ -145,7 +145,7 @@ export function EditMembershipPlanModal({
                 />
               ))}
             </div>
-            <div className="mt-4 flex gap-3">
+            <div className="mt-4 flex flex-col gap-3 sm:flex-row 2xl:flex-row">
               <input
                 value={newFeature}
                 onChange={(event) => setNewFeature(event.target.value)}
@@ -161,7 +161,7 @@ export function EditMembershipPlanModal({
               <button
                 type="button"
                 onClick={addFeature}
-                className="flex h-10.5 shrink-0 items-center gap-1 rounded-xl bg-[#515b60] px-4 py-2.5 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-white transition-colors hover:bg-[#3f474b]"
+                className="flex h-10.5 shrink-0 items-center justify-center gap-1 rounded-xl bg-[#515b60] px-4 py-2.5 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-white transition-colors hover:bg-[#3f474b] 2xl:justify-start"
               >
                 <Plus aria-hidden="true" size={15} strokeWidth={2} />
                 Add
@@ -169,7 +169,7 @@ export function EditMembershipPlanModal({
             </div>
           </section>
 
-          <footer className="flex items-start justify-end gap-3">
+          <footer className="grid grid-cols-2 gap-3 sm:flex sm:items-start sm:justify-end 2xl:flex 2xl:items-start 2xl:justify-end">
             <button
               type="button"
               onClick={() => onClose(false)}

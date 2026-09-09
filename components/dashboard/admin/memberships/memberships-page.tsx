@@ -163,11 +163,14 @@ const quickActions = [
 
 function MembershipMetrics() {
   return (
-    <section className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4" aria-label="Membership overview">
+    <section
+      className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-4 2xl:gap-6"
+      aria-label="Membership overview"
+    >
       {metrics.map(({ value, label, icon: Icon, iconTone }) => (
         <article
           key={label}
-          className="flex h-38.5 items-center rounded-2xl border border-[#e8ebe8] bg-white p-4 shadow-[0_1px_1px_rgba(0,0,0,0.05)]"
+          className="flex min-h-28 items-center rounded-2xl border border-[#e8ebe8] bg-white p-4 shadow-[0_1px_1px_rgba(0,0,0,0.05)] 2xl:h-38.5"
         >
           <div className="flex items-start gap-3">
             <span
@@ -197,12 +200,12 @@ function MembershipDistribution() {
       >
         Membership Distribution
       </h2>
-      <div className="mt-5 grid gap-4 lg:grid-cols-3">
+      <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-3">
         {membershipPlans.map(
           ({ name, members, share, progress, cardTone, badgeTone, valueTone }) => (
             <article
               key={name}
-              className={`h-38 rounded-2xl border p-5.25 shadow-[0_4px_6px_rgba(0,0,0,0.06)] ${cardTone}`}
+              className={`min-h-38 rounded-2xl border p-5.25 shadow-[0_4px_6px_rgba(0,0,0,0.06)] 2xl:h-38 ${cardTone}`}
             >
               <span
                 className={`inline-flex rounded-full px-2.5 py-0.5 font-manrope text-xs font-semibold leading-4 ${badgeTone}`}
@@ -212,9 +215,7 @@ function MembershipDistribution() {
               <p className={`mt-3 font-nunito text-[32px] font-bold leading-8 ${valueTone}`}>
                 {members}
               </p>
-              <p className="mt-1 font-manrope text-[13px] leading-[19.5px] text-[#607d8b]">
-                {share}
-              </p>
+              <p className="mt-1 font-manrope text-[13px] leading-4.875 text-[#607d8b]">{share}</p>
               <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-[rgba(47,125,126,0.13)]">
                 <span
                   aria-hidden="true"
@@ -233,7 +234,7 @@ function MembershipDistribution() {
 function RecentMembershipActivity() {
   return (
     <section
-      className="rounded-2xl border border-[#e7eceb] bg-white p-6 shadow-[0_4px_6px_rgba(0,0,0,0.06)] lg:h-113.75"
+      className="rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:p-5 2xl:h-113.75 2xl:p-6"
       aria-labelledby="recent-membership-activity-heading"
     >
       <h2
@@ -251,12 +252,8 @@ function RecentMembershipActivity() {
               <Icon aria-hidden="true" size={14} strokeWidth={1.6} />
             </span>
             <div className="min-w-0">
-              <p className="font-manrope text-[13px] leading-[19.5px] text-[#263238]">
-                {description}
-              </p>
-              <p className="pt-px font-manrope text-[11px] leading-[16.5px] text-[#607d8b]">
-                {date}
-              </p>
+              <p className="font-manrope text-[13px] leading-4.875 text-[#263238]">{description}</p>
+              <p className="pt-px font-manrope text-[11px] leading-4.125 text-[#607d8b]">{date}</p>
             </div>
           </article>
         ))}
@@ -274,17 +271,17 @@ function MembershipQuickActions() {
       >
         Quick Actions
       </h2>
-      <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="mt-5 grid gap-4 sm:grid-cols-2 2xl:grid-cols-4">
         {quickActions.map(({ label, href, icon: Icon }) => (
           <Link
             key={label}
             href={href}
-            className="flex h-28.25 flex-col items-center gap-3 rounded-2xl border border-[#e7eceb] bg-white p-5.25 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-colors hover:bg-[#f8fbfa]"
+            className="flex min-h-26 flex-col items-center justify-center gap-3 rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-colors hover:bg-[#f8fbfa] 2xl:h-28.25 2xl:justify-start 2xl:p-5.25"
           >
             <span className="flex size-10 items-center justify-center rounded-[14px] bg-[rgba(47,125,126,0.07)] text-[#2f7d7e]">
               <Icon aria-hidden="true" size={18} strokeWidth={1.6} />
             </span>
-            <span className="font-manrope text-[13px] font-semibold leading-[19.5px] text-[#263238]">
+            <span className="text-center font-manrope text-[13px] font-semibold leading-4.875 text-[#263238] 2xl:text-left">
               {label}
             </span>
           </Link>
@@ -296,10 +293,10 @@ function MembershipQuickActions() {
 
 export function MembershipsPage() {
   return (
-    <section className="mx-auto w-full max-w-383.5 pb-8 text-[#263238]">
+    <section className="mx-auto w-full min-w-0 max-w-383.5 pb-8 text-[#263238]">
       <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className="font-nunito text-[32px] font-medium leading-10 tracking-[-0.4px] sm:text-[40px] sm:leading-12">
+          <h1 className="font-nunito text-[28px] font-medium leading-9 tracking-[-0.4px] sm:text-[32px] sm:leading-10 2xl:text-[40px] 2xl:leading-12">
             Memberships
           </h1>
           <p className="mt-0.5 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#6b6b6b]">
@@ -308,7 +305,7 @@ export function MembershipsPage() {
         </div>
         <Link
           href="/dashboard/admin/memberships/manage-plans"
-          className="flex h-10 w-full items-center justify-center gap-2 rounded-full bg-[#2f7d7e] px-4 py-2.5 font-nunito text-sm font-medium leading-5 tracking-[-0.084px] text-white transition-colors hover:bg-[#266b6c] sm:w-36"
+          className="flex h-10 w-full items-center justify-center gap-2 rounded-full bg-[#2f7d7e] px-4 py-2.5 font-nunito text-sm font-medium leading-5 tracking-[-0.084px] text-white transition-colors hover:bg-[#266b6c] sm:w-36 2xl:w-36"
         >
           <Plus aria-hidden="true" size={15} strokeWidth={1.7} />
           Manage Plans

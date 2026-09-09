@@ -50,7 +50,7 @@ function SectionCard({
 }) {
   return (
     <section
-      className={`rounded-2xl border border-[#e7eceb] bg-white p-6.25 shadow-[0_4px_6px_rgba(0,0,0,0.06)] ${className}`}
+      className={`rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:p-5 2xl:p-6.25 ${className}`}
     >
       {children}
     </section>
@@ -68,7 +68,7 @@ export function UpgradeDowngradePage({ member }: { member: Member }) {
   };
 
   return (
-    <section className="mx-auto w-full max-w-187.75 pb-8 text-[#263238]">
+    <section className="mx-auto w-full min-w-0 max-w-187.75 pb-8 text-[#263238]">
       <Link
         href="/dashboard/admin/memberships"
         className="inline-flex items-center gap-1.5 font-manrope text-sm font-medium leading-5 text-[#607d8b] transition-colors hover:text-[#2f7d7e] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#2f7d7e]"
@@ -81,30 +81,30 @@ export function UpgradeDowngradePage({ member }: { member: Member }) {
         <h1 className="font-nunito text-2xl font-bold leading-9 text-[#263238]">
           Upgrade / Downgrade Membership
         </h1>
-        <p className="pt-0.5 font-manrope text-[13px] leading-[19.5px] text-[#607d8b]">
+        <p className="pt-0.5 font-manrope text-[13px] leading-4.875 text-[#607d8b]">
           Admin-initiated change for <strong className="font-bold">{member.name}</strong>. This is
           distinct from the parent&apos;s own self-service upgrade flow.
         </p>
       </header>
 
-      <SectionCard className="mt-6 h-35">
+      <SectionCard className="mt-6 2xl:h-35">
         <h2 className="font-nunito text-base font-bold leading-6 text-[#263238]">
           1. Current Membership
         </h2>
-        <div className="mt-3 flex h-13.5 items-center gap-3 rounded-[14px] border border-[rgba(47,125,126,0.19)] bg-[#edf6f2] p-4.25">
+        <div className="mt-3 flex min-h-13.5 flex-wrap items-center gap-3 rounded-[14px] border border-[rgba(47,125,126,0.19)] bg-[#edf6f2] p-4 2xl:h-13.5 2xl:p-4.25">
           <MembershipBadge
             plan={member.membershipTier}
             tone={
               planOptions.find((plan) => plan.name === member.membershipTier)?.tone ?? 'littleSteps'
             }
           />
-          <p className="font-manrope text-[13px] leading-[19.5px] text-[#607d8b]">
+          <p className="font-manrope text-[13px] leading-4.875 text-[#607d8b]">
             Status: {member.status}
           </p>
         </div>
       </SectionCard>
 
-      <SectionCard className="mt-6 h-86">
+      <SectionCard className="mt-6 2xl:h-86">
         <h2 className="font-nunito text-base font-bold leading-6 text-[#263238]">
           2. Select New Plan
         </h2>
@@ -117,7 +117,7 @@ export function UpgradeDowngradePage({ member }: { member: Member }) {
             return (
               <label
                 key={plan.name}
-                className={`flex h-19.5 cursor-pointer items-center gap-4 rounded-[14px] border-2 p-4.5 transition-colors ${isSelected ? 'border-[#2f7d7e] bg-[#edf6f2]' : 'border-[#e7eceb] bg-white'}`}
+                className={`flex min-h-19.5 cursor-pointer items-center gap-3 rounded-[14px] border-2 p-4 transition-colors sm:gap-4 sm:p-4.5 2xl:h-19.5 2xl:gap-4 2xl:p-4.5 ${isSelected ? 'border-[#2f7d7e] bg-[#edf6f2]' : 'border-[#e7eceb] bg-white'}`}
               >
                 <input
                   type="radio"
@@ -134,7 +134,7 @@ export function UpgradeDowngradePage({ member }: { member: Member }) {
                   {isSelected ? <span className="size-2 rounded-full bg-[#2f7d7e]" /> : null}
                 </span>
                 <span>
-                  <span className="flex items-center gap-2">
+                  <span className="flex flex-wrap items-center gap-2">
                     <MembershipBadge plan={plan.name} tone={plan.tone} />
                     <span
                       className={`rounded-full px-2.5 py-0.5 font-manrope text-xs font-semibold leading-4 ${isCurrent ? 'bg-[#f4f8f6] text-[#607d8b]' : 'bg-[rgba(76,175,80,0.08)] text-[#4caf50]'}`}
@@ -152,7 +152,7 @@ export function UpgradeDowngradePage({ member }: { member: Member }) {
         </div>
       </SectionCard>
 
-      <SectionCard className="mt-6 h-76.25">
+      <SectionCard className="mt-6 2xl:h-76.25">
         <h2 className="font-nunito text-base font-bold leading-6 text-[#263238]">
           3. Effective Date
         </h2>
@@ -162,7 +162,7 @@ export function UpgradeDowngradePage({ member }: { member: Member }) {
             return (
               <label
                 key={option.value}
-                className={`flex h-16.25 cursor-pointer items-start gap-3 rounded-[14px] border p-3.25 transition-colors ${isSelected ? 'border-[#2f7d7e] bg-[rgba(47,125,126,0.02)]' : 'border-[#e7eceb] bg-white'}`}
+                className={`flex min-h-16.25 cursor-pointer items-start gap-3 rounded-[14px] border p-3.25 transition-colors 2xl:h-16.25 ${isSelected ? 'border-[#2f7d7e] bg-[rgba(47,125,126,0.02)]' : 'border-[#e7eceb] bg-white'}`}
               >
                 <input
                   type="radio"
@@ -192,10 +192,10 @@ export function UpgradeDowngradePage({ member }: { member: Member }) {
         </div>
       </SectionCard>
 
-      <SectionCard className="mt-6 h-44.25">
+      <SectionCard className="mt-6 2xl:h-44.25">
         <h2 className="pb-3 font-nunito text-base font-bold leading-6 text-[#263238]">
           4. Internal Notes{' '}
-          <span className="font-nunito text-[13px] font-normal leading-[19.5px] text-[#607d8b]">
+          <span className="font-nunito text-[13px] font-normal leading-4.875 text-[#607d8b]">
             (admin-only, optional)
           </span>
         </h2>
@@ -207,7 +207,7 @@ export function UpgradeDowngradePage({ member }: { member: Member }) {
         />
       </SectionCard>
 
-      <footer className="mt-6 flex justify-end gap-3">
+      <footer className="mt-6 grid grid-cols-2 gap-3 sm:flex sm:justify-end 2xl:flex 2xl:justify-end">
         <Link
           href="/dashboard/admin/memberships"
           className="flex h-10.5 items-center justify-center rounded-[14px] border border-[#e7eceb] px-4.25 py-2.75 font-manrope text-sm font-semibold leading-5 text-[#607d8b] transition-colors hover:bg-[#f8fbfa] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2f7d7e]"

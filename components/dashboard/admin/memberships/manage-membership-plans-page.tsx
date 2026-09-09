@@ -61,7 +61,7 @@ const membershipPlans: MembershipPlan[] = [
 const planThemes = {
   littleSteps: {
     card: 'border-[#e7eceb] p-px',
-    header: 'h-33 bg-[#edf6f2]',
+    header: 'min-h-33 bg-[#edf6f2] 2xl:h-33',
     badge: 'bg-[#edf6f2] text-[#2f7d7e]',
     price: 'text-[#2f7d7e]',
     dot: 'bg-[rgba(47,125,126,0.13)] [&>span]:bg-[#2f7d7e]',
@@ -69,7 +69,7 @@ const planThemes = {
   },
   growTogether: {
     card: 'border-[#e7eceb] p-px',
-    header: 'h-33 bg-[#dcefe7]',
+    header: 'min-h-33 bg-[#dcefe7] 2xl:h-33',
     badge: 'bg-[#dcefe7] text-[#2f7d7e]',
     price: 'text-[#2f7d7e]',
     dot: 'bg-[rgba(47,125,126,0.13)] [&>span]:bg-[#2f7d7e]',
@@ -77,7 +77,7 @@ const planThemes = {
   },
   personalizedPathways: {
     card: 'border-2 border-[rgba(160,90,58,0.25)] p-0.5',
-    header: 'h-40.25 bg-[#fce9e2]',
+    header: 'min-h-40.25 bg-[#fce9e2] 2xl:h-40.25',
     badge: 'bg-[#fce9e2] text-[#a05a3a]',
     price: 'text-[#a05a3a]',
     dot: 'bg-[rgba(160,90,58,0.13)] [&>span]:bg-[#a05a3a]',
@@ -90,7 +90,7 @@ function PlanFeatureList({ plan }: { plan: MembershipPlan }) {
 
   return (
     <div>
-      <h2 className="font-manrope text-[11px] font-semibold leading-[16.5px] tracking-[0.55px] text-[#607d8b] uppercase">
+      <h2 className="font-manrope text-[11px] font-semibold leading-4.125 tracking-[0.55px] text-[#607d8b] uppercase">
         Included Features
       </h2>
       <ul className="mt-2.5 space-y-2.5">
@@ -101,9 +101,7 @@ function PlanFeatureList({ plan }: { plan: MembershipPlan }) {
             >
               <span className="size-1.5 rounded-full" />
             </span>
-            <span className="font-manrope text-[13px] leading-[19.5px] text-[#263238]">
-              {feature}
-            </span>
+            <span className="font-manrope text-[13px] leading-4.875 text-[#263238]">{feature}</span>
           </li>
         ))}
       </ul>
@@ -123,11 +121,13 @@ function MembershipPlanCard({
 
   return (
     <article
-      className={`flex h-131 flex-col overflow-hidden rounded-2xl border bg-white shadow-[0_4px_12px_rgba(0,0,0,0.06)] ${theme.card}`}
+      className={`flex min-h-131 flex-col overflow-hidden rounded-2xl border bg-white shadow-[0_4px_12px_rgba(0,0,0,0.06)] 2xl:h-131 ${theme.card}`}
     >
-      <header className={`shrink-0 px-6 pt-6 pb-5 ${theme.header}`}>
+      <header
+        className={`shrink-0 px-5 pt-5 pb-4 sm:px-6 sm:pt-6 sm:pb-5 2xl:px-6 2xl:pt-6 2xl:pb-5 ${theme.header}`}
+      >
         {plan.premium && (
-          <p className="flex items-center gap-1 pb-3 font-manrope text-[11px] font-bold leading-[16.5px] tracking-[0.55px] text-[#a05a3a] uppercase">
+          <p className="flex items-center gap-1 pb-3 font-manrope text-[11px] font-bold leading-4.125 tracking-[0.55px] text-[#a05a3a] uppercase">
             <Crown aria-hidden="true" size={12} strokeWidth={1.7} />
             Premium
           </p>
@@ -140,12 +140,12 @@ function MembershipPlanCard({
         <p className={`mt-3 font-nunito text-[28px] font-bold leading-7 ${theme.price}`}>
           {plan.price}
         </p>
-        <p className="mt-1 font-manrope text-[13px] leading-[19.5px] text-[#607d8b]">
+        <p className="mt-1 font-manrope text-[13px] leading-4.875 text-[#607d8b]">
           {plan.activeMembers}
         </p>
       </header>
 
-      <div className="flex min-h-0 flex-1 flex-col px-6 pt-5 pb-6">
+      <div className="flex min-h-0 flex-1 flex-col px-5 pt-5 pb-5 sm:px-6 sm:pb-6 2xl:px-6 2xl:pt-5 2xl:pb-6">
         <PlanFeatureList plan={plan} />
         <div className="mt-auto border-t border-[#e7eceb] pt-4.25">
           <Link
@@ -171,7 +171,7 @@ export function ManageMembershipPlansPage() {
   const [editingPlan, setEditingPlan] = useState<MembershipPlan | null>(null);
 
   return (
-    <section className="mx-auto w-full max-w-383.5 pb-8 text-[#263238]">
+    <section className="mx-auto w-full min-w-0 max-w-383.5 pb-8 text-[#263238]">
       <Link
         href="/dashboard/admin/memberships"
         className="inline-flex items-center gap-1.5 font-manrope text-sm font-medium leading-5 text-[#607d8b] transition-colors hover:text-[#2f7d7e]"
@@ -187,8 +187,13 @@ export function ManageMembershipPlansPage() {
         <p className="pt-0.5 font-manrope text-sm leading-5.25 text-[#607d8b]">
           The three membership tiers and their included benefits.
         </p>
-        <div className="mt-2 flex min-h-10 w-full max-w-fit items-center gap-2 rounded-[14px] border border-[rgba(246,195,68,0.19)] bg-[#fff8e1] px-4.25 py-2.75 text-[#b8860b]">
-          <CircleAlert aria-hidden="true" size={13} strokeWidth={1.8} />
+        <div className="mt-2 flex min-h-10 w-full max-w-fit items-start gap-2 rounded-[14px] border border-[rgba(246,195,68,0.19)] bg-[#fff8e1] px-4 py-2.75 text-[#b8860b] sm:items-center sm:px-4.25 2xl:items-center 2xl:px-4.25">
+          <CircleAlert
+            aria-hidden="true"
+            size={13}
+            strokeWidth={1.8}
+            className="mt-0.5 shrink-0 sm:mt-0 2xl:mt-0"
+          />
           <p className="font-manrope text-xs leading-4.5">
             <strong className="font-bold">Note:</strong> Plan editing (features, pricing) is out of
             scope for this MVP — this page is informational display only. Confirm before enabling
@@ -197,7 +202,7 @@ export function ManageMembershipPlansPage() {
         </div>
       </header>
 
-      <div className="mt-6 grid max-w-378 gap-6 lg:grid-cols-3">
+      <div className="mt-6 grid max-w-378 gap-4 md:grid-cols-2 2xl:grid-cols-3 2xl:gap-6">
         {membershipPlans.map((plan) => (
           <MembershipPlanCard key={plan.name} plan={plan} onEdit={setEditingPlan} />
         ))}
