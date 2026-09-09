@@ -28,7 +28,7 @@ export function AddResourceSeo() {
   }
 
   return (
-    <section className="mx-auto w-full max-w-231.5 pb-8 pt-6 text-[#263238] lg:pt-0">
+    <section className="mx-auto w-full min-w-0 max-w-231.5 pb-8 pt-6 text-[#263238] lg:pt-0 2xl:pt-0">
       <Link
         href="/dashboard/admin/parent-resources"
         className="inline-flex items-center gap-1.5 font-manrope text-sm font-medium leading-5 text-[#607d8b]"
@@ -43,7 +43,7 @@ export function AddResourceSeo() {
         <ResourceFormStepper currentStep={6} />
       </div>
 
-      <section className="mt-5 rounded-2xl border border-[#e7eceb] bg-white p-5 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:p-6.25">
+      <section className="mt-5 rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:p-5 2xl:p-6.25">
         <h2 className="font-nunito text-lg font-bold leading-6.75">6. SEO</h2>
 
         <div className="mt-5 max-w-214.75 space-y-5">

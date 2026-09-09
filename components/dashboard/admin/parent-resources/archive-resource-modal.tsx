@@ -15,12 +15,12 @@ export function ArchiveResourceModal({ resource, onClose, onConfirm }: ArchiveRe
     <Dialog open={Boolean(resource)} onOpenChange={onClose}>
       <DialogContent
         showCloseButton={false}
-        className="w-108 max-w-[calc(100%-2rem)] gap-5 rounded-2xl border-0 bg-white p-6 shadow-[0_20px_30px_rgba(0,0,0,0.12)] sm:max-w-108"
+        className="max-h-[calc(100dvh-2rem)] w-108 max-w-[calc(100%-2rem)] gap-5 overflow-y-auto rounded-2xl border-0 bg-white p-4 shadow-[0_20px_30px_rgba(0,0,0,0.12)] sm:max-w-108 sm:p-6 2xl:p-6"
       >
         {resource && (
           <>
             <div className="flex items-start justify-between gap-4">
-              <div className="w-84">
+              <div className="min-w-0 flex-1">
                 <DialogTitle className="font-nunito text-xl font-bold leading-7.5 text-[#263238]">
                   Archive Resource?
                 </DialogTitle>
@@ -33,18 +33,18 @@ export function ArchiveResourceModal({ resource, onClose, onConfirm }: ArchiveRe
                 <Archive aria-hidden="true" size={20} strokeWidth={1.7} />
               </div>
             </div>
-            <div className="flex justify-end gap-3 pt-2">
+            <div className="flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-end 2xl:flex-row 2xl:justify-end">
               <button
                 type="button"
                 onClick={() => onClose(false)}
-                className="rounded-[14px] border border-[#e7eceb] px-5.25 py-2.75 font-manrope text-sm font-semibold leading-5 text-[#607d8b]"
+                className="w-full rounded-[14px] border border-[#e7eceb] px-5.25 py-2.75 font-manrope text-sm font-semibold leading-5 text-[#607d8b] sm:w-auto 2xl:w-auto"
               >
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={() => onConfirm(resource)}
-                className="rounded-[14px] bg-[#b8860b] px-5 py-2.5 font-manrope text-sm font-semibold leading-5 text-white"
+                className="w-full rounded-[14px] bg-[#b8860b] px-5 py-2.5 font-manrope text-sm font-semibold leading-5 text-white sm:w-auto 2xl:w-auto"
               >
                 Archive
               </button>
