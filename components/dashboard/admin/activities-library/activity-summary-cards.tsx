@@ -24,13 +24,13 @@ const summaries = [
 export function ActivitySummaryCards() {
   return (
     <section
-      className="grid max-w-285.75 gap-6 md:grid-cols-3"
+      className="grid max-w-285.75 grid-cols-1 gap-4 sm:grid-cols-3 2xl:gap-6"
       aria-label="Activity library summary"
     >
       {summaries.map(({ label, value, icon: Icon, tone }) => (
         <article
           key={label}
-          className="flex h-38.25 items-center rounded-2xl border border-[#e3e9e8] bg-white px-4 shadow-[0_2px_5px_rgba(38,50,56,0.05)]"
+          className="flex min-h-28 min-w-0 items-center rounded-2xl border border-[#e3e9e8] bg-white px-4 py-4 shadow-[0_2px_5px_rgba(38,50,56,0.05)] 2xl:h-38.25 2xl:py-0"
         >
           <span className={`flex size-8 items-center justify-center rounded-lg border ${tone}`}>
             <Icon aria-hidden="true" size={18} strokeWidth={1.7} />

@@ -2,8 +2,8 @@ import Image from 'next/image';
 
 export function ActivityDetailHero() {
   return (
-    <section className="rounded-2xl border border-[#e8ebe8] bg-white p-5 shadow-[0_1px_1px_rgba(0,0,0,0.05)] sm:p-8">
-      <div className="relative h-75 overflow-hidden rounded-2xl bg-[#d2e3dc] sm:h-119.25">
+    <section className="min-w-0 rounded-2xl border border-[#e8ebe8] bg-white p-4 shadow-[0_1px_1px_rgba(0,0,0,0.05)] sm:p-6 2xl:p-8">
+      <div className="relative h-64 overflow-hidden rounded-2xl bg-[#d2e3dc] sm:h-90 2xl:h-119.25">
         <Image
           src="/images/admin/activities/stacking-sorting-challenge.png"
           alt="Colorful sorting toys in a sensory bin"
@@ -26,7 +26,7 @@ export function ActivityDetailHero() {
       </div>
       <div className="mt-8">
         <div className="max-w-180">
-          <h1 className="font-nunito text-[28px] font-medium leading-10 tracking-[-0.16px] text-[#263238] sm:text-[32px]">
+          <h1 className="font-nunito text-2xl font-medium leading-8 tracking-[-0.16px] text-[#263238] sm:text-[28px] sm:leading-10 2xl:text-[32px]">
             Stacking &amp; Sorting Challenge
           </h1>
           <p className="mt-3 max-w-146 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#515b60]">
@@ -34,7 +34,7 @@ export function ActivityDetailHero() {
             for an energetic start to the week.
           </p>
         </div>
-        <dl className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+        <dl className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4 xl:gap-8 2xl:grid-cols-4">
           <div>
             <dt className="font-nunito text-xs font-medium uppercase leading-4 text-[#7d8488]">
               Duration
@@ -68,7 +68,7 @@ export function ActivityDetailHero() {
             </dd>
           </div>
         </dl>
-        <section className="mt-12">
+        <section className="mt-8 sm:mt-10 2xl:mt-12">
           <h2 className="font-nunito text-xl font-medium leading-7 text-[#263238]">
             Learning Objective
           </h2>

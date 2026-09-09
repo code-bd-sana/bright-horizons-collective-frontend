@@ -13,7 +13,7 @@ export function ActivityLibraryControls({
   onFilterChange: (filter: (typeof activityFilters)[number]) => void;
 }) {
   return (
-    <div className="flex flex-col justify-between gap-5 2xl:flex-row 2xl:items-center">
+    <div className="flex min-w-0 flex-col justify-between gap-5 2xl:flex-row 2xl:items-center">
       <label className="flex h-10 w-full max-w-110.5 items-center rounded-lg border border-[#f6ddd5] bg-[#fdf8f7] px-5">
         <Search
           aria-hidden="true"

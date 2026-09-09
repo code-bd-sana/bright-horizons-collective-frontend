@@ -40,10 +40,10 @@ export function ActivitiesLibraryPage() {
   }
 
   return (
-    <section className="mx-auto w-full max-w-382 pb-10 text-[#263238]">
+    <section className="mx-auto w-full min-w-0 max-w-382 pb-10 text-[#263238]">
       <header className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className="font-nunito text-[32px] font-medium leading-10 tracking-[-0.4px] text-[#3d3d3d] sm:text-[40px] sm:leading-12">
+          <h1 className="font-nunito text-2xl font-medium leading-8 tracking-[-0.16px] text-[#3d3d3d] sm:text-[32px] sm:leading-10 sm:tracking-[-0.4px] 2xl:text-[40px] 2xl:leading-12">
             Activities Library
           </h1>
           <p className="mt-0.5 font-manrope text-sm leading-5.5 text-[#6b6b6b]">
@@ -52,7 +52,7 @@ export function ActivitiesLibraryPage() {
         </div>
         <Link
           href="/dashboard/admin/activities-library/create"
-          className="inline-flex h-10 items-center justify-center gap-2 rounded-full bg-[#2f7d7e] px-5 font-nunito text-sm font-medium leading-5 text-white shadow-[inset_0_-4px_3px_rgba(255,255,255,0.06)] transition-colors hover:bg-[#276d6e]"
+          className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-full bg-[#2f7d7e] px-5 font-nunito text-sm font-medium leading-5 text-white shadow-[inset_0_-4px_3px_rgba(255,255,255,0.06)] transition-colors hover:bg-[#276d6e] sm:w-auto"
         >
           <Plus aria-hidden="true" size={16} strokeWidth={1.8} />
           Create Activity
@@ -69,7 +69,7 @@ export function ActivitiesLibraryPage() {
           onFilterChange={setActiveFilter}
         />
       </div>
-      <div className="mt-8 grid gap-6 md:grid-cols-2 2xl:grid-cols-3">
+      <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 2xl:grid-cols-3">
         {visibleActivities.map((activity) => (
           <ActivityCard
             key={activity.id}

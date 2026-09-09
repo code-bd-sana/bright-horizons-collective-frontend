@@ -13,8 +13,8 @@ export function ActivityCard({
   onDelete: (activity: ActivityItem) => void;
 }) {
   return (
-    <article className="flex min-h-119.5 flex-col overflow-hidden rounded-2xl border border-[#d8dfdf] bg-white p-4 shadow-[0_1px_2px_rgba(38,50,56,0.03)]">
-      <div className="relative h-52 shrink-0 overflow-hidden rounded-[18px] bg-[#e8e8e8]">
+    <article className="flex min-w-0 flex-col overflow-hidden rounded-2xl border border-[#d8dfdf] bg-white p-4 shadow-[0_1px_2px_rgba(38,50,56,0.03)] 2xl:min-h-119.5">
+      <div className="relative h-48 shrink-0 overflow-hidden rounded-[18px] bg-[#e8e8e8] sm:h-52">
         <Image
           src={activity.image}
           alt=""
@@ -47,12 +47,12 @@ export function ActivityCard({
             {activity.plan}
           </span>
         </div>
-        <div className="mt-2 flex items-center justify-between font-manrope text-xs leading-4.5 text-[#668a9e]">
+        <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2 font-manrope text-xs leading-4.5 text-[#668a9e] 2xl:flex-nowrap 2xl:justify-between 2xl:gap-0">
           <span className="flex items-center gap-1.5">
             <Clock3 aria-hidden="true" size={14} strokeWidth={1.5} />
             15 min
           </span>
-          <span className="mr-auto ml-4 flex items-center gap-1.5">
+          <span className="flex items-center gap-1.5 2xl:mr-auto 2xl:ml-4">
             <Layers3 aria-hidden="true" size={14} strokeWidth={1.5} />
             Easy
           </span>
@@ -61,8 +61,8 @@ export function ActivityCard({
             Used in 31 plans
           </span>
         </div>
-        <div className="mt-auto -mx-4 -mb-4 flex h-15 items-center border-t border-[#e4e9e9] px-4">
-          <div className="flex min-w-0 items-center gap-5 text-[#5f8096]">
+        <div className="mt-6 -mx-4 -mb-4 flex min-h-15 items-start border-t border-[#e4e9e9] px-4 py-3 2xl:mt-auto 2xl:h-15 2xl:items-center 2xl:py-0">
+          <div className="grid min-w-0 flex-1 grid-cols-2 gap-x-4 gap-y-2 text-[#5f8096] 2xl:flex 2xl:flex-none 2xl:items-center 2xl:gap-5">
             <Link
               href={`/dashboard/admin/activities-library/${activity.id}`}
               className="inline-flex items-center gap-1.5 font-manrope text-sm leading-5.5"
@@ -97,7 +97,7 @@ export function ActivityCard({
             type="button"
             aria-label={`Delete ${activity.title}`}
             onClick={() => onDelete(activity)}
-            className="ml-auto shrink-0 text-[#fb6464]"
+            className="ml-3 flex size-8 shrink-0 items-center justify-center text-[#fb6464] 2xl:ml-auto 2xl:size-auto"
           >
             <Trash2 aria-hidden="true" size={15} strokeWidth={1.5} />
           </button>
