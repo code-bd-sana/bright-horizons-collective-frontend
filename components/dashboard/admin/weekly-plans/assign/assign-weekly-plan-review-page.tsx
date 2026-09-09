@@ -21,7 +21,7 @@ export function AssignWeeklyPlanReviewPage() {
   const router = useRouter();
 
   return (
-    <section className="mx-auto w-full max-w-196.75 pb-8 text-[#263238]">
+    <section className="mx-auto w-full min-w-0 max-w-196.75 pb-8 text-[#263238]">
       <div className="space-y-5">
         <button
           type="button"
@@ -45,7 +45,7 @@ export function AssignWeeklyPlanReviewPage() {
           <AssignmentStepper currentStep={5} />
         </section>
 
-        <section className="rounded-2xl border border-[#e7eceb] bg-white p-6 shadow-[0_4px_6px_rgba(0,0,0,0.06)]">
+        <section className="rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:p-6 2xl:p-6">
           <h2 className="font-nunito text-lg font-bold leading-7 text-[#263238]">5. Review</h2>
           <div className="mt-5">
             <p className="font-manrope text-sm leading-5.25 text-[#607d8b]">
@@ -55,20 +55,20 @@ export function AssignWeeklyPlanReviewPage() {
               {assignmentSummary.map(({ label, value, wide }) => (
                 <div
                   key={label}
-                  className="flex items-start justify-between border-b border-[#e7eceb] py-3"
+                  className="flex flex-col gap-1 border-b border-[#e7eceb] py-3 sm:flex-row sm:items-start sm:justify-between 2xl:flex-row 2xl:items-start 2xl:justify-between"
                 >
                   <dt className="font-manrope text-[13px] font-semibold leading-[19.5px] text-[#607d8b]">
                     {label}
                   </dt>
                   <dd
-                    className={`font-manrope text-sm leading-5.25 text-[#263238] text-right ${wide ? 'max-w-93.5' : ''}`}
+                    className={`font-manrope text-sm leading-5.25 text-[#263238] sm:text-right 2xl:text-right ${wide ? 'sm:max-w-93.5 2xl:max-w-93.5' : ''}`}
                   >
                     {value}
                   </dd>
                 </div>
               ))}
             </dl>
-            <div className="mt-3 flex items-center gap-2 rounded-[14px] border border-[rgba(229,115,115,0.19)] bg-[#fce9e2] p-3">
+            <div className="mt-3 flex items-start gap-2 rounded-[14px] border border-[rgba(229,115,115,0.19)] bg-[#fce9e2] p-3 sm:items-center 2xl:items-center">
               <TriangleAlert
                 aria-hidden="true"
                 size={15}
@@ -82,15 +82,15 @@ export function AssignWeeklyPlanReviewPage() {
           </div>
         </section>
 
-        <section className="flex items-center justify-between rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)]">
+        <section className="flex flex-col gap-3 rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:flex-row sm:items-center sm:justify-between 2xl:flex-row 2xl:items-center 2xl:justify-between">
           <button
             type="button"
             onClick={() => router.push('/dashboard/admin/weekly-plans/assign/settings')}
-            className="rounded-[14px] border border-[#e7eceb] px-4.25 py-2.75 font-manrope text-sm font-semibold leading-5 text-[#607d8b]"
+            className="w-full rounded-[14px] border border-[#e7eceb] px-4.25 py-2.75 font-manrope text-sm font-semibold leading-5 text-[#607d8b] sm:w-auto 2xl:w-auto"
           >
             ← Previous
           </button>
-          <div className="flex gap-2">
+          <div className="grid w-full gap-2 sm:flex sm:w-auto 2xl:flex 2xl:w-auto">
             <button
               type="button"
               onClick={() => router.push('/dashboard/admin/weekly-plans')}
