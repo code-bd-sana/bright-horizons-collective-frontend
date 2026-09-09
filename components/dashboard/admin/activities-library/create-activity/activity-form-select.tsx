@@ -22,7 +22,7 @@ export function ActivityFormSelect({
   options: readonly Option[];
 }) {
   return (
-    <Select value={value} onValueChange={(nextValue) => onChange(nextValue ?? '')}>
+    <Select value={value} onValueChange={(nextValue) => onChange(nextValue ?? '')} items={options}>
       <SelectTrigger className="h-11 w-full rounded-xl border-[#e1e8e6] bg-[#f4f8f7] px-3.5 font-nunito text-sm font-medium text-[#263238] shadow-none hover:bg-[#f4f8f7] focus-visible:border-[#2f7d7e] focus-visible:ring-0 data-placeholder:text-[#9ba6ab]">
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>

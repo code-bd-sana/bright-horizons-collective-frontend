@@ -19,8 +19,8 @@ export function ActivitySidePanels() {
     return () => window.clearInterval(timer);
   }, [running, seconds]);
   return (
-    <aside className="space-y-6">
-      <section className="rounded-2xl border border-[#e8ebe8] bg-white p-8 shadow-[0_1px_1px_rgba(0,0,0,0.05)]">
+    <aside className="grid min-w-0 grid-cols-1 gap-6 sm:grid-cols-2 2xl:block 2xl:space-y-6">
+      <section className="rounded-2xl border border-[#e8ebe8] bg-white p-4 shadow-[0_1px_1px_rgba(0,0,0,0.05)] sm:p-6 2xl:p-8">
         <p className="font-nunito text-xs font-medium uppercase leading-4 text-[#7d8488]">
           Session Timer
         </p>
@@ -36,7 +36,7 @@ export function ActivitySidePanels() {
           {running ? 'Pause session timer' : 'Start session timer'}
         </button>
       </section>
-      <section className="rounded-2xl border border-[#e8ebe8] bg-white p-8 shadow-[0_1px_1px_rgba(0,0,0,0.05)]">
+      <section className="rounded-2xl border border-[#e8ebe8] bg-white p-4 shadow-[0_1px_1px_rgba(0,0,0,0.05)] sm:p-6 2xl:p-8">
         <p className="font-nunito text-xs font-medium uppercase leading-4 text-[#7d8488]">
           Ready to begin?
         </p>
@@ -56,7 +56,7 @@ export function ActivitySidePanels() {
           {saved ? 'Saved for Later' : 'Save for Later'}
         </button>
       </section>
-      <section className="rounded-2xl border border-[#e8ebe8] bg-white p-8 shadow-[0_1px_1px_rgba(0,0,0,0.05)]">
+      <section className="rounded-2xl border border-[#e8ebe8] bg-white p-4 shadow-[0_1px_1px_rgba(0,0,0,0.05)] sm:p-6 2xl:p-8">
         <h2 className="font-nunito text-2xl font-medium leading-8 text-[#263238]">Parent Tips</h2>
         <div className="mt-6 space-y-5">
           {parentTips.map((tip, index) => (
@@ -71,7 +71,7 @@ export function ActivitySidePanels() {
           ))}
         </div>
       </section>
-      <section className="rounded-2xl border border-[#fff0a8] bg-[#fffde8] p-8">
+      <section className="rounded-2xl border border-[#fff0a8] bg-[#fffde8] p-4 sm:p-6 2xl:p-8">
         <h2 className="font-nunito text-2xl font-medium leading-8 text-[#263238]">Safety Notes</h2>
         <div className="mt-6 space-y-6">
           {safetyNotes.map((note) => (
@@ -89,7 +89,7 @@ export function ActivitySidePanels() {
           ))}
         </div>
       </section>
-      <section className="rounded-2xl bg-[#cfe1dc] p-8">
+      <section className="rounded-2xl bg-[#cfe1dc] p-4 sm:col-span-2 sm:p-6 2xl:col-span-1 2xl:p-8">
         <h2 className="flex items-center gap-2 font-nunito text-xl font-medium leading-7 text-[#263238]">
           <TrendingUp aria-hidden="true" size={20} strokeWidth={1.5} className="text-[#2f7d7e]" />
           Development Goal
