@@ -51,7 +51,7 @@ export function AddResourceReview() {
   }
 
   return (
-    <section className="mx-auto w-full max-w-231.5 pb-8 pt-6 text-[#263238] lg:pt-0">
+    <section className="mx-auto w-full min-w-0 max-w-231.5 pb-8 pt-6 text-[#263238] lg:pt-0 2xl:pt-0">
       <Link
         href="/dashboard/admin/parent-resources"
         className="inline-flex items-center gap-1.5 font-manrope text-sm font-medium leading-5 text-[#607d8b]"
@@ -66,7 +66,7 @@ export function AddResourceReview() {
         <ResourceFormStepper currentStep={7} />
       </div>
 
-      <section className="mt-5 rounded-2xl border border-[#e7eceb] bg-white p-5 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:p-6.25">
+      <section className="mt-5 rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:p-5 2xl:p-6.25">
         <h2 className="font-nunito text-lg font-bold leading-6.75">7. Review</h2>
         <p className="mt-5 font-manrope text-sm leading-5.25 text-[#607d8b]">
           Preview how this resource will appear in the Parent Dashboard. This is exactly what
@@ -78,7 +78,7 @@ export function AddResourceReview() {
             <BookOpen aria-hidden="true" className="size-10 text-[#2f7d7e]" strokeWidth={1.5} />
           </div>
 
-          <div className="p-6">
+          <div className="p-4 sm:p-5 2xl:p-6">
             <div className="flex flex-wrap items-center gap-1.25">
               <span className="rounded-full border border-[#dceeee] bg-[#e0f0e9] px-2.25 py-1.75 font-nunito text-xs font-medium leading-4 text-[#263238]">
                 Sensory
@@ -92,8 +92,8 @@ export function AddResourceReview() {
               </span>
             </div>
 
-            <div className="mt-4 flex items-center gap-3">
-              <span className="flex size-6 items-center justify-center rounded-full bg-[#2f7d7e] font-nunito text-sm font-bold leading-5 text-white">
+            <div className="mt-4 flex items-start gap-3 sm:items-center 2xl:items-center">
+              <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-[#2f7d7e] font-nunito text-sm font-bold leading-5 text-white">
                 J
               </span>
               <span className="font-manrope text-sm font-medium leading-5 text-[#263238]">
@@ -101,7 +101,7 @@ export function AddResourceReview() {
               </span>
             </div>
 
-            <h3 className="h-10.5 pt-3 font-nunito text-xl font-bold leading-7.5 text-[#263238]">
+            <h3 className="min-h-10.5 pt-3 font-nunito text-xl font-bold leading-7.5 text-[#263238] 2xl:h-10.5">
               Developmental Milestones: What to Expect at Every Stage
             </h3>
 
@@ -115,8 +115,8 @@ export function AddResourceReview() {
                   multiple domains simultaneously.
                 </p>
 
-                <blockquote className="mt-6 border-l-4 border-[#2f7d7e] py-2 pl-6">
-                  <p className="font-lora text-lg italic leading-[31.5px] text-[#263238]">
+                <blockquote className="mt-6 border-l-4 border-[#2f7d7e] py-2 pl-4 sm:pl-6 2xl:pl-6">
+                  <p className="font-lora text-lg italic leading-7.875 text-[#263238]">
                     “A milestone is a signpost, not a deadline. Most children reach them — the
                     timing just varies within a range that&apos;s often wider than parents expect.”
                   </p>
@@ -141,7 +141,7 @@ export function AddResourceReview() {
               <h4 className="font-nunito text-xl font-bold leading-7 text-[#263238]">
                 Related Activities
               </h4>
-              <div className="mt-6 grid gap-4 sm:grid-cols-3">
+              <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-3">
                 {relatedActivities.map(([title, age, skill, image]) => (
                   <article
                     key={title}

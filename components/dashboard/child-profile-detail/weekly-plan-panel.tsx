@@ -4,7 +4,7 @@ const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 export function WeeklyPlanPanel() {
   return (
-    <section className="flex flex-col gap-6 rounded-2xl border border-[#e8ebe8] bg-[#fffdf8] p-4 sm:p-8 shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
+    <section className="flex min-w-0 flex-col gap-6 rounded-2xl border border-[#e8ebe8] bg-[#fffdf8] p-4 sm:p-6 2xl:p-8 shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
       <div className="flex flex-col gap-8">
         <div className="flex flex-col gap-6">
           <div className="flex flex-col gap-1">
@@ -26,12 +26,12 @@ export function WeeklyPlanPanel() {
           <p className="font-nunito text-xs font-medium leading-4 text-[#2f7d7e]">
             Daily activities
           </p>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-0.5">
             {days.map((day, index) => {
               const complete = index < 2;
               const current = index === 2;
               return (
-                <div key={day} className="flex w-7.5 flex-col items-center gap-1">
+                <div key={day} className="flex min-w-0 flex-col items-center gap-1 sm:w-7.5">
                   <span
                     className={`flex size-7.5 items-center justify-center rounded-full border-2 ${complete || current ? 'border-[#2f7d7e] bg-[#2f7d7e]' : 'border-[#d4d6d7] bg-[#d4d6d7]'}`}
                   >

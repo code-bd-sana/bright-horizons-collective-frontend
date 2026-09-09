@@ -2,7 +2,8 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { ChevronDown } from 'lucide-react';
 
 import type { ChildDetail } from './types';
 
@@ -36,11 +37,13 @@ const getTabs = (id: string) => [
 
 export function ProfileHeader({ child }: { child: ChildDetail }) {
   const pathname = usePathname();
+  const router = useRouter();
   const tabs = getTabs(child.id);
+  const activeTab = tabs.find((tab) => tab.path === pathname) ?? tabs[0];
 
   return (
     <div className="flex w-full flex-col gap-4 sm:gap-5">
-      <div className="flex h-5.5 items-center gap-1.5 font-manrope text-sm leading-5.5 tracking-[-0.084px]">
+      <div className="flex min-h-5.5 flex-wrap items-center gap-1.5 font-manrope text-sm leading-5.5 tracking-[-0.084px]">
         <Link href="/dashboard/child-profiles" className="text-[#2f7d7e]">
           Child Profiles
         </Link>
@@ -48,8 +51,35 @@ export function ProfileHeader({ child }: { child: ChildDetail }) {
         <span className="text-[#263238]">{child.name}</span>
       </div>
 
-      <nav className="w-full rounded-2xl border-b border-[#d8ddd9] bg-white p-2 sm:p-4 shadow-[-46px_61px_10.5px_rgba(171,171,171,0),-29px_39px_10px_rgba(171,171,171,0.01),-17px_22px_8.5px_rgba(171,171,171,0.03),-7px_10px_6px_rgba(171,171,171,0.04),-2px_2px_3.5px_rgba(171,171,171,0.05)]">
-        <div className="flex items-center gap-3 overflow-x-auto">
+      <nav className="w-full rounded-2xl border-b border-[#d8ddd9] bg-white p-2 shadow-[-46px_61px_10.5px_rgba(171,171,171,0),-29px_39px_10px_rgba(171,171,171,0.01),-17px_22px_8.5px_rgba(171,171,171,0.03),-7px_10px_6px_rgba(171,171,171,0.04),-2px_2px_3.5px_rgba(171,171,171,0.05)] sm:p-4">
+        <label className="relative block sm:hidden">
+          <span className="sr-only">Profile section</span>
+          <Image
+            src={activeTab.icon}
+            alt=""
+            width={20}
+            height={20}
+            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2"
+          />
+          <select
+            aria-label="Profile section"
+            className="h-11 w-full appearance-none rounded-xl border border-[#d8ddd9] bg-white py-2 pl-10 pr-10 font-manrope text-sm text-[#263238] outline-none focus:border-[#2f7d7e]"
+            onChange={(event) => router.push(event.target.value)}
+            value={activeTab.path}
+          >
+            {tabs.map((tab) => (
+              <option key={tab.path} value={tab.path}>
+                {tab.label}
+              </option>
+            ))}
+          </select>
+          <ChevronDown
+            aria-hidden="true"
+            className="pointer-events-none absolute right-3 top-1/2 size-5 -translate-y-1/2 text-[#515b60]"
+            strokeWidth={1.5}
+          />
+        </label>
+        <div className="hidden items-center gap-2 overflow-x-auto sm:flex 2xl:gap-3">
           {tabs.map((tab) => {
             const isActive = pathname === tab.path;
             return (
@@ -75,7 +105,7 @@ export function ProfileHeader({ child }: { child: ChildDetail }) {
       </nav>
 
       {pathname === `/dashboard/child-profiles/${child.id}` && (
-        <section className="relative flex min-h-43.5 w-full flex-col gap-6 overflow-hidden rounded-2xl border border-[#fce9e3] bg-[#fffdf8] p-4 sm:p-8 lg:flex-row lg:items-start lg:justify-between lg:gap-8">
+        <section className="relative flex min-h-43.5 w-full flex-col gap-6 overflow-hidden rounded-2xl border border-[#fce9e3] bg-[#fffdf8] p-4 sm:p-6 2xl:flex-row 2xl:items-start 2xl:justify-between 2xl:gap-8 2xl:p-8">
           <Image
             src="/Home/figma-child-detail-banner-background.svg"
             alt=""
@@ -105,16 +135,16 @@ export function ProfileHeader({ child }: { child: ChildDetail }) {
             className="pointer-events-none absolute -bottom-36 -left-16 z-0 rotate-[-33.09deg] opacity-70"
           />
 
-          <div className="relative z-10 flex min-w-0 items-center gap-3 sm:gap-4">
-            <span className="flex size-25 shrink-0 items-center justify-center rounded-2xl border border-[#d5e5e5] bg-white p-2.5 shadow-[0_1px_1.5px_rgba(0,0,0,0.1),0_1px_1px_rgba(0,0,0,0.1)]">
-              <span className="relative size-20 overflow-hidden rounded-2xl bg-[#b16262] shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
+          <div className="relative z-10 flex min-w-0 flex-col items-start gap-3 min-[420px]:flex-row min-[420px]:items-center sm:gap-4">
+            <span className="flex size-20 shrink-0 items-center justify-center rounded-2xl border border-[#d5e5e5] bg-white p-2 shadow-[0_1px_1.5px_rgba(0,0,0,0.1),0_1px_1px_rgba(0,0,0,0.1)] sm:size-25 sm:p-2.5">
+              <span className="relative size-16 overflow-hidden rounded-2xl bg-[#b16262] shadow-[0_1px_2px_rgba(0,0,0,0.05)] sm:size-20">
                 <Image
                   src={
                     child.id === 'emma' ? '/Home/figma-child-detail-banner-emma.png' : child.image
                   }
                   alt={child.name}
                   fill
-                  sizes="80px"
+                  sizes="(max-width: 639px) 64px, 80px"
                   className="object-cover"
                   style={{ objectPosition: child.imagePosition }}
                 />
@@ -140,13 +170,13 @@ export function ProfileHeader({ child }: { child: ChildDetail }) {
           </div>
 
           <div className="relative z-10 flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center sm:gap-4">
-            <button
-              type="button"
+            <Link
+              href={`/dashboard/child-profiles/${child.id}/personal-information`}
               className="flex w-full items-center justify-center gap-1 rounded-full border border-[#d8ddd9] bg-white px-3 py-2 font-nunito text-sm font-medium leading-6 tracking-[-0.176px] text-[#2f7d7e] shadow-[inset_0_-6px_2px_rgba(255,255,255,0.07)] sm:w-auto"
             >
               <Image src="/Home/figma-child-detail-edit.svg" alt="" width={16} height={16} />
               Edit Profile
-            </button>
+            </Link>
             <Link
               href="/dashboard/child-profiles"
               className="flex w-full items-center justify-center gap-1 rounded-full border border-[#d8ddd9] bg-white px-3 py-2 font-nunito text-sm font-medium leading-6 tracking-[-0.176px] text-[#2f7d7e] shadow-[inset_0_-6px_2px_rgba(255,255,255,0.07)] sm:w-auto"

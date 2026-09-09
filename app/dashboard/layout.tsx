@@ -18,7 +18,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           className={
             isAdmin
               ? 'min-h-0 flex-1 overflow-y-auto overscroll-contain p-5 sm:p-6 xl:px-10 xl:py-5'
-              : 'min-h-0 flex-1 overflow-y-auto overscroll-contain p-4 sm:p-6 xl:p-8'
+              : 'min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain p-4 sm:p-6 xl:p-8'
           }
         >
           {children}

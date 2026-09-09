@@ -21,13 +21,13 @@ export function SiteHeader({
       <Logo
         width={123}
         height={123}
-        showBackdrop
+        // showBackdrop
         backdropSrc={backdropSrc}
         className="pointer-events-auto absolute left-[calc(50%-766px)] top-4 z-20 max-[1600px]:left-8 max-xl:left-4 max-lg:hidden"
       />
 
       <div
-        className={`pointer-events-auto absolute left-1/2 z-30 -translate-x-1/2 max-lg:top-4 max-lg:w-[min(92vw,662px)] max-sm:top-2 max-sm:w-[min(96vw,662px)] ${navbarPosition}`}
+        className={`pointer-events-auto absolute left-1/2 z-30 -translate-x-1/2 max-lg:top-4 max-lg:w-[min(92vw,662px)] max-sm:top-2 max-sm:w-[min(90vw,622px)] ${navbarPosition}`}
       >
         <Navbar />
       </div>

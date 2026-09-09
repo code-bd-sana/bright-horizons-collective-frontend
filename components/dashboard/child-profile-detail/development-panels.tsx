@@ -43,7 +43,7 @@ const progressItems = [
 
 export function DevelopmentProgressPanel() {
   return (
-    <section className="flex flex-col gap-6 rounded-2xl border border-[#E8EBE8] bg-white p-4 sm:p-8 shadow-sm">
+    <section className="flex min-w-0 flex-col gap-6 rounded-2xl border border-[#E8EBE8] bg-white p-4 shadow-sm sm:p-6 2xl:p-8">
       <div className="flex flex-col gap-1">
         <p className="font-nunito text-xs font-medium text-[#2F7D7E]">Development Tracking</p>
         <h2 className="font-nunito text-2xl font-medium leading-8 text-[#263238]">
@@ -64,7 +64,7 @@ export function DevelopmentProgressPanel() {
           {progressItems.map(([label, value, color]) => (
             <div key={label} className="flex items-center justify-between">
               <span className="flex items-center gap-2">
-                <span className="h-2.5 w-2.5 rounded-[5px]" style={{ backgroundColor: color }} />
+                <span className="size-2.5 rounded-[5px]" style={{ backgroundColor: color }} />
                 <span className="font-nunito text-xs font-medium leading-4 text-[#263238]">
                   {label}
                 </span>
@@ -90,14 +90,14 @@ export function DevelopmentProgressPanel() {
 
 export function RecentActivityPanel() {
   return (
-    <section className="flex flex-col gap-6 rounded-2xl border border-[#E8EBE8] bg-white p-4 sm:p-8 shadow-sm">
-      <div className="flex items-center justify-between">
-        <h2 className="font-nunito text-2xl font-medium leading-8 text-[#263238]">
+    <section className="flex min-w-0 flex-col gap-6 rounded-2xl border border-[#E8EBE8] bg-white p-4 shadow-sm sm:p-6 2xl:p-8">
+      <div className="flex items-center justify-between gap-3">
+        <h2 className="font-nunito text-xl font-medium leading-7 text-[#263238] sm:text-2xl sm:leading-8">
           Recent activity
         </h2>
         <button
           type="button"
-          className="flex items-center gap-1 py-1.5 font-nunito text-base font-medium text-[#2F7D7E] hover:underline"
+          className="flex shrink-0 items-center gap-1 py-1.5 font-nunito text-sm font-medium text-[#2F7D7E] hover:underline sm:text-base"
         >
           View all
           <ChevronRight className="h-4 w-4" />

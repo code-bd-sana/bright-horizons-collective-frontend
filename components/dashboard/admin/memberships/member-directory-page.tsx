@@ -55,11 +55,11 @@ function MemberActions({ member }: { member: Member }) {
   ];
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="grid w-full grid-cols-3 gap-2 2xl:flex 2xl:w-auto 2xl:items-center 2xl:gap-1">
       <Link
         href={`/dashboard/admin/memberships/member-directory/${memberSlug(member)}`}
         aria-label={`View ${member.name}`}
-        className="flex size-7 items-center justify-center rounded-[10px] text-[#607d8b] transition-colors hover:bg-[#f4f8f6] hover:text-[#2f7d7e] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2f7d7e]"
+        className="flex h-9 items-center justify-center rounded-[10px] border border-[#e7eceb] text-[#607d8b] transition-colors hover:bg-[#f4f8f6] hover:text-[#2f7d7e] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2f7d7e] 2xl:size-7 2xl:border-0"
       >
         <Eye aria-hidden="true" size={14} strokeWidth={1.6} />
       </Link>
@@ -68,7 +68,7 @@ function MemberActions({ member }: { member: Member }) {
           key={label}
           type="button"
           aria-label={label}
-          className="flex size-7 items-center justify-center rounded-[10px] text-[#607d8b] transition-colors hover:bg-[#f4f8f6] hover:text-[#2f7d7e] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2f7d7e]"
+          className="flex h-9 items-center justify-center rounded-[10px] border border-[#e7eceb] text-[#607d8b] transition-colors hover:bg-[#f4f8f6] hover:text-[#2f7d7e] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2f7d7e] 2xl:size-7 2xl:border-0"
         >
           <Icon aria-hidden="true" size={14} strokeWidth={1.6} />
         </button>
@@ -79,7 +79,7 @@ function MemberActions({ member }: { member: Member }) {
 
 function DirectoryTable({ directoryMembers }: { directoryMembers: Member[] }) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-[#e7eceb] bg-white shadow-[0_4px_12px_rgba(0,0,0,0.06)]">
+    <div className="overflow-x-auto rounded-2xl border border-[#e7eceb] bg-white shadow-[0_4px_12px_rgba(0,0,0,0.06)]">
       <Table className="min-w-292.5 table-fixed border-collapse">
         <colgroup>
           <col className="w-[16%]" />
@@ -125,7 +125,7 @@ function DirectoryTable({ directoryMembers }: { directoryMembers: Member[] }) {
                   </span>
                 </div>
               </TableCell>
-              <TableCell className="px-5 font-manrope text-[13px] leading-[19.5px] text-[#263238]">
+              <TableCell className="px-5 font-manrope text-[13px] leading-4.875 text-[#263238]">
                 {member.children}
               </TableCell>
               <TableCell className="px-5">
@@ -134,13 +134,13 @@ function DirectoryTable({ directoryMembers }: { directoryMembers: Member[] }) {
               <TableCell className="px-5">
                 <StatusBadge status={member.status} />
               </TableCell>
-              <TableCell className="px-5 font-manrope text-[13px] leading-[19.5px] text-[#263238]">
+              <TableCell className="px-5 font-manrope text-[13px] leading-4.875 text-[#263238]">
                 {member.joinDate}
               </TableCell>
-              <TableCell className="px-5 font-manrope text-[13px] leading-[19.5px] text-[#263238]">
+              <TableCell className="px-5 font-manrope text-[13px] leading-4.875 text-[#263238]">
                 {member.renewalDate}
               </TableCell>
-              <TableCell className="px-5 font-manrope text-[13px] leading-[19.5px] text-[#263238]">
+              <TableCell className="px-5 font-manrope text-[13px] leading-4.875 text-[#263238]">
                 {member.currentPlan}
               </TableCell>
               <TableCell className="px-3">
@@ -156,29 +156,49 @@ function DirectoryTable({ directoryMembers }: { directoryMembers: Member[] }) {
 
 function MobileMemberCards({ directoryMembers }: { directoryMembers: Member[] }) {
   return (
-    <div className="space-y-3 lg:hidden">
+    <div className="grid gap-3 md:grid-cols-2 2xl:hidden">
       {directoryMembers.map((member) => (
         <article
           key={member.email}
           className="rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_12px_rgba(0,0,0,0.06)]"
         >
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex min-w-0 items-center gap-3">
-              <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[rgba(47,125,126,0.09)] font-nunito text-xs font-bold text-[#2f7d7e]">
-                {member.initials}
-              </span>
-              <div className="min-w-0">
-                <p className="truncate font-manrope text-sm font-semibold text-[#263238]">
-                  {member.name}
-                </p>
-                <p className="truncate font-manrope text-xs text-[#607d8b]">{member.children}</p>
-              </div>
+          <div className="flex min-w-0 items-center gap-3">
+            <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[rgba(47,125,126,0.09)] font-nunito text-xs font-bold text-[#2f7d7e]">
+              {member.initials}
+            </span>
+            <div className="min-w-0">
+              <p className="truncate font-manrope text-sm font-semibold text-[#263238]">
+                {member.name}
+              </p>
+              <p className="truncate font-manrope text-xs text-[#607d8b]">{member.children}</p>
             </div>
-            <MemberActions member={member} />
           </div>
           <div className="mt-4 flex flex-wrap items-center gap-2">
             <MembershipTierBadge tier={member.membershipTier} />
             <StatusBadge status={member.status} />
+          </div>
+          <dl className="mt-4 grid grid-cols-2 gap-3 border-t border-[#e7eceb] pt-4">
+            <div>
+              <dt className="font-manrope text-[11px] font-semibold tracking-wider text-[#607d8b] uppercase">
+                Joined
+              </dt>
+              <dd className="mt-1 font-manrope text-xs text-[#263238]">{member.joinDate}</dd>
+            </div>
+            <div>
+              <dt className="font-manrope text-[11px] font-semibold tracking-wider text-[#607d8b] uppercase">
+                Renewal
+              </dt>
+              <dd className="mt-1 font-manrope text-xs text-[#263238]">{member.renewalDate}</dd>
+            </div>
+            <div className="col-span-2">
+              <dt className="font-manrope text-[11px] font-semibold tracking-wider text-[#607d8b] uppercase">
+                Current Plan
+              </dt>
+              <dd className="mt-1 font-manrope text-xs text-[#263238]">{member.currentPlan}</dd>
+            </div>
+          </dl>
+          <div className="mt-4">
+            <MemberActions member={member} />
           </div>
         </article>
       ))}
@@ -205,7 +225,7 @@ export function MemberDirectoryPage() {
   }, [search, selectedStatus, selectedTier]);
 
   return (
-    <section className="mx-auto w-full max-w-383.5 pb-8">
+    <section className="mx-auto w-full min-w-0 max-w-383.5 pb-8">
       <Link
         href="/dashboard/admin/memberships"
         className="inline-flex items-center gap-1.5 font-manrope text-sm font-medium leading-5 text-[#607d8b] transition-colors hover:text-[#2f7d7e] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#2f7d7e]"
@@ -223,9 +243,9 @@ export function MemberDirectoryPage() {
         </p>
       </div>
 
-      <div className="mt-6 rounded-2xl border border-[#e7eceb] bg-white p-4.25 shadow-[0_4px_6px_rgba(0,0,0,0.06)]">
-        <div className="flex flex-wrap items-center gap-3">
-          <label className="flex h-9.5 w-full items-center gap-2 rounded-[14px] border border-[#e7eceb] bg-[#f4f8f6] px-3 text-[#607d8b] lg:w-[calc(100%-477px)] lg:min-w-107.5">
+      <div className="mt-6 rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:p-4.25 2xl:p-4.25">
+        <div className="grid items-center gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_194px_111px_auto] 2xl:flex 2xl:flex-wrap">
+          <label className="flex h-9.5 min-w-0 items-center gap-2 rounded-[14px] border border-[#e7eceb] bg-[#f4f8f6] px-3 text-[#607d8b] sm:col-span-2 xl:col-span-1 2xl:w-[calc(100%-477px)] 2xl:min-w-107.5">
             <Search aria-hidden="true" size={15} strokeWidth={1.8} />
             <span className="sr-only">Search members</span>
             <input
@@ -236,7 +256,7 @@ export function MemberDirectoryPage() {
             />
           </label>
 
-          <label className="relative h-9.5 w-full sm:w-48.5">
+          <label className="relative h-9.5 w-full 2xl:w-48.5">
             <span className="sr-only">Filter by membership tier</span>
             <select
               value={selectedTier}
@@ -256,7 +276,7 @@ export function MemberDirectoryPage() {
             />
           </label>
 
-          <label className="relative h-9.5 w-full sm:w-27.75">
+          <label className="relative h-9.5 w-full 2xl:w-27.75">
             <span className="sr-only">Filter by status</span>
             <select
               value={selectedStatus}
@@ -275,16 +295,16 @@ export function MemberDirectoryPage() {
             />
           </label>
 
-          <p className="font-manrope text-[13px] leading-[19.5px] text-[#607d8b]">
+          <p className="font-manrope text-[13px] leading-4.875 text-[#607d8b]">
             {filteredMembers.length} members
           </p>
         </div>
       </div>
 
-      <div className="mt-6 hidden lg:block">
+      <div className="mt-6 hidden 2xl:block">
         <DirectoryTable directoryMembers={filteredMembers} />
       </div>
-      <div className="mt-4 lg:hidden">
+      <div className="mt-4 2xl:hidden">
         <MobileMemberCards directoryMembers={filteredMembers} />
       </div>
 
@@ -294,8 +314,8 @@ export function MemberDirectoryPage() {
         </div>
       ) : null}
 
-      <footer className="mt-6 flex items-center justify-between gap-4 px-1 pt-1">
-        <p className="font-manrope text-[13px] leading-[19.5px] text-[#607d8b]">
+      <footer className="mt-6 flex flex-col items-start gap-4 px-1 pt-1 sm:flex-row sm:items-center sm:justify-between 2xl:flex-row 2xl:items-center 2xl:justify-between">
+        <p className="font-manrope text-[13px] leading-4.875 text-[#607d8b]">
           Showing {filteredMembers.length} of {members.length} members
         </p>
         <nav className="flex items-center gap-2" aria-label="Member directory pages">

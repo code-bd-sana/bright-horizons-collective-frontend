@@ -35,8 +35,8 @@ const testimonials: Testimonial[] = [
 
 function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
   return (
-    <article className="w-[571px] shrink-0 overflow-hidden rounded-3xl border border-[#E9F1EE] bg-white p-8">
-      <div className="flex flex-col gap-12">
+    <article className="w-full max-w-[571px] overflow-hidden rounded-3xl border border-[#E9F1EE] bg-white p-5 sm:p-8">
+      <div className="flex flex-col gap-6 sm:gap-10">
         <div className="flex items-center justify-between">
           <span className="font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#7D8488]">
             {testimonial.number}
@@ -57,38 +57,38 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
           </div>
         </div>
 
-        <div className="flex flex-col gap-6">
-          <blockquote className="min-w-full font-nunito text-xl leading-7 font-medium text-[#7D8488]">
+        <div className="flex flex-col gap-5 sm:gap-6">
+          <blockquote className="font-nunito text-base sm:text-xl leading-6 sm:leading-7 font-medium text-[#7D8488]">
             {quote}
           </blockquote>
 
-          <div className="relative h-0 w-[507px] rotate-180">
+          <div className="relative h-1 w-full overflow-hidden">
             <Image
               src={testimonial.divider}
               alt=""
-              width={507}
-              height={2}
-              className="absolute left-0 top-[-2px] h-0.5 w-[507px] max-w-none"
+              fill
+              sizes="571px"
+              className="object-cover object-left"
             />
           </div>
 
-          <div className="flex items-start justify-between">
-            <div className="flex flex-col gap-2">
-              <p className="w-[233px] font-nunito text-xl leading-7 font-medium text-[#263238]">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex flex-col gap-1 sm:gap-2">
+              <p className="font-nunito text-lg sm:text-xl leading-7 font-medium text-[#263238]">
                 Sarah Karim
               </p>
-              <p className="font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#7D8488]">
+              <p className="font-manrope text-xs sm:text-sm leading-[20px] sm:leading-[22px] tracking-[-0.084px] text-[#7D8488]">
                 {testimonial.age}
               </p>
-              <p className="flex items-center gap-2 whitespace-nowrap font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#7D8488]">
+              <p className="flex flex-wrap items-center gap-1.5 sm:gap-2 font-manrope text-xs sm:text-sm leading-[20px] sm:leading-[22px] tracking-[-0.084px] text-[#7D8488]">
                 <span>Member since 2024</span>
                 <span>·</span>
                 <span>Portland, OR</span>
               </p>
             </div>
 
-            <div className="relative size-[58px] shrink-0 overflow-hidden rounded-lg">
-              <div className="absolute -left-0.5 -top-[26px] h-[106px] w-16">
+            <div className="relative size-12 sm:size-[58px] shrink-0 overflow-hidden rounded-lg">
+              <div className="absolute -left-0.5 -top-5 sm:-top-[26px] h-24 sm:h-[106px] w-14 sm:w-16">
                 <Image src={testimonial.image} alt="" fill sizes="58px" className="object-cover" />
               </div>
             </div>
@@ -101,11 +101,11 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
 
 function TestimonialsHeading() {
   return (
-    <header className="flex flex-col items-center gap-4 text-center">
+    <header className="flex flex-col items-center gap-3 sm:gap-4 text-center px-4">
       <span className="rounded-xl border border-[#FAE1D9] bg-white px-2 py-1.5 font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#614840]">
         Member love
       </span>
-      <h2 className="whitespace-nowrap font-nunito text-5xl leading-14 font-semibold tracking-[-0.48px] text-[#263238]">
+      <h2 className="font-nunito text-[clamp(28px,5vw,48px)] leading-[1.16] font-semibold tracking-[-0.48px] text-[#263238]">
         Why families love Bright Horizons
       </h2>
     </header>
@@ -118,7 +118,7 @@ function TestimonialControls() {
       <button
         type="button"
         aria-label="Previous testimonial"
-        className="flex size-10 items-center justify-center"
+        className="flex size-10 items-center justify-center transition-opacity hover:opacity-75"
       >
         <Image
           src={`${assetBase}-teenyicons-arrow-up-solid.svg`}
@@ -131,7 +131,7 @@ function TestimonialControls() {
       <button
         type="button"
         aria-label="Next testimonial"
-        className="flex size-10 items-center justify-center"
+        className="flex size-10 items-center justify-center transition-opacity hover:opacity-75"
       >
         <Image
           src={`${assetBase}-teenyicons-arrow-up-solid1.svg`}
@@ -185,14 +185,12 @@ function DesktopTestimonials() {
 
 function CompactTestimonials() {
   return (
-    <div className="relative overflow-hidden bg-[#E0F2FE] px-5 py-24 sm:px-8 sm:py-32 min-[1600px]:hidden">
-      <div className="relative z-10 mx-auto max-w-[571px]">
+    <div className="relative overflow-hidden bg-[#E0F2FE] px-4 py-16 sm:px-8 sm:py-24 min-[1600px]:hidden">
+      <div className="relative z-10 mx-auto max-w-290">
         <TestimonialsHeading />
-        <div className="mt-16 flex flex-col items-center gap-6">
+        <div className="mt-10 sm:mt-16 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 justify-items-center">
           {testimonials.map((testimonial) => (
-            <div key={testimonial.number} className="max-w-full overflow-hidden rounded-3xl">
-              <TestimonialCard testimonial={testimonial} />
-            </div>
+            <TestimonialCard key={testimonial.number} testimonial={testimonial} />
           ))}
         </div>
         <div className="mt-10 flex justify-center">

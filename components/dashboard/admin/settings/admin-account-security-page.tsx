@@ -45,12 +45,12 @@ export function AdminAccountSecurityPage() {
 
   return (
     <AdminSettingsShell activeSection="security">
-      <main className="w-full max-w-3xl space-y-6">
+      <main className="w-full min-w-0 max-w-3xl space-y-6">
         <header>
           <h1 className="font-nunito text-[22px] font-bold leading-8.25 text-[#263238]">
             Account Security
           </h1>
-          <p className="pt-0.5 font-manrope text-[13px] leading-[19.5px] text-[#607d8b]">
+          <p className="pt-0.5 font-manrope text-[13px] leading-4.875 text-[#607d8b]">
             Update your login credentials and review recent account activity.
           </p>
         </header>
@@ -68,8 +68,8 @@ export function AdminAccountSecurityPage() {
           schema={securitySchema}
         >
           {(form) => (
-            <section className="rounded-2xl border border-[#e7eceb] bg-white p-6 shadow-[0_4px_6px_rgba(0,0,0,0.06)]">
-              <h2 className="font-nunito text-[17px] font-bold leading-[25.5px] text-[#263238]">
+            <section className="rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:p-5 2xl:p-6">
+              <h2 className="font-nunito text-[17px] font-bold leading-6.375 text-[#263238]">
                 Change Password
               </h2>
               <div className="mt-5 space-y-5">
@@ -77,7 +77,7 @@ export function AdminAccountSecurityPage() {
                   const isVisible = visiblePasswords[name];
                   return (
                     <label key={name} className="flex flex-col gap-1.5">
-                      <span className="font-manrope text-[13px] font-semibold leading-[19.5px] text-[#263238]">
+                      <span className="font-manrope text-[13px] font-semibold leading-4.875 text-[#263238]">
                         {label} <span className="text-[#e57373]">*</span>
                       </span>
                       <span className="relative block">
@@ -104,17 +104,17 @@ export function AdminAccountSecurityPage() {
                           )}
                         </button>
                       </span>
-                      {form.formState.errors[name] && (
+                      {form.formState.errors[name] ? (
                         <span className="font-manrope text-xs leading-4.5 text-[#e57373]">
                           {form.formState.errors[name].message}
                         </span>
-                      )}
+                      ) : null}
                     </label>
                   );
                 })}
                 <button
                   type="submit"
-                  className="rounded-[14px] bg-[#2f7d7e] px-6 py-2.5 font-manrope text-sm font-semibold leading-5 text-white transition-colors hover:bg-[#266b6c]"
+                  className="w-full rounded-[14px] bg-[#2f7d7e] px-6 py-2.5 font-manrope text-sm font-semibold leading-5 text-white transition-colors hover:bg-[#266b6c] sm:w-auto 2xl:w-auto"
                 >
                   Update Password
                 </button>
@@ -123,8 +123,8 @@ export function AdminAccountSecurityPage() {
           )}
         </DynamicForm>
 
-        <section className="rounded-2xl border border-[#e7eceb] bg-white p-6 shadow-[0_4px_6px_rgba(0,0,0,0.06)]">
-          <h2 className="font-nunito text-[17px] font-bold leading-[25.5px] text-[#263238]">
+        <section className="rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:p-5 2xl:p-6">
+          <h2 className="font-nunito text-[17px] font-bold leading-6.375 text-[#263238]">
             Security Tips
           </h2>
           <ul className="mt-4 space-y-3">
@@ -133,7 +133,7 @@ export function AdminAccountSecurityPage() {
                 <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-[rgba(47,125,126,0.08)] text-[#2f7d7e]">
                   <Check aria-hidden="true" size={11} strokeWidth={2} />
                 </span>
-                <span className="font-manrope text-sm leading-[22.4px] text-[#607d8b]">{tip}</span>
+                <span className="font-manrope text-sm leading-5.6 text-[#607d8b]">{tip}</span>
               </li>
             ))}
           </ul>

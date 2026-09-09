@@ -8,7 +8,7 @@ import { figmaExploreImages } from '@/features/explore/data/figma-explore-assets
 
 const activityBase = {
   imageAlt: 'A therapist-designed developmental activity',
-  href: '/dashboard/weekly-plans/activity-detail',
+  href: '/dashboard/explore/activities/bubble-wrap-stomp-counting',
   saved: false,
 };
 
@@ -112,7 +112,7 @@ const resource = (
     imageSrc: detail.imageSrc,
     imageAlt: `Parent resource about ${detail.title.toLowerCase()}`,
     badge: type === 'printable' ? 'Printable' : type === 'milestones' ? 'Stages' : 'Sensory',
-    href: `/dashboard/explore?tab=parent-resources#${type}`,
+    href: '/dashboard/explore/parent-resources/developmental-milestones',
     saved: false,
     description: detail.description,
     readTime: '5 min Read',

@@ -75,8 +75,8 @@ export function WeeklyPlanSchedulePage() {
   const router = useRouter();
 
   return (
-    <section className="mx-auto w-full max-w-237.25 pb-8 text-[#263238]">
-      <div className="w-full max-w-244.25 space-y-5">
+    <section className="mx-auto w-full min-w-0 max-w-237.25 pb-8 text-[#263238]">
+      <div className="w-full min-w-0 max-w-244.25 space-y-5">
         <button
           type="button"
           onClick={() => router.push('/dashboard/admin/weekly-plans')}
@@ -92,14 +92,14 @@ export function WeeklyPlanSchedulePage() {
           <WeeklyPlanFormStepper currentStep={3} />
         </section>
 
-        <section className="rounded-2xl border border-[#e7eceb] bg-white p-6 shadow-[0_4px_6px_rgba(0,0,0,0.06)]">
+        <section className="rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:p-6 2xl:p-6">
           <h2 className="font-nunito text-lg font-bold leading-7 text-[#263238]">3. Schedule</h2>
           <div className="mt-5 space-y-4">
             <p className="font-manrope text-sm leading-5.25 text-[#607d8b]">
               Assign selected activities to days Monday–Friday. An activity can appear on multiple
               days.
             </p>
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5 2xl:grid-cols-5">
               {schedule.map(([day, activity, tone]) => (
                 <DayScheduleCard key={day} day={day} activity={activity} tone={tone} />
               ))}
@@ -107,8 +107,8 @@ export function WeeklyPlanSchedulePage() {
           </div>
         </section>
 
-        <section className="flex flex-col gap-4 rounded-2xl border border-[#e7eceb] bg-white p-5 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex gap-2">
+        <section className="flex flex-col gap-4 rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:flex-row sm:items-center sm:justify-between sm:p-5 2xl:flex-row 2xl:items-center 2xl:justify-between 2xl:p-5">
+          <div className="grid grid-cols-2 gap-2 sm:flex 2xl:flex">
             <FlowButton
               onClick={() => router.push('/dashboard/admin/weekly-plans/create/activities')}
               className="border-[#e7eceb] text-[#607d8b]"
@@ -122,7 +122,7 @@ export function WeeklyPlanSchedulePage() {
               Next →
             </FlowButton>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="grid gap-2 sm:flex sm:flex-wrap 2xl:flex 2xl:flex-wrap">
             <FlowButton
               onClick={() => toast.success('Weekly plan saved as a draft.')}
               className="border-[#e7eceb] text-[#607d8b]"
@@ -143,8 +143,13 @@ export function WeeklyPlanSchedulePage() {
             </FlowButton>
           </div>
         </section>
-        <div className="flex items-center gap-2 rounded-[14px] border border-[rgba(246,195,68,0.25)] bg-[#fff8e1] px-4.25 py-3.25 font-manrope text-[13px] leading-[19.5px] text-[#b8860b]">
-          <TriangleAlert aria-hidden="true" size={15} strokeWidth={1.7} />
+        <div className="flex items-start gap-2 rounded-[14px] border border-[rgba(246,195,68,0.25)] bg-[#fff8e1] px-4.25 py-3.25 font-manrope text-[13px] leading-[19.5px] text-[#b8860b] sm:items-center 2xl:items-center">
+          <TriangleAlert
+            aria-hidden="true"
+            className="mt-0.5 shrink-0 sm:mt-0 2xl:mt-0"
+            size={15}
+            strokeWidth={1.7}
+          />
           You have unsaved changes. Navigating away will discard them.
         </div>
       </div>

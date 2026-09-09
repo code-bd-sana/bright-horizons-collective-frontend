@@ -5,8 +5,8 @@ import { WeeklyPlanPanel } from './weekly-plan-panel';
 
 export function ChildProfileDetailPage() {
   return (
-    <div className="mx-auto w-full max-w-382.25">
-      <div className="mt-4 grid gap-4 sm:mt-6 xl:grid-cols-2">
+    <div className="mx-auto w-full min-w-0 max-w-382.25">
+      <div className="mt-4 grid grid-cols-1 gap-4 sm:mt-6 2xl:grid-cols-2">
         <WeeklyPlanPanel />
         <ActivityPanel />
         <DevelopmentProgressPanel />

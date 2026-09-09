@@ -8,7 +8,7 @@ import { FieldLabel, SelectField, TextField, ToggleChips } from '@/components/ui
 
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="flex flex-col gap-6 rounded-2xl border border-[#EFF1EF] bg-white p-4 sm:gap-8 sm:p-8">
+    <section className="flex min-w-0 flex-col gap-6 rounded-2xl border border-[#EFF1EF] bg-white p-4 sm:p-6 2xl:gap-8 2xl:p-8">
       <div className="flex items-center gap-3">
         <h2 className="font-nunito text-2xl font-semibold leading-8 text-[#263238]">{title}</h2>
       </div>
@@ -28,10 +28,10 @@ export default async function PersonalInformationPage({
   if (!child) notFound();
 
   return (
-    <div className="mx-auto mt-8 flex w-full max-w-179.5 flex-col gap-8 pb-12 sm:mt-14 sm:gap-14">
+    <div className="mx-auto mt-8 flex w-full min-w-0 max-w-179.5 flex-col gap-8 pb-12 sm:mt-10 sm:gap-10 2xl:mt-14 2xl:gap-14">
       <div className="flex flex-col gap-6 sm:gap-8">
         <Card title="Basic Information">
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col items-start gap-4 min-[400px]:flex-row min-[400px]:items-center">
             <div className="flex h-16 w-16 shrink-0 overflow-hidden rounded-full shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
               <div className="relative h-full w-full bg-[#B16262]">
                 <Image
@@ -41,6 +41,7 @@ export default async function PersonalInformationPage({
                   alt=""
                   fill
                   className="object-cover"
+                  sizes="64px"
                   style={{ objectPosition: child.imagePosition }}
                 />
               </div>
@@ -111,7 +112,7 @@ export default async function PersonalInformationPage({
             initiallySelected={['Mother']}
           />
 
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-2.5">
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-2.5">
             <TextField
               id="email"
               label="Email"
@@ -218,7 +219,7 @@ export default async function PersonalInformationPage({
             <h3 className="font-nunito text-sm font-semibold leading-5 text-[#263238]">
               Remove this child profile
             </h3>
-            <p className="pb-1 font-manrope text-xs font-normal leading-[19.2px] text-[#515B60]">
+            <p className="pb-1 font-manrope text-xs font-normal leading-4.75 text-[#515B60]">
               This will permanently delete {child.name}&apos;s weekly plan history, activity
               history, progress data, and achievements. This cannot be undone.
             </p>

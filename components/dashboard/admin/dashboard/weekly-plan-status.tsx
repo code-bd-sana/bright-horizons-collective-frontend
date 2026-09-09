@@ -5,19 +5,19 @@ import { planStatuses } from './admin-dashboard-data';
 export function WeeklyPlanStatus() {
   return (
     <section
-      className="min-h-97.5 rounded-2xl border border-[#e3e9e8] bg-white p-6 shadow-[0_4px_8px_rgba(38,50,56,0.05)] 2xl:min-h-120.5"
+      className="min-w-0 rounded-2xl border border-[#e3e9e8] bg-white p-4 shadow-[0_4px_8px_rgba(38,50,56,0.05)] sm:p-6 2xl:min-h-120.5"
       aria-labelledby="weekly-plan-status-heading"
     >
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-col items-start gap-2 2xl:flex-row 2xl:items-center 2xl:justify-between 2xl:gap-4">
         <h2
           id="weekly-plan-status-heading"
-          className="font-nunito text-2xl font-medium leading-8 text-[#263238]"
+          className="font-nunito text-xl font-medium leading-7 text-[#263238] sm:text-2xl sm:leading-8"
         >
           Weekly Plan Status
         </h2>
         <Link
           href="/dashboard/admin/weekly-plans"
-          className="inline-flex items-center gap-1 whitespace-nowrap font-manrope text-sm leading-5.5 text-[#27898a]"
+          className="inline-flex items-center gap-1 font-manrope text-sm leading-5.5 text-[#27898a]"
         >
           Manage Weekly Plans <ArrowRight aria-hidden="true" size={16} strokeWidth={1.75} />
         </Link>

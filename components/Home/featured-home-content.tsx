@@ -268,6 +268,77 @@ function ToyGallery() {
   );
 }
 
+function ResponsiveToyGallery() {
+  const trainMask = {
+    maskClip: 'no-clip',
+    maskComposite: 'intersect',
+    maskImage: `url('${assetBase}-image136.svg')`,
+    maskMode: 'alpha',
+    maskPosition: '34.996px 18.996px',
+    maskRepeat: 'no-repeat',
+    maskSize: '430.008px 430.009px',
+    WebkitMaskImage: `url('${assetBase}-image136.svg')`,
+    WebkitMaskPosition: '34.996px 18.996px',
+    WebkitMaskRepeat: 'no-repeat',
+    WebkitMaskSize: '430.008px 430.009px',
+  };
+
+  return (
+    <div className="relative mx-auto h-[372px] w-[334px] max-[360px]:h-[321px] max-[360px]:w-[288px] sm:h-[642px] sm:w-[576px] lg:h-[535px] lg:w-[480px] xl:h-[642px] xl:w-[576px]">
+      <div className="absolute left-0 top-0 h-[642px] w-[576px] origin-top-left scale-[0.58] max-[360px]:scale-50 sm:scale-100 lg:scale-[0.833] xl:scale-100">
+        <div className="relative h-[642px] w-[576px] overflow-hidden rounded-[24px] bg-[#DCEEEE]">
+          <div className="absolute inset-0 flex overflow-hidden rounded-[inherit]">
+            <div className="relative h-[642px] w-[576px] shrink-0 blur-[11.5px]">
+              <Image
+                src="/Home/figma-home-1183-11287-grimms-rainbow-arc-stacker.png"
+                alt=""
+                fill
+                sizes="576px"
+                className="object-cover"
+              />
+            </div>
+            <div className="relative h-[642px] w-[576px] shrink-0">
+              <Image
+                src="/Home/figma-home-1183-11287-rainbow-stacker-close-up.png"
+                alt=""
+                fill
+                sizes="576px"
+                className="object-cover"
+              />
+            </div>
+          </div>
+          <div className="absolute left-[38px] top-[49.89px] h-[468px] w-[473px]" style={trainMask}>
+            <Image
+              src={`${assetBase}-image137.png`}
+              alt="Wooden rainbow arc stacker arranged in a train play scene"
+              fill
+              sizes="473px"
+              className="object-cover"
+            />
+          </div>
+          <button
+            type="button"
+            aria-label="Previous toy image"
+            className="absolute left-3 top-[265.31px] flex size-[38px] items-center justify-center rounded-[19px] bg-white/88 shadow-[0_2px_10px_rgba(0,0,0,0.14)]"
+          >
+            <AssetIcon name="icon" size={18} />
+          </button>
+          <button
+            type="button"
+            aria-label="Next toy image"
+            className="absolute left-[526px] top-[265.31px] flex size-[38px] items-center justify-center rounded-[19px] bg-white/88 shadow-[0_2px_10px_rgba(0,0,0,0.14)]"
+          >
+            <AssetIcon name="icon1" size={18} />
+          </button>
+          <span className="absolute left-[251px] top-[557px] rounded-full bg-[#174A4D]/62 px-[13px] py-1 font-nunito text-xs font-medium leading-4 text-white">
+            3 photos
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function BorderPill({ children }: { children: React.ReactNode }) {
   return (
     <span className="rounded-full border border-[#ACCBcb] bg-white px-[9px] py-[7px] font-nunito text-xs font-medium leading-4 text-[#2F7D7E]">
@@ -440,42 +511,56 @@ function DesktopFeaturedHomeContent() {
 function ResponsiveFeaturedHomeContent() {
   return (
     <div className="min-[1600px]:hidden">
-      <div className="relative overflow-hidden px-5 pb-28 pt-28 sm:px-8 sm:pt-36">
+      <div className="relative overflow-hidden px-4 pb-16 pt-16 sm:px-8 sm:pb-24 sm:pt-24 lg:pt-32">
         <div className="mx-auto max-w-290">
           <div className="text-center">
             <span className="inline-flex rounded-xl border border-[#FAE1D9] bg-[#FCE9E3] px-2 py-1.5 font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#614840]">
               For your family
             </span>
-            <h2 className="mt-4 font-nunito text-[clamp(34px,5vw,48px)] font-semibold leading-[1.16] tracking-[-0.48px] text-[#263238]">
+            <h2 className="mt-4 font-nunito text-[clamp(28px,5vw,48px)] font-semibold leading-[1.16] tracking-[-0.48px] text-[#263238]">
               Featured activities
             </h2>
           </div>
-          <div className="mt-16 grid gap-6 sm:grid-cols-2">
+          <div className="mt-10 grid grid-cols-1 gap-6 sm:mt-14 sm:grid-cols-2 sm:gap-8">
             {activityCards.map((activity) => (
               <article
                 key={activity.title}
-                className="overflow-hidden rounded-[24px] border border-[#E9F1EE] bg-white"
+                className="overflow-hidden rounded-[24px] border border-[#E9F1EE] bg-white max-w-[422px] mx-auto w-full"
               >
                 <div className="relative aspect-[422/286] overflow-hidden bg-[#A5C7B9]">
-                  <Image
-                    src={activity.image}
-                    alt=""
-                    fill
-                    sizes="(max-width: 640px) 90vw, 45vw"
-                    className="object-cover"
-                  />
-                  <span className="absolute left-4 top-4 rounded-full bg-white px-[10px] py-[3px] font-nunito text-xs font-medium leading-4 text-[#174A4D]">
+                  <div
+                    className={`absolute ${activity.imageClassName}`}
+                    style={imageMask(activity.maskPosition)}
+                  >
+                    <Image
+                      src={activity.image}
+                      alt=""
+                      fill
+                      sizes="422px"
+                      className="pointer-events-none object-cover"
+                    />
+                  </div>
+                  <span
+                    className={`absolute left-4 top-4 rounded-full px-[10px] py-[3px] font-nunito text-xs font-medium leading-4 text-[#174A4D] ${activity.difficulty === 'Moderate' ? 'bg-[#F6E6D4]' : 'bg-white'}`}
+                  >
                     {activity.difficulty}
                   </span>
                 </div>
-                <div className="p-4">
-                  <h3 className="font-nunito text-2xl font-medium leading-8 text-[#263238]">
+                <div className="p-4 sm:p-5">
+                  <h3 className="font-nunito text-xl sm:text-2xl font-medium leading-7 sm:leading-8 text-[#263238]">
                     {activity.title}
                   </h3>
-                  <p className="mt-4 font-nunito text-xs font-medium leading-4 text-[#174A4D]">
-                    Material: <span className="text-[#7D8488]">{activity.material}</span>
-                  </p>
-                  <div className="mt-3 flex flex-wrap gap-[5px]">
+                  <div className="mt-3 flex flex-wrap items-center gap-[5px]">
+                    <span className="rounded-full border border-[#DCEEEE] px-[9px] py-[7px] font-nunito text-xs font-medium leading-4 text-[#174A4D]">
+                      <span className="text-[#263238]">Material:</span>{' '}
+                      <span className="text-[#7D8488]">{activity.material}</span>
+                    </span>
+                    <span className="flex items-center gap-1 px-2 py-1.5 font-manrope text-xs leading-[18px] text-[#607077]">
+                      <AssetIcon name="icon4" size={12} />
+                      {activity.duration}
+                    </span>
+                  </div>
+                  <div className="mt-2 flex flex-wrap gap-[5px]">
                     <ActivityPill>{activity.location}</ActivityPill>
                     <ActivityPill>{activity.age}</ActivityPill>
                     <ActivityPill>{activity.skill}</ActivityPill>
@@ -487,7 +572,7 @@ function ResponsiveFeaturedHomeContent() {
           <div className="mt-10 text-center">
             <Link
               href="/explore"
-              className="inline-flex items-center gap-1 rounded-full bg-[#263238] px-3 py-2 font-nunito text-base font-medium leading-6 text-white"
+              className="inline-flex items-center gap-1 rounded-full bg-[#263238] px-4 py-2.5 font-nunito text-base font-medium leading-6 text-white hover:bg-[#174A4D] transition-colors"
             >
               See all <AssetIcon name="vector1" size={16} />
             </Link>
@@ -495,53 +580,68 @@ function ResponsiveFeaturedHomeContent() {
         </div>
       </div>
 
-      <div className="bg-[#F0F9FF] px-5 py-28 sm:px-8 sm:py-36">
+      <div className="bg-[#F0F9FF] px-4 py-16 sm:px-8 sm:py-24 lg:py-32">
         <div className="mx-auto max-w-290">
           <span className="inline-flex rounded-xl border border-[#D4D6D7] bg-[#FFFDF8] px-2 py-1.5 font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#515B60]">
             OT-recommended
           </span>
-          <h2 className="mt-4 font-nunito text-[clamp(34px,5vw,48px)] font-semibold leading-[1.16] tracking-[-0.48px] text-[#263238]">
+          <h2 className="mt-4 font-nunito text-[clamp(28px,5vw,48px)] font-semibold leading-[1.16] tracking-[-0.48px] text-[#263238]">
             Toy Spotlight
           </h2>
-          <p className="mt-6 max-w-[456px] font-manrope text-base leading-6 tracking-[-0.176px] text-[#515B60]">
+          <p className="mt-3 sm:mt-4 max-w-[456px] font-manrope text-sm sm:text-base leading-6 tracking-[-0.176px] text-[#515B60]">
             Handpicked toys that support real developmental goals — and actually get played with.
           </p>
-          <div className="mt-16 overflow-hidden rounded-[24px] bg-white shadow-[0_6px_40px_rgba(23,74,77,0.1)] lg:flex">
-            <div className="relative aspect-[576/642] max-h-[642px] overflow-hidden bg-[#DCEEEE] lg:w-[576px]">
-              <Image
-                src={`${assetBase}-image137.png`}
-                alt="Wooden rainbow arc stacker arranged in a train play scene"
-                fill
-                sizes="(max-width: 1024px) 100vw, 576px"
-                className="object-cover"
-              />
+          <div className="mt-10 overflow-hidden rounded-[24px] bg-white shadow-[0_6px_40px_rgba(23,74,77,0.1)] sm:mt-14 lg:flex">
+            <div className="shrink-0 overflow-hidden lg:w-[480px] xl:w-[576px]">
+              <ResponsiveToyGallery />
             </div>
-            <div className="p-6 sm:p-9">
+            <div className="p-5 sm:p-8 lg:p-9 flex-1">
               <span className="rounded-full border border-[#D8DDD9] bg-[#F6E6D4] px-[15px] py-[6px] font-nunito text-xs font-medium leading-4 text-[#174A4D]">
                 ✦ OT Recommended
               </span>
-              <h3 className="mt-6 font-nunito text-[clamp(28px,4vw,32px)] font-medium leading-10 text-[#174A4D]">
+              <h3 className="mt-4 sm:mt-6 font-nunito text-[clamp(24px,3.5vw,32px)] font-medium leading-tight text-[#174A4D]">
                 Grimm&apos;s Rainbow Arc Stacker
               </h3>
-              <p className="mt-4 font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#515B60]">
+              <p className="mt-3 sm:mt-4 font-manrope text-xs sm:text-sm leading-[20px] sm:leading-[22px] tracking-[-0.084px] text-[#515B60]">
                 The Rainbow Arc Stacker builds spatial reasoning and colour recognition through
                 open-ended play. Children naturally discover balance, sequencing, and
                 cause-and-effect while creating freely. OT-recommended from 12 months up.
               </p>
-              <p className="mt-4 font-lora text-sm italic leading-[22px] text-[#2F7D7E]">
+              <p className="mt-3 sm:mt-4 font-lora text-xs sm:text-sm italic leading-[20px] sm:leading-[22px] text-[#2F7D7E]">
                 &quot;Encourages spatial reasoning, color sequencing, and open-ended creativity -
                 all through the joy of self-directed play.&quot;
               </p>
-              <div className="mt-6 flex gap-[5px]">
+              <div className="mt-4 sm:mt-6 flex gap-[5px]">
                 <BorderPill>Ages 12 mo+</BorderPill>
                 <BorderPill>Open-ended</BorderPill>
               </div>
-              <Link
-                href="/explore"
-                className="mt-6 inline-flex h-12 items-center gap-[7px] rounded-full border border-[#ACCBcb] bg-linear-to-b from-[#2F7D7E]/60 to-[#2F7D7E] px-[29px] py-[13px] font-nunito text-sm font-semibold text-white"
-              >
-                Shop Now <AssetIcon name="icon2" size={14} />
-              </Link>
+              <div className="mt-5 sm:mt-6">
+                <Link
+                  href="/explore"
+                  className="inline-flex h-12 items-center gap-[7px] rounded-full border border-[#ACCBcb] bg-linear-to-b from-[#2F7D7E]/60 to-[#2F7D7E] px-[29px] py-[13px] font-nunito text-sm font-semibold text-white shadow-[0_4px_16px_rgba(8,55,55,0.09)]"
+                >
+                  Shop Now <AssetIcon name="icon2" size={14} />
+                </Link>
+                <p className="mt-2 flex max-w-80 gap-[5px] font-manrope text-xs leading-[18px] text-[#607077]">
+                  <span className="text-[12.8px] leading-[19.84px] text-[#ADB1AE]">ⓘ</span>
+                  This is an affiliate link — we may earn a small commission at no extra cost to
+                  you.
+                </p>
+              </div>
+              <div className="my-4 border-t border-[#D8DDD9]" />
+              <ExpandableRow
+                emoji="🎁"
+                label="Featured Freebie"
+                value="FREE"
+                valueClassName="bg-[#F6E6D4] text-[#C2917F]"
+              />
+              <div className="my-1 border-t border-[#D8DDD9]" />
+              <ExpandableRow
+                emoji="📄"
+                label="Featured Resource"
+                value="$8"
+                valueClassName="bg-[#DCEEEE] text-[#7D8488]"
+              />
             </div>
           </div>
         </div>

@@ -64,8 +64,8 @@ export function WeeklyPlanBasicInfoPage() {
   }
 
   return (
-    <section className="mx-auto w-full max-w-261.25 pb-8 text-[#263238]">
-      <div className="w-full max-w-244.25 space-y-5">
+    <section className="mx-auto w-full min-w-0 max-w-261.25 pb-8 text-[#263238]">
+      <div className="w-full min-w-0 max-w-244.25 space-y-5">
         <button
           type="button"
           onClick={() => router.push('/dashboard/admin/weekly-plans')}
@@ -97,7 +97,7 @@ export function WeeklyPlanBasicInfoPage() {
         >
           {(form) => (
             <>
-              <section className="rounded-2xl border border-[#e7eceb] bg-white p-6 shadow-[0_4px_6px_rgba(0,0,0,0.06)]">
+              <section className="rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:p-6 2xl:p-6">
                 <h2 className="font-nunito text-lg font-bold leading-7 text-[#263238]">
                   1. Basic Info
                 </h2>
@@ -113,7 +113,7 @@ export function WeeklyPlanBasicInfoPage() {
                     ) : null}
                   </label>
 
-                  <div className="grid gap-5 md:grid-cols-2">
+                  <div className="grid gap-5 md:grid-cols-2 2xl:grid-cols-2">
                     <label className="block">
                       <FormLabel>Age Group</FormLabel>
                       <div className="mt-1.5">
@@ -163,7 +163,7 @@ export function WeeklyPlanBasicInfoPage() {
                     </label>
                   </div>
 
-                  <div className="grid gap-5 md:grid-cols-2">
+                  <div className="grid gap-5 md:grid-cols-2 2xl:grid-cols-2">
                     <label className="block">
                       <FormLabel>Week Number</FormLabel>
                       <input
@@ -179,9 +179,16 @@ export function WeeklyPlanBasicInfoPage() {
 
                     <label className="block">
                       <FormLabel>Featured Image</FormLabel>
-                      <span className="mt-1.5 flex h-13.5 cursor-pointer items-center gap-3 rounded-xl border-2 border-dashed border-[#e7eceb] px-4.5 font-manrope text-[13px] leading-[19.5px] text-[#607d8b] transition-colors hover:bg-[#f8fbfa]">
-                        <ImageUp aria-hidden="true" size={18} strokeWidth={1.6} />
-                        {featuredImageName || 'Click to upload (optional)'}
+                      <span className="mt-1.5 flex h-13.5 min-w-0 cursor-pointer items-center gap-3 rounded-xl border-2 border-dashed border-[#e7eceb] px-4.5 font-manrope text-[13px] leading-[19.5px] text-[#607d8b] transition-colors hover:bg-[#f8fbfa]">
+                        <ImageUp
+                          aria-hidden="true"
+                          className="shrink-0"
+                          size={18}
+                          strokeWidth={1.6}
+                        />
+                        <span className="truncate">
+                          {featuredImageName || 'Click to upload (optional)'}
+                        </span>
                         <input
                           accept="image/png,image/jpeg,image/webp"
                           className="sr-only"
@@ -198,8 +205,8 @@ export function WeeklyPlanBasicInfoPage() {
                 </div>
               </section>
 
-              <section className="flex flex-col gap-4 rounded-2xl border border-[#e7eceb] bg-white p-5 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:flex-row sm:items-center sm:justify-between">
-                <div className="flex gap-2">
+              <section className="flex flex-col gap-4 rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:flex-row sm:items-center sm:justify-between sm:p-5 2xl:flex-row 2xl:items-center 2xl:justify-between 2xl:p-5">
+                <div className="grid grid-cols-2 gap-2 sm:flex 2xl:flex">
                   <FooterButton disabled className="border-[#e7eceb] text-[#607d8b] opacity-40">
                     ← Previous
                   </FooterButton>
@@ -210,7 +217,7 @@ export function WeeklyPlanBasicInfoPage() {
                     Next →
                   </button>
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="grid gap-2 sm:flex sm:flex-wrap 2xl:flex 2xl:flex-wrap">
                   <FooterButton
                     onClick={() => toast.success('Weekly plan saved as a draft.')}
                     className="border-[#e7eceb] text-[#607d8b]"
@@ -235,8 +242,13 @@ export function WeeklyPlanBasicInfoPage() {
           )}
         </DynamicForm>
 
-        <div className="flex items-center gap-2 rounded-[14px] border border-[rgba(246,195,68,0.25)] bg-[#fff8e1] px-4.25 py-3.25 font-manrope text-[13px] leading-[19.5px] text-[#b8860b]">
-          <TriangleAlert aria-hidden="true" size={15} strokeWidth={1.7} />
+        <div className="flex items-start gap-2 rounded-[14px] border border-[rgba(246,195,68,0.25)] bg-[#fff8e1] px-4.25 py-3.25 font-manrope text-[13px] leading-[19.5px] text-[#b8860b] sm:items-center 2xl:items-center">
+          <TriangleAlert
+            aria-hidden="true"
+            className="mt-0.5 shrink-0 sm:mt-0 2xl:mt-0"
+            size={15}
+            strokeWidth={1.7}
+          />
           You have unsaved changes. Navigating away will discard them.
         </div>
       </div>

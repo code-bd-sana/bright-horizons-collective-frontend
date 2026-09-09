@@ -93,7 +93,7 @@ function FamilyChoice({
       type="button"
       aria-pressed={selected}
       onClick={onToggle}
-      className={`flex w-full items-center gap-4 rounded-[14px] border p-4 text-left transition-colors ${selected ? 'border-[#2f7d7e] bg-[rgba(47,125,126,0.03)]' : 'border-[#e7eceb] bg-white'}`}
+      className={`grid w-full min-w-0 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 rounded-[14px] border p-3 text-left transition-colors sm:flex sm:gap-4 sm:p-4 2xl:flex 2xl:gap-4 2xl:p-4 ${selected ? 'border-[#2f7d7e] bg-[rgba(47,125,126,0.03)]' : 'border-[#e7eceb] bg-white'}`}
     >
       <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[rgba(47,125,126,0.09)] font-nunito text-base font-bold leading-6 text-[#2f7d7e]">
         {family.initial}
@@ -107,12 +107,12 @@ function FamilyChoice({
         </span>
       </span>
       <span
-        className={`shrink-0 rounded-full px-2.5 py-0.5 font-manrope text-xs font-semibold leading-4 ${membershipStyles[family.membership]}`}
+        className={`col-start-2 row-start-2 w-fit max-w-full truncate rounded-full px-2.5 py-0.5 font-manrope text-xs font-semibold leading-4 sm:shrink-0 2xl:shrink-0 ${membershipStyles[family.membership]}`}
       >
         {family.membership}
       </span>
       <span
-        className={`flex size-5 shrink-0 items-center justify-center rounded-lg ${selected ? 'bg-[#2f7d7e] text-white' : 'bg-[#eef2f2] text-transparent'}`}
+        className={`col-start-3 row-start-1 flex size-5 shrink-0 items-center justify-center rounded-lg sm:col-auto sm:row-auto 2xl:col-auto 2xl:row-auto ${selected ? 'bg-[#2f7d7e] text-white' : 'bg-[#eef2f2] text-transparent'}`}
       >
         <Check aria-hidden="true" size={13} strokeWidth={2.4} />
       </span>
@@ -136,7 +136,7 @@ export function AssignWeeklyPlanFamiliesPage() {
   }
 
   return (
-    <section className="mx-auto w-full max-w-196.75 pb-8 text-[#263238]">
+    <section className="mx-auto w-full min-w-0 max-w-196.75 pb-8 text-[#263238]">
       <div className="space-y-5">
         <button
           type="button"
@@ -160,7 +160,7 @@ export function AssignWeeklyPlanFamiliesPage() {
           <AssignmentStepper currentStep={2} />
         </section>
 
-        <section className="rounded-2xl border border-[#e7eceb] bg-white p-6 shadow-[0_4px_6px_rgba(0,0,0,0.06)]">
+        <section className="rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:p-6 2xl:p-6">
           <h2 className="font-nunito text-lg font-bold leading-7 text-[#263238]">
             2. Choose Families
           </h2>
@@ -185,15 +185,15 @@ export function AssignWeeklyPlanFamiliesPage() {
           </div>
         </section>
 
-        <section className="flex items-center justify-between rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)]">
+        <section className="flex flex-col gap-3 rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:flex-row sm:items-center sm:justify-between 2xl:flex-row 2xl:items-center 2xl:justify-between">
           <button
             type="button"
             onClick={() => router.push('/dashboard/admin/weekly-plans/assign')}
-            className="rounded-[14px] border border-[#e7eceb] px-4.25 py-2.75 font-manrope text-sm font-semibold leading-5 text-[#607d8b]"
+            className="w-full rounded-[14px] border border-[#e7eceb] px-4.25 py-2.75 font-manrope text-sm font-semibold leading-5 text-[#607d8b] sm:w-auto 2xl:w-auto"
           >
             ← Previous
           </button>
-          <div className="flex gap-2">
+          <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto 2xl:flex 2xl:w-auto">
             <button
               type="button"
               onClick={() => router.push('/dashboard/admin/weekly-plans')}

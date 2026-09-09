@@ -8,20 +8,20 @@ export function StatCards() {
   ];
 
   return (
-    <div className="flex w-full flex-col gap-6 md:flex-row md:items-center">
+    <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-3 2xl:gap-6">
       {stats.map((stat, i) => (
         <div
           key={i}
-          className="flex flex-1 flex-col gap-3 rounded-2xl border border-[#E8EBE8] bg-[#FAFAFA] p-4"
+          className="flex min-w-0 flex-col gap-3 rounded-2xl border border-[#E8EBE8] bg-[#FAFAFA] p-4"
         >
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-[#FAFAFA] bg-[#F1F3F3]">
-            <stat.icon className="h-4 w-4 text-[#263238]" />
+          <div className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-[#FAFAFA] bg-[#F1F3F3]">
+            <stat.icon className="size-4 text-[#263238]" />
           </div>
           <div className="flex flex-col">
-            <span className="font-nunito text-[24px] font-medium leading-8 text-[#272F3A]">
+            <span className="font-nunito text-2xl font-medium leading-8 text-[#272F3A]">
               {stat.value}
             </span>
-            <span className="font-manrope text-[12px] font-medium leading-4.5 tracking-[0.04em] text-[#515B60]">
+            <span className="font-manrope text-xs font-medium leading-4.5 tracking-[0.04em] text-[#515B60]">
               {stat.label}
             </span>
           </div>

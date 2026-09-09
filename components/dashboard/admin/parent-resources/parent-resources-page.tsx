@@ -70,10 +70,10 @@ export function ParentResourcesPage() {
   };
 
   return (
-    <section className="mx-auto w-full max-w-383.5 pb-8 text-[#3d3d3d]">
+    <section className="mx-auto w-full min-w-0 max-w-383.5 pb-8 text-[#3d3d3d]">
       <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className="font-nunito text-[32px] font-medium leading-10 tracking-[-0.4px] sm:text-[40px] sm:leading-12">
+          <h1 className="font-nunito text-2xl font-medium leading-8 tracking-[-0.4px] sm:text-[32px] sm:leading-10 2xl:text-[40px] 2xl:leading-12">
             Parent Resources
           </h1>
           <p className="mt-0.5 max-w-204.5 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#6b6b6b]">

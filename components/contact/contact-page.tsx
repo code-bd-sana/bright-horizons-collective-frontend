@@ -51,7 +51,7 @@ const contactCards = [
 
 function ContactCard({ card }: { card: (typeof contactCards)[number] }) {
   return (
-    <article className="relative h-89.25 w-68.25 shrink-0 overflow-hidden rounded-2xl border border-[#E8EBE8] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)] max-sm:w-full">
+    <article className="relative h-89.25 w-68.25 shrink-0 overflow-hidden rounded-2xl border border-[#E8EBE8] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)] max-sm:w-full max-sm:max-w-68.25">
       <div className={`pointer-events-none absolute ${card.imageClass}`}>
         <Image
           src={card.image}
@@ -161,7 +161,7 @@ export function ContactPage() {
             />
           </div>
         </div>
-        <div className="absolute left-1/2 top-126 z-10 flex w-full max-w-800 -translate-x-1/2 flex-wrap justify-center gap-6 px-5 max-xl:relative max-xl:left-auto max-xl:top-auto max-xl:mt-16 max-xl:translate-x-0">
+        <div className="relative z-10 mx-auto mt-16 grid w-full max-w-155 grid-cols-1 justify-items-center gap-6 px-5 sm:grid-cols-2 xl:absolute xl:left-1/2 xl:top-126 xl:mt-0 xl:flex xl:max-w-800 xl:-translate-x-1/2 xl:flex-wrap xl:justify-center">
           {contactCards.map((card) => (
             <ContactCard key={card.title} card={card} />
           ))}

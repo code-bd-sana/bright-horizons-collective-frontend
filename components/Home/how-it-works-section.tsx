@@ -84,11 +84,11 @@ const steps: Step[] = [
 
 function HowItWorksHeading() {
   return (
-    <header className="flex h-[106px] flex-col items-center gap-4 text-center">
+    <header className="flex flex-col items-center gap-3 sm:gap-4 text-center px-4">
       <span className="rounded-xl border border-[#FAE1D9] bg-[#FCE9E3] px-2 py-1.5 font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#614840]">
         How It Works
       </span>
-      <h2 className="whitespace-nowrap font-nunito text-5xl leading-14 font-semibold tracking-[-0.48px] text-[#263238]">
+      <h2 className="font-nunito text-[clamp(28px,5vw,48px)] leading-[1.16] font-semibold tracking-[-0.48px] text-[#263238]">
         Simple to start
       </h2>
     </header>
@@ -121,6 +121,27 @@ function WorkflowStep({ step }: { step: Step }) {
           {step.description}
         </p>
       </div>
+    </article>
+  );
+}
+
+function ResponsiveWorkflowStep({ step }: { step: Step }) {
+  return (
+    <article
+      className="flex w-full min-h-[170px] h-full flex-col justify-between rounded-2xl p-5 sm:p-6"
+      style={{ backgroundColor: step.color }}
+    >
+      <div className="flex items-start gap-3.5 sm:gap-4">
+        <span className="flex shrink-0 items-center justify-center rounded-full bg-white px-3 py-1 font-nunito text-sm sm:text-base font-bold text-[#475467] shadow-xs">
+          {step.number}
+        </span>
+        <h3 className="font-nunito text-lg sm:text-xl leading-snug font-medium text-[#101828]">
+          {step.title}
+        </h3>
+      </div>
+      <p className="mt-3 font-manrope text-xs sm:text-sm leading-[20px] sm:leading-[22px] text-[#475467]">
+        {step.description}
+      </p>
     </article>
   );
 }
@@ -214,11 +235,11 @@ function DesktopWorkflow() {
 
 function CompactWorkflow() {
   return (
-    <div className="mx-auto max-w-[718px] px-5 py-24 sm:px-8 sm:py-32 min-[1600px]:hidden">
+    <div className="mx-auto max-w-290 px-4 py-16 sm:px-8 sm:py-24 min-[1600px]:hidden">
       <HowItWorksHeading />
-      <div className="mt-16 flex flex-col items-center gap-6">
+      <div className="mt-10 sm:mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 justify-items-center">
         {steps.map((step) => (
-          <WorkflowStep key={step.number} step={step} />
+          <ResponsiveWorkflowStep key={step.number} step={step} />
         ))}
       </div>
     </div>

@@ -33,32 +33,32 @@ const pastPlans = [
 
 export function PastWeeklyPlans() {
   return (
-    <section className="flex w-full flex-col items-start gap-[24px] rounded-[16px] border border-[#e8ebe8] bg-[#fffdf8] p-4 sm:p-6 lg:p-[32px] shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
+    <section className="flex w-full min-w-0 flex-col items-start gap-5 rounded-2xl border border-[#e8ebe8] bg-[#fffdf8] p-4 shadow-[0_1px_2px_rgba(0,0,0,0.05)] sm:gap-6 sm:p-6 min-[1800px]:p-8">
       <div className="flex w-full items-start justify-between">
-        <h2 className="font-nunito text-[24px] font-medium leading-[32px] text-[#263238]">
+        <h2 className="font-nunito text-xl font-medium leading-7 text-[#263238] sm:text-2xl sm:leading-8">
           Weekly Plans
         </h2>
         <Link
-          href="/dashboard/weekly-plans/history"
-          className="flex min-w-[64px] items-center justify-center overflow-hidden rounded-full border border-[#d8ddd9] px-[8px] py-[6px] transition-colors hover:bg-[#f6fbfa]"
+          href="/dashboard/weekly-plans/all"
+          className="flex min-w-16 items-center justify-center overflow-hidden rounded-full border border-[#d8ddd9] px-2 py-1.5 transition-colors hover:bg-[#f6fbfa]"
         >
-          <span className="px-[4px] font-nunito text-[16px] font-medium leading-[24px] tracking-[-0.176px] text-[#2f7d7e]">
+          <span className="px-1 font-nunito text-[16px] font-medium leading-6 tracking-[-0.176px] text-[#2f7d7e]">
             View all
           </span>
         </Link>
       </div>
 
-      <div className="flex w-full flex-col items-start gap-[16px]">
+      <div className="flex w-full flex-col items-start gap-4">
         {pastPlans.map((plan, index) => (
           <article
             key={index}
-            className="flex w-full items-start justify-between rounded-[16px] border border-[#e9f1ee] bg-transparent p-[16px] max-lg:flex-col max-lg:gap-5"
+            className="grid w-full min-w-0 gap-4 rounded-2xl border border-[#e9f1ee] bg-transparent p-4 md:grid-cols-[150px_minmax(0,1fr)] md:gap-5 min-[1800px]:grid-cols-[171px_minmax(0,1fr)_122px]"
           >
-            <div className="flex min-w-0 shrink-0 items-center gap-[20px] max-lg:w-full max-lg:flex-col max-lg:items-start">
+            <div className="contents">
               {/* Left Image */}
-              <div className="relative h-[164px] w-[171px] shrink-0">
+              <div className="relative mx-auto h-41 w-42.75 max-w-full shrink-0 md:mx-0 md:w-37.5 min-[1800px]:w-42.75">
                 <div
-                  className="absolute -left-[9px] -top-[79.5px] h-[319.06px] w-[187.887px]"
+                  className="absolute -left-2.25 top-[-79.5px] h-[319.06px] w-[187.887px]"
                   style={{
                     WebkitMaskImage: `url(${maskImage})`,
                     maskImage: `url(${maskImage})`,
@@ -75,75 +75,75 @@ export function PastWeeklyPlans() {
               </div>
 
               {/* Center Content */}
-              <div className="flex min-w-0 shrink-0 flex-col items-start gap-[24px] max-lg:w-full">
-                <div className="flex w-[162px] shrink-0 flex-col items-start gap-[8px]">
-                  <div className="flex w-full shrink-0 items-center gap-[10px]">
+              <div className="flex min-w-0 flex-col items-start gap-5 min-[1800px]:gap-6">
+                <div className="flex min-w-0 flex-col items-start gap-2">
+                  <div className="flex w-full shrink-0 items-center gap-2.5">
                     <div
-                      className="flex shrink-0 flex-col items-start rounded-[8px] px-[10px] py-[3px]"
+                      className="flex shrink-0 flex-col items-start rounded-[8px] px-2.5 py-0.75"
                       style={{
                         backgroundImage:
                           'linear-gradient(160.46deg, rgb(26, 74, 76) 0%, rgb(47, 125, 126) 100%)',
                       }}
                     >
-                      <span className="font-nunito text-[12px] font-medium leading-[16px] text-white">
+                      <span className="font-nunito text-[12px] font-medium leading-4 text-white">
                         {plan.week}
                       </span>
                     </div>
-                    <div className="flex shrink-0 items-center gap-[5px] rounded-full bg-[#e0f0e9] px-[10px] py-[3px]">
-                      <div className="h-[5px] w-[5px] shrink-0 rounded-[2.5px] bg-[#8fb9a8]" />
-                      <span className="font-nunito text-[12px] font-medium leading-[16px] text-[#8fb9a8]">
+                    <div className="flex shrink-0 items-center gap-1.25 rounded-full bg-[#e0f0e9] px-2.5 py-0.75">
+                      <div className="h-1.25 w-1.25 shrink-0 rounded-[2.5px] bg-[#8fb9a8]" />
+                      <span className="font-nunito text-[12px] font-medium leading-4 text-[#8fb9a8]">
                         Completed
                       </span>
                     </div>
                   </div>
-                  <div className="flex w-full shrink-0 flex-col items-start gap-[4px]">
-                    <h3 className="w-min min-w-full font-nunito text-[18px] font-medium leading-[24px] tracking-[-0.27px] text-[#263238]">
+                  <div className="flex w-full shrink-0 flex-col items-start gap-1">
+                    <h3 className="w-min min-w-full font-nunito text-[18px] font-medium leading-6 tracking-[-0.27px] text-[#263238]">
                       {plan.title}
                     </h3>
-                    <div className="flex shrink-0 items-center gap-[4px]">
+                    <div className="flex shrink-0 items-center gap-1">
                       <CalendarDays
                         aria-hidden="true"
-                        className="size-[14px] stroke-[1.25] text-[#607077]"
+                        className="size-3.5 stroke-[1.25] text-[#607077]"
                       />
-                      <p className="font-manrope text-[12px] font-normal leading-[18px] text-[#607077]">
+                      <p className="font-manrope text-[12px] font-normal leading-4.5 text-[#607077]">
                         {plan.dateRange}
                       </p>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex w-full shrink-0 flex-col items-start gap-[8px]">
-                  <div className="flex w-full shrink-0 items-center gap-[8px] max-lg:flex-wrap">
+                <div className="flex w-full shrink-0 flex-col items-start gap-2">
+                  <div className="flex w-full shrink-0 flex-wrap items-center gap-2">
                     {plan.categories.map((category) => (
                       <div
                         key={category}
-                        className="flex shrink-0 flex-col items-start justify-center rounded-full bg-[#f0f2f3] px-[8px] py-[4px]"
+                        className="flex shrink-0 flex-col items-start justify-center rounded-full bg-[#f0f2f3] px-2 py-1"
                       >
-                        <span className="font-manrope text-[12px] font-normal leading-[18px] text-[#263238]">
+                        <span className="font-manrope text-[12px] font-normal leading-4.5 text-[#263238]">
                           {category}
                         </span>
                       </div>
                     ))}
                   </div>
 
-                  <div className="flex shrink-0 items-center gap-[4px]">
+                  <div className="flex shrink-0 items-center gap-1">
                     {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, i) => {
                       const isComplete = plan.days[i];
                       return (
-                        <div key={i} className="flex shrink-0 flex-col items-center gap-[3px]">
+                        <div key={i} className="flex shrink-0 flex-col items-center gap-0.75">
                           <div
-                            className={`flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-[11px] ${
+                            className={`flex h-5.5 w-5.5 shrink-0 items-center justify-center rounded-[11px] ${
                               isComplete ? 'bg-[#8fb9a8]' : 'bg-[#d4d6d7]'
                             }`}
                           >
                             {isComplete && (
                               <Check
                                 aria-hidden="true"
-                                className="size-[11px] stroke-[1.5] text-white"
+                                className="size-2.75 stroke-[1.5] text-white"
                               />
                             )}
                           </div>
-                          <span className="font-manrope text-[8px] font-semibold leading-[12px] text-[#8fb9a8]">
+                          <span className="font-manrope text-[8px] font-semibold leading-3 text-[#8fb9a8]">
                             {day}
                           </span>
                         </div>
@@ -151,7 +151,7 @@ export function PastWeeklyPlans() {
                     })}
                   </div>
                   <div className="flex shrink-0 flex-col items-start justify-center rounded-full">
-                    <p className="font-manrope text-[12px] font-normal leading-[18px] text-[#515b60]">
+                    <p className="font-manrope text-[12px] font-normal leading-4.5 text-[#515b60]">
                       &quot;{plan.feedback}&quot;
                     </p>
                   </div>
@@ -160,39 +160,39 @@ export function PastWeeklyPlans() {
             </div>
 
             {/* Right Actions & Progress */}
-            <div className="flex w-[122px] shrink-0 flex-col items-center gap-[24px] max-lg:w-full max-lg:flex-row max-lg:justify-between">
-              <div className="flex shrink-0 flex-col items-center gap-[4px]">
+            <div className="col-span-full flex w-full min-w-0 items-center justify-between gap-4 md:grid md:grid-cols-[150px_minmax(0,1fr)] md:gap-5 min-[1800px]:col-span-1 min-[1800px]:flex min-[1800px]:w-30.5 min-[1800px]:flex-col min-[1800px]:gap-6">
+              <div className="flex shrink-0 flex-col items-center gap-1">
                 <div
-                  className="grid h-[52px] w-[52px] shrink-0 place-items-center rounded-full"
+                  className="grid h-13 w-13 shrink-0 place-items-center rounded-full"
                   style={{ background: `conic-gradient(#8fb9a8 ${plan.progress}%, #eaecee 0)` }}
                 >
-                  <div className="grid size-[44px] place-items-center rounded-full bg-[#fffdf8]">
-                    <span className="font-nunito text-[12px] font-medium leading-[16px] text-[#8fb9a8]">
+                  <div className="grid size-11 place-items-center rounded-full bg-[#fffdf8]">
+                    <span className="font-nunito text-[12px] font-medium leading-4 text-[#8fb9a8]">
                       {plan.progress}%
                     </span>
                   </div>
                 </div>
-                <p className="font-manrope text-[12px] font-normal leading-[18px] text-[#515b60]">
+                <p className="font-manrope text-[12px] font-normal leading-4.5 text-[#515b60]">
                   {plan.daysCompleteText}
                 </p>
               </div>
 
-              <div className="flex w-full shrink-0 flex-col items-start gap-[8px]">
+              <div className="flex w-30.5 shrink-0 flex-col items-start gap-2">
                 <button
                   type="button"
-                  className="flex w-full items-center gap-[6px] rounded-[10px] bg-[#2f7d7e] px-[14px] py-[8px] transition-colors hover:bg-[#235d5d]"
+                  className="flex min-h-10 w-full items-center justify-center gap-1.5 rounded-[10px] bg-[#2f7d7e] px-3.5 py-2 transition-colors hover:bg-[#235d5d]"
                 >
-                  <ArrowRight className="h-[12px] w-[12px] text-white" />
-                  <span className="w-full text-center font-nunito text-[14px] font-medium leading-[20px] tracking-[-0.084px] text-white">
+                  <ArrowRight className="h-3 w-3 text-white" />
+                  <span className="whitespace-nowrap text-center font-nunito text-[14px] font-medium leading-5 tracking-[-0.084px] text-white">
                     View Plan
                   </span>
                 </button>
                 <button
                   type="button"
-                  className="flex w-full items-center gap-[6px] rounded-[10px] border border-[#d8ddd9] px-[15px] py-[8px] transition-colors hover:bg-[#f6fbfa]"
+                  className="flex min-h-10 w-full items-center justify-center gap-1.5 rounded-[10px] border border-[#d8ddd9] px-3.75 py-2 transition-colors hover:bg-[#f6fbfa]"
                 >
-                  <Download className="h-[12px] w-[12px] text-[#515b60]" />
-                  <span className="w-full text-center font-nunito text-[14px] font-medium leading-[20px] tracking-[-0.084px] text-[#515b60]">
+                  <Download className="h-3 w-3 text-[#515b60]" />
+                  <span className="whitespace-nowrap text-center font-nunito text-[14px] font-medium leading-5 tracking-[-0.084px] text-[#515b60]">
                     PDF Report
                   </span>
                 </button>

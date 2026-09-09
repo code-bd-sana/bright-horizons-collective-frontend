@@ -22,10 +22,10 @@ const therapyToySchema = z.object({
 type TherapyToyFormValues = z.infer<typeof therapyToySchema>;
 
 const fieldLabelClassName =
-  'block h-[26px] pb-1.5 font-nunito text-sm font-medium leading-5 tracking-[-0.084px] text-[#263238]';
+  'block min-h-6.5 pb-1.5 font-nunito text-sm font-medium leading-5 tracking-[-0.084px] text-[#263238] 2xl:h-6.5';
 
 const inputClassName =
-  'h-[42px] w-full rounded-[20px] border border-[#ece8e2] bg-[#fcfaf7] px-[13px] py-[11px] font-nunito text-sm font-medium leading-5 text-[#171e22] outline-none transition-colors placeholder:text-[#a8adaf] focus:border-[#2f7d7e]';
+  'h-10.5 w-full rounded-[20px] border border-[#ece8e2] bg-[#fcfaf7] px-3.25 py-2.75 font-nunito text-sm font-medium leading-5 text-[#171e22] outline-none transition-colors placeholder:text-[#a8adaf] focus:border-[#2f7d7e]';
 
 const uploadHint = 'Primary product shot + supplementary angles or in-use photos';
 
@@ -43,8 +43,11 @@ export function AddTherapyToyForm() {
   }
 
   return (
-    <section className="mx-auto flex w-full max-w-366.25 flex-col items-center gap-10.5 pb-8 text-[#263238]">
-      <nav aria-label="Breadcrumb" className="flex w-full max-w-211.25 items-center gap-1.5">
+    <section className="mx-auto flex w-full min-w-0 max-w-366.25 flex-col items-center gap-6 pb-8 text-[#263238] sm:gap-10.5 2xl:gap-10.5">
+      <nav
+        aria-label="Breadcrumb"
+        className="flex w-full min-w-0 max-w-211.25 items-center gap-1.5"
+      >
         <Link
           href="/dashboard/admin/therapy-toys"
           className="font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#2f7d7e]"
@@ -57,14 +60,14 @@ export function AddTherapyToyForm() {
         >
           /
         </span>
-        <span className="font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#263238]">
+        <span className="min-w-0 truncate font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#263238]">
           Add new Toy
         </span>
       </nav>
 
-      <div className="h-auto w-full max-w-366.25 overflow-hidden rounded-3xl drop-shadow-[0px_25px_28.45px_rgba(0,0,0,0.12)] lg:h-250.75">
-        <div className="mx-auto w-full max-w-211.25 rounded-3xl bg-white lg:h-250.75">
-          <header className="flex h-20.25 items-center justify-between border-b border-[#ece8e2] px-6 pb-6.25 pt-6">
+      <div className="h-auto w-full min-w-0 max-w-366.25 overflow-hidden rounded-3xl drop-shadow-[0px_25px_28.45px_rgba(0,0,0,0.12)] 2xl:h-250.75">
+        <div className="mx-auto w-full min-w-0 max-w-211.25 rounded-3xl bg-white 2xl:h-250.75">
+          <header className="flex h-18 items-center justify-between border-b border-[#ece8e2] px-4 py-5 sm:h-20.25 sm:px-6 sm:pb-6.25 sm:pt-6 2xl:h-20.25 2xl:px-6 2xl:pb-6.25 2xl:pt-6">
             <h1 className="font-nunito text-lg font-bold leading-7 text-[#3d3d3d]">
               Add Therapy Toy
             </h1>
@@ -98,7 +101,7 @@ export function AddTherapyToyForm() {
               const supportingImages = form.watch('supportingImages') as File[];
 
               return (
-                <div className="p-6">
+                <div className="p-4 sm:p-6 2xl:p-6">
                   <label className="block">
                     <span className={fieldLabelClassName}>Toy Name</span>
                     <input {...form.register('toyName')} className={inputClassName} />
@@ -118,7 +121,7 @@ export function AddTherapyToyForm() {
                     />
                   </label>
 
-                  <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,380px)_minmax(0,1fr)] lg:gap-5">
+                  <div className="mt-4 grid gap-4 xl:grid-cols-[minmax(0,380px)_minmax(0,1fr)] xl:gap-5 2xl:grid-cols-[minmax(0,380px)_minmax(0,1fr)] 2xl:gap-5">
                     <label className="block">
                       <span className={fieldLabelClassName}>Development Area</span>
                       <span className="relative block">
@@ -156,7 +159,7 @@ export function AddTherapyToyForm() {
                     </label>
                   </div>
 
-                  <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,380px)_minmax(0,1fr)] lg:gap-5">
+                  <div className="mt-4 grid gap-4 xl:grid-cols-[minmax(0,380px)_minmax(0,1fr)] xl:gap-5 2xl:grid-cols-[minmax(0,380px)_minmax(0,1fr)] 2xl:gap-5">
                     <label className="block">
                       <span className={fieldLabelClassName}>Min Age</span>
                       <input
@@ -190,7 +193,7 @@ export function AddTherapyToyForm() {
                     <legend className="mb-1.5 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#263238]">
                       Product Images
                     </legend>
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 2xl:grid-cols-3">
                       {[0, 1, 2].map((index) => (
                         <label
                           key={index}
@@ -259,17 +262,17 @@ export function AddTherapyToyForm() {
                     )}
                   </label>
 
-                  <div className="flex h-16.5 items-start gap-3 pt-6">
+                  <div className="grid grid-cols-2 gap-3 pt-6 sm:flex sm:h-16.5 sm:items-start 2xl:flex 2xl:h-16.5 2xl:items-start">
                     <button
                       type="submit"
-                      className="h-10.5 rounded-[20px] bg-[#2f7d7e] px-4 py-2.5 font-nunito text-sm font-semibold leading-5 text-[#fffdf8] transition-colors hover:bg-[#266b6c]"
+                      className="h-10.5 rounded-[20px] bg-[#2f7d7e] px-3 py-2.5 font-nunito text-sm font-semibold leading-5 text-[#fffdf8] transition-colors hover:bg-[#266b6c] sm:px-4 2xl:px-4"
                     >
                       Add Toy
                     </button>
                     <button
                       type="button"
                       onClick={saveAsDraft}
-                      className="h-10.5 rounded-[20px] border border-[#ece8e2] bg-white px-4.25 py-2.75 font-nunito text-sm font-medium leading-5 tracking-[-0.084px] text-[#263238] transition-colors hover:bg-[#fcfaf7]"
+                      className="h-10.5 rounded-[20px] border border-[#ece8e2] bg-white px-3 py-2.75 font-nunito text-sm font-medium leading-5 tracking-[-0.084px] text-[#263238] transition-colors hover:bg-[#fcfaf7] sm:px-4.25 2xl:px-4.25"
                     >
                       Save as Draft
                     </button>

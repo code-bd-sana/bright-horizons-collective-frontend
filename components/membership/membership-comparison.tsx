@@ -107,25 +107,38 @@ const renderValue = (value: string | boolean) => {
   if (value === true) return <CheckIcon />;
   if (value === false) return <XIcon />;
   return (
-    <span className="font-manrope text-[14px] leading-[22px] tracking-[-0.084px] text-[#515B60]">
+    <span className="font-manrope text-[14px] leading-5.5acking-[-0.084px] text-[#515B60]">
       {value}
     </span>
   );
 };
 
+function MobileFeatureValue({ label, value }: { label: string; value: string | boolean }) {
+  return (
+    <div className="flex items-center justify-between gap-4 border-t border-[#D8DDD9] py-3 first:border-t-0 first:pt-0 last:pb-0">
+      <span className="font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#607077]">
+        {label}
+      </span>
+      <span className="flex shrink-0 items-center justify-end text-right">
+        {renderValue(value)}
+      </span>
+    </div>
+  );
+}
+
 export function MembershipComparison() {
   const [billingCycle, setBillingCycle] = useState<BillingCycle>('monthly');
 
   return (
-    <section className="relative w-full bg-[#E9F1EE] py-20 md:py-[160px]">
-      <div className="mx-auto flex w-full max-w-[1472px] flex-col items-center gap-[80px] px-5 sm:px-8 min-[1504px]:px-0">
+    <section className="relative w-full bg-[#E9F1EE] py-20 md:py-40">
+      <div className="mx-auto flex w-full max-w-368 flex-col items-center gap-20 px-5 sm:px-8 min-[1504px]:px-0">
         <div className="flex flex-col items-center gap-4 text-center">
           <div className="rounded-[12px] border border-[#fae1d9] bg-[#fce9e3] px-3 py-1.5">
-            <span className="font-manrope text-[14px] leading-[22px] tracking-[-0.084px] text-[#614840]">
+            <span className="font-manrope text-[14px] leading-5.5 tracking-[-0.084px] text-[#614840]">
               Compare Plan
             </span>
           </div>
-          <h2 className="font-nunito text-[32px] font-semibold leading-[40px] tracking-[-0.48px] text-[#263238] md:text-[48px] md:leading-[56px]">
+          <h2 className="font-nunito text-[32px] font-semibold leading-10 tracking-[-0.48px] text-[#263238] md:text-[48px] md:leading-14">
             Detailed Memberships Features Comparison
           </h2>
         </div>
@@ -134,7 +147,7 @@ export function MembershipComparison() {
           <div className="w-full rounded-[16px] border border-[#accbcb] bg-[#f9fafa] p-4 sm:p-7">
             <div className="grid grid-cols-1 gap-8 min-[1100px]:grid-cols-[215px_minmax(0,1fr)] min-[1100px]:gap-0">
               <div className="flex flex-col gap-8">
-                <h3 className="font-nunito text-[20px] font-medium leading-[28px] text-[#263238]">
+                <h3 className="font-nunito text-[20px] font-medium leading-7 text-[#263238]">
                   Choose the Perfect Plan for Your Kids
                 </h3>
                 <div className="flex w-fit items-center gap-0.5 rounded-[24px] bg-[#d5e5e5] p-0.5">
@@ -142,7 +155,7 @@ export function MembershipComparison() {
                     type="button"
                     aria-pressed={billingCycle === 'monthly'}
                     onClick={() => setBillingCycle('monthly')}
-                    className={`flex items-center justify-center rounded-[24px] px-3 py-[9px] font-nunito text-[14px] font-medium leading-5 tracking-[-0.084px] transition-colors ${
+                    className={`flex items-center justify-center rounded-[24px] px-3 py-2.25 font-nunito text-[14px] font-medium leading-5 tracking-[-0.084px] transition-colors ${
                       billingCycle === 'monthly'
                         ? 'border border-white bg-[#2f7d7e] text-white shadow-[0px_8px_13px_rgba(3,63,63,0.05)]'
                         : 'text-[#656175]'
@@ -182,24 +195,24 @@ export function MembershipComparison() {
             </div>
           </div>
 
-          <div className="w-full overflow-hidden rounded-[16px] border border-[#accbcb] bg-white">
+          <div className="w-full overflow-hidden rounded-[16px] border border-[#accbcb] bg-white max-md:hidden">
             <div className="grid grid-cols-[35.055%_21.331%_21.331%_22.283%] border-b border-[#accbcb]">
-              <div className="flex items-center rounded-tl-[16px] bg-[#d5e5e5] px-4 py-[14px] md:px-6">
+              <div className="flex items-center rounded-tl-[16px] bg-[#d5e5e5] px-4 py-3.5 md:px-6">
                 <span className="font-manrope text-[14px] font-semibold tracking-[0.84px] text-[#263238]">
                   Feature
                 </span>
               </div>
-              <div className="flex items-center justify-center bg-[#d5e5e5] px-4 py-[14px] md:px-[60px]">
+              <div className="flex items-center justify-center bg-[#d5e5e5] px-4 py-3.5 md:px-15">
                 <span className="font-manrope text-[14px] font-semibold tracking-[0.84px] text-[#263238]">
                   Little Steps
                 </span>
               </div>
-              <div className="flex items-center justify-center bg-[#d5e5e5] px-4 py-[14px] md:px-[60px]">
+              <div className="flex items-center justify-center bg-[#d5e5e5] px-4 py-3.5 md:px-15">
                 <span className="font-manrope text-[14px] font-semibold tracking-[0.84px] text-[#2f7d7e]">
                   Grow Together
                 </span>
               </div>
-              <div className="flex items-center justify-center rounded-tr-[16px] bg-[#d5e5e5] px-4 py-[14px] md:px-[60px]">
+              <div className="flex items-center justify-center rounded-tr-[16px] bg-[#d5e5e5] px-4 py-3.5 md:px-15">
                 <span className="font-manrope text-[14px] font-semibold tracking-[0.84px] text-[#263238]">
                   Personalized Pathways
                 </span>
@@ -216,30 +229,46 @@ export function MembershipComparison() {
                       !isLast ? 'border-b border-[#accbcb]' : ''
                     }`}
                   >
-                    <div className="flex min-w-0 items-center px-4 py-[14px] md:px-6">
-                      <span className="font-manrope text-[14px] font-normal leading-[22px] tracking-[-0.084px] text-[#263238]">
+                    <div className="flex min-w-0 items-center px-4 py-3.5 md:px-6">
+                      <span className="font-manrope text-[14px] font-normal leading-5.5 tracking-[-0.084px] text-[#263238]">
                         {feature.name}
                       </span>
                     </div>
-                    <div className="flex min-w-0 items-center justify-center px-2 py-[14px] md:px-[60px]">
+                    <div className="flex min-w-0 items-center justify-center px-2 py-3.5 md:px-15">
                       {renderValue(feature.little)}
                     </div>
-                    <div className="flex min-w-0 items-center justify-center bg-[rgba(220,238,238,0.28)] px-2 py-[14px] md:px-[60px]">
+                    <div className="flex min-w-0 items-center justify-center bg-[rgba(220,238,238,0.28)] px-2 py-3.5 md:px-15">
                       {typeof feature.grow === 'string' ? (
-                        <span className="font-nunito text-[14px] font-semibold leading-[20px] tracking-[-0.084px] text-[#263238]">
+                        <span className="font-nunito text-[14px] font-semibold leading-5 tracking-[-0.084px] text-[#263238]">
                           {feature.grow}
                         </span>
                       ) : (
                         renderValue(feature.grow)
                       )}
                     </div>
-                    <div className="flex min-w-0 items-center justify-center px-2 py-[14px] md:px-[60px]">
+                    <div className="flex min-w-0 items-center justify-center px-2 py-3.5 md:px-15">
                       {renderValue(feature.personalized)}
                     </div>
                   </div>
                 );
               })}
             </div>
+          </div>
+
+          <div className="flex w-full flex-col gap-3 md:hidden">
+            {features.map((feature) => (
+              <article
+                key={feature.name}
+                className="rounded-[16px] border border-[#ACCBCC] bg-white p-4 shadow-[0_2px_6px_rgba(23,74,77,0.04)]"
+              >
+                <h3 className="mb-4 font-nunito text-lg font-semibold leading-6 text-[#263238]">
+                  {feature.name}
+                </h3>
+                <MobileFeatureValue label="Little Steps" value={feature.little} />
+                <MobileFeatureValue label="Grow Together" value={feature.grow} />
+                <MobileFeatureValue label="Personalized Pathways" value={feature.personalized} />
+              </article>
+            ))}
           </div>
         </div>
       </div>
@@ -261,8 +290,8 @@ function PlanSummary({
   highlighted?: boolean;
 }) {
   return (
-    <div className="flex w-full min-w-0 flex-col items-start gap-3 min-[1100px]:w-[273px] last:min-[1100px]:w-[274px]">
-      <div className="flex w-[162px] flex-col items-start gap-4">
+    <div className="flex w-full min-w-0 flex-col items-start gap-3 min-[1100px]:w-68.25 last:min-[1100px]:w-68.5">
+      <div className="flex w-40.5 flex-col items-start gap-4">
         <p className="font-nunito text-[16px] font-medium leading-6 tracking-[-0.176px] text-[#263238]">
           {title}
         </p>
@@ -279,7 +308,7 @@ function PlanSummary({
       </div>
       <Link
         href="/register"
-        className={`flex min-h-12 w-full items-center justify-center gap-2 rounded-full border-2 px-3 py-3.5 font-nunito text-[16px] font-medium leading-6 tracking-[-0.176px] text-center transition-colors min-[1100px]:px-[26px] ${
+        className={`flex min-h-12 w-full items-center justify-center gap-2 rounded-full border-2 px-3 py-3.5 font-nunito text-[16px] font-medium leading-6 tracking-[-0.176px] text-center transition-colors min-[1100px]:px-6.5 ${
           highlighted
             ? 'border-[#d5e5e5] bg-[#2f7d7e] text-white'
             : 'border-[#d5e5e5] bg-white text-[#2f7d7e]'

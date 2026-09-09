@@ -81,16 +81,9 @@ function FeatureCheck({ accent = false }: { accent?: boolean }) {
 }
 
 function PlanCard({ plan }: { plan: Plan }) {
-  const featurePanelHeight =
-    plan.name === 'Little Steps'
-      ? 'h-[188px]'
-      : plan.name === 'Grow Together'
-        ? 'h-[174px]'
-        : 'h-[234px]';
-
   return (
     <article
-      className={`relative h-[654px] w-[422px] rounded-[20px] bg-white p-[33px] ${
+      className={`relative flex min-h-[620px] h-full w-full max-w-[422px] flex-col rounded-[20px] bg-white p-6 sm:p-[33px] ${
         plan.accent
           ? 'border-2 border-[#2F7D7E] shadow-[0_48px_6.5px_rgba(49,132,135,0),0_31px_6px_rgba(49,132,135,0.02),0_17px_5px_rgba(49,132,135,0.08),0_8px_4px_rgba(49,132,135,0.13),0_2px_2px_rgba(49,132,135,0.15)]'
           : 'border border-[#D8DDD9] shadow-[0_2px_6px_rgba(23,74,77,0.06)]'
@@ -111,36 +104,38 @@ function PlanCard({ plan }: { plan: Plan }) {
           </span>
         </>
       )}
-      <div className="flex h-full w-[356px] flex-col">
-        <div className={plan.name === 'Grow Together' ? 'h-[84px]' : 'h-[60px]'}>
-          <h3 className="font-nunito text-xl font-semibold leading-7 text-[#2F7D7E]">
-            {plan.name}
-          </h3>
-          <p className="mt-1 font-manrope text-sm leading-6 text-[#515B60]">{plan.description}</p>
-        </div>
-        <div className="mt-4 h-[106px]">
-          <div className="flex h-12 items-end gap-1">
-            <span className="font-nunito text-[40px] font-semibold leading-12 tracking-[-0.4px] text-[#263238]">
-              {plan.price}
-            </span>
-            {plan.price !== 'Free' && (
-              <span className="mb-[5px] font-manrope text-base leading-6 text-[#515B60]">
-                /month
-              </span>
-            )}
+      <div className="flex h-full w-full flex-col justify-between">
+        <div>
+          <div className="min-h-[60px]">
+            <h3 className="font-nunito text-xl font-semibold leading-7 text-[#2F7D7E]">
+              {plan.name}
+            </h3>
+            <p className="mt-1 font-manrope text-sm leading-6 text-[#515B60]">{plan.description}</p>
           </div>
-          <Link
-            href="/register"
-            className={`mt-2 flex h-[50px] w-full items-center justify-center rounded-full border-2 px-[26px] py-[14px] font-manrope text-[14.4px] font-bold leading-[21.6px] ${
-              plan.accent
-                ? 'border-[#2F7D7E] bg-[#2F7D7E] text-white'
-                : 'border-[#D5E5E5] bg-white text-[#2F7D7E]'
-            }`}
-          >
-            {plan.action}
-          </Link>
+          <div className="mt-4">
+            <div className="flex h-12 items-end gap-1">
+              <span className="font-nunito text-[36px] sm:text-[40px] font-semibold leading-12 tracking-[-0.4px] text-[#263238]">
+                {plan.price}
+              </span>
+              {plan.price !== 'Free' && (
+                <span className="mb-[5px] font-manrope text-base leading-6 text-[#515B60]">
+                  /month
+                </span>
+              )}
+            </div>
+            <Link
+              href="/register"
+              className={`mt-3 flex h-[50px] w-full items-center justify-center rounded-full border-2 px-[26px] py-[14px] font-manrope text-[14.4px] font-bold leading-[21.6px] transition-colors ${
+                plan.accent
+                  ? 'border-[#2F7D7E] bg-[#2F7D7E] text-white hover:bg-[#174A4D]'
+                  : 'border-[#D5E5E5] bg-white text-[#2F7D7E] hover:bg-[#F0F8F5]'
+              }`}
+            >
+              {plan.action}
+            </Link>
+          </div>
         </div>
-        <div className={`mt-4 ${featurePanelHeight} border-t border-[#D8DDD9] py-4`}>
+        <div className="mt-6 border-t border-[#D8DDD9] pt-4">
           {plan.featuresHeading && (
             <p className="mb-2 font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#7D8488]">
               {plan.featuresHeading}
@@ -311,25 +306,48 @@ function CompactMembership() {
   return (
     <section
       id="membership-compact"
-      className="bg-[#FDFDFC] px-5 py-20 min-[1600px]:hidden sm:px-8 sm:py-28"
+      className="bg-[#FDFDFC] px-4 py-16 min-[1600px]:hidden sm:px-8 sm:py-24 lg:py-32"
     >
-      <div className="mx-auto max-w-[422px]">
-        <div className="text-center">
+      <div className="mx-auto max-w-290">
+        <div className="mx-auto max-w-2xl text-center">
           <span className="inline-flex rounded-xl border border-[#FAE1D9] bg-[#F2B59F] px-2 py-1.5 font-manrope text-sm leading-[22px] text-[#614840]">
             Membership
           </span>
-          <h2 className="mt-3 font-nunito text-[clamp(34px,6vw,48px)] font-semibold leading-tight tracking-[-0.48px] text-[#263238]">
+          <h2 className="mt-3 font-nunito text-[clamp(28px,5vw,48px)] font-semibold leading-tight tracking-[-0.48px] text-[#263238]">
             Choose the membership that&apos;s right for your family.
           </h2>
-          <p className="mt-3 font-manrope text-base leading-6 text-[#607077]">
+          <p className="mt-3 font-manrope text-sm sm:text-base leading-6 text-[#607077]">
             Whether you&apos;re exploring developmental activities or looking for personalized
             weekly guidance, we have a membership designed to support your family&apos;s journey.
           </p>
         </div>
-        <div className="mt-16 space-y-6">
+        <div className="mt-12 sm:mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
           {plans.map((plan) => (
             <PlanCard key={plan.name} plan={plan} />
           ))}
+        </div>
+        <div className="mt-12 sm:mt-16 text-center">
+          <a
+            href="#membership-comparison-compact"
+            className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-[#ACCBCB] bg-[#F6E6D4] px-6 font-nunito text-sm sm:text-base font-medium leading-6 text-[#263238] hover:bg-[#F2B59F]/30 transition-colors"
+          >
+            Compare Membership
+            <Image
+              src={`${ASSET_ROOT}figma-home-1183-11846-img-vector.svg`}
+              alt=""
+              width={16}
+              height={16}
+              aria-hidden="true"
+            />
+          </a>
+        </div>
+        <div
+          id="membership-comparison-compact"
+          className="mt-12 sm:mt-16 w-full overflow-x-auto pb-4 [scrollbar-width:thin]"
+        >
+          <div className="min-w-[974px] flex justify-center">
+            <ComparisonTable />
+          </div>
         </div>
       </div>
     </section>

@@ -27,18 +27,18 @@ const cards = [
 ];
 export function WeeklyPlansSummary() {
   return (
-    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <div className="grid min-w-0 gap-4 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-4">
       {cards.map(({ value, label, icon: Icon, tint }) => (
         <article
           key={label}
-          className="flex h-38.5 items-center rounded-2xl border border-[#e8ebe8] bg-white p-4 shadow-[0_1px_1px_rgba(0,0,0,0.05)]"
+          className="flex min-h-28 min-w-0 items-center rounded-2xl border border-[#e8ebe8] bg-white p-4 shadow-[0_1px_1px_rgba(0,0,0,0.05)] 2xl:h-38.5"
         >
           <span
             className={`mr-3 flex size-8 items-center justify-center rounded-lg border ${tint}`}
           >
-            <Icon size={18} strokeWidth={1.7} />
+            <Icon aria-hidden="true" size={18} strokeWidth={1.7} />
           </span>
-          <div>
+          <div className="min-w-0">
             <p className="font-nunito text-2xl font-medium leading-8 text-[#272f3a]">{value}</p>
             <p className="font-manrope text-sm font-medium leading-5.5 tracking-[0.084px] text-[#6c7787]">
               {label}

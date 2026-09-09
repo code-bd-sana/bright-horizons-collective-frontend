@@ -23,13 +23,13 @@ export function TherapyToyPreviewModal({ isOpen, onClose }: TherapyToyPreviewMod
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
         showCloseButton={false}
-        className="block w-174.75 max-w-[calc(100%-2rem)] gap-0 overflow-y-auto rounded-xl border border-[#e8ebe8] bg-white p-6 text-[#263238] shadow-[0_1px_1.5px_rgba(0,0,0,0.1),0_1px_1px_rgba(0,0,0,0.1)] ring-0 sm:max-w-174.75 md:max-h-[calc(100dvh-2rem)]"
+        className="block max-h-[calc(100dvh-2rem)] w-174.75 max-w-[calc(100%-2rem)] gap-0 overflow-y-auto rounded-xl border border-[#e8ebe8] bg-white p-4 text-[#263238] shadow-[0_1px_1.5px_rgba(0,0,0,0.1),0_1px_1px_rgba(0,0,0,0.1)] ring-0 sm:max-w-174.75 sm:p-6 2xl:p-6"
       >
         <DialogTitle className="sr-only">Kinetic Sand Sandbox Kit</DialogTitle>
 
         <div className="flex gap-5.75 max-md:flex-col max-md:gap-5">
           <div className="flex w-64.25 shrink-0 flex-col gap-4 max-md:w-full">
-            <div className="relative h-55.75 overflow-hidden rounded-2xl max-md:h-64">
+            <div className="relative h-52 overflow-hidden rounded-2xl sm:h-64 md:h-55.75 2xl:h-55.75">
               <Image
                 src="/Home/therapy-toy-kinetic-sand.png"
                 alt="Kinetic Sand Sandbox Kit main product view"

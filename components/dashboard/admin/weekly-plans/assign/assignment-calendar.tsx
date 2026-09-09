@@ -38,7 +38,7 @@ export function AssignmentCalendar({ onSelect }: { onSelect: (value: string) => 
   }, [month]);
 
   return (
-    <section className="w-88.5 rounded-3xl bg-[#f7f0ed] p-4 shadow-[0_10px_24px_rgba(38,50,56,0.12)]">
+    <section className="w-full min-w-0 max-w-88.5 rounded-3xl bg-[#f7f0ed] p-3 shadow-[0_10px_24px_rgba(38,50,56,0.12)] sm:p-4 2xl:w-88.5 2xl:p-4">
       <div className="flex justify-center">
         <div className="flex items-center gap-2 rounded-full bg-[rgba(0,0,0,0.05)] px-4 py-2.5">
           <button
@@ -72,7 +72,7 @@ export function AssignmentCalendar({ onSelect }: { onSelect: (value: string) => 
           {weekdays.map((weekday) => (
             <span
               key={weekday}
-              className="flex h-6 w-10 items-center justify-center font-nunito text-xs font-bold leading-4 text-black"
+              className="flex h-6 w-7 items-center justify-center font-nunito text-[10px] font-bold leading-4 text-black sm:w-10 sm:text-xs 2xl:w-10 2xl:text-xs"
             >
               {weekday}
             </span>
@@ -90,7 +90,7 @@ export function AssignmentCalendar({ onSelect }: { onSelect: (value: string) => 
               const rangeEnd = isReferenceMonth && (day === 17 || day === 23);
 
               return day === null ? (
-                <span key={dayIndex} className="size-10" />
+                <span key={dayIndex} className="size-7 sm:size-10 2xl:size-10" />
               ) : (
                 <button
                   key={day}
@@ -98,7 +98,7 @@ export function AssignmentCalendar({ onSelect }: { onSelect: (value: string) => 
                   onClick={() =>
                     onSelect(formatDate(new Date(month.getFullYear(), month.getMonth(), day)))
                   }
-                  className={`relative z-10 flex size-10 items-center justify-center rounded-full p-2 font-nunito text-lg font-medium leading-6 tracking-[-0.27px] text-[#263238] ${rangeEnd ? 'bg-[#f2b59f]' : ''}`}
+                  className={`relative z-10 flex size-7 items-center justify-center rounded-full font-nunito text-sm font-medium leading-5 tracking-[-0.27px] text-[#263238] sm:size-10 sm:p-2 sm:text-lg sm:leading-6 2xl:size-10 2xl:p-2 2xl:text-lg 2xl:leading-6 ${rangeEnd ? 'bg-[#f2b59f]' : ''}`}
                 >
                   {day}
                 </button>

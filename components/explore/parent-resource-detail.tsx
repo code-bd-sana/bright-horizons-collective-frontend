@@ -2,6 +2,8 @@ import { Clock3 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { cn } from '@/lib/utils';
+
 const milestones = [
   [
     '0–12 months: The sensory and motor foundation',
@@ -35,26 +37,39 @@ function Chip({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function ParentResourceDetail() {
+export function ParentResourceDetail({ dashboard = false }: { dashboard?: boolean }) {
+  const Root = dashboard ? 'div' : 'main';
+  const exploreHref = dashboard ? '/dashboard/explore?tab=parent-resources' : '/explore';
+  const activityHref = dashboard
+    ? '/dashboard/explore/activities/bubble-wrap-stomp-counting'
+    : '/explore/activities/bubble-wrap-stomp-counting';
+
   return (
-    <main className="bg-[#FDFDFC] text-[#263238]">
-      <div className="mx-auto flex w-full max-w-311 flex-col gap-15 px-20 pb-20 pt-40 max-xl:px-8 max-lg:pt-36 max-md:gap-10 max-md:px-5 max-md:pb-12 max-md:pt-36">
+    <Root className={cn('text-[#263238]', !dashboard && 'bg-[#FDFDFC]')}>
+      <div
+        className={cn(
+          'mx-auto flex w-full max-w-311 min-w-0 flex-col',
+          dashboard
+            ? 'gap-10 pb-12 sm:gap-12 2xl:gap-15'
+            : 'gap-15 px-20 pt-40 pb-20 max-xl:px-8 max-lg:pt-36 max-md:gap-10 max-md:px-5 max-md:pt-36 max-md:pb-12'
+        )}
+      >
         <section className="flex flex-col gap-8">
           <nav
             aria-label="Breadcrumb"
-            className="flex flex-wrap items-center gap-1.5 font-nunito text-2xl font-medium leading-8 max-md:text-lg"
+            className="flex flex-wrap items-center gap-1.5 font-nunito text-2xl font-medium leading-8 max-md:text-lg max-sm:text-base max-sm:leading-6"
           >
-            <Link href="/explore" className="text-[#2F7D7E] hover:underline">
+            <Link href={exploreHref} className="text-[#2F7D7E] hover:underline">
               Explore
             </Link>
             <span className="font-manrope text-lg text-[#D8DDD9]">/</span>
-            <Link href="/explore" className="text-[#2F7D7E] hover:underline">
+            <Link href={exploreHref} className="text-[#2F7D7E] hover:underline">
               Parent Resources
             </Link>
             <span className="font-manrope text-lg text-[#D8DDD9]">/</span>
             <span>Developmental Milestones: What to Expect at Every Stage</span>
           </nav>
-          <div className="relative h-101.25 overflow-hidden rounded-2xl bg-[#DCEEEE] max-md:h-64">
+          <div className="relative h-60 overflow-hidden rounded-2xl bg-[#DCEEEE] sm:h-80 md:h-101.25">
             <Image
               src="/Home/activity-bubble-wrap-stomp.png"
               alt="Colourful toy numbers and vehicles"
@@ -68,7 +83,7 @@ export function ParentResourceDetail() {
 
         <section className="flex flex-col gap-8">
           <div className="border-b border-[#ADB1AE] pb-6">
-            <h1 className="font-nunito text-[40px] font-bold leading-12 tracking-[-0.4px] text-[#174A4D] max-md:text-[32px] max-md:leading-10">
+            <h1 className="font-nunito text-[40px] font-bold leading-12 tracking-[-0.4px] text-[#174A4D] max-md:text-[32px] max-md:leading-10 max-sm:text-3xl max-sm:leading-9">
               Developmental Milestones: What to Expect at Every Stage
             </h1>
             <div className="mt-6 flex flex-col gap-4">
@@ -88,7 +103,7 @@ export function ParentResourceDetail() {
                 <span className="flex size-9 items-center justify-center rounded-full bg-[#2F7D7E] font-nunito text-sm font-bold leading-5 text-white">
                   J
                 </span>
-                <span className="font-manrope text-sm font-semibold leading-5">
+                <span className="min-w-0 font-manrope text-sm font-semibold leading-5">
                   By Jaicy, Licensed Pediatric Occupational Therapist
                 </span>
               </div>
@@ -103,7 +118,7 @@ export function ParentResourceDetail() {
               simultaneously.
             </p>
             <blockquote className="border-l-4 border-[#2F7D7E] py-2 pl-6">
-              <p className="max-w-174 font-(family-name:--font-lora) text-lg italic leading-[31.5px]">
+              <p className="max-w-174 font-lora text-lg italic leading-[31.5px]">
                 “A milestone is a signpost, not a deadline. Most children reach them — the timing
                 just varies within a range that&apos;s often wider than parents expect.”
               </p>
@@ -132,17 +147,22 @@ export function ParentResourceDetail() {
             </div>
             <Link
               href="/register"
-              className="shrink-0 rounded-full bg-[#2F7D7E] px-5 py-2.5 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-white"
+              className="shrink-0 rounded-full bg-[#2F7D7E] px-5 py-2.5 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-white max-sm:w-full max-sm:text-center"
             >
               Explore Membership
             </Link>
           </div>
           <div className="flex flex-col gap-6">
             <h2 className="font-nunito text-xl font-bold leading-7">Related Activities</h2>
-            <div className="grid grid-cols-3 gap-4 max-lg:grid-cols-2 max-md:grid-cols-1">
+            <div
+              className={cn(
+                'grid grid-cols-1 gap-4 sm:grid-cols-2',
+                dashboard ? '2xl:grid-cols-3' : 'xl:grid-cols-3'
+              )}
+            >
               {relatedActivities.map(([title, age, skill, image]) => (
                 <Link
-                  href="/explore/activities/bubble-wrap-stomp-counting"
+                  href={activityHref}
                   key={title}
                   className="h-61 overflow-hidden rounded-2xl border border-[#D8DDD9] bg-white shadow-[0px_2px_8px_rgba(38,50,56,0.06)]"
                 >
@@ -152,7 +172,7 @@ export function ParentResourceDetail() {
                       alt=""
                       fill
                       className="object-cover"
-                      sizes="(min-width: 1280px) 404px, 50vw"
+                      sizes="(min-width: 1280px) 404px, (min-width: 640px) 50vw, 100vw"
                     />
                   </div>
                   <div className="p-3">
@@ -168,7 +188,7 @@ export function ParentResourceDetail() {
           </div>
         </section>
       </div>
-    </main>
+    </Root>
   );
 }
 

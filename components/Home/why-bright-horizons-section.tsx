@@ -22,7 +22,7 @@ const brightHorizonsItems = [
 
 function ComparisonTitle() {
   return (
-    <h2 className="h-14 w-[459px] text-center font-nunito text-5xl leading-14 font-semibold tracking-[-0.48px] text-[#263238]">
+    <h2 className="w-full max-w-[540px] text-center font-nunito text-[clamp(28px,5vw,48px)] leading-[1.16] font-semibold tracking-[-0.48px] text-[#263238]">
       Why <span className="text-[#F2B59F]">Bright Horizons Collective?</span>
     </h2>
   );
@@ -30,26 +30,26 @@ function ComparisonTitle() {
 
 function SearchAndHopeCard() {
   return (
-    <article className="flex h-[396px] w-[566px] shrink-0 flex-col gap-4 rounded-2xl border border-[#D4D6D7] bg-white p-[33px]">
+    <article className="flex min-h-[396px] h-full w-full max-w-[566px] flex-col justify-between gap-4 rounded-2xl border border-[#D4D6D7] bg-white p-6 sm:p-8">
       <div className="flex flex-col gap-2">
         <span className="font-manrope text-[28px] leading-7">😮‍💨</span>
-        <h3 className="font-nunito text-2xl leading-8 font-medium text-[#263238]">
+        <h3 className="font-nunito text-xl sm:text-2xl leading-7 sm:leading-8 font-medium text-[#263238]">
           The search-and-hope approach
         </h3>
-        <p className="w-[492px] font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#515B60]">
+        <p className="w-full font-manrope text-xs sm:text-sm leading-[20px] sm:leading-[22px] tracking-[-0.084px] text-[#515B60]">
           Endless Pinterest boards and free printables that weren&apos;t made for your child.
           Activities that look great in theory but don&apos;t quite land. You&apos;re left wondering
           if you&apos;re doing enough.
         </p>
       </div>
 
-      <ul className="flex flex-col gap-2">
+      <ul className="flex flex-col gap-2 pt-2">
         {searchAndHopeItems.map((item) => (
           <li key={item} className="flex items-start gap-2.5">
             <span className="w-[11px] pt-px font-manrope text-sm leading-[21px] font-bold text-[#A8ADAF]">
               ✕
             </span>
-            <span className="font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#515B60]">
+            <span className="font-manrope text-xs sm:text-sm leading-[20px] sm:leading-[22px] tracking-[-0.084px] text-[#515B60]">
               {item}
             </span>
           </li>
@@ -61,24 +61,24 @@ function SearchAndHopeCard() {
 
 function BrightHorizonsCard() {
   return (
-    <article className="relative flex h-[396px] w-[566px] shrink-0 flex-col rounded-2xl border-2 border-[#E9F1EE] bg-[#E9F1EE] p-[38px]">
+    <article className="relative flex min-h-[396px] h-full w-full max-w-[566px] flex-col justify-between rounded-2xl border-2 border-[#E9F1EE] bg-[#E9F1EE] p-6 sm:p-9 pt-8 sm:pt-9">
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-2">
           <span className="font-manrope text-[28px] leading-7">🌱</span>
-          <h3 className="w-[490px] font-nunito text-2xl leading-8 font-medium text-[#174A4D]">
+          <h3 className="w-full font-nunito text-xl sm:text-2xl leading-7 sm:leading-8 font-medium text-[#174A4D]">
             One OT. One plan. Built for your child.
           </h3>
-          <p className="w-[490px] font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#263238]">
+          <p className="w-full font-manrope text-xs sm:text-sm leading-[20px] sm:leading-[22px] tracking-[-0.084px] text-[#263238]">
             Every Monday you get a new weekly plan — morning, afternoon, and evening activities
             selected by a licensed pediatric OT who knows your child&apos;s profile. No searching.
             No guessing. Just doing.
           </p>
         </div>
 
-        <ul className="flex w-[490px] flex-col gap-2">
+        <ul className="flex w-full flex-col gap-2 pt-2">
           {brightHorizonsItems.map((item) => (
             <li key={item} className="flex items-start gap-2.5">
-              <span className="mt-px flex size-[18px] shrink-0 items-center justify-center rounded-[9px] bg-[#2F7D7E]">
+              <span className="mt-0.5 flex size-[18px] shrink-0 items-center justify-center rounded-[9px] bg-[#2F7D7E]">
                 <Image
                   src={`${assetBase}-icon.svg`}
                   alt=""
@@ -87,7 +87,7 @@ function BrightHorizonsCard() {
                   className="size-[11px]"
                 />
               </span>
-              <span className="font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#174A4D]">
+              <span className="font-manrope text-xs sm:text-sm leading-[20px] sm:leading-[22px] tracking-[-0.084px] text-[#174A4D]">
                 {item}
               </span>
             </li>
@@ -95,7 +95,7 @@ function BrightHorizonsCard() {
         </ul>
       </div>
 
-      <span className="absolute -top-[13px] left-7 rounded-full bg-[#2F7D7E] px-4 py-1 font-manrope text-xs leading-4 font-extrabold tracking-[1px] text-white">
+      <span className="absolute -top-[13px] left-6 sm:left-7 rounded-full bg-[#2F7D7E] px-3 sm:px-4 py-1 font-manrope text-[10px] sm:text-xs leading-4 font-extrabold tracking-[1px] text-white">
         THE BRIGHT HORIZONS WAY
       </span>
     </article>
@@ -140,11 +140,11 @@ function DesktopComparison() {
 
 function CompactComparison() {
   return (
-    <div className="mx-auto max-w-[600px] px-5 py-24 sm:px-8 sm:py-32 min-[1600px]:hidden">
-      <div className="mx-auto max-w-full">
+    <div className="mx-auto max-w-290 px-4 py-16 sm:px-8 sm:py-24 min-[1600px]:hidden">
+      <div className="mx-auto flex justify-center">
         <ComparisonTitle />
       </div>
-      <div className="mt-16 flex flex-col items-center gap-6 overflow-hidden">
+      <div className="mt-10 sm:mt-16 grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch justify-items-center">
         <SearchAndHopeCard />
         <BrightHorizonsCard />
       </div>

@@ -62,7 +62,7 @@ const recommendations: Recommendation[] = [
 
 function RecommendationCard({ item }: { item: Recommendation }) {
   return (
-    <article className="flex flex-col items-center gap-6 rounded-3xl border border-[#E9F1EE] bg-white pb-6 md:flex-row md:pb-0 md:pr-6">
+    <article className="flex min-w-0 flex-col items-center gap-6 rounded-3xl border border-[#E9F1EE] bg-white pb-6 md:flex-row md:pb-0 md:pr-6">
       <div
         className={`relative flex h-68.5 w-full shrink-0 items-center justify-center rounded-t-3xl md:w-64.75 md:rounded-l-3xl md:rounded-tr-none ${item.tone}`}
       >
@@ -75,12 +75,22 @@ function RecommendationCard({ item }: { item: Recommendation }) {
             )}
             <span className="font-nunito text-xs font-medium text-[#174A4D]">{item.label}</span>
           </div>
-          <button className="flex h-6 w-6 items-center justify-center rounded-full bg-white/90 shadow-[0_1px_4px_0_rgba(0,0,0,0.12)] hover:bg-white transition-colors">
+          <button
+            type="button"
+            aria-label={`Bookmark ${item.title}`}
+            className="flex size-6 items-center justify-center rounded-full bg-white/90 shadow-[0_1px_4px_0_rgba(0,0,0,0.12)] transition-colors hover:bg-white"
+          >
             <Bookmark className="h-3.5 w-3.5 text-[#263238]" />
           </button>
         </div>
         <div className="relative h-55 w-55">
-          <Image src={item.image} alt={item.title} fill className="object-contain" />
+          <Image
+            src={item.image}
+            alt={item.title}
+            fill
+            sizes="(max-width: 767px) 220px, 220px"
+            className="object-contain"
+          />
         </div>
       </div>
       <div className="flex w-full flex-col gap-3 px-6 md:max-w-83 md:px-0">
@@ -88,7 +98,10 @@ function RecommendationCard({ item }: { item: Recommendation }) {
         <p className="whitespace-pre-line font-manrope text-sm font-normal leading-5.5 tracking-[-0.006em] text-[#7D8488]">
           {item.description}
         </p>
-        <button className="mt-1 flex w-fit items-center gap-1.25 rounded-full font-manrope text-xs font-semibold leading-4.5 tracking-[0.04em] text-[#2F7D7E] hover:underline">
+        <button
+          type="button"
+          className="mt-1 flex w-fit items-center gap-1.25 rounded-full font-manrope text-xs font-semibold leading-4.5 tracking-[0.04em] text-[#2F7D7E] hover:underline"
+        >
           {item.actionIcon === 'download' && <Download className="h-3.5 w-3.5" />}
           {item.action}
           {item.actionIcon === 'arrow-right' && <ArrowRight className="h-3.5 w-3.5" />}
@@ -100,7 +113,7 @@ function RecommendationCard({ item }: { item: Recommendation }) {
 
 export function RecommendationsPanel() {
   return (
-    <section className="flex flex-col gap-8 rounded-2xl border border-[#E8EBE8] bg-white p-4 sm:p-8 shadow-sm">
+    <section className="flex min-w-0 flex-col gap-8 rounded-2xl border border-[#E8EBE8] bg-white p-4 shadow-sm sm:p-6 2xl:p-8">
       <div className="flex flex-col gap-2">
         <h2 className="font-nunito text-2xl font-medium text-[#263238]">
           Recommended Resources & Therapy Toys
@@ -110,9 +123,9 @@ export function RecommendationsPanel() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-8 xl:grid-cols-2">
+      <div className="grid grid-cols-1 gap-8 2xl:grid-cols-2">
         {['Parent Resources', 'Therapy Toys & Equipment'].map((category) => (
-          <div key={category} className="flex flex-col gap-6 min-w-0">
+          <div key={category} className="flex min-w-0 flex-col gap-6">
             <h3 className="font-nunito text-2xl font-medium text-[#263238]">{category}</h3>
             <div className="flex flex-col justify-center gap-8">
               {recommendations

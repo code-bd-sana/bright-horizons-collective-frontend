@@ -88,7 +88,7 @@ export function AssignWeeklyPlanChildrenPage() {
   }
 
   return (
-    <section className="mx-auto w-full max-w-196.75 pb-8 text-[#263238]">
+    <section className="mx-auto w-full min-w-0 max-w-196.75 pb-8 text-[#263238]">
       <div className="space-y-5">
         <button
           type="button"
@@ -112,7 +112,7 @@ export function AssignWeeklyPlanChildrenPage() {
           <AssignmentStepper currentStep={3} />
         </section>
 
-        <section className="rounded-2xl border border-[#e7eceb] bg-white p-6 shadow-[0_4px_6px_rgba(0,0,0,0.06)]">
+        <section className="rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:p-6 2xl:p-6">
           <h2 className="font-nunito text-lg font-bold leading-7 text-[#263238]">
             3. Choose Children
           </h2>
@@ -140,15 +140,15 @@ export function AssignWeeklyPlanChildrenPage() {
           </div>
         </section>
 
-        <section className="flex items-center justify-between rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)]">
+        <section className="flex flex-col gap-3 rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:flex-row sm:items-center sm:justify-between 2xl:flex-row 2xl:items-center 2xl:justify-between">
           <button
             type="button"
             onClick={() => router.push('/dashboard/admin/weekly-plans/assign/families')}
-            className="rounded-[14px] border border-[#e7eceb] px-4.25 py-2.75 font-manrope text-sm font-semibold leading-5 text-[#607d8b]"
+            className="w-full rounded-[14px] border border-[#e7eceb] px-4.25 py-2.75 font-manrope text-sm font-semibold leading-5 text-[#607d8b] sm:w-auto 2xl:w-auto"
           >
             ← Previous
           </button>
-          <div className="flex gap-2">
+          <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto 2xl:flex 2xl:w-auto">
             <button
               type="button"
               onClick={() => router.push('/dashboard/admin/weekly-plans')}

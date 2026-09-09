@@ -252,19 +252,19 @@ function CompactHero({
   ctaHref,
 }: Required<HeroSectionProps>) {
   return (
-    <div className="relative flex min-h-[880px] flex-col items-center overflow-hidden px-5 pb-12 pt-36 text-center lg:hidden">
-      <div className="relative z-20 flex w-full max-w-[677px] flex-col items-center gap-8">
-        <div className="flex w-full flex-col items-center gap-4">
-          <div className="flex w-[178px] items-center gap-2.5 rounded-xl border border-[#E8EBE8] bg-white px-2 py-1.5 font-manrope text-sm leading-[22px] tracking-[-0.084px] shadow-sm">
-            <span className="flex items-center gap-1">
+    <div className="relative flex min-h-0 flex-col items-center overflow-hidden px-4 pb-10 pt-24 sm:px-6 sm:pt-32 sm:pb-14 md:pt-36 text-center lg:hidden">
+      <div className="relative z-20 flex w-full max-w-[677px] flex-col items-center gap-6 sm:gap-8">
+        <div className="flex w-full flex-col items-center gap-3 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-2.5 rounded-xl border border-[#E8EBE8] bg-white px-2.5 py-1.5 font-manrope text-xs sm:text-sm leading-[22px] tracking-[-0.084px] shadow-xs">
+            <span className="flex items-center gap-1 font-medium">
               <Image src={heroAssets.ratingStar} alt="" width={16} height={16} />
               {rating}
             </span>
             <Image src={heroAssets.divider} alt="" width={1} height={10} className="h-2.5 w-px" />
-            <span>{familyCount}</span>
+            <span className="text-[#515B60]">{familyCount}</span>
           </div>
-          <div className="relative">
-            <h1 className="font-nunito text-[clamp(34px,6vw,52px)] font-semibold leading-[1.14] tracking-[-0.56px] text-[#263238]">
+          <div className="relative max-w-full">
+            <h1 className="font-nunito text-[clamp(28px,7vw,46px)] sm:text-5xl font-semibold leading-[1.16] tracking-[-0.02em] text-[#263238]">
               {headlineMain}
               <span className="text-[#F2B59F]">{headlineHighlight}</span>
               {headlineEnd}
@@ -272,47 +272,48 @@ function CompactHero({
             <Image
               src={heroAssets.sparkle}
               alt=""
-              width={72}
-              height={72}
-              className="pointer-events-none absolute -right-10 -top-6 size-[72px] rotate-[81.16deg] object-cover"
+              width={60}
+              height={60}
+              className="pointer-events-none absolute -right-3 -top-4 sm:-right-8 sm:-top-6 size-10 sm:size-14 rotate-[81.16deg] object-cover"
             />
           </div>
-          <p className="max-w-[677px] font-manrope text-base leading-6 tracking-[-0.176px] text-[#607077]">
+          <p className="max-w-[620px] font-manrope text-sm sm:text-base leading-relaxed text-[#607077]">
             {subtitle}
           </p>
         </div>
         <Link
           href={ctaHref}
-          className="inline-flex min-w-20 items-center justify-center gap-1 rounded-full border border-[#ACCBCB] bg-linear-to-b from-[#2F7D7E]/60 to-[#2F7D7E] px-3 py-2 font-nunito text-sm font-medium leading-6 tracking-[-0.176px] text-[#F8FAFC] shadow-[inset_0px_-6px_2px_rgba(255,255,255,0.07)]"
+          className="inline-flex min-w-20 items-center justify-center gap-1.5 rounded-full border border-[#ACCBCB] bg-linear-to-b from-[#2F7D7E]/80 to-[#2F7D7E] px-4 py-2.5 font-nunito text-sm sm:text-base font-medium leading-6 text-[#F8FAFC] shadow-[inset_0px_-6px_2px_rgba(255,255,255,0.07)] transition-transform active:scale-95"
         >
           <span className="px-1">{ctaText}</span>
           <Image src={heroAssets.arrow} alt="" width={16} height={16} />
         </Link>
       </div>
 
-      <div className="relative z-20 mt-8 flex flex-wrap justify-center gap-x-6 gap-y-4">
+      <div className="relative z-20 mt-6 sm:mt-8 flex flex-wrap justify-center gap-x-4 gap-y-3 sm:gap-x-6 sm:gap-y-4">
         {['Licensed Pediatric OT', 'Family-Centered', 'Designed for Ages 0–8'].map((label) => (
-          <div key={label} className="flex flex-col items-center gap-2">
-            <span className="flex size-8 items-center justify-center rounded-full bg-[#E9F1EE]">
-              <span className="flex size-5 items-center justify-center rounded-full bg-[#82B1B2]">
-                <Image src={heroAssets.badgeCheck} alt="" width={16} height={16} />
+          <div key={label} className="flex items-center sm:flex-col gap-2">
+            <span className="flex size-7 sm:size-8 items-center justify-center rounded-full bg-[#E9F1EE]">
+              <span className="flex size-4 sm:size-5 items-center justify-center rounded-full bg-[#82B1B2]">
+                <Image src={heroAssets.badgeCheck} alt="" width={14} height={14} />
               </span>
             </span>
-            <span className="whitespace-nowrap font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#493630]">
+            <span className="font-manrope text-xs sm:text-sm leading-tight sm:leading-[22px] tracking-[-0.084px] text-[#493630]">
               {label}
             </span>
           </div>
         ))}
       </div>
 
-      <div className="relative mt-6 h-[360px] w-full max-w-[900px] overflow-hidden">
+      <div className="relative mt-6 sm:mt-8 h-[220px] sm:h-[320px] md:h-[380px] w-full max-w-[900px] overflow-hidden rounded-2xl sm:rounded-3xl">
         <Image
           src={heroAssets.photo}
           alt="Children celebrating in a sunny flower field"
           fill
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 900px"
           className="object-cover object-center"
         />
-        <div className="absolute bottom-0 left-0 right-0 h-28 bg-linear-to-t from-[#FDFDFC] to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-24 sm:h-28 bg-linear-to-t from-[#FDFDFC] to-transparent" />
       </div>
     </div>
   );

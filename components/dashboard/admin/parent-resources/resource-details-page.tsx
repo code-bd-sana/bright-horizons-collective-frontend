@@ -49,8 +49,10 @@ function DetailCard({
   large?: boolean;
 }) {
   return (
-    <div className={`rounded-[14px] bg-[#f4f8f6] p-3 ${large ? 'h-[86.5px]' : 'h-[65.5px]'}`}>
-      <p className="font-manrope text-[11px] font-semibold leading-[16.5px] tracking-[0.55px] text-[#607d8b] uppercase">
+    <div
+      className={`rounded-[14px] bg-[#f4f8f6] p-3 ${large ? 'min-h-21.75 2xl:h-21.625' : 'min-h-16.5 2xl:h-16.375'}`}
+    >
+      <p className="font-manrope text-[11px] font-semibold leading-4.125 tracking-[0.55px] text-[#607d8b] uppercase">
         {label}
       </p>
       <p className="pt-1 font-manrope text-sm font-semibold leading-5.25 text-[#263238]">{value}</p>
@@ -98,7 +100,7 @@ export function ResourceDetailsPage({ resource }: ResourceDetailsPageProps) {
       : resource.title;
 
   return (
-    <section className="mx-auto flex w-full max-w-3xl flex-col gap-6 pb-8 text-[#263238]">
+    <section className="mx-auto flex w-full min-w-0 max-w-3xl flex-col gap-6 pb-8 text-[#263238]">
       <Link
         href="/dashboard/admin/parent-resources"
         className="inline-flex w-fit items-center gap-1.5 font-manrope text-sm font-medium leading-5 text-[#607d8b]"
@@ -108,10 +110,10 @@ export function ResourceDetailsPage({ resource }: ResourceDetailsPageProps) {
       </Link>
 
       <article className="overflow-hidden rounded-2xl border border-[#e7eceb] bg-white p-px shadow-[0_4px_12px_rgba(0,0,0,0.06)]">
-        <div className="flex h-48 items-center justify-center rounded-[14px] bg-[rgba(47,125,126,0.09)]">
+        <div className="flex h-36 items-center justify-center rounded-[14px] bg-[rgba(47,125,126,0.09)] sm:h-48 2xl:h-48">
           <BookOpen aria-hidden="true" size={36} strokeWidth={1.5} className="text-[#2f7d7e]" />
         </div>
-        <div className="p-6">
+        <div className="p-4 sm:p-5 2xl:p-6">
           <div className="flex min-h-29.75 flex-col justify-between">
             <div>
               <div className="flex flex-wrap gap-2">
@@ -130,11 +132,11 @@ export function ResourceDetailsPage({ resource }: ResourceDetailsPageProps) {
               </h1>
             </div>
 
-            <div className="flex flex-wrap gap-2 pt-4">
+            <div className="grid gap-2 pt-4 sm:flex sm:flex-wrap 2xl:flex 2xl:flex-wrap">
               <button
                 type="button"
                 onClick={() => toast.success(`“${title}” duplicated.`)}
-                className="inline-flex h-9.5 items-center gap-2 rounded-[14px] border border-[#e7eceb] px-3.25 py-2.25 font-manrope text-sm font-semibold leading-5 text-[#607d8b]"
+                className="inline-flex h-9.5 items-center justify-center gap-2 rounded-[14px] border border-[#e7eceb] px-3.25 py-2.25 font-manrope text-sm font-semibold leading-5 text-[#607d8b]"
               >
                 <Copy aria-hidden="true" size={14} strokeWidth={1.6} />
                 Duplicate
@@ -142,14 +144,14 @@ export function ResourceDetailsPage({ resource }: ResourceDetailsPageProps) {
               <button
                 type="button"
                 onClick={() => toast.success(`“${title}” archived.`)}
-                className="inline-flex h-9.5 items-center gap-2 rounded-[14px] border border-[rgba(184,134,11,0.25)] bg-[#fff8e1] px-3.25 py-2.25 font-manrope text-sm font-semibold leading-5 text-[#b8860b]"
+                className="inline-flex h-9.5 items-center justify-center gap-2 rounded-[14px] border border-[rgba(184,134,11,0.25)] bg-[#fff8e1] px-3.25 py-2.25 font-manrope text-sm font-semibold leading-5 text-[#b8860b]"
               >
                 <Archive aria-hidden="true" size={14} strokeWidth={1.6} />
                 Archive
               </button>
               <Link
                 href="/dashboard/admin/parent-resources/add-resource"
-                className="inline-flex h-9.5 items-center gap-2 rounded-[14px] bg-[#2f7d7e] px-4 py-2 font-manrope text-sm font-semibold leading-5 text-white"
+                className="inline-flex h-9.5 items-center justify-center gap-2 rounded-[14px] bg-[#2f7d7e] px-4 py-2 font-manrope text-sm font-semibold leading-5 text-white"
               >
                 <Pencil aria-hidden="true" size={14} strokeWidth={1.6} />
                 Edit Resource
@@ -159,20 +161,20 @@ export function ResourceDetailsPage({ resource }: ResourceDetailsPageProps) {
         </div>
       </article>
 
-      <article className="rounded-2xl border border-[#e7eceb] bg-white p-6.25 shadow-[0_4px_6px_rgba(0,0,0,0.06)]">
+      <article className="rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:p-5 2xl:p-6.25">
         <h2 className="font-nunito text-lg font-bold leading-6.75">Overview</h2>
-        <p className="pt-4 font-manrope text-[15px] leading-[25.5px] text-[#607d8b]">
+        <p className="pt-4 font-manrope text-[15px] leading-6.375 text-[#607d8b]">
           A comprehensive guide to understanding how children process sensory information and how to
           support them at home.
         </p>
-        <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-4">
           {detailCards.map(([label, value]) => (
             <DetailCard key={label} label={label} value={value} large />
           ))}
         </div>
       </article>
 
-      <article className="rounded-2xl border border-[#e7eceb] bg-white p-6.25 shadow-[0_4px_6px_rgba(0,0,0,0.06)]">
+      <article className="rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:p-5 2xl:p-6.25">
         <h2 className="font-nunito text-lg font-bold leading-6.75">Content</h2>
         <p className="pt-4 font-manrope text-[15px] leading-6.75 text-[#263238]">
           Sensory processing is the way our nervous system receives messages from the senses and
@@ -185,7 +187,7 @@ export function ResourceDetailsPage({ resource }: ResourceDetailsPageProps) {
         </div>
       </article>
 
-      <article className="rounded-2xl border border-[#e7eceb] bg-white p-6.25 shadow-[0_4px_6px_rgba(0,0,0,0.06)]">
+      <article className="rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:p-5 2xl:p-6.25">
         <h2 className="font-nunito text-lg font-bold leading-6.75">Related Content</h2>
         <div className="pt-4">
           <section>
@@ -208,9 +210,9 @@ export function ResourceDetailsPage({ resource }: ResourceDetailsPageProps) {
         </div>
       </article>
 
-      <article className="rounded-2xl border border-[#e7eceb] bg-white p-6.25 shadow-[0_4px_6px_rgba(0,0,0,0.06)]">
+      <article className="rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:p-5 2xl:p-6.25">
         <h2 className="font-nunito text-lg font-bold leading-6.75">Analytics</h2>
-        <div className="grid gap-4 pt-4 sm:grid-cols-3">
+        <div className="grid gap-4 pt-4 sm:grid-cols-3 2xl:grid-cols-3">
           {analytics.map(([value, label, color]) => (
             <div key={label} className="h-21 rounded-[14px] bg-[#f4f8f6] p-4 text-center">
               <p className={`font-nunito text-[28px] font-bold leading-7 ${color}`}>{value}</p>
@@ -220,9 +222,9 @@ export function ResourceDetailsPage({ resource }: ResourceDetailsPageProps) {
         </div>
       </article>
 
-      <article className="rounded-2xl border border-[#e7eceb] bg-white p-6.25 shadow-[0_4px_6px_rgba(0,0,0,0.06)]">
+      <article className="rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:p-5 2xl:p-6.25">
         <h2 className="font-nunito text-lg font-bold leading-6.75">Publishing Information</h2>
-        <div className="grid gap-4 pt-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 pt-4 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-4">
           {publishingCards.map(([label, value]) => (
             <DetailCard key={label} label={label} value={value} />
           ))}

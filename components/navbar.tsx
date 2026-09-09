@@ -77,15 +77,15 @@ export function Navbar({
       <div className="w-fit rounded-[20px] border border-[#E8EBE8] bg-white p-4 max-lg:w-full max-sm:px-3 max-sm:py-2.5 font-nunito shadow-[0px_7px_8px_rgba(174,171,163,0.10),0px_30px_15px_rgba(174,171,163,0.09),0px_67px_20px_rgba(174,171,163,0.05),0px_119px_24px_rgba(174,171,163,0.01),0px_186px_26px_rgba(174,171,163,0)]">
         <div className="flex items-center gap-1">
           {/* Desktop Nav Items */}
-          <div className="hidden lg:flex w-fit items-center gap-1">
-            <div className="flex items-center gap-1">
+          <div className="hidden lg:flex w-fit items-center gap-0 xl:gap-1">
+            <div className="flex items-center gap-0 xl:gap-1">
               {visibleNavItems.map((item) => {
                 const isActive = pathname === item.href || (item.href === '/' && pathname === '/');
                 return (
                   <Link
                     key={item.label}
                     href={item.href}
-                    className={`px-3 py-1.5 text-[16px] font-medium leading-6 tracking-[-0.176px] transition-colors ${
+                    className={`shrink-0 whitespace-nowrap px-2 xl:px-3 py-1.5 text-[14px] xl:text-[16px] font-medium leading-6 tracking-[-0.176px] transition-colors ${
                       isActive ? 'text-[#2F7D7E]' : 'text-[#263238] hover:text-[#2F7D7E]'
                     }`}
                   >
@@ -98,7 +98,7 @@ export function Navbar({
             {/* CTA Button: Start Free */}
             <Link
               href={visibleCtaHref}
-              className="relative ml-auto inline-flex items-center justify-center rounded-[999px] border border-[#ACCBCB] bg-linear-to-b from-[#2F7D7E]/80 to-[#2F7D7E] px-3 py-1.5 text-[16px] font-medium leading-6 tracking-[-0.176px] text-[#FFFDF8] shadow-[inset_0px_-6px_3px_0px_rgba(255,255,255,0.09)] transition-all hover:opacity-95"
+              className="relative ml-auto inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-[999px] border border-[#ACCBCB] bg-linear-to-b from-[#2F7D7E]/80 to-[#2F7D7E] px-3 py-1.5 text-[14px] xl:text-[16px] font-medium leading-6 tracking-[-0.176px] text-[#FFFDF8] shadow-[inset_0px_-6px_3px_0px_rgba(255,255,255,0.09)] transition-all hover:opacity-95"
             >
               {visibleCtaLabel}
             </Link>

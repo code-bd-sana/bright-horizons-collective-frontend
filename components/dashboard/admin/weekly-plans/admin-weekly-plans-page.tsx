@@ -31,21 +31,21 @@ export function AdminWeeklyPlansPage() {
     [age, membership, search, status]
   );
   return (
-    <section className="mx-auto w-full max-w-383.5 pb-8 text-[#263238]">
+    <section className="mx-auto w-full min-w-0 max-w-383.5 pb-8 text-[#263238]">
       <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className="font-nunito text-[32px] font-medium leading-10 tracking-[-0.4px] sm:text-[40px] sm:leading-12">
+          <h1 className="font-nunito text-2xl font-medium leading-8 tracking-[-0.4px] sm:text-[32px] sm:leading-10 2xl:text-[40px] 2xl:leading-12">
             Weekly Plans
           </h1>
           <p className="mt-0.5 font-manrope text-sm leading-5.5 text-[#6c7787]">
             12 active plans · 4 therapists assigned this week
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto 2xl:flex 2xl:w-auto">
           <button
             type="button"
             onClick={() => router.push('/dashboard/admin/weekly-plans/assign')}
-            className="flex h-10 items-center gap-2 rounded-[14px] border border-[#cfe0e0] bg-[#e9f1ee] px-4 font-manrope text-sm font-semibold text-[#2f7d7e]"
+            className="flex h-10 min-w-0 items-center justify-center gap-2 rounded-[14px] border border-[#cfe0e0] bg-[#e9f1ee] px-3 font-manrope text-sm font-semibold text-[#2f7d7e] sm:px-4 2xl:px-4"
           >
             <UserPlus size={15} />
             Assign
@@ -53,7 +53,7 @@ export function AdminWeeklyPlansPage() {
           <button
             type="button"
             onClick={() => router.push('/dashboard/admin/weekly-plans/create')}
-            className="flex h-10 items-center gap-2 rounded-[14px] bg-[#2f7d7e] px-4 font-manrope text-sm font-semibold text-white"
+            className="flex h-10 min-w-0 items-center justify-center gap-2 rounded-[14px] bg-[#2f7d7e] px-3 font-manrope text-sm font-semibold text-white sm:px-4 2xl:px-4"
           >
             <Plus size={15} />
             Create Plan

@@ -4,7 +4,7 @@ import { CreateActivityForm } from './create-activity-form';
 
 export function CreateActivityPage() {
   return (
-    <section className="mx-auto w-full max-w-265.75 pb-10 pt-2 text-[#263238]">
+    <section className="mx-auto w-full min-w-0 max-w-265.75 pb-10 pt-2 text-[#263238]">
       <Link
         href="/dashboard/admin/activities-library"
         className="inline-flex items-center gap-1 font-nunito text-sm font-medium leading-5 text-[#607d8b] transition-colors hover:text-[#278488]"

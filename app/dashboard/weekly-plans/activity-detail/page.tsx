@@ -8,39 +8,39 @@ import Link from 'next/link';
 
 export default function ActivityDetailPage() {
   return (
-    <div className="mx-auto flex w-full max-w-[1063px] flex-col gap-6 pb-12 lg:gap-8">
-      <nav aria-label="Breadcrumb" className="flex h-[22px] items-center gap-[6px]">
+    <div className="mx-auto flex w-full max-w-265.75 min-w-0 flex-col gap-6 pb-12 2xl:gap-8">
+      <nav aria-label="Breadcrumb" className="flex min-h-5.5 flex-wrap items-center gap-1.5">
         <Link
           href="/dashboard/weekly-plans"
-          className="font-manrope text-[14px] font-normal leading-[22px] tracking-[-0.084px] text-[#2f7d7e]"
+          className="font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#2f7d7e]"
         >
           Weekly Plans
         </Link>
-        <span className="font-manrope text-[18px] font-normal leading-[27px] tracking-[-0.27px] text-[#d8ddd9]">
+        <span className="font-manrope text-lg leading-6.75 tracking-[-0.27px] text-[#d8ddd9]">
           /
         </span>
-        <span className="font-manrope text-[14px] font-normal leading-[22px] tracking-[-0.084px] text-[#263238]">
+        <span className="font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#263238]">
           Animal Yoga Adventure
         </span>
       </nav>
 
       {/* Top Card: Hero & Overview */}
-      <div className="flex w-full flex-col gap-6 rounded-[16px] border border-[var(--border\/300,#e8ebe8)] bg-white p-4 shadow-[0px_1px_1px_rgba(0,0,0,0.05)] sm:p-6 lg:gap-8 lg:p-8">
+      <div className="flex w-full min-w-0 flex-col gap-6 rounded-2xl border border-(--border\/300,#e8ebe8) bg-white p-4 shadow-[0_1px_1px_rgba(0,0,0,0.05)] sm:p-6 2xl:gap-8 2xl:p-8">
         <ActivityHero />
         <ActivityOverview />
       </div>
 
       {/* Two Column Layout */}
-      <div className="flex w-full flex-col items-start gap-6 lg:flex-row">
+      <div className="flex w-full min-w-0 flex-col items-start gap-6 min-[1600px]:flex-row">
         {/* Main Content Column (Left) */}
-        <div className="flex w-full max-w-[752px] flex-1 flex-col gap-6 max-lg:max-w-none">
+        <div className="flex w-full min-w-0 flex-1 flex-col gap-6 min-[1600px]:max-w-188">
           <MaterialsNeeded />
           <StepByStepInstructions />
           <ActivityModifications />
         </div>
 
         {/* Sidebar Column (Right) */}
-        <div className="w-full shrink-0 lg:w-[287px]">
+        <div className="w-full shrink-0 min-[1600px]:w-71.75">
           <ActivitySidebar />
         </div>
       </div>

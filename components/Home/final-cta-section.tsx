@@ -18,7 +18,7 @@ function CtaCard({ compact = false }: { compact?: boolean }) {
     <div
       className={
         compact
-          ? 'relative mx-auto flex min-h-106.75 max-w-7xl items-center justify-center overflow-hidden rounded-3xl border-2 border-[#FAF0ED] bg-[#FFFDF8] px-6 py-20 text-center shadow-[0_2px_28px_rgba(39,69,67,0.06)]'
+          ? 'relative mx-auto flex min-h-[340px] max-w-290 items-center justify-center overflow-hidden rounded-3xl border-2 border-[#FAF0ED] bg-[#FFFDF8] px-5 py-12 sm:px-8 sm:py-16 md:py-20 text-center shadow-[0_2px_28px_rgba(39,69,67,0.06)]'
           : 'relative h-106.75 w-7xl overflow-hidden rounded-3xl border-2 border-[#FAF0ED] bg-[#FFFDF8] shadow-[0_2px_28px_rgba(39,69,67,0.06)]'
       }
     >
@@ -27,7 +27,7 @@ function CtaCard({ compact = false }: { compact?: boolean }) {
         style={artworkMask}
         className={
           compact
-            ? 'pointer-events-none absolute inset-0 opacity-30'
+            ? 'pointer-events-none absolute inset-0 opacity-20 sm:opacity-30'
             : 'pointer-events-none absolute left-[100.71px] top-[1.61px] h-[652.83px] w-[1019.22px] opacity-30'
         }
       >
@@ -42,22 +42,22 @@ function CtaCard({ compact = false }: { compact?: boolean }) {
       <div
         className={
           compact
-            ? 'relative z-10 flex max-w-170.75 flex-col items-center gap-7'
+            ? 'relative z-10 flex max-w-2xl flex-col items-center gap-6 sm:gap-7'
             : 'absolute left-1/2 top-1/2 z-10 flex w-170.75 -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-7'
         }
       >
-        <div className="flex flex-col items-center gap-4">
-          <h2 className="font-nunito text-[40px] font-semibold leading-12 tracking-[-0.4px] text-[#414D60]">
+        <div className="flex flex-col items-center gap-3 sm:gap-4">
+          <h2 className="font-nunito text-[clamp(26px,5vw,40px)] font-semibold leading-tight tracking-[-0.4px] text-[#414D60]">
             Ready to make play more meaningful?
           </h2>
-          <p className="font-manrope text-base leading-6 text-[#7D8488]">
+          <p className="font-manrope text-sm sm:text-base leading-6 text-[#7D8488] max-w-xl">
             Spend less time searching and more time connecting with personalized weekly plans,
             engaging activities, and trusted developmental guidance.
           </p>
         </div>
         <Link
           href="/register"
-          className="inline-flex h-9 items-center gap-2 rounded-full bg-[#F2B59F] px-5 font-nunito text-sm font-medium leading-5 text-[#263238]"
+          className="inline-flex h-11 items-center gap-2 rounded-full bg-[#F2B59F] px-6 font-nunito text-sm sm:text-base font-semibold text-[#263238] hover:bg-[#F2B59F]/85 transition-colors shadow-xs"
         >
           Start Free
           <Image

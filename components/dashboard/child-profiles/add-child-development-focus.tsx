@@ -34,7 +34,7 @@ export function AddChildDevelopmentFocus() {
   }
 
   return (
-    <section className="mx-auto w-full max-w-212.75 pb-8 pt-6.5 text-[#263238]">
+    <section className="mx-auto w-full min-w-0 max-w-212.75 pb-8 pt-4 text-[#263238] sm:pt-6.5">
       <AddChildStepper currentStep={3} />
 
       <DynamicForm
@@ -62,7 +62,7 @@ export function AddChildDevelopmentFocus() {
 
           return (
             <>
-              <section className="mt-8 rounded-2xl border border-[#eff1ef] bg-white p-4 sm:mt-14 sm:p-8">
+              <section className="mt-8 rounded-2xl border border-[#eff1ef] bg-white p-4 sm:mt-10 sm:p-6 2xl:mt-14 2xl:p-8">
                 <h1 className="font-nunito text-2xl font-semibold leading-8 text-[#263238]">
                   Development &amp; Focus
                 </h1>
@@ -72,7 +72,7 @@ export function AddChildDevelopmentFocus() {
                     <legend className="font-manrope text-lg font-medium leading-6.75 tracking-[-0.27px]">
                       Areas of Support
                     </legend>
-                    <div className="flex flex-wrap gap-4">
+                    <div className="flex flex-wrap gap-2.5 sm:gap-4">
                       {supportAreas.map((area) => {
                         const selected = selectedAreas.includes(area);
 
@@ -104,7 +104,7 @@ export function AddChildDevelopmentFocus() {
                       Specific Goals or Notes (Optional)
                     </span>
                     <textarea
-                      className="h-37.5 w-full resize-none rounded-[24px] border border-[#d8ddd9] bg-white p-4 font-manrope text-base leading-6 tracking-[-0.176px] text-[#515b60] shadow-[0_1px_2px_rgba(16,24,40,0.05)] outline-none placeholder:text-[#a8adaf] focus:border-[#2f7d7e]"
+                      className="h-37.5 w-full resize-none rounded-3xl border border-[#d8ddd9] bg-white p-4 font-manrope text-base leading-6 tracking-[-0.176px] text-[#515b60] shadow-[0_1px_2px_rgba(16,24,40,0.05)] outline-none placeholder:text-[#a8adaf] focus:border-[#2f7d7e]"
                       {...form.register('notes')}
                     />
                   </label>
@@ -113,13 +113,13 @@ export function AddChildDevelopmentFocus() {
 
               <div className="mt-8 flex flex-col gap-3 sm:mt-14 sm:flex-row sm:flex-wrap sm:gap-4">
                 <button
-                  className="h-14 w-full rounded-[32px] border border-[#d5e5e5] bg-[#2f7d7e] px-4 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-white sm:w-auto"
+                  className="h-14 w-full rounded-full border border-[#d5e5e5] bg-[#2f7d7e] px-4 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-white sm:w-auto"
                   type="submit"
                 >
                   Continue to Interests &amp; Preferences
                 </button>
                 <Link
-                  className="flex h-14 w-full items-center justify-center rounded-[32px] border border-[#d4d6d7] bg-white px-4 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-[#14094b] sm:w-30.75"
+                  className="flex h-14 w-full items-center justify-center rounded-full border border-[#d4d6d7] bg-white px-4 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-[#14094b] sm:w-30.75"
                   href="/dashboard/child-profiles"
                 >
                   Cancel

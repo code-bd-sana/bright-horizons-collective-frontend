@@ -152,7 +152,7 @@ function ActivityFormFields({
   const featuredImage = form.watch('featuredImage') as File | undefined;
 
   return (
-    <div className="space-y-4">
+    <div className="min-w-0 space-y-4">
       <ActivityFormSection title="Basic Information" icon={FileText}>
         <div className="space-y-5">
           <FormField label="Activity Title" required error={form.formState.errors.title?.message}>
@@ -176,7 +176,7 @@ function ActivityFormFields({
               placeholder="Brief learning objective visible in the activity library..."
             />
           </FormField>
-          <div className="grid gap-5 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
             <FormField
               label="Development Category"
               required
@@ -254,7 +254,7 @@ function ActivityFormFields({
               placeholder="Describe the developmental purpose of this activity..."
             />
           </FormField>
-          <div className="grid gap-5 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
             <FormField label="Materials">
               <input {...form.register('materialsSummary')} className={inputClassName} />
             </FormField>
@@ -310,7 +310,7 @@ function ActivityFormFields({
       <ActivityFormSection title="Materials Needed" icon={Layers}>
         <div className="space-y-2">
           {materials.fields.map((item, index) => (
-            <div key={item.id} className="flex items-center gap-2">
+            <div key={item.id} className="flex min-w-0 items-center gap-2">
               <GripVertical aria-hidden="true" size={16} className="shrink-0 text-[#b1c2c7]" />
               <input
                 {...form.register(`materials.${index}.name`)}
@@ -340,7 +340,7 @@ function ActivityFormFields({
       <ActivityFormSection title="Step-by-Step Instructions" icon={ClipboardList}>
         <div className="space-y-4">
           {steps.fields.map((step, index) => (
-            <div key={step.id} className="flex gap-3">
+            <div key={step.id} className="flex min-w-0 gap-2 sm:gap-3">
               <span className="mt-2 flex size-7 shrink-0 items-center justify-center rounded-full bg-[#edf6f5] font-nunito text-sm font-bold text-[#278488]">
                 {index + 1}
               </span>
@@ -428,7 +428,7 @@ function ActivityFormFields({
               <div
                 role="radiogroup"
                 aria-label="Membership access level"
-                className="mt-3 grid gap-3 md:grid-cols-3"
+                className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-3"
               >
                 {[
                   { value: 'little-steps', label: 'Little Steps', tone: 'teal' },
@@ -449,7 +449,7 @@ function ActivityFormFields({
                       role="radio"
                       aria-checked={selected}
                       onClick={() => field.onChange(level.value)}
-                      className={`flex h-12 items-center gap-3 rounded-xl border px-4 text-left font-nunito text-sm font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2f8b8f] ${selected ? 'border-[#2f8b8f] bg-[#eff9f7] text-[#278488]' : `border-[#e1e8e6] bg-white ${isOrange ? 'text-[#b45b32]' : 'text-[#278488]'} hover:border-[#8bb9bb]`}`}
+                      className={`flex min-h-12 items-center gap-3 rounded-xl border px-4 py-2 text-left font-nunito text-sm font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2f8b8f] ${selected ? 'border-[#2f8b8f] bg-[#eff9f7] text-[#278488]' : `border-[#e1e8e6] bg-white ${isOrange ? 'text-[#b45b32]' : 'text-[#278488]'} hover:border-[#8bb9bb]`}`}
                     >
                       <span
                         aria-hidden="true"
@@ -470,24 +470,24 @@ function ActivityFormFields({
         </fieldset>
       </ActivityFormSection>
 
-      <footer className="flex flex-wrap items-center justify-end gap-3 rounded-[18px] border border-[#e3e9e8] bg-white px-5 py-4 shadow-[0_5px_10px_rgba(38,50,56,0.055)]">
+      <footer className="grid grid-cols-1 gap-3 rounded-[18px] border border-[#e3e9e8] bg-white px-4 py-4 shadow-[0_5px_10px_rgba(38,50,56,0.055)] sm:grid-cols-3 sm:px-5 2xl:flex 2xl:flex-wrap 2xl:items-center 2xl:justify-end">
         <button
           type="button"
           onClick={onSaveDraft}
-          className="h-10 rounded-xl border border-[#2f8b8f] px-4 font-nunito text-sm font-bold text-[#278488] hover:bg-[#f4fafa]"
+          className="h-10 w-full rounded-xl border border-[#2f8b8f] px-4 font-nunito text-sm font-bold text-[#278488] hover:bg-[#f4fafa] 2xl:w-auto"
         >
           Save as Draft
         </button>
         <button
           type="button"
           onClick={() => toast.info('Preview is coming soon.')}
-          className="h-10 rounded-xl border border-[#e1e8e6] px-4 font-nunito text-sm font-bold text-[#607d8b] hover:bg-[#f8fbfa]"
+          className="h-10 w-full rounded-xl border border-[#e1e8e6] px-4 font-nunito text-sm font-bold text-[#607d8b] hover:bg-[#f8fbfa] 2xl:w-auto"
         >
           Preview
         </button>
         <button
           type="submit"
-          className="h-10 rounded-xl bg-[#2f7d7e] px-5 font-nunito text-sm font-bold text-white shadow-[inset_0_-2px_0_rgba(0,0,0,0.08)] hover:bg-[#276d6e]"
+          className="h-10 w-full rounded-xl bg-[#2f7d7e] px-5 font-nunito text-sm font-bold text-white shadow-[inset_0_-2px_0_rgba(0,0,0,0.08)] hover:bg-[#276d6e] 2xl:w-auto"
         >
           Publish
         </button>

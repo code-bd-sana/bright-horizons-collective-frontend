@@ -37,33 +37,33 @@ export function ActivityTimeline() {
   ];
 
   return (
-    <div className="flex flex-col gap-6 rounded-[16px] border border-[#E8EBE8] bg-white p-4 shadow-[0px_1px_2px_rgba(0,0,0,0.05)] sm:p-8">
-      <h2 className="font-nunito text-[24px] font-medium leading-8 text-[#263238]">This Week</h2>
+    <div className="flex min-w-0 flex-col gap-6 rounded-2xl border border-[#E8EBE8] bg-white p-4 shadow-[0px_1px_2px_rgba(0,0,0,0.05)] sm:p-6 2xl:p-8">
+      <h2 className="font-nunito text-2xl font-medium leading-8 text-[#263238]">This Week</h2>
 
       <div className="flex flex-col">
         {activities.map((activity, idx) => (
-          <div key={activity.id} className="flex flex-row gap-5">
+          <div key={activity.id} className="flex min-w-0 flex-row gap-3 sm:gap-5">
             {/* Timeline Line & Dot */}
-            <div className="flex w-2.5 flex-col items-center">
-              <div className="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full bg-[#8FB9A8]" />
+            <div className="flex w-2.5 shrink-0 flex-col items-center">
+              <div className="mt-1.5 size-2.5 shrink-0 rounded-full bg-[#8FB9A8]" />
               {idx !== activities.length - 1 && <div className="mt-1 h-full w-px bg-[#E2E8E8]" />}
             </div>
 
             {/* Timeline Content */}
-            <div className="mb-5 flex flex-1 flex-col gap-5 rounded-[16px] border border-[#E9F1EE] bg-white p-5 shadow-[0px_1px_2px_rgba(0,0,0,0.05)]">
+            <div className="mb-5 flex min-w-0 flex-1 flex-col gap-5 rounded-2xl border border-[#E9F1EE] bg-white p-3 shadow-[0px_1px_2px_rgba(0,0,0,0.05)] sm:p-5">
               <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                 <div className="flex flex-col gap-2">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="font-nunito text-[20px] font-medium leading-7 text-[#263238]">
+                    <h3 className="font-nunito text-lg font-medium leading-6 text-[#263238] sm:text-xl sm:leading-7">
                       {activity.title}
                     </h3>
-                    <div className="flex items-center rounded-[8px] bg-[#E9F1EE] px-2 py-1">
-                      <span className="font-nunito text-[12px] font-medium leading-4 text-[#729486]">
+                    <div className="flex items-center rounded-lg bg-[#E9F1EE] px-2 py-1">
+                      <span className="font-nunito text-xs font-medium leading-4 text-[#729486]">
                         {activity.status}
                       </span>
                     </div>
                   </div>
-                  <p className="font-manrope text-[12px] font-normal leading-4 text-[#7D8488]">
+                  <p className="font-manrope text-xs font-normal leading-4 text-[#7D8488]">
                     {activity.metadata}
                   </p>
                 </div>
@@ -72,18 +72,18 @@ export function ActivityTimeline() {
                   type="button"
                   className="group flex w-fit shrink-0 items-center gap-1 rounded-full border border-transparent px-1 py-0 transition-colors hover:bg-gray-50"
                 >
-                  <span className="font-nunito text-[16px] font-medium leading-6 tracking-[-0.011em] text-[#2F7D7E]">
+                  <span className="font-nunito text-sm font-medium leading-5.5 tracking-[-0.006em] text-[#2F7D7E] sm:text-base sm:leading-6 sm:tracking-[-0.011em]">
                     View Activity Details
                   </span>
                   <ExternalLink className="h-4 w-4 text-[#2F7D7E] transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                 </button>
               </div>
 
-              <div className="flex flex-col gap-2 rounded-[8px] border border-[#FCE9E3] bg-[#F9F5F4] p-[16px_8px]">
-                <span className="font-nunito text-[12px] font-medium leading-4 text-[#263238]">
+              <div className="flex flex-col gap-2 rounded-lg border border-[#FCE9E3] bg-[#F9F5F4] px-2 py-4">
+                <span className="font-nunito text-xs font-medium leading-4 text-[#263238]">
                   Parent Reflection:
                 </span>
-                <p className="font-lora text-[12px] italic leading-4.5 text-[#515B60]">
+                <p className="font-lora text-xs italic leading-4.5 text-[#515B60]">
                   {activity.reflection}
                 </p>
               </div>

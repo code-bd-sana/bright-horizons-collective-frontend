@@ -81,7 +81,7 @@ export function SecurityPanel() {
         className="rounded-2xl border border-[#eff1ef] bg-white p-4 sm:p-8"
         onSubmit={savePassword}
       >
-        <h2 className="font-nunito text-2xl font-semibold leading-8 tracking-[-0.03em] text-[#263238]">
+        <h2 className="font-nunito text-xl font-semibold leading-7 tracking-[-0.03em] text-[#263238] sm:text-2xl sm:leading-8">
           Change Password
         </h2>
         <div className="mt-8 space-y-4">
