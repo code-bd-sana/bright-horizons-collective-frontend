@@ -4,7 +4,7 @@ import { ActivityArtwork } from './activity-artwork';
 
 export function ActivityPanel() {
   return (
-    <section className="flex flex-col gap-6 rounded-2xl border border-[#e8ebe8] bg-[#fffdf8] p-4 sm:p-8 shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
+    <section className="flex min-w-0 flex-col gap-6 rounded-2xl border border-[#e8ebe8] bg-[#fffdf8] p-4 sm:p-6 2xl:p-8 shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
           <div className="flex flex-col gap-1">
@@ -40,7 +40,7 @@ export function ActivityPanel() {
           focalPoint="50% 58%"
         />
       </div>
-      <div className="flex h-17 flex-col gap-2">
+      <div className="flex min-h-17 flex-col gap-2">
         <div className="flex items-center gap-1.25">
           <span className="rounded-full border border-[#dceeee] bg-[#e0f0e9] px-2.25 py-1.75 font-nunito text-xs font-medium leading-4 text-[#263238]">
             Easy

@@ -41,7 +41,7 @@ const children: ChildProfile[] = [
 function ChildCard({ child, selected = false }: { child: ChildProfile; selected?: boolean }) {
   return (
     <article
-      className={`flex flex-1 flex-col gap-4 rounded-2xl border bg-white p-4 sm:min-h-90 sm:p-6 ${
+      className={`flex min-w-0 flex-1 flex-col gap-4 rounded-2xl border bg-white p-4 2xl:min-h-90 2xl:p-6 ${
         selected ? 'border-[#8fb9a8]' : 'border-[#e8ebe8]'
       }`}
     >
@@ -103,7 +103,7 @@ function ChildCard({ child, selected = false }: { child: ChildProfile; selected?
 
 export function ChildProfilesPage() {
   return (
-    <section className="mx-auto flex w-full max-w-382.25 flex-col gap-4 sm:gap-6">
+    <section className="mx-auto flex w-full min-w-0 max-w-382.25 flex-col gap-4 sm:gap-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
         <div>
           <h1 className="font-nunito text-2xl font-medium leading-8 text-[#272f3a]">
@@ -122,7 +122,7 @@ export function ChildProfilesPage() {
         </Link>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-3 sm:gap-6">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4 2xl:gap-6">
         {summaryCards.map((card) => (
           <article
             key={card.label}
@@ -145,7 +145,7 @@ export function ChildProfilesPage() {
         ))}
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 md:gap-6">
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-2 2xl:gap-6">
         {children.map((child, index) => (
           <ChildCard key={child.name} child={child} selected={index === 0} />
         ))}
