@@ -22,7 +22,7 @@ const schedule = [
 
 function DetailCard({ children }: { children: React.ReactNode }) {
   return (
-    <section className="rounded-2xl border border-[#e7eceb] bg-white p-6 shadow-[0_4px_6px_rgba(0,0,0,0.06)]">
+    <section className="min-w-0 rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:p-5 2xl:p-6">
       {children}
     </section>
   );
@@ -85,11 +85,11 @@ function PlanHeader({ plan }: { plan: AdminWeeklyPlan }) {
               </span>
             </div>
           </div>
-          <div className="flex shrink-0 gap-2">
+          <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:shrink-0 2xl:flex 2xl:w-auto 2xl:shrink-0">
             <button
               type="button"
               onClick={() => toast.success('Plan assignment is ready.')}
-              className="flex h-10 items-center gap-2 rounded-[14px] border border-[rgba(47,125,126,0.19)] bg-[rgba(47,125,126,0.08)] px-4 font-manrope text-sm font-semibold text-[#2f7d7e]"
+              className="flex h-10 items-center justify-center gap-2 rounded-[14px] border border-[rgba(47,125,126,0.19)] bg-[rgba(47,125,126,0.08)] px-3 font-manrope text-sm font-semibold text-[#2f7d7e] sm:px-4 2xl:px-4"
             >
               <ClipboardList aria-hidden="true" size={15} strokeWidth={1.6} />
               Assign
@@ -97,7 +97,7 @@ function PlanHeader({ plan }: { plan: AdminWeeklyPlan }) {
             <button
               type="button"
               onClick={() => toast.success('Plan editor is ready.')}
-              className="flex h-10 items-center gap-2 rounded-[14px] bg-[#2f7d7e] px-4 font-manrope text-sm font-semibold text-white"
+              className="flex h-10 items-center justify-center gap-2 rounded-[14px] bg-[#2f7d7e] px-3 font-manrope text-sm font-semibold text-white sm:px-4 2xl:px-4"
             >
               <Edit3 aria-hidden="true" size={15} strokeWidth={1.6} />
               Edit Plan
@@ -117,7 +117,7 @@ function OverviewCard({ plan }: { plan: AdminWeeklyPlan }) {
         A structured week of sensory-play activities building early color and texture recognition
         for infants and young toddlers.
       </p>
-      <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-4">
         <DetailStat icon={UsersRound} label="Age Group" value={plan.age} />
         <DetailStat icon={Tag} label="Category" value="Sensory Play" />
         <DetailStat
@@ -135,7 +135,7 @@ function WeeklyScheduleCard() {
   return (
     <DetailCard>
       <h2 className="font-nunito text-lg font-bold leading-7 text-[#263238]">Weekly Schedule</h2>
-      <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-5 2xl:grid-cols-5">
         {schedule.map(([day, activity]) => (
           <div
             key={day}
@@ -158,7 +158,7 @@ function WeeklyScheduleCard() {
 function AssignmentInformationCard({ plan }: { plan: AdminWeeklyPlan }) {
   return (
     <DetailCard>
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between 2xl:flex-row 2xl:items-center 2xl:justify-between">
         <h2 className="font-nunito text-lg font-bold leading-7 text-[#263238]">
           Assignment Information
         </h2>
@@ -171,7 +171,7 @@ function AssignmentInformationCard({ plan }: { plan: AdminWeeklyPlan }) {
           <ArrowRight aria-hidden="true" size={14} strokeWidth={1.6} />
         </button>
       </div>
-      <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-4">
         <DetailStat label="Families Assigned" value={plan.assigned} emphasized />
         <DetailStat label="Children Assigned" value="38 children" emphasized />
         <DetailStat label="Created By" value="Sarah K." />
@@ -185,7 +185,7 @@ export function WeeklyPlanDetailsPage({ planId }: { planId: string }) {
   const plan = adminWeeklyPlans.find((item) => item.id === Number(planId)) ?? adminWeeklyPlans[0];
 
   return (
-    <section className="mx-auto w-full max-w-224.75 pb-8 text-[#263238]">
+    <section className="mx-auto w-full min-w-0 max-w-224.75 pb-8 text-[#263238]">
       <div className="space-y-6">
         <PlanHeader plan={plan} />
         <OverviewCard plan={plan} />

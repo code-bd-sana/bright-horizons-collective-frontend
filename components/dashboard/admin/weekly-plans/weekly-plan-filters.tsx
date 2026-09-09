@@ -141,9 +141,9 @@ export function WeeklyPlanFilters(props: WeeklyPlanFiltersProps) {
   const [openFilter, setOpenFilter] = useState<FilterName | null>(null);
 
   return (
-    <section className="rounded-2xl border border-[#e7eceb] bg-white p-4.25 shadow-[0_4px_6px_rgba(0,0,0,0.06)]">
-      <div className="grid gap-3 lg:grid-cols-[minmax(192px,1fr)_194px_107px_110px] lg:items-center">
-        <label className="flex h-9.5 min-w-0 items-center gap-2 rounded-[14px] border border-[#e7eceb] bg-[#f4f8f6] px-3.25">
+    <section className="min-w-0 rounded-2xl border border-[#e7eceb] bg-white p-4.25 shadow-[0_4px_6px_rgba(0,0,0,0.06)]">
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4 xl:items-center 2xl:grid-cols-[minmax(192px,1fr)_194px_107px_110px] 2xl:items-center">
+        <label className="flex h-9.5 min-w-0 items-center gap-2 rounded-[14px] border border-[#e7eceb] bg-[#f4f8f6] px-3.25 sm:col-span-2 xl:col-span-1 2xl:col-span-1">
           <Search
             aria-hidden="true"
             className="size-3.75 shrink-0 text-[#607d8b]"
