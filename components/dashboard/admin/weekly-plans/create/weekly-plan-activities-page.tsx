@@ -113,8 +113,8 @@ export function WeeklyPlanActivitiesPage() {
   };
 
   return (
-    <section className="mx-auto w-full max-w-246.75 pb-8 text-[#263238]">
-      <div className="w-full max-w-244.25 space-y-5">
+    <section className="mx-auto w-full min-w-0 max-w-246.75 pb-8 text-[#263238]">
+      <div className="w-full min-w-0 max-w-244.25 space-y-5">
         <button
           type="button"
           onClick={() => router.push('/dashboard/admin/weekly-plans')}
@@ -130,7 +130,7 @@ export function WeeklyPlanActivitiesPage() {
           <WeeklyPlanFormStepper currentStep={2} />
         </section>
 
-        <section className="rounded-2xl border border-[#e7eceb] bg-white p-6 shadow-[0_4px_6px_rgba(0,0,0,0.06)]">
+        <section className="rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:p-6 2xl:p-6">
           <h2 className="font-nunito text-lg font-bold leading-7 text-[#263238]">2. Activities</h2>
           <div className="mt-5 space-y-4">
             <p className="font-manrope text-sm leading-5.25 text-[#607d8b]">
@@ -154,7 +154,7 @@ export function WeeklyPlanActivitiesPage() {
               ))}
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex flex-col gap-3 sm:flex-row 2xl:flex-row">
               <label className="flex h-9.5 min-w-0 flex-1 items-center gap-2 rounded-[14px] border border-[#e7eceb] bg-[#f4f8f6] px-3">
                 <Search
                   aria-hidden="true"
@@ -169,7 +169,7 @@ export function WeeklyPlanActivitiesPage() {
                   className="min-w-0 flex-1 bg-transparent font-manrope text-[13px] leading-5 text-[#263238] outline-none placeholder:text-[rgba(38,50,56,0.5)]"
                 />
               </label>
-              <div className="relative w-28 shrink-0">
+              <div className="relative w-full shrink-0 sm:w-28 2xl:w-28">
                 <button
                   type="button"
                   aria-label="Filter activities"
@@ -177,7 +177,8 @@ export function WeeklyPlanActivitiesPage() {
                   onClick={() => setIsFilterOpen((open) => !open)}
                   className={`flex h-9.5 w-full items-center justify-between rounded-[14px] border px-2 font-manrope text-[13px] leading-5 transition-colors ${isFilterOpen ? 'border-[#d5e5e5] bg-[#d5e5e5] text-[#0f1416]' : 'border-[#e7eceb] bg-[#f4f8f6] text-[#607d8b]'}`}
                 >
-                  <span />
+                  <span className="2xl:hidden">Filter</span>
+                  <span className="hidden 2xl:inline" />
                   <ChevronDown
                     aria-hidden="true"
                     className={`size-3.5 transition-transform ${isFilterOpen ? 'rotate-180' : ''}`}
@@ -244,8 +245,8 @@ export function WeeklyPlanActivitiesPage() {
           </div>
         </section>
 
-        <section className="flex flex-col gap-4 rounded-2xl border border-[#e7eceb] bg-white p-5 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex gap-2">
+        <section className="flex flex-col gap-4 rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:flex-row sm:items-center sm:justify-between sm:p-5 2xl:flex-row 2xl:items-center 2xl:justify-between 2xl:p-5">
+          <div className="grid grid-cols-2 gap-2 sm:flex 2xl:flex">
             <FlowButton
               onClick={() => router.push('/dashboard/admin/weekly-plans/create')}
               className="border-[#e7eceb] text-[#607d8b]"
@@ -259,7 +260,7 @@ export function WeeklyPlanActivitiesPage() {
               Next →
             </FlowButton>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="grid gap-2 sm:flex sm:flex-wrap 2xl:flex 2xl:flex-wrap">
             <FlowButton
               onClick={() => toast.success('Weekly plan saved as a draft.')}
               className="border-[#e7eceb] text-[#607d8b]"
@@ -280,8 +281,13 @@ export function WeeklyPlanActivitiesPage() {
             </FlowButton>
           </div>
         </section>
-        <div className="flex items-center gap-2 rounded-[14px] border border-[rgba(246,195,68,0.25)] bg-[#fff8e1] px-4.25 py-3.25 font-manrope text-[13px] leading-[19.5px] text-[#b8860b]">
-          <TriangleAlert aria-hidden="true" size={15} strokeWidth={1.7} />
+        <div className="flex items-start gap-2 rounded-[14px] border border-[rgba(246,195,68,0.25)] bg-[#fff8e1] px-4.25 py-3.25 font-manrope text-[13px] leading-[19.5px] text-[#b8860b] sm:items-center 2xl:items-center">
+          <TriangleAlert
+            aria-hidden="true"
+            className="mt-0.5 shrink-0 sm:mt-0 2xl:mt-0"
+            size={15}
+            strokeWidth={1.7}
+          />
           You have unsaved changes. Navigating away will discard them.
         </div>
       </div>
