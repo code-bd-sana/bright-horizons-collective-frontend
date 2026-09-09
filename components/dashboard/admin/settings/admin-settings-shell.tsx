@@ -37,18 +37,18 @@ type AdminSettingsShellProps = {
 
 export function AdminSettingsShell({ activeSection, children }: AdminSettingsShellProps) {
   return (
-    <section className="w-full max-w-383.5 pb-8 text-[#263238]">
-      <div className="grid items-start gap-6 xl:grid-cols-[256px_minmax(0,768px)]">
-        <aside className="w-full pr-0 xl:pr-6">
+    <section className="w-full min-w-0 max-w-383.5 pb-8 text-[#263238]">
+      <div className="grid min-w-0 items-start gap-6 2xl:grid-cols-[256px_minmax(0,768px)]">
+        <aside className="w-full min-w-0 pr-0 2xl:pr-6">
           <nav
             aria-label="Admin settings navigation"
-            className="flex gap-1 overflow-x-auto xl:flex-col"
+            className="grid grid-cols-1 gap-2 sm:grid-cols-3 2xl:flex 2xl:flex-col 2xl:gap-1"
           >
             {settingsSections.map((section) => {
               const { id, label, description, icon: Icon } = section;
               const href = 'href' in section ? section.href : undefined;
               const isActive = activeSection === id;
-              const className = `flex min-w-58 shrink-0 items-center gap-3 rounded-[14px] border px-4 py-3.5 text-left transition-colors xl:min-w-0 ${isActive ? 'border-[rgba(47,125,126,0.19)] bg-[rgba(47,125,126,0.06)] text-[#2f7d7e]' : 'border-transparent text-[#263238] hover:bg-[#f4f8f6]'}`;
+              const className = `flex min-w-0 items-center gap-3 rounded-[14px] border px-3 py-3 text-left transition-colors sm:items-start 2xl:shrink-0 2xl:items-center 2xl:px-4 2xl:py-3.5 ${isActive ? 'border-[rgba(47,125,126,0.19)] bg-[rgba(47,125,126,0.06)] text-[#2f7d7e]' : 'border-transparent text-[#263238] hover:bg-[#f4f8f6]'}`;
               const content = (
                 <>
                   <span
@@ -58,11 +58,11 @@ export function AdminSettingsShell({ activeSection, children }: AdminSettingsShe
                   </span>
                   <span className="min-w-0">
                     <span
-                      className={`block font-manrope text-sm leading-[18.2px] ${isActive ? 'font-semibold text-[#2f7d7e]' : 'font-normal text-[#263238]'}`}
+                      className={`block font-manrope text-sm leading-4.55 ${isActive ? 'font-semibold text-[#2f7d7e]' : 'font-normal text-[#263238]'}`}
                     >
                       {label}
                     </span>
-                    <span className="mt-px block truncate font-manrope text-[11px] font-medium leading-[16.5px] text-[#607d8b]">
+                    <span className="mt-px block font-manrope text-[11px] font-medium leading-4.125 text-[#607d8b] 2xl:truncate">
                       {description}
                     </span>
                   </span>
@@ -92,7 +92,7 @@ export function AdminSettingsShell({ activeSection, children }: AdminSettingsShe
           </nav>
         </aside>
 
-        <div className="min-w-0 border-[#e7eceb] xl:border-l xl:pl-6">{children}</div>
+        <div className="min-w-0 border-[#e7eceb] 2xl:border-l 2xl:pl-6">{children}</div>
       </div>
     </section>
   );

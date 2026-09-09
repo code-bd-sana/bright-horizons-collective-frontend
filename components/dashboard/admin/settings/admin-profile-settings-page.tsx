@@ -19,7 +19,7 @@ const profileSchema = z.object({
 type ProfileValues = z.infer<typeof profileSchema>;
 
 const inputClassName =
-  'h-[43px] w-full rounded-xl border border-[#e7eceb] bg-[#f4f8f6] px-3.5 py-2.5 font-manrope text-sm leading-[21px] text-[#263238] outline-none transition-colors focus:border-[#2f7d7e]';
+  'h-10.75 w-full rounded-xl border border-[#e7eceb] bg-[#f4f8f6] px-3.5 py-2.5 font-manrope text-sm leading-5.25 text-[#263238] outline-none transition-colors focus:border-[#2f7d7e]';
 
 function FormField({
   label,
@@ -34,12 +34,14 @@ function FormField({
 }) {
   return (
     <label className="flex min-w-0 flex-col gap-1.5">
-      <span className="font-manrope text-[13px] font-semibold leading-[19.5px] text-[#263238]">
+      <span className="font-manrope text-[13px] font-semibold leading-4.875 text-[#263238]">
         {label}
         {required && <span className="text-[#e57373]"> *</span>}
       </span>
       {children}
-      {error && <span className="font-manrope text-xs leading-4.5 text-[#e57373]">{error}</span>}
+      {error ? (
+        <span className="font-manrope text-xs leading-4.5 text-[#e57373]">{error}</span>
+      ) : null}
     </label>
   );
 }
@@ -51,12 +53,12 @@ export function AdminProfileSettingsPage() {
 
   return (
     <AdminSettingsShell activeSection="profile">
-      <main className="w-full max-w-3xl">
+      <main className="w-full min-w-0 max-w-3xl">
         <header>
           <h1 className="font-nunito text-[22px] font-bold leading-8.25 text-[#263238]">
             My Profile
           </h1>
-          <p className="pt-0.5 font-manrope text-[13px] leading-[19.5px] text-[#607d8b]">
+          <p className="pt-0.5 font-manrope text-[13px] leading-4.875 text-[#607d8b]">
             Manage your administrator account information. Distinct from editing a family&apos;s
             parent account in the Families module.
           </p>
@@ -77,23 +79,23 @@ export function AdminProfileSettingsPage() {
         >
           {(form) => (
             <>
-              <section className="mt-6 rounded-2xl border border-[#e7eceb] bg-white p-6 shadow-[0_4px_6px_rgba(0,0,0,0.06)]">
-                <div className="flex flex-wrap items-center gap-5">
+              <section className="mt-6 rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:p-5 2xl:p-6">
+                <div className="flex flex-col items-start gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-5 2xl:flex-row 2xl:flex-wrap 2xl:items-center 2xl:gap-5">
                   <span className="flex size-20 shrink-0 items-center justify-center rounded-2xl bg-[rgba(47,125,126,0.09)] font-nunito text-2xl font-bold leading-8 text-[#2f7d7e]">
                     SK
                   </span>
-                  <div className="min-w-40 flex-1">
+                  <div className="min-w-0 flex-1 2xl:min-w-40">
                     <p className="font-nunito text-xl font-bold leading-7.5 text-[#263238]">
                       Sarah K.
                     </p>
                     <p className="pt-px font-manrope text-sm leading-5.25 text-[#607d8b]">
                       Head Administrator
                     </p>
-                    <p className="pt-px font-manrope text-[13px] leading-[19.5px] text-[#b0bec5]">
+                    <p className="break-all pt-px font-manrope text-[13px] leading-4.875 text-[#b0bec5] sm:break-normal 2xl:break-normal">
                       sarah@brighthorizons.co
                     </p>
                   </div>
-                  <label className="flex h-9 cursor-pointer items-center gap-2 rounded-[14px] border border-[rgba(47,125,126,0.25)] bg-[rgba(47,125,126,0.03)] px-4 py-2 font-manrope text-sm font-semibold leading-5 text-[#2f7d7e] transition-colors hover:bg-[rgba(47,125,126,0.08)]">
+                  <label className="flex h-9 w-full cursor-pointer items-center justify-center gap-2 rounded-[14px] border border-[rgba(47,125,126,0.25)] bg-[rgba(47,125,126,0.03)] px-4 py-2 font-manrope text-sm font-semibold leading-5 text-[#2f7d7e] transition-colors hover:bg-[rgba(47,125,126,0.08)] sm:w-auto 2xl:w-auto 2xl:justify-start">
                     <Camera aria-hidden="true" size={14} strokeWidth={1.7} />
                     Change Profile Photo
                     <input
@@ -108,8 +110,8 @@ export function AdminProfileSettingsPage() {
                 </div>
               </section>
 
-              <section className="mt-3.5 rounded-2xl border border-[#e7eceb] bg-white p-6 shadow-[0_4px_6px_rgba(0,0,0,0.06)]">
-                <h2 className="font-nunito text-[17px] font-bold leading-[25.5px] text-[#263238]">
+              <section className="mt-3.5 rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:p-5 2xl:p-6">
+                <h2 className="font-nunito text-[17px] font-bold leading-6.375 text-[#263238]">
                   Basic Information
                 </h2>
                 <div className="mt-5 space-y-5">
@@ -155,7 +157,7 @@ export function AdminProfileSettingsPage() {
                   </div>
                 </div>
               </section>
-              <div className="mt-3 flex gap-3">
+              <div className="mt-3 grid grid-cols-2 gap-3 sm:flex 2xl:flex">
                 <button
                   type="submit"
                   className="h-10 rounded-[14px] bg-[#2f7d7e] px-6 py-2.5 font-manrope text-sm font-semibold leading-5 text-white transition-colors hover:bg-[#266b6c]"

@@ -118,13 +118,13 @@ function NotificationCard({
   onToggle: (id: NotificationId) => void;
 }) {
   return (
-    <section className="rounded-2xl border border-[#e7eceb] bg-white p-6 shadow-[0_4px_6px_rgba(0,0,0,0.06)]">
-      <header className="flex items-center gap-3">
+    <section className="rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:p-5 2xl:p-6">
+      <header className="flex items-start gap-3 sm:items-center 2xl:items-center">
         <span className="flex size-9 shrink-0 items-center justify-center rounded-[14px] bg-[rgba(47,125,126,0.07)] text-[#2f7d7e]">
           <Icon aria-hidden="true" size={16} strokeWidth={1.55} />
         </span>
-        <div>
-          <h2 className="font-nunito text-[17px] font-bold leading-[25.5px] text-[#263238]">
+        <div className="min-w-0">
+          <h2 className="font-nunito text-[17px] font-bold leading-6.375 text-[#263238]">
             {title}
           </h2>
           <p className="font-manrope text-xs leading-4.5 text-[#607d8b]">{description}</p>
@@ -134,7 +134,7 @@ function NotificationCard({
         {items.map(({ id, title: itemTitle, description: itemDescription }, index) => (
           <div
             key={id}
-            className={`flex items-center gap-4 py-4 ${index < items.length - 1 ? 'border-b border-[#e7eceb]' : ''}`}
+            className={`flex items-start gap-3 py-4 sm:items-center sm:gap-4 2xl:items-center 2xl:gap-4 ${index < items.length - 1 ? 'border-b border-[#e7eceb]' : ''}`}
           >
             <div className="min-w-0 flex-1">
               <h3 className="font-manrope text-sm font-semibold leading-5.25 text-[#263238]">
@@ -171,12 +171,12 @@ export function AdminNotificationPreferencesPage() {
 
   return (
     <AdminSettingsShell activeSection="notifications">
-      <main className="w-full max-w-3xl space-y-6">
+      <main className="w-full min-w-0 max-w-3xl space-y-6">
         <header>
           <h1 className="font-nunito text-[22px] font-bold leading-8.25 text-[#263238]">
             Notification Preferences
           </h1>
-          <p className="pt-0.5 font-manrope text-[13px] leading-[19.5px] text-[#607d8b]">
+          <p className="pt-0.5 font-manrope text-[13px] leading-4.875 text-[#607d8b]">
             Choose which notifications you receive, and through which channels.
           </p>
         </header>
@@ -201,7 +201,7 @@ export function AdminNotificationPreferencesPage() {
         <button
           type="button"
           onClick={() => toast.success('Notification preferences saved.')}
-          className="rounded-[14px] bg-[#2f7d7e] px-6 py-2.5 font-manrope text-sm font-semibold leading-5 text-white transition-colors hover:bg-[#266b6c]"
+          className="w-full rounded-[14px] bg-[#2f7d7e] px-6 py-2.5 font-manrope text-sm font-semibold leading-5 text-white transition-colors hover:bg-[#266b6c] sm:w-auto 2xl:w-auto"
         >
           Save Preferences
         </button>
