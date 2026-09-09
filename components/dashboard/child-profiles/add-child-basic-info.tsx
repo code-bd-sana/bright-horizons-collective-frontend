@@ -2,10 +2,11 @@
 
 import { DynamicForm } from '@/components/ui/dynamic-form';
 import { AddChildStepper } from './add-child-stepper';
+import { AddChildSelect } from './add-child-select';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Camera, ChevronDown } from 'lucide-react';
+import { Camera } from 'lucide-react';
 import { useState } from 'react';
 import { z } from 'zod';
 import { toast } from 'sonner';
@@ -20,8 +21,20 @@ const basicInfoSchema = z.object({
 
 type BasicInfoValues = z.infer<typeof basicInfoSchema>;
 
-const selectClassName =
-  'h-11 w-full appearance-none bg-transparent px-3.5 pr-10 font-manrope text-base leading-6 tracking-[-0.176px] text-[#515b60] outline-none';
+const genderOptions = ['Girl', 'Boy', 'Non-binary', 'Prefer not to say'].map((value) => ({
+  label: value,
+  value,
+}));
+
+const yearOptions = Array.from({ length: 18 }, (_, value) => ({
+  label: String(value),
+  value: String(value),
+}));
+
+const monthOptions = Array.from({ length: 12 }, (_, value) => ({
+  label: String(value),
+  value: String(value),
+}));
 
 export function AddChildBasicInfo() {
   const router = useRouter();
@@ -42,7 +55,7 @@ export function AddChildBasicInfo() {
   }
 
   return (
-    <section className="mx-auto w-full max-w-212.75 pb-8 pt-6.5 text-[#263238]">
+    <section className="mx-auto w-full min-w-0 max-w-212.75 pb-8 pt-4 text-[#263238] sm:pt-6.5">
       <AddChildStepper currentStep={1} />
 
       <DynamicForm
@@ -59,11 +72,11 @@ export function AddChildBasicInfo() {
       >
         {(form) => (
           <>
-            <section className="mt-8 min-h-129.75 rounded-2xl border border-[#eff1ef] bg-white p-4 sm:mt-14 sm:p-8">
+            <section className="mt-8 rounded-2xl border border-[#eff1ef] bg-white p-4 sm:mt-10 sm:p-6 2xl:mt-14 2xl:min-h-129.75 2xl:p-8">
               <h2 className="font-nunito text-2xl font-semibold leading-8 text-[#263238]">
                 Basic Information
               </h2>
-              <div className="mt-8 flex items-center gap-4">
+              <div className="mt-8 flex flex-col items-start gap-4 min-[400px]:flex-row min-[400px]:items-center">
                 <span className="relative size-16 shrink-0 overflow-hidden rounded-full bg-[#b16262] shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
                   <Image
                     alt="Child profile preview"
@@ -103,72 +116,59 @@ export function AddChildBasicInfo() {
                   )}
                 </label>
 
-                <label className="flex flex-col gap-1.5">
+                <div className="flex flex-col gap-1.5">
                   <span className="font-manrope text-lg font-medium leading-6.75 tracking-[-0.27px]">
                     Gender <span className="text-[#7d8488]">(Optional)</span>
                   </span>
-                  <span className="relative rounded-full border border-[#d8ddd9] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.05)]">
-                    <select
-                      aria-label="Gender"
-                      className={selectClassName}
-                      {...form.register('gender')}
-                    >
-                      <option>Girl</option>
-                      <option>Boy</option>
-                      <option>Non-binary</option>
-                      <option>Prefer not to say</option>
-                    </select>
-                    <ChevronDown
-                      aria-hidden="true"
-                      className="pointer-events-none absolute right-3 top-1/2 size-5 -translate-y-1/2"
-                      strokeWidth={1.5}
-                    />
-                  </span>
-                </label>
+                  <AddChildSelect
+                    ariaLabel="Gender"
+                    name="gender"
+                    onValueChange={(value) =>
+                      form.setValue('gender', value, { shouldDirty: true, shouldValidate: true })
+                    }
+                    options={genderOptions}
+                    placeholder="Select gender"
+                    value={form.watch('gender') ?? ''}
+                  />
+                </div>
 
                 <fieldset className="flex flex-col gap-1.5">
                   <legend className="font-manrope text-lg font-medium leading-6.75 tracking-[-0.27px]">
                     Age
                   </legend>
                   <div className="grid gap-6 sm:grid-cols-2">
-                    <label className="relative rounded-full border border-[#d8ddd9] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.05)]">
+                    <div>
                       <span className="sr-only">Years</span>
-                      <select
-                        aria-label="Age in years"
-                        className={selectClassName}
-                        {...form.register('ageYears')}
-                      >
-                        {Array.from({ length: 18 }, (_, value) => (
-                          <option key={value} value={String(value)}>
-                            {value}
-                          </option>
-                        ))}
-                      </select>
-                      <ChevronDown
-                        aria-hidden="true"
-                        className="pointer-events-none absolute right-3 top-1/2 size-5 -translate-y-1/2"
-                        strokeWidth={1.5}
+                      <AddChildSelect
+                        ariaLabel="Age in years"
+                        name="ageYears"
+                        onValueChange={(value) =>
+                          form.setValue('ageYears', value, {
+                            shouldDirty: true,
+                            shouldValidate: true,
+                          })
+                        }
+                        options={yearOptions}
+                        placeholder="Select Year"
+                        value={form.watch('ageYears')}
                       />
-                    </label>
-                    <label className="relative rounded-full border border-[#d8ddd9] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.05)]">
+                    </div>
+                    <div>
                       <span className="sr-only">Months</span>
-                      <select
-                        aria-label="Additional months"
-                        className={selectClassName}
-                        {...form.register('ageMonths')}
-                      >
-                        {Array.from({ length: 12 }, (_, value) => (
-                          <option key={value} value={String(value)}>
-                            {value}
-                          </option>
-                        ))}
-                      </select>
-                      <ChevronDown
-                        aria-hidden="true"
-                        className="pointer-events-none absolute right-3 top-1/2 size-5 -translate-y-1/2"
-                        strokeWidth={1.5}
+                      <AddChildSelect
+                        ariaLabel="Additional months"
+                        name="ageMonths"
+                        onValueChange={(value) =>
+                          form.setValue('ageMonths', value, {
+                            shouldDirty: true,
+                            shouldValidate: true,
+                          })
+                        }
+                        options={monthOptions}
+                        placeholder="Select Month"
+                        value={form.watch('ageMonths')}
                       />
-                    </label>
+                    </div>
                   </div>
                 </fieldset>
               </div>
@@ -176,13 +176,13 @@ export function AddChildBasicInfo() {
 
             <div className="mt-8 flex flex-col gap-3 sm:mt-14 sm:flex-row sm:flex-wrap sm:gap-4">
               <button
-                className="h-14 w-full rounded-[32px] border border-[#d5e5e5] bg-[#2f7d7e] px-4 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-white sm:w-auto"
+                className="h-14 w-full rounded-full border border-[#d5e5e5] bg-[#2f7d7e] px-4 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-white sm:w-auto"
                 type="submit"
               >
                 Continue to Caregiver Information
               </button>
               <Link
-                className="flex h-14 w-full items-center justify-center rounded-[32px] border border-[#d4d6d7] bg-white px-4 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-[#14094b] sm:w-30.75"
+                className="flex h-14 w-full items-center justify-center rounded-full border border-[#d4d6d7] bg-white px-4 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-[#14094b] sm:w-30.75"
                 href="/dashboard/child-profiles"
               >
                 Cancel
