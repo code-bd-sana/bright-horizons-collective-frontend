@@ -17,7 +17,7 @@ export default async function ChildProfileLayout({
   if (!child) notFound();
 
   return (
-    <section className="mx-auto w-full max-w-382.25">
+    <section className="mx-auto w-full min-w-0 max-w-382.25">
       <ProfileHeader child={child} />
       {children}
     </section>
