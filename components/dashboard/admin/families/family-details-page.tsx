@@ -45,7 +45,7 @@ const activities: Array<[string, string, typeof PlayCircle, string]> = [
 function Card({ children, className = '' }: { children: React.ReactNode; className?: string }) {
   return (
     <section
-      className={`rounded-2xl border border-[#e7eceb] bg-white p-6 shadow-[0_4px_6px_rgba(0,0,0,0.06)] ${className}`}
+      className={`min-w-0 rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:p-5 2xl:p-6 ${className}`}
     >
       {children}
     </section>
@@ -56,18 +56,18 @@ export function FamilyDetailsPage({ familyId: _familyId }: { familyId: string })
   void _familyId;
   const router = useRouter();
   return (
-    <section className="mx-auto w-full max-w-232.75 pb-8 text-[#263238]">
+    <section className="mx-auto w-full min-w-0 max-w-232.75 pb-8 text-[#263238]">
       <button
         type="button"
         onClick={() => router.push('/dashboard/admin/families')}
         className="mb-6 flex items-center gap-1.5 font-manrope text-sm font-medium text-[#607d8b]"
       >
-        <ArrowLeft size={16} />
+        <ArrowLeft aria-hidden="true" size={16} />
         Back to Families
       </button>
       <div className="space-y-6">
         <Card>
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-start">
+          <div className="flex flex-col gap-5 xl:flex-row xl:items-start 2xl:flex-row 2xl:items-start">
             <span className="relative size-16 shrink-0 overflow-hidden rounded-full bg-[#2f7d7e]">
               <Image
                 src="/Home/figma-dashboard-avatar.png"
@@ -91,19 +91,19 @@ export function FamilyDetailsPage({ familyId: _familyId }: { familyId: string })
                 </span>
               </div>
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className="grid w-full gap-2 sm:flex sm:w-auto sm:flex-wrap xl:w-auto xl:shrink-0 2xl:flex 2xl:w-auto 2xl:shrink-0 2xl:flex-wrap">
               <button
                 type="button"
                 onClick={() => toast.success('Message composer is ready for Amara Okonkwo.')}
-                className="flex h-10 items-center gap-2 rounded-[14px] border border-[rgba(47,125,126,0.19)] bg-[rgba(47,125,126,0.07)] px-4 font-manrope text-sm font-semibold text-[#2f7d7e]"
+                className="flex h-10 items-center justify-center gap-2 rounded-[14px] border border-[rgba(47,125,126,0.19)] bg-[rgba(47,125,126,0.07)] px-3 font-manrope text-sm font-semibold text-[#2f7d7e] sm:px-4 2xl:px-4"
               >
-                <MessageCircle size={14} />
+                <MessageCircle aria-hidden="true" size={14} />
                 Message
               </button>
               <button
                 type="button"
                 onClick={() => toast.success('Weekly plan assignment is ready.')}
-                className="h-10 rounded-[14px] bg-[#2f7d7e] px-4 font-manrope text-sm font-semibold text-white"
+                className="h-10 rounded-[14px] bg-[#2f7d7e] px-3 font-manrope text-sm font-semibold text-white sm:px-4 2xl:px-4"
               >
                 Assign weekly plan
               </button>
@@ -112,29 +112,29 @@ export function FamilyDetailsPage({ familyId: _familyId }: { familyId: string })
         </Card>
         <Card>
           <h2 className="font-nunito text-lg font-bold leading-7">Parent Information</h2>
-          <dl className="mt-4 grid gap-x-4 gap-y-4 sm:grid-cols-2">
+          <dl className="mt-4 grid gap-x-4 gap-y-4 sm:grid-cols-2 2xl:grid-cols-2">
             {info.map(([label, value]) => (
               <div key={label}>
                 <dt className="font-manrope text-[11px] font-semibold uppercase tracking-[0.55px] text-[#607d8b]">
                   {label}
                 </dt>
-                <dd className="mt-1 font-manrope text-sm leading-5.25">{value}</dd>
+                <dd className="mt-1 wrap-break-word font-manrope text-sm leading-5.25">{value}</dd>
               </div>
             ))}
           </dl>
         </Card>
         <Card>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between 2xl:flex-row 2xl:items-center 2xl:justify-between">
             <h2 className="font-nunito text-lg font-bold leading-7">Membership</h2>
             <button
               type="button"
               onClick={() => toast.success('Membership management is ready.')}
               className="flex items-center gap-1.5 font-manrope text-sm font-semibold text-[#2f7d7e]"
             >
-              Manage Membership <ArrowUpRight size={13} />
+              Manage Membership <ArrowUpRight aria-hidden="true" size={13} />
             </button>
           </div>
-          <div className="mt-4 grid grid-cols-2 gap-4 xl:grid-cols-4">
+          <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-4">
             {[
               ['Current Plan', 'Grow Together'],
               ['Status', 'Active'],
@@ -154,12 +154,15 @@ export function FamilyDetailsPage({ familyId: _familyId }: { familyId: string })
           <h2 className="font-nunito text-lg font-bold leading-7">
             Children <span className="text-xs font-medium text-[#607d8b]">(2)</span>
           </h2>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          <div className="mt-4 grid gap-3 sm:grid-cols-2 2xl:grid-cols-2">
             {[
               ['Z', 'Zara', '3 yrs · Toddler', 'Sensory Foundations — Week 1', '60% complete'],
               ['K', 'Kofi', '1 yr · Infant', 'Language Launch — Week 1', '40% complete'],
             ].map(([initial, name, age, plan, progress]) => (
-              <div key={name} className="rounded-[14px] border border-[#e7eceb] bg-[#f4f8f6] p-4">
+              <div
+                key={name}
+                className="min-w-0 rounded-[14px] border border-[#e7eceb] bg-[#f4f8f6] p-4"
+              >
                 <div className="flex items-center gap-3">
                   <span className="flex size-8 items-center justify-center rounded-full bg-[rgba(143,185,168,0.19)] font-nunito text-xs font-bold text-[#2f7d7e]">
                     {initial}
@@ -170,7 +173,7 @@ export function FamilyDetailsPage({ familyId: _familyId }: { familyId: string })
                   </div>
                 </div>
                 <p className="mt-3 font-manrope text-[11px] text-[#607d8b]">Current Plan</p>
-                <p className="font-manrope text-[13px] font-semibold">{plan}</p>
+                <p className="wrap-break-word font-manrope text-[13px] font-semibold">{plan}</p>
                 <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-[#e7eceb]">
                   <div className="h-full rounded-full bg-[#2f7d7e]" style={{ width: progress }} />
                 </div>
@@ -186,10 +189,10 @@ export function FamilyDetailsPage({ familyId: _familyId }: { familyId: string })
           </div>
         </Card>
         <Card>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between 2xl:flex-row 2xl:items-center 2xl:justify-between">
             <h2 className="font-nunito text-lg font-bold leading-7">Assigned Weekly Plans</h2>
             <button type="button" className="font-manrope text-xs font-semibold text-[#2f7d7e]">
-              Assign New Plan <ArrowUpRight size={13} className="inline" />
+              Assign New Plan <ArrowUpRight aria-hidden="true" size={13} className="inline" />
             </button>
           </div>
           <div className="mt-4 space-y-3">
@@ -209,7 +212,10 @@ export function FamilyDetailsPage({ familyId: _familyId }: { familyId: string })
                 '2/5 activities',
               ],
             ].map(([initial, title, date, percent, count]) => (
-              <div key={title} className="flex items-center gap-3 rounded-[14px] bg-[#f4f8f6] p-3">
+              <div
+                key={title}
+                className="grid min-w-0 grid-cols-[auto_minmax(0,1fr)] items-center gap-3 rounded-[14px] bg-[#f4f8f6] p-3 sm:flex 2xl:flex"
+              >
                 <span className="flex size-8 shrink-0 items-center justify-center rounded-[14px] bg-[rgba(143,185,168,0.19)] font-nunito text-xs font-bold text-[#2f7d7e]">
                   {initial}
                 </span>
@@ -220,7 +226,7 @@ export function FamilyDetailsPage({ familyId: _familyId }: { familyId: string })
                     <div className="h-full rounded-full bg-[#2f7d7e]" style={{ width: percent }} />
                   </div>
                 </div>
-                <div className="text-right">
+                <div className="col-start-2 text-left sm:ml-auto sm:text-right 2xl:ml-auto 2xl:text-right">
                   <p className="font-nunito text-base font-bold text-[#2f7d7e]">{percent}</p>
                   <p className="font-manrope text-[11px] text-[#607d8b]">{count}</p>
                 </div>
@@ -238,7 +244,7 @@ export function FamilyDetailsPage({ familyId: _familyId }: { familyId: string })
                   <span
                     className={`flex size-8 shrink-0 items-center justify-center rounded-[14px] ${colors as string}`}
                   >
-                    <ActivityIcon size={14} />
+                    <ActivityIcon aria-hidden="true" size={14} />
                   </span>
                   <div>
                     <p className="font-manrope text-[13px] text-[#263238]">{title}</p>
@@ -250,7 +256,7 @@ export function FamilyDetailsPage({ familyId: _familyId }: { familyId: string })
           </div>
         </Card>
         <Card>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between 2xl:flex-row 2xl:items-center 2xl:justify-between">
             <h2 className="font-nunito text-lg font-bold leading-7">Messages</h2>
             <button
               type="button"
@@ -258,18 +264,20 @@ export function FamilyDetailsPage({ familyId: _familyId }: { familyId: string })
               className="flex items-center gap-1.5 font-manrope text-sm font-semibold text-[#2f7d7e]"
             >
               Open Conversation
-              <ArrowUpRight size={13} />
+              <ArrowUpRight aria-hidden="true" size={13} />
             </button>
           </div>
           <div className="mt-4 space-y-3">
             <div className="flex gap-3 border-b border-[#e7eceb] pb-3">
-              <span className="flex size-7 items-center justify-center rounded-full bg-[rgba(143,185,168,0.19)] font-nunito text-xs font-bold text-[#2f7d7e]">
+              <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-[rgba(143,185,168,0.19)] font-nunito text-xs font-bold text-[#2f7d7e]">
                 A
               </span>
               <div>
                 <p className="font-manrope text-xs font-semibold">
                   Amara Okonkwo{' '}
-                  <span className="ml-2 font-normal text-[#607d8b]">Apr 3, 2025 · 12:01 PM</span>
+                  <span className="mt-0.5 block font-normal text-[#607d8b] sm:mt-0 sm:ml-2 sm:inline 2xl:mt-0 2xl:ml-2 2xl:inline">
+                    Apr 3, 2025 · 12:01 PM
+                  </span>
                 </p>
                 <p className="mt-1 font-manrope text-[13px] text-[#607d8b]">
                   Perfect, thank you. Quick question — should we do the activities in the order
@@ -278,13 +286,15 @@ export function FamilyDetailsPage({ familyId: _familyId }: { familyId: string })
               </div>
             </div>
             <div className="flex gap-3">
-              <span className="flex size-7 items-center justify-center rounded-full bg-[rgba(47,125,126,0.13)] font-nunito text-xs font-bold text-[#2f7d7e]">
+              <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-[rgba(47,125,126,0.13)] font-nunito text-xs font-bold text-[#2f7d7e]">
                 S
               </span>
               <div>
                 <p className="font-manrope text-xs font-semibold">
                   Sarah K.{' '}
-                  <span className="ml-2 font-normal text-[#607d8b]">Apr 3, 2025 · 12:18 PM</span>
+                  <span className="mt-0.5 block font-normal text-[#607d8b] sm:mt-0 sm:ml-2 sm:inline 2xl:mt-0 2xl:ml-2 2xl:inline">
+                    Apr 3, 2025 · 12:18 PM
+                  </span>
                 </p>
                 <p className="mt-1 font-manrope text-[13px] text-[#607d8b]">
                   Yes, the order is recommended but flexible — follow Zara&apos;s energy. If
@@ -294,13 +304,13 @@ export function FamilyDetailsPage({ familyId: _familyId }: { familyId: string })
             </div>
           </div>
         </Card>
-        <div className="flex justify-end">
+        <div className="flex sm:justify-end 2xl:justify-end">
           <button
             type="button"
             onClick={() => toast.success('Family archived.')}
-            className="flex h-10 items-center gap-2 rounded-[14px] border border-[rgba(184,134,11,0.25)] bg-[#fff8e1] px-4 font-manrope text-sm font-semibold text-[#b8860b]"
+            className="flex h-10 w-full items-center justify-center gap-2 rounded-[14px] border border-[rgba(184,134,11,0.25)] bg-[#fff8e1] px-4 font-manrope text-sm font-semibold text-[#b8860b] sm:w-auto 2xl:w-auto"
           >
-            <Archive size={14} />
+            <Archive aria-hidden="true" size={14} />
             Archive Family
           </button>
         </div>

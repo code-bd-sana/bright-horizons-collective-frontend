@@ -289,9 +289,9 @@ export function FamiliesPage() {
   };
 
   return (
-    <section className="mx-auto w-full max-w-383.5 pb-8 text-[#263238]">
+    <section className="mx-auto w-full min-w-0 max-w-383.5 pb-8 text-[#263238]">
       <header>
-        <h1 className="font-nunito text-[32px] font-medium leading-10 tracking-[-0.4px] sm:text-[40px] sm:leading-12">
+        <h1 className="font-nunito text-2xl font-medium leading-8 tracking-[-0.4px] sm:text-[32px] sm:leading-10 2xl:text-[40px] 2xl:leading-12">
           Families
         </h1>
         <p className="mt-0.5 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#6c7787]">
@@ -299,18 +299,18 @@ export function FamiliesPage() {
         </p>
       </header>
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="mt-8 grid min-w-0 gap-4 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-4">
         {summaryCards.map(({ value, label, icon: Icon, className }) => (
           <article
             key={label}
-            className="flex h-38.5 items-center rounded-2xl border border-[#e8ebe8] bg-white p-4 shadow-[0_1px_1px_rgba(0,0,0,0.05)]"
+            className="flex min-h-28 min-w-0 items-center rounded-2xl border border-[#e8ebe8] bg-white p-4 shadow-[0_1px_1px_rgba(0,0,0,0.05)] 2xl:h-38.5"
           >
             <span
               className={`mr-3 flex size-8 shrink-0 items-center justify-center rounded-lg border ${className}`}
             >
-              <Icon size={18} strokeWidth={1.7} />
+              <Icon aria-hidden="true" size={18} strokeWidth={1.7} />
             </span>
-            <div>
+            <div className="min-w-0">
               <p className="font-nunito text-2xl font-medium leading-8 text-[#272f3a]">{value}</p>
               <p className="font-manrope text-sm font-medium leading-5.5 tracking-[0.084px] text-[#6c7787]">
                 {label}
@@ -320,10 +320,10 @@ export function FamiliesPage() {
         ))}
       </div>
 
-      <div className="mt-8 rounded-2xl border border-[#e7eceb] bg-white p-4.25 shadow-[0_4px_6px_rgba(0,0,0,0.06)]">
-        <div className="flex flex-col gap-3 lg:flex-row">
-          <label className="flex h-9.5 min-w-0 flex-1 items-center gap-2 rounded-[14px] border border-[#e7eceb] bg-[#f4f8f6] px-3">
-            <Search size={15} className="text-[#607d8b]" />
+      <div className="mt-8 min-w-0 rounded-2xl border border-[#e7eceb] bg-white p-4.25 shadow-[0_4px_6px_rgba(0,0,0,0.06)]">
+        <div className="grid gap-3 sm:grid-cols-2 xl:flex xl:flex-row 2xl:flex 2xl:flex-row">
+          <label className="flex h-9.5 min-w-0 flex-1 items-center gap-2 rounded-[14px] border border-[#e7eceb] bg-[#f4f8f6] px-3 sm:col-span-2 xl:col-span-1 2xl:col-span-1">
+            <Search aria-hidden="true" size={15} className="shrink-0 text-[#607d8b]" />
             <span className="sr-only">Search families</span>
             <input
               value={query}
@@ -337,25 +337,132 @@ export function FamiliesPage() {
             value={membership}
             onChange={setMembership}
             options={['Little Steps', 'Grow Together', 'Personalized Pathways']}
-            width="lg:w-48.5"
+            width="xl:w-48.5 2xl:w-48.5"
           />
           <FamilyFilterDropdown
             label="Status"
             value={status}
             onChange={setStatus}
             options={['Active', 'Inactive']}
-            width="lg:w-27.5"
+            width="xl:w-27.5 2xl:w-27.5"
           />
         </div>
       </div>
 
-      <div className="mt-6 overflow-x-auto rounded-2xl border border-[#e8ebe8] bg-white shadow-[0_1px_1.5px_rgba(0,0,0,0.1),0_1px_1px_rgba(0,0,0,0.1)]">
+      <section className="mt-6 grid gap-3 xl:grid-cols-2 2xl:hidden">
+        {filteredFamilies.map((family) => (
+          <article
+            key={family.id}
+            className="min-w-0 rounded-2xl border border-[#e8ebe8] bg-white p-4 shadow-[0_1px_1.5px_rgba(0,0,0,0.1),0_1px_1px_rgba(0,0,0,0.1)]"
+          >
+            <div className="flex min-w-0 items-start gap-3">
+              <input
+                aria-label={`Select ${family.name}`}
+                type="checkbox"
+                checked={selectedIds.includes(family.id)}
+                onChange={() => toggleSelection(family.id)}
+                className="mt-1 size-4 shrink-0 accent-[#2f7d7e]"
+              />
+              <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#fce9e3] font-nunito text-xs font-semibold text-[#916d5f]">
+                AO
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="font-nunito text-sm font-medium leading-5 text-[#263238]">
+                  {family.name}
+                </p>
+                <p className="font-manrope text-[13px] leading-5 text-[#607d8b]">
+                  {family.relationship}
+                </p>
+              </div>
+              <StatusBadge status={family.status} />
+            </div>
+
+            <dl className="mt-4 grid gap-3 rounded-[14px] bg-[#f4f8f6] p-3 sm:grid-cols-2">
+              <div className="min-w-0">
+                <dt className="font-manrope text-[11px] font-semibold uppercase tracking-[0.55px] text-[#607d8b]">
+                  Email
+                </dt>
+                <dd className="mt-0.5 truncate font-manrope text-xs text-[#263238]">
+                  {family.email}
+                </dd>
+              </div>
+              <div className="min-w-0">
+                <dt className="font-manrope text-[11px] font-semibold uppercase tracking-[0.55px] text-[#607d8b]">
+                  Phone
+                </dt>
+                <dd className="mt-0.5 font-manrope text-xs text-[#263238]">{family.phone}</dd>
+              </div>
+            </dl>
+
+            <div className="mt-4">
+              <p className="font-manrope text-[11px] font-semibold uppercase tracking-[0.55px] text-[#607d8b]">
+                Children
+              </p>
+              <div className="mt-1.5 flex flex-wrap gap-1.5">
+                {family.children.map((child) => (
+                  <span
+                    key={child}
+                    className="rounded bg-[#e8ebe8] px-2 py-1 font-manrope text-xs leading-4.5 text-[#263238]"
+                  >
+                    {child}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-[#e7eceb] pt-3">
+              <MembershipBadge membership={family.membership} />
+              <p className="font-manrope text-xs leading-4.5 text-[#607d8b]">
+                Registered {family.registration}
+              </p>
+            </div>
+
+            <div className="mt-3 grid grid-cols-5 gap-2">
+              {[
+                [Eye, 'View'],
+                [Pencil, 'Email'],
+                [Copy, 'Membership'],
+                [Archive, 'Verify'],
+              ].map(([Icon, label]) => {
+                const ActionIcon = Icon as typeof Eye;
+                return (
+                  <button
+                    key={label as string}
+                    type="button"
+                    aria-label={`${label} ${family.name}`}
+                    onClick={() => action(label as string, family)}
+                    className="flex h-9 min-w-0 items-center justify-center rounded-xl border border-[#e7eceb] text-[#607d8b] hover:bg-[#f4f8f6]"
+                  >
+                    <ActionIcon aria-hidden="true" size={14} strokeWidth={1.7} />
+                  </button>
+                );
+              })}
+              <button
+                type="button"
+                aria-label={`Deactivate ${family.name}`}
+                onClick={() => setDeactivateTarget(family)}
+                className="flex h-9 min-w-0 items-center justify-center rounded-xl border border-[#e7eceb] text-[#607d8b] hover:bg-[#f4f8f6]"
+              >
+                <Trash aria-hidden="true" size={16} />
+              </button>
+            </div>
+          </article>
+        ))}
+        {filteredFamilies.length === 0 ? (
+          <p className="rounded-2xl border border-[#e8ebe8] bg-white p-8 text-center font-manrope text-sm text-[#607d8b] xl:col-span-2">
+            No families match these filters.
+          </p>
+        ) : null}
+      </section>
+
+      <div className="mt-6 hidden overflow-x-auto rounded-2xl border border-[#e8ebe8] bg-white shadow-[0_1px_1.5px_rgba(0,0,0,0.1),0_1px_1px_rgba(0,0,0,0.1)] 2xl:block">
         <table className="w-full min-w-370.5 border-separate border-spacing-0 text-left">
           <thead className="bg-[#f4f8f6]">
             <tr className="h-22">
               <th className="w-70 px-4">
                 <label className="flex items-center gap-6">
                   <input
+                    aria-label="Select all families"
                     type="checkbox"
                     checked={allSelected}
                     onChange={() =>
@@ -391,6 +498,7 @@ export function FamiliesPage() {
                 <td className="px-4">
                   <div className="flex items-center gap-6">
                     <input
+                      aria-label={`Select ${family.name}`}
                       type="checkbox"
                       checked={selectedIds.includes(family.id)}
                       onChange={() => toggleSelection(family.id)}
@@ -455,7 +563,7 @@ export function FamiliesPage() {
                           onClick={() => action(label as string, family)}
                           className="flex size-7 items-center justify-center rounded-[10px] text-[#607d8b] hover:bg-[#f4f8f6]"
                         >
-                          <ActionIcon size={14} strokeWidth={1.7} />
+                          <ActionIcon aria-hidden="true" size={14} strokeWidth={1.7} />
                         </button>
                       );
                     })}
@@ -465,7 +573,7 @@ export function FamiliesPage() {
                       onClick={() => setDeactivateTarget(family)}
                       className="flex size-7 items-center justify-center rounded-[10px] text-[#607d8b] hover:bg-[#f4f8f6]"
                     >
-                      <Trash size={16} />
+                      <Trash aria-hidden="true" size={16} />
                     </button>
                   </div>
                 </td>
@@ -482,15 +590,20 @@ export function FamiliesPage() {
 
       <nav
         aria-label="Families pagination"
-        className="mt-6 flex flex-wrap justify-end gap-1 font-manrope text-sm text-[#0f172a]"
+        className="mt-6 flex max-w-full justify-start gap-1 overflow-x-auto pb-1 font-manrope text-sm text-[#0f172a] sm:justify-end 2xl:justify-end 2xl:overflow-visible 2xl:pb-0"
       >
-        <button disabled className="flex h-10 items-center gap-1 px-3 opacity-50">
+        <button
+          type="button"
+          disabled
+          className="flex h-10 shrink-0 items-center gap-1 px-2 opacity-50 sm:px-3"
+        >
           <ChevronLeft size={16} />
           Previous
         </button>
         {[1, 2, 3, 4, 5, 6].map((page) => (
           <button
             key={page}
+            type="button"
             aria-current={page === 1 ? 'page' : undefined}
             className={
               page === 1
@@ -501,10 +614,10 @@ export function FamiliesPage() {
             {page}
           </button>
         ))}
-        <span className="flex size-10 items-center justify-center">
-          <Ellipsis size={16} />
+        <span className="flex size-10 shrink-0 items-center justify-center">
+          <Ellipsis aria-hidden="true" size={16} />
         </span>
-        <button className="flex h-10 items-center gap-1 px-3">
+        <button type="button" className="flex h-10 shrink-0 items-center gap-1 px-2 sm:px-3">
           Next
           <ChevronRight size={16} />
         </button>
