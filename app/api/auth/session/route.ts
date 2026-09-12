@@ -1,14 +1,18 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { DEMO_SESSION_COOKIE, readDemoSession } from '@/lib/demo-session';
+import { NextResponse } from 'next/server';
+import { getSession } from '@/lib/auth/session';
+import { AUTH_TOKEN_COOKIE } from '@/lib/auth/token';
 
-export async function GET(request: NextRequest) {
-  const session = await readDemoSession(request.cookies.get(DEMO_SESSION_COOKIE)?.value);
+export async function GET() {
+  const session = await getSession();
+
   if (!session) {
-    return NextResponse.json(
-      { error: 'Unauthenticated' },
+    const response = NextResponse.json(
+      { message: 'Unauthenticated.' },
       { status: 401, headers: { 'Cache-Control': 'no-store' } }
     );
+    response.cookies.set({ name: AUTH_TOKEN_COOKIE, value: '', path: '/', maxAge: 0 });
+    return response;
   }
 
-  return NextResponse.json({ role: session.role }, { headers: { 'Cache-Control': 'no-store' } });
+  return NextResponse.json(session, { headers: { 'Cache-Control': 'no-store' } });
 }

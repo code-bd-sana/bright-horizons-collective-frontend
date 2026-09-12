@@ -1,46 +1,32 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { DEMO_SESSION_COOKIE, readDemoSession } from '@/lib/demo-session';
-import { getRoleConfig } from '@/lib/role-config';
+import { AUTH_TOKEN_COOKIE, readTokenClaims } from '@/lib/auth/token';
+import { mapAuthRole } from '@/services/api/auth/auth.mapper';
 
-export async function proxy(request: NextRequest) {
-  const session = await readDemoSession(request.cookies.get(DEMO_SESSION_COOKIE)?.value);
-  const isAuthenticated = Boolean(session);
+export function proxy(request: NextRequest) {
+  const claims = readTokenClaims(request.cookies.get(AUTH_TOKEN_COOKIE)?.value);
+  const role = claims ? mapAuthRole(claims.role) : null;
   const pathname = request.nextUrl.pathname;
 
-  if (pathname.startsWith('/dashboard/admin') && session?.role !== 'admin') {
-    return NextResponse.redirect(new URL(session ? '/dashboard' : '/login', request.url));
+  if (pathname.startsWith('/dashboard/admin') && role !== 'admin') {
+    return NextResponse.redirect(new URL(role ? '/dashboard' : '/login', request.url));
   }
 
   if (
-    session?.role === 'admin' &&
+    role === 'admin' &&
     pathname.startsWith('/dashboard') &&
     !pathname.startsWith('/dashboard/admin')
   ) {
-    return NextResponse.redirect(new URL(getRoleConfig('admin').homePath, request.url));
+    return NextResponse.redirect(new URL('/dashboard/admin', request.url));
   }
 
-  // Protect dashboard routes
-  if (pathname.startsWith('/dashboard')) {
-    if (!isAuthenticated) {
-      return NextResponse.redirect(new URL('/login', request.url));
-    }
-  }
-
-  // Prevent authenticated users from accessing auth pages
-  if (
-    request.nextUrl.pathname.startsWith('/login') ||
-    request.nextUrl.pathname.startsWith('/register') ||
-    request.nextUrl.pathname.startsWith('/forgot-password')
-  ) {
-    if (isAuthenticated) {
-      return NextResponse.redirect(new URL(getRoleConfig(session?.role).homePath, request.url));
-    }
+  if (pathname.startsWith('/dashboard') && !role) {
+    return NextResponse.redirect(new URL('/login', request.url));
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/login', '/register', '/forgot-password', '/api/auth/:path*'],
+  matcher: ['/dashboard/:path*'],
 };

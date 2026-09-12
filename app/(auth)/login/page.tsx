@@ -1,57 +1,29 @@
 'use client';
 
 import { Logo } from '@/components/logo';
-import { getRoleConfig } from '@/lib/role-config';
+import { loginSchema, type LoginFormValues } from '@/services/api/auth/auth.schemas';
+import { useLoginMutation } from '@/services/api/auth/auth.mutations';
+import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { toast } from 'sonner';
-
-const socialProviders = [
-  { label: 'Continue with Google', icon: '/Home/figma-login-google.svg', tone: 'bg-[#fce9e3]' },
-];
-
-const demoAccounts = [
-  { role: 'Parent', email: 'parent@gmail.com', password: 'parent@123' },
-  { role: 'Admin', email: 'admin@gmail.com', password: 'admin@123' },
-];
+import { useForm } from 'react-hook-form';
 
 export default function LoginPage() {
-  const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { mutate: login, isPending } = useLoginMutation();
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: { email: '', password: '', rememberMe: true },
+  });
+  const rememberMe = watch('rememberMe');
 
-  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setIsSubmitting(true);
-
-    try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'same-origin',
-        body: JSON.stringify({ email, password, rememberMe }),
-      });
-      const result = (await response.json()) as { error?: string; role?: string };
-
-      if (!response.ok || !result.role) {
-        toast.error(result.error ?? 'Unable to sign in. Please try again.');
-        return;
-      }
-
-      toast.success(`Successfully logged in as ${result.role}`);
-      router.replace(getRoleConfig(result.role === 'admin' ? 'admin' : 'parent').homePath);
-      router.refresh();
-    } catch {
-      toast.error('Unable to sign in. Please check your connection and try again.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  const handleLogin = (values: LoginFormValues) => login(values);
 
   return (
     <main className="relative flex min-h-dvh flex-col overflow-y-auto overflow-x-hidden bg-[#fffdf8] text-[#263238] scrollbar-none [&::-webkit-scrollbar]:hidden xl:h-dvh xl:flex-row xl:items-center xl:overflow-hidden 2xl:overflow-hidden">
@@ -73,31 +45,7 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <form className="w-full" onSubmit={handleLogin}>
-          <div className="space-y-3">
-            {socialProviders.map((provider) => (
-              <button
-                key={provider.label}
-                type="button"
-                onClick={() =>
-                  toast.info(
-                    `${provider.label.replace('Continue with ', '')} sign-in is coming soon.`
-                  )
-                }
-                className={`flex h-12 w-full items-center justify-center gap-3 rounded-3xl border border-[#ece9fd] px-6 py-3 font-manrope text-sm font-medium leading-5 text-[#263238] transition-opacity hover:opacity-85 ${provider.tone}`}
-              >
-                <Image src={provider.icon} alt="" width={24} height={24} />
-                {provider.label}
-              </button>
-            ))}
-          </div>
-
-          <div className="my-5 flex items-center gap-4 font-manrope text-sm leading-5 text-[#7d8488] xl:my-8">
-            <span className="h-px flex-1 bg-[#d5e5e5]" />
-            OR
-            <span className="h-px flex-1 bg-[#d5e5e5]" />
-          </div>
-
+        <form className="w-full" noValidate onSubmit={handleSubmit(handleLogin)}>
           <div className="space-y-4 xl:space-y-5">
             <label
               className="block font-manrope text-sm font-medium leading-5 text-[#515b60]"
@@ -107,11 +55,21 @@ export default function LoginPage() {
               <input
                 id="email"
                 type="email"
-                required
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                className="mt-2 h-12 w-full rounded-xl border border-[#d5e5e5] bg-[#fafafa] px-3 font-manrope text-base font-normal text-[#263238] outline-none transition focus:border-[#5e9999]"
+                autoComplete="email"
+                aria-invalid={Boolean(errors.email)}
+                aria-describedby={errors.email ? 'email-error' : undefined}
+                {...register('email')}
+                className="mt-2 h-12 w-full rounded-xl border border-[#d5e5e5] bg-[#fafafa] px-3 font-manrope text-base font-normal text-[#263238] outline-none transition focus:border-[#5e9999] aria-invalid:border-[#ff6f61]"
               />
+              {errors.email && (
+                <span
+                  id="email-error"
+                  role="alert"
+                  className="mt-1 block font-manrope text-xs text-[#c94f45]"
+                >
+                  {errors.email.message}
+                </span>
+              )}
             </label>
 
             <label
@@ -123,10 +81,11 @@ export default function LoginPage() {
                 <input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
-                  required
-                  value={password}
-                  onChange={(event) => setPassword(event.target.value)}
-                  className="h-12 w-full rounded-xl border border-[#d5e5e5] bg-[#fafafa] px-3 pr-12 font-manrope text-base font-normal text-[#263238] outline-none transition focus:border-[#5e9999]"
+                  autoComplete="current-password"
+                  aria-invalid={Boolean(errors.password)}
+                  aria-describedby={errors.password ? 'password-error' : undefined}
+                  {...register('password')}
+                  className="h-12 w-full rounded-xl border border-[#d5e5e5] bg-[#fafafa] px-3 pr-12 font-manrope text-base font-normal text-[#263238] outline-none transition focus:border-[#5e9999] aria-invalid:border-[#ff6f61]"
                 />
                 <button
                   type="button"
@@ -137,17 +96,21 @@ export default function LoginPage() {
                   <Image src="/Home/figma-login-eye.svg" alt="" width={20} height={20} />
                 </button>
               </span>
+              {errors.password && (
+                <span
+                  id="password-error"
+                  role="alert"
+                  className="mt-1 block font-manrope text-xs text-[#c94f45]"
+                >
+                  {errors.password.message}
+                </span>
+              )}
             </label>
           </div>
 
           <div className="mt-5 flex items-center justify-between px-1 font-manrope text-sm leading-5 max-sm:flex-col max-sm:items-start max-sm:gap-3 xl:mt-6">
             <label className="flex cursor-pointer items-center gap-2 text-[#515b60]">
-              <input
-                type="checkbox"
-                checked={rememberMe}
-                onChange={(event) => setRememberMe(event.target.checked)}
-                className="sr-only"
-              />
+              <input type="checkbox" {...register('rememberMe')} className="sr-only" />
               <span className="relative size-5 overflow-hidden rounded-[5px]">
                 {rememberMe ? (
                   <Image src="/Home/figma-login-checkmark.svg" alt="" fill sizes="20px" />
@@ -164,38 +127,13 @@ export default function LoginPage() {
 
           <button
             type="submit"
-            disabled={isSubmitting}
+            disabled={isPending}
+            aria-busy={isPending}
             className="mt-5 h-12 w-full rounded-xl border border-[#accbcb] bg-[#2c7b7d] px-3 font-manrope text-sm font-semibold leading-5 text-white shadow-[0_1px_2px_rgba(16,24,40,0.05)] transition hover:bg-[#236a6c] xl:mt-8"
           >
-            {isSubmitting ? 'Logging In…' : 'Log In'}
+            {isPending ? 'Logging In…' : 'Log In'}
           </button>
         </form>
-
-        <section
-          aria-label="Demo login credentials"
-          className="mt-5 w-full rounded-xl border border-[#d5e5e5] bg-white/70 p-3 xl:mt-6"
-        >
-          <p className="font-manrope text-xs font-semibold uppercase tracking-[0.08em] text-[#515b60]">
-            Demo login
-          </p>
-          <div className="mt-2 grid gap-2 sm:grid-cols-2">
-            {demoAccounts.map((account) => (
-              <button
-                key={account.role}
-                type="button"
-                onClick={() => {
-                  setEmail(account.email);
-                  setPassword(account.password);
-                }}
-                className="rounded-lg border border-[#e7eeee] bg-[#fafafa] px-3 py-2 text-left font-manrope text-xs leading-5 text-[#515b60] transition hover:border-[#accbcb]"
-              >
-                <span className="block font-semibold text-[#263238]">{account.role}</span>
-                <span className="block break-all">{account.email}</span>
-                <span className="block">{account.password}</span>
-              </button>
-            ))}
-          </div>
-        </section>
 
         <p className="mt-5 font-manrope text-sm leading-5 text-[#515b60] xl:mt-6">
           Do not have an account?{' '}

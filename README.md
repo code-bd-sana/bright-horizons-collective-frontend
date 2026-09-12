@@ -49,7 +49,7 @@ This template provides a highly scalable foundation equipped with everything you
 
 - **Global State**: **Zustand** is pre-configured for lightweight, boilerplate-free global state (currently managing the sidebar toggle).
 - **Server State**: **TanStack React Query** is globally provided, ready to handle data fetching, caching, and background syncs.
-- **API Client**: A fully configured **Axios** client is provided (`services/api-client.ts`) with built-in request/response interceptors to handle auth tokens and global error toasts automatically.
+- **API Client**: Typed browser and server **Axios** clients live under `services/api`, with feature-specific TanStack Query hooks and normalized API errors.
 
 ### 7. SEO & Performance
 
