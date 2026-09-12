@@ -14,6 +14,12 @@ export type LoginInput = {
   rememberMe: boolean;
 };
 
+export type RegisterInput = {
+  name: string;
+  email: string;
+  password: string;
+};
+
 export type AuthSession = {
   user: AuthUser;
   role: AuthRole;

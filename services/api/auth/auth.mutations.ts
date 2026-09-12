@@ -5,7 +5,7 @@ import { ApiError } from '@/services/api/client/api-error';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { login } from './auth.api';
+import { login, registerAccount } from './auth.api';
 import { authKeys } from './auth.keys';
 
 export function useLoginMutation() {
@@ -23,6 +23,28 @@ export function useLoginMutation() {
     onError: (error) => {
       toast.error(
         error instanceof ApiError ? error.message : 'Unable to sign in. Please try again.'
+      );
+    },
+  });
+}
+
+export function useRegisterMutation() {
+  const queryClient = useQueryClient();
+  const router = useRouter();
+
+  return useMutation({
+    mutationFn: registerAccount,
+    onSuccess: (session) => {
+      queryClient.setQueryData(authKeys.session(), session);
+      toast.success('Your account has been created successfully!');
+      router.replace('/dashboard');
+      router.refresh();
+    },
+    onError: (error) => {
+      toast.error(
+        error instanceof ApiError
+          ? error.message
+          : 'Unable to create your account. Please try again.'
       );
     },
   });
