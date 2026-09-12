@@ -1,7 +1,7 @@
 'use client';
 
 import { Logo } from '@/components/logo';
-import type { DemoRole } from '@/lib/demo-session';
+import type { AuthRole } from '@/services/api/auth/auth.types';
 import { getRoleConfig, type RoleNavigationItem } from '@/lib/role-config';
 import { cn } from '@/lib/utils';
 import { useAppStore } from '@/store/use-app-store';
@@ -45,7 +45,7 @@ function NavigationList({
   );
 }
 
-export function Sidebar({ role = 'parent' }: { role?: DemoRole }) {
+export function Sidebar({ role = 'parent' }: { role?: AuthRole }) {
   const pathname = usePathname();
   const router = useRouter();
   const { sidebarOpen, setSidebarOpen } = useAppStore();

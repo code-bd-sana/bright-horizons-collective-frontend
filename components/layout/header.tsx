@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { Bell, Menu, MessageCircle } from 'lucide-react';
-import type { DemoRole } from '@/lib/demo-session';
+import type { AuthRole } from '@/services/api/auth/auth.types';
 import { getRoleConfig } from '@/lib/role-config';
 import { useAppStore } from '@/store/use-app-store';
 
@@ -208,7 +208,7 @@ function ChildProfileOption({
   );
 }
 
-export function Header({ role = 'parent' }: { role?: DemoRole }) {
+export function Header({ role = 'parent' }: { role?: AuthRole }) {
   const { setSidebarOpen } = useAppStore();
   const pathname = usePathname();
   const router = useRouter();

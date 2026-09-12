@@ -1,19 +1,19 @@
-import { Sidebar } from '@/components/layout/sidebar';
+import { redirect } from 'next/navigation';
 import { Header } from '@/components/layout/header';
-import { cookies } from 'next/headers';
-import { DEMO_SESSION_COOKIE, readDemoSession } from '@/lib/demo-session';
+import { Sidebar } from '@/components/layout/sidebar';
+import { getSession } from '@/lib/auth/session';
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const cookieStore = await cookies();
-  const session = await readDemoSession(cookieStore.get(DEMO_SESSION_COOKIE)?.value);
+  const session = await getSession();
+  if (!session) redirect('/login');
 
-  const isAdmin = session?.role === 'admin';
+  const isAdmin = session.role === 'admin';
 
   return (
     <div className="flex h-dvh w-full overflow-hidden bg-[#fffdf8]">
-      <Sidebar role={session?.role} />
+      <Sidebar role={session.role} />
       <div className={`flex min-w-0 flex-1 flex-col ${isAdmin ? 'relative' : ''}`}>
-        <Header role={session?.role} />
+        <Header role={session.role} />
         <main
           className={
             isAdmin

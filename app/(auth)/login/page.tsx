@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -15,14 +15,12 @@ export default function LoginPage() {
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     formState: { errors },
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: { email: '', password: '', rememberMe: true },
   });
-  const rememberMe = watch('rememberMe');
-
   const handleLogin = (values: LoginFormValues) => login(values);
 
   return (
@@ -109,17 +107,31 @@ export default function LoginPage() {
           </div>
 
           <div className="mt-5 flex items-center justify-between px-1 font-manrope text-sm leading-5 max-sm:flex-col max-sm:items-start max-sm:gap-3 xl:mt-6">
-            <label className="flex cursor-pointer items-center gap-2 text-[#515b60]">
-              <input type="checkbox" {...register('rememberMe')} className="sr-only" />
-              <span className="relative size-5 overflow-hidden rounded-[5px]">
-                {rememberMe ? (
-                  <Image src="/Home/figma-login-checkmark.svg" alt="" fill sizes="20px" />
-                ) : (
-                  <span className="block size-full border border-[#accbcb] bg-white" />
-                )}
-              </span>
-              Remember Me
-            </label>
+            <Controller
+              control={control}
+              name="rememberMe"
+              render={({ field }) => (
+                <label className="flex cursor-pointer items-center gap-2 text-[#515b60]">
+                  <input
+                    ref={field.ref}
+                    type="checkbox"
+                    name={field.name}
+                    checked={field.value}
+                    onBlur={field.onBlur}
+                    onChange={field.onChange}
+                    className="sr-only"
+                  />
+                  <span className="relative size-5 overflow-hidden rounded-[5px]">
+                    {field.value ? (
+                      <Image src="/Home/figma-login-checkmark.svg" alt="" fill sizes="20px" />
+                    ) : (
+                      <span className="block size-full border border-[#accbcb] bg-white" />
+                    )}
+                  </span>
+                  Remember Me
+                </label>
+              )}
+            />
             <Link href="/forgot-password" className="font-medium text-[#167e87] hover:underline">
               Forget Password?
             </Link>

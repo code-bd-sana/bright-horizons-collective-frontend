@@ -1,4 +1,4 @@
-import type { DemoRole } from '@/lib/demo-session';
+import type { AuthRole } from '@/services/api/auth/auth.types';
 
 export type RoleNavigationItem = {
   name: string;
@@ -28,7 +28,7 @@ export type RoleConfig = {
   };
 };
 
-export const roleConfigs: Record<DemoRole, RoleConfig> = {
+export const roleConfigs: Record<AuthRole, RoleConfig> = {
   parent: {
     homePath: '/dashboard',
     menuItems: [
@@ -174,6 +174,6 @@ export const roleConfigs: Record<DemoRole, RoleConfig> = {
   },
 };
 
-export function getRoleConfig(role?: DemoRole): RoleConfig {
+export function getRoleConfig(role?: AuthRole): RoleConfig {
   return roleConfigs[role ?? 'parent'];
 }
