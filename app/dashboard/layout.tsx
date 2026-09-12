@@ -1,11 +1,19 @@
-import { redirect } from 'next/navigation';
+import { forbidden, unauthorized } from 'next/navigation';
+import { headers } from 'next/headers';
 import { Header } from '@/components/layout/header';
 import { Sidebar } from '@/components/layout/sidebar';
 import { getSession } from '@/lib/auth/session';
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const session = await getSession();
-  if (!session) redirect('/login');
+  const [session, requestHeaders] = await Promise.all([getSession(), headers()]);
+  if (!session) unauthorized();
+
+  const routeScope = requestHeaders.get('x-bhc-dashboard-scope');
+  const hasRequiredRole =
+    (routeScope === 'admin' && session.role === 'admin') ||
+    (routeScope === 'parent' && session.role === 'parent');
+
+  if (!hasRequiredRole) forbidden();
 
   const isAdmin = session.role === 'admin';
 

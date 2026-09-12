@@ -1,4 +1,5 @@
 import { cache } from 'react';
+import axios from 'axios';
 import { cookies } from 'next/headers';
 import { serverApi } from '@/services/api/client/server-client';
 import { backendSessionResponseSchema } from '@/services/api/auth/auth.schemas';
@@ -18,7 +19,11 @@ export const getSession = cache(async (): Promise<AuthSession | null> => {
     const user = mapAuthUser(parsed.data);
 
     return { user, role: user.role };
-  } catch {
-    return null;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      return null;
+    }
+
+    throw error;
   }
 });
