@@ -10,6 +10,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   const routeScope = requestHeaders.get('x-bhc-dashboard-scope');
   const hasRequiredRole =
+    routeScope === 'authenticated' ||
     (routeScope === 'admin' && session.role === 'admin') ||
     (routeScope === 'parent' && session.role === 'parent');
 

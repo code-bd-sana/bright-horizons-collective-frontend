@@ -1,5 +1,6 @@
 'use client';
 
+import type { MouseEvent, ReactNode } from 'react';
 import Link from 'next/link';
 import { Logo } from '@/components/logo';
 
@@ -14,6 +15,33 @@ type StatusPageProps = {
   primaryAction: StatusPageAction;
   secondaryAction?: StatusPageAction;
 };
+
+function DocumentNavigationLink({
+  href,
+  className,
+  children,
+  ariaLabel,
+}: {
+  href: string;
+  className: string;
+  children: ReactNode;
+  ariaLabel?: string;
+}) {
+  const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+      return;
+    }
+
+    event.preventDefault();
+    window.location.assign(href);
+  };
+
+  return (
+    <Link href={href} className={className} aria-label={ariaLabel} onClick={handleClick}>
+      {children}
+    </Link>
+  );
+}
 
 function StatusAction({
   action,
@@ -30,9 +58,9 @@ function StatusAction({
 
   if (action.href) {
     return (
-      <Link href={action.href} className={className}>
+      <DocumentNavigationLink href={action.href} className={className}>
         {action.label}
-      </Link>
+      </DocumentNavigationLink>
     );
   }
 
@@ -67,7 +95,13 @@ export function StatusPage({
       />
 
       <section className="relative z-10 flex w-full max-w-xl flex-col items-center rounded-3xl border border-[#e8ebe8] bg-white/95 px-5 py-8 text-center shadow-xl shadow-[#d8ddd9]/30 sm:px-10 sm:py-12">
-        <Logo width={92} height={72} href="/" showBackdrop={false} />
+        <DocumentNavigationLink
+          href="/"
+          ariaLabel="Return to Bright Horizons Collective home"
+          className="rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2f7d7e]"
+        >
+          <Logo width={92} height={72} href="" showBackdrop={false} />
+        </DocumentNavigationLink>
         <p className="mt-5 font-manrope text-sm font-semibold tracking-widest text-[#2f7d7e]">
           ERROR {code}
         </p>

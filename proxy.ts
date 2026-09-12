@@ -10,7 +10,11 @@ export function proxy(request: NextRequest) {
 
   requestHeaders.set(
     'x-bhc-dashboard-scope',
-    pathname.startsWith('/dashboard/admin') ? 'admin' : 'parent'
+    pathname === '/dashboard'
+      ? 'authenticated'
+      : pathname.startsWith('/dashboard/admin')
+        ? 'admin'
+        : 'parent'
   );
 
   const response = NextResponse.next({ request: { headers: requestHeaders } });
