@@ -20,6 +20,28 @@ export type RegisterInput = {
   password: string;
 };
 
+export type ForgotPasswordInput = {
+  email: string;
+};
+
+export type VerifyOtpInput = {
+  email: string;
+  otp: string;
+};
+
+export type ResetPasswordInput = {
+  token: string;
+  newPassword: string;
+};
+
+export type MessageResult = {
+  message: string;
+};
+
+export type VerifyOtpResult = {
+  resetToken: string;
+};
+
 export type AuthSession = {
   user: AuthUser;
   role: AuthRole;

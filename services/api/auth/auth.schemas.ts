@@ -76,6 +76,49 @@ export const registerSchema = registerRequestSchema
     path: ['confirmPassword'],
   });
 
+export const forgotPasswordSchema = z.object({
+  email: z
+    .string()
+    .trim()
+    .min(1, 'Email address is required.')
+    .email('Enter a valid email address.')
+    .transform((email) => email.toLowerCase()),
+});
+
+export const verifyOtpSchema = z.object({
+  email: z.string().trim().toLowerCase().email(),
+  otp: z.string().regex(/^\d{6}$/, 'Enter the complete 6-digit verification code.'),
+});
+
+export const resetPasswordRequestSchema = z.object({
+  token: z.string().uuid('Invalid password reset token.'),
+  newPassword: passwordSchema,
+});
+
+export const resetPasswordFormSchema = z
+  .object({
+    newPassword: passwordSchema,
+    confirmPassword: z.string().min(1, 'Please confirm your new password.'),
+  })
+  .refine((values) => values.newPassword === values.confirmPassword, {
+    message: 'Passwords do not match.',
+    path: ['confirmPassword'],
+  });
+
+export const backendMessageResponseSchema = z.object({
+  statusCode: z.number(),
+  message: z.string(),
+  data: z.unknown().optional(),
+});
+
+export const backendVerifyOtpResponseSchema = z.object({
+  statusCode: z.number(),
+  message: z.string(),
+  data: z.object({
+    reset_token: z.string().uuid(),
+  }),
+});
+
 export const backendAuthUserSchema = z.object({
   id: z.string().min(1),
   email: z.string().email(),
@@ -100,3 +143,5 @@ export const backendSessionResponseSchema = z.object({
 
 export type LoginFormValues = z.infer<typeof loginSchema>;
 export type RegisterFormValues = z.infer<typeof registerSchema>;
+export type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
+export type ResetPasswordFormValues = z.infer<typeof resetPasswordFormSchema>;
