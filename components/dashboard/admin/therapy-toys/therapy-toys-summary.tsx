@@ -1,25 +1,37 @@
 import { Baby, Calendar, CircleCheck, TrendingUp } from 'lucide-react';
 
-import { therapyToyMetrics } from './therapy-toys-data';
+import type { TherapyToyAdminSummary } from '@/features/therapy-toys/model/therapy-toy.types';
 
-const metricIcons = [Calendar, CircleCheck, TrendingUp, Baby] as const;
-
-const iconTones = [
+const icons = [Calendar, CircleCheck, TrendingUp, Baby] as const;
+const tones = [
   'border-[#dcfce7] bg-[#f0fdf4] text-[#4caf50]',
   'border-[#fef9c3] bg-[#fefce8] text-[#ca8a04]',
   'border-[#ffedd5] bg-[#fff7ed] text-[#f97316]',
   'border-[#dbeafe] bg-[#ecfeff] text-[#0891b2]',
 ] as const;
 
-export function TherapyToysSummary() {
+export function TherapyToysSummary({
+  summary,
+  isLoading,
+}: {
+  summary?: TherapyToyAdminSummary;
+  isLoading: boolean;
+}) {
+  const metrics = summary
+    ? [
+        { value: summary.total, label: 'Total Toys' },
+        { value: summary.published, label: 'Published' },
+        { value: summary.draft, label: 'Drafts' },
+        { value: summary.categories, label: 'Categories' },
+      ]
+    : ['Total Toys', 'Published', 'Drafts', 'Categories'].map((label) => ({ value: '—', label }));
   return (
     <section
       className="grid min-w-0 gap-4 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-4 2xl:gap-6"
       aria-label="Therapy toy overview"
     >
-      {therapyToyMetrics.map((metric, index) => {
-        const Icon = metricIcons[index];
-
+      {metrics.map((metric, index) => {
+        const Icon = icons[index];
         return (
           <article
             key={metric.label}
@@ -27,12 +39,14 @@ export function TherapyToysSummary() {
           >
             <div className="flex items-start gap-3">
               <span
-                className={`flex size-8 items-center justify-center rounded-lg border ${iconTones[index]}`}
+                className={`flex size-8 items-center justify-center rounded-lg border ${tones[index]}`}
               >
                 <Icon aria-hidden="true" size={18} strokeWidth={1.6} />
               </span>
               <div className="min-w-0">
-                <p className="font-nunito text-2xl font-medium leading-8 text-[#272f3a]">
+                <p
+                  className={`font-nunito text-2xl font-medium leading-8 text-[#272f3a] ${isLoading ? 'animate-pulse' : ''}`}
+                >
                   {metric.value}
                 </p>
                 <p className="font-manrope text-sm font-medium leading-5.5 tracking-[0.06em] text-[#6c7787]">

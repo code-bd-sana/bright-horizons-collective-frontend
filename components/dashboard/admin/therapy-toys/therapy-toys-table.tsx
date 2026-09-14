@@ -1,282 +1,254 @@
-import {
-  Activity,
-  Archive,
-  Blocks,
-  ChevronLeft,
-  ChevronRight,
-  Copy,
-  Ellipsis,
-  Eye,
-  Pencil,
-  Trash2,
-} from 'lucide-react';
+'use client';
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+import { Archive, ChevronLeft, ChevronRight, Copy, Eye, Pencil, Trash2 } from 'lucide-react';
+import Link from 'next/link';
 
-import type { TherapyToy } from './therapy-toys-types';
+import type { TherapyToy, TherapyToyPage } from '@/features/therapy-toys/model/therapy-toy.types';
 
-type TherapyToysTableProps = {
-  toys: TherapyToy[];
-  onAction: (action: string, toy: TherapyToy) => void;
+type Props = {
+  page?: TherapyToyPage;
+  isLoading: boolean;
+  error?: Error | null;
+  selectedIds: string[];
+  onSelectionChange: (ids: string[]) => void;
+  onPreview: (toy: TherapyToy) => void;
+  onArchive: (toy: TherapyToy) => void;
+  onDelete: (toy: TherapyToy) => void;
+  onDuplicate: (toy: TherapyToy) => void;
+  onPageChange: (page: number) => void;
 };
-
-const actions = [
-  { label: 'View', icon: Eye },
-  { label: 'Edit', icon: Pencil },
-  { label: 'Duplicate', icon: Copy },
-  { label: 'Archive', icon: Archive },
-  { label: 'Delete', icon: Trash2 },
-] as const;
-
-const rowHeights = ['h-22.25', 'h-22.25', 'h-22.25', 'h-27.5', 'h-27.5', 'h-22.25', 'h-27.25'];
-
-function ToyBadge({ children, status = false }: { children: React.ReactNode; status?: boolean }) {
-  return (
-    <span
-      className={`inline-flex rounded-full px-2.5 py-0.5 font-manrope text-xs font-semibold leading-4 ${status ? 'bg-[#edf6f2] text-[#4caf50]' : 'bg-[#edf6f2] text-[#2f7d7e]'}`}
-    >
-      {children}
-    </span>
+const tier = (value: string) =>
+  value
+    .split('_')
+    .map((word) => word[0] + word.slice(1).toLowerCase())
+    .join(' ');
+const age = (toy: TherapyToy) => `${toy.minAgeMonths}–${toy.maxAgeMonths} mo`;
+const date = (value: string) =>
+  new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(
+    new Date(value)
   );
-}
 
-function ToyActions({
-  toy,
-  onAction,
-}: {
-  toy: TherapyToy;
-  onAction: TherapyToysTableProps['onAction'];
-}) {
-  return (
-    <div className="grid w-full grid-cols-5 gap-1 2xl:flex 2xl:w-39">
-      {actions.map(({ label, icon: Icon }) => (
-        <button
-          key={label}
-          type="button"
-          aria-label={`${label} ${toy.title}`}
-          onClick={() => onAction(label, toy)}
-          className="flex h-9 min-w-0 items-center justify-center rounded-[10px] border border-[#e7eceb] text-[#607d8b] transition-colors hover:bg-[#e9f1ee] hover:text-[#2f7d7e] 2xl:size-7 2xl:border-0"
-        >
-          <Icon aria-hidden="true" size={14} strokeWidth={1.6} />
-        </button>
-      ))}
-    </div>
-  );
-}
-
-function ToyCheckbox({ label }: { label: string }) {
-  return (
-    <input
-      aria-label={label}
-      type="checkbox"
-      className="size-4 shrink-0 appearance-none rounded-lg border border-[#a8b6bd] bg-white checked:border-[#2f7d7e] checked:bg-[#2f7d7e] focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-[#2f7d7e]"
-    />
-  );
-}
-
-export function TherapyToysTable({ toys, onAction }: TherapyToysTableProps) {
+export function TherapyToysTable({
+  page,
+  isLoading,
+  error,
+  selectedIds,
+  onSelectionChange,
+  onPreview,
+  onArchive,
+  onDelete,
+  onDuplicate,
+  onPageChange,
+}: Props) {
+  const toys = page?.items ?? [];
+  const setChecked = (id: string, checked: boolean) =>
+    onSelectionChange(
+      checked ? [...new Set([...selectedIds, id])] : selectedIds.filter((value) => value !== id)
+    );
+  const selectAll = (checked: boolean) =>
+    onSelectionChange(checked ? toys.map((toy) => toy.id) : []);
+  if (error)
+    return (
+      <div className="rounded-2xl border border-[#f2c7c2] bg-[#fff8f7] p-8 text-center font-manrope text-sm text-[#b24b4b]">
+        {error.message}
+      </div>
+    );
+  if (isLoading)
+    return (
+      <div className="grid gap-3 xl:grid-cols-2 2xl:grid-cols-1">
+        {Array.from({ length: 6 }, (_, index) => (
+          <div key={index} className="h-28 animate-pulse rounded-2xl bg-[#f4f8f6]" />
+        ))}
+      </div>
+    );
+  if (!toys.length)
+    return (
+      <div className="rounded-2xl border border-[#e7eceb] bg-white p-8 text-center font-manrope text-sm text-[#607d8b]">
+        No therapy toys match these filters.
+      </div>
+    );
   return (
     <div className="flex min-w-0 flex-col gap-6">
-      <section className="grid gap-3 xl:grid-cols-2 2xl:block">
-        <div className="contents 2xl:hidden">
-          {toys.map((toy) => (
-            <article
-              key={toy.id}
-              className="min-w-0 space-y-4 rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_12px_rgba(0,0,0,0.06)]"
-            >
-              <div className="flex items-center gap-3">
-                <span className="flex size-10 shrink-0 items-center justify-center rounded-[14px] bg-[rgba(47,125,126,0.09)]">
-                  <Blocks
-                    aria-hidden="true"
-                    size={13}
-                    strokeWidth={1.6}
-                    className="text-[#2f7d7e]"
+      <div className="grid gap-3 xl:grid-cols-2 2xl:hidden">
+        {toys.map((toy) => (
+          <article
+            key={toy.id}
+            className="space-y-4 rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_12px_rgba(0,0,0,0.06)]"
+          >
+            <div className="flex items-start gap-3">
+              <input
+                aria-label={`Select ${toy.name}`}
+                type="checkbox"
+                checked={selectedIds.includes(toy.id)}
+                onChange={(event) => setChecked(toy.id, event.target.checked)}
+                className="mt-1 size-4 accent-[#2f7d7e]"
+              />
+              <div className="min-w-0 flex-1">
+                <h2 className="font-manrope text-sm font-semibold text-[#263238]">{toy.name}</h2>
+                <p className="mt-1 font-manrope text-xs text-[#607d8b]">
+                  {toy.developmentArea} · {age(toy)}
+                </p>
+              </div>
+              <span className="rounded-full bg-[#edf6f2] px-2.5 py-0.5 text-xs text-[#2f7d7e]">
+                {toy.status}
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => onPreview(toy)}
+                className="rounded-lg border px-3 py-2 text-xs"
+              >
+                View
+              </button>
+              <Link
+                href={`/dashboard/admin/therapy-toys/${toy.id}/edit`}
+                className="rounded-lg border px-3 py-2 text-xs"
+              >
+                Edit
+              </Link>
+              <button
+                type="button"
+                onClick={() => onDuplicate(toy)}
+                className="rounded-lg border px-3 py-2 text-xs"
+              >
+                Duplicate
+              </button>
+              <button
+                type="button"
+                onClick={() => onArchive(toy)}
+                className="rounded-lg border px-3 py-2 text-xs"
+              >
+                {toy.status === 'PUBLISHED' ? 'Archive' : 'Publish'}
+              </button>
+              <button
+                type="button"
+                onClick={() => onDelete(toy)}
+                className="rounded-lg border px-3 py-2 text-xs text-[#b24b4b]"
+              >
+                Delete
+              </button>
+            </div>
+          </article>
+        ))}
+      </div>
+      <div className="hidden overflow-x-auto rounded-2xl border border-[#e7eceb] bg-white shadow-[0_4px_12px_rgba(0,0,0,0.06)] 2xl:block">
+        <table className="w-full min-w-300 table-fixed">
+          <thead>
+            <tr className="h-12.25 bg-[#f4f8f6] text-left font-manrope text-xs text-[#607d8b]">
+              <th className="w-12 pl-4">
+                <input
+                  aria-label="Select all therapy toys"
+                  type="checkbox"
+                  checked={toys.length > 0 && toys.every((toy) => selectedIds.includes(toy.id))}
+                  onChange={(event) => selectAll(event.target.checked)}
+                  className="size-4 accent-[#2f7d7e]"
+                />
+              </th>
+              <th>Toy</th>
+              <th>Category</th>
+              <th>Age Range</th>
+              <th>Membership</th>
+              <th>Status</th>
+              <th>Last Updated</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {toys.map((toy) => (
+              <tr
+                key={toy.id}
+                className="h-22 border-t border-[#eef1ef] font-manrope text-[13px] text-[#607d8b]"
+              >
+                <td className="pl-4">
+                  <input
+                    aria-label={`Select ${toy.name}`}
+                    type="checkbox"
+                    checked={selectedIds.includes(toy.id)}
+                    onChange={(event) => setChecked(toy.id, event.target.checked)}
+                    className="size-4 accent-[#2f7d7e]"
                   />
-                </span>
-                <div className="min-w-0">
-                  <h2 className="font-manrope text-sm font-semibold leading-5.25 text-[#263238]">
-                    {toy.title}
-                  </h2>
-                  <p className="font-manrope text-xs leading-4.5 text-[#607d8b]">{toy.brand}</p>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-3 font-manrope text-xs leading-4.5 text-[#607d8b]">
-                <p>
-                  Category<span className="mt-1 block text-[#263238]">{toy.category}</span>
-                </p>
-                <p>
-                  Age Range<span className="mt-1 block text-[#263238]">{toy.ageRange}</span>
-                </p>
-                <p>
-                  Primary Skill<span className="mt-1 block text-[#263238]">{toy.primarySkill}</span>
-                </p>
-                <p>
-                  Updated<span className="mt-1 block text-[#263238]">{toy.updatedAt}</span>
-                </p>
-              </div>
-              <div className="flex flex-wrap items-center gap-2">
-                <ToyBadge>{toy.membership}</ToyBadge>
-                <ToyBadge status={toy.status === 'Published'}>{toy.status}</ToyBadge>
-              </div>
-              <div className="border-t border-[#e7eceb] pt-3">
-                <ToyActions toy={toy} onAction={onAction} />
-              </div>
-            </article>
-          ))}
-          {toys.length === 0 ? (
-            <p className="rounded-2xl border border-[#e7eceb] bg-white p-8 text-center font-manrope text-sm text-[#607d8b] xl:col-span-2">
-              No therapy toys match these filters.
-            </p>
-          ) : null}
-        </div>
-        <div className="hidden overflow-x-auto rounded-2xl border border-[#e7eceb] bg-white shadow-[0_4px_12px_rgba(0,0,0,0.06)] 2xl:block">
-          <Table className="min-w-381.75 table-fixed border-collapse">
-            <colgroup>
-              <col className="w-71" />
-              <col className="w-37.5" />
-              <col className="w-41.25" />
-              <col className="w-53.5" />
-              <col className="w-42.75" />
-              <col className="w-40.75" />
-              <col className="w-43.75" />
-              <col className="w-39" />
-            </colgroup>
-            <TableHeader className="[&_tr]:border-0">
-              <TableRow className="h-12.25 bg-[#f4f8f6] hover:bg-[#f4f8f6]">
-                <TableHead className="p-0 pl-4 font-manrope text-xs font-semibold leading-4.5 text-[#607d8b]">
-                  <div className="flex items-center justify-between pr-18.5">
-                    <ToyCheckbox label="Select all therapy toys" />
-                    <span>Toy</span>
+                </td>
+                <td className="font-semibold text-[#263238]">{toy.name}</td>
+                <td>{toy.developmentArea}</td>
+                <td>{age(toy)}</td>
+                <td>
+                  <span className="rounded-full bg-[#edf6f2] px-2.5 py-0.5 text-xs text-[#2f7d7e]">
+                    {tier(toy.accessLevel[0] ?? '')}
+                  </span>
+                </td>
+                <td>
+                  <span className="rounded-full bg-[#edf6f2] px-2.5 py-0.5 text-xs text-[#2f7d7e]">
+                    {toy.status}
+                  </span>
+                </td>
+                <td>{date(toy.updatedAt)}</td>
+                <td>
+                  <div className="flex gap-1">
+                    <button
+                      aria-label={`View ${toy.name}`}
+                      onClick={() => onPreview(toy)}
+                      className="p-2"
+                    >
+                      <Eye size={14} />
+                    </button>
+                    <Link
+                      aria-label={`Edit ${toy.name}`}
+                      href={`/dashboard/admin/therapy-toys/${toy.id}/edit`}
+                      className="p-2"
+                    >
+                      <Pencil size={14} />
+                    </Link>
+                    <button
+                      aria-label={`Duplicate ${toy.name}`}
+                      onClick={() => onDuplicate(toy)}
+                      className="p-2"
+                    >
+                      <Copy size={14} />
+                    </button>
+                    <button
+                      aria-label={`${toy.status === 'PUBLISHED' ? 'Archive' : 'Publish'} ${toy.name}`}
+                      onClick={() => onArchive(toy)}
+                      className="p-2"
+                    >
+                      <Archive size={14} />
+                    </button>
+                    <button
+                      aria-label={`Delete ${toy.name}`}
+                      onClick={() => onDelete(toy)}
+                      className="p-2 text-[#b24b4b]"
+                    >
+                      <Trash2 size={14} />
+                    </button>
                   </div>
-                </TableHead>
-                {[
-                  'Category',
-                  'Age Range',
-                  'Primary Skill',
-                  'Membership',
-                  'Status',
-                  'Last Updated',
-                  'Actions',
-                ].map((header) => (
-                  <TableHead
-                    key={header}
-                    className="p-0 font-manrope text-xs font-semibold leading-4.5 text-[#607d8b]"
-                  >
-                    {header}
-                  </TableHead>
-                ))}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {toys.map((toy, index) => (
-                <TableRow
-                  key={toy.id}
-                  className={`${rowHeights[index % rowHeights.length]} hover:bg-transparent`}
-                >
-                  <TableCell className="p-0 pl-4 align-middle whitespace-normal">
-                    <div className="flex items-center gap-8">
-                      <ToyCheckbox label={`Select ${toy.title}`} />
-                      <div className="flex items-center gap-3">
-                        <span className="flex size-10 shrink-0 items-center justify-center rounded-[14px] bg-[rgba(47,125,126,0.09)]">
-                          <Activity
-                            aria-hidden="true"
-                            size={13}
-                            strokeWidth={1.6}
-                            className="text-[#2f7d7e]"
-                          />
-                        </span>
-                        <div className="w-28.5">
-                          <p className="font-manrope text-sm font-semibold leading-5.25 text-[#263238]">
-                            {toy.title}
-                          </p>
-                          <p className="font-manrope text-xs leading-4.5 text-[#607d8b]">
-                            {toy.brand}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell className="p-0 font-manrope text-[13px] leading-4.875 text-[#607d8b]">
-                    {toy.category}
-                  </TableCell>
-                  <TableCell className="p-0 align-middle whitespace-normal">
-                    <span className="block w-25 font-manrope text-[13px] leading-4.875 text-[#607d8b]">
-                      {toy.ageRange}
-                    </span>
-                  </TableCell>
-                  <TableCell className="p-0">
-                    <div className="flex items-center gap-1.5 font-manrope text-[13px] leading-4.875 text-[#263238]">
-                      <Activity
-                        aria-hidden="true"
-                        size={13}
-                        strokeWidth={1.6}
-                        className="shrink-0 text-[#2f7d7e]"
-                      />
-                      <span>{toy.primarySkill}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="p-0">
-                    <ToyBadge>{toy.membership}</ToyBadge>
-                  </TableCell>
-                  <TableCell className="p-0">
-                    <ToyBadge status={toy.status === 'Published'}>{toy.status}</ToyBadge>
-                  </TableCell>
-                  <TableCell className="p-0 font-manrope text-xs leading-4.5 text-[#607d8b]">
-                    {toy.updatedAt}
-                  </TableCell>
-                  <TableCell className="p-0">
-                    <ToyActions toy={toy} onAction={onAction} />
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      </section>
-      <nav
-        aria-label="Therapy toy table pagination"
-        className="flex w-full max-w-full justify-start overflow-x-auto pb-1 sm:justify-end 2xl:justify-end 2xl:overflow-visible 2xl:pb-0"
-      >
-        <div className="flex shrink-0 items-center gap-1">
-          <button
-            type="button"
-            disabled
-            className="flex h-10 min-w-20 items-center justify-center gap-1 overflow-hidden rounded-md px-3 py-2 font-manrope text-sm font-medium leading-5.5 tracking-[-0.084px] text-[#0f172a] opacity-50 disabled:cursor-not-allowed"
-          >
-            <ChevronLeft aria-hidden="true" size={16} strokeWidth={1.7} />
-            <span className="px-1">Previous</span>
-          </button>
-          {[1, 2, 3, 4, 5, 6].map((page) => (
-            <button
-              key={page}
-              type="button"
-              aria-current={page === 1 ? 'page' : undefined}
-              className={`size-10 rounded-lg border font-manrope text-sm font-medium leading-5.5 tracking-[0.84px] ${page === 1 ? 'border-[#e2e8f0] bg-[#2f7d7e] text-white' : 'border-transparent text-[#0f172a] hover:bg-[#e9f1ee]'}`}
-            >
-              {page}
-            </button>
-          ))}
-          <span
-            aria-hidden="true"
-            className="flex size-10 items-center justify-center rounded-lg text-[#0f172a]"
-          >
-            <Ellipsis size={16} strokeWidth={1.7} />
-          </span>
-          <button
-            type="button"
-            className="flex h-10 min-w-20 items-center justify-center gap-1 overflow-hidden rounded-md px-3 py-2 font-manrope text-sm font-medium leading-5.5 tracking-[-0.084px] text-[#0f172a] hover:bg-[#e9f1ee]"
-          >
-            <span className="px-1">Next</span>
-            <ChevronRight aria-hidden="true" size={16} strokeWidth={1.7} />
-          </button>
-        </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <nav aria-label="Therapy toy pagination" className="flex justify-end gap-3">
+        <button
+          type="button"
+          disabled={!page || page.pagination.page <= 1}
+          onClick={() => page && onPageChange(page.pagination.page - 1)}
+          className="flex items-center gap-1 rounded-lg px-3 py-2 disabled:opacity-40"
+        >
+          <ChevronLeft size={16} />
+          Previous
+        </button>
+        <span className="rounded-lg bg-[#2f7d7e] px-4 py-2 text-sm text-white">
+          {page?.pagination.page ?? 1}
+        </span>
+        <button
+          type="button"
+          disabled={!page || page.pagination.page >= page.pagination.totalPages}
+          onClick={() => page && onPageChange(page.pagination.page + 1)}
+          className="flex items-center gap-1 rounded-lg px-3 py-2 disabled:opacity-40"
+        >
+          Next
+          <ChevronRight size={16} />
+        </button>
       </nav>
     </div>
   );

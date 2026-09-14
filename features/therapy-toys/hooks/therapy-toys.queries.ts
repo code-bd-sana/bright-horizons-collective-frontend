@@ -3,6 +3,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 import {
+  getAdminTherapyToy,
   getAdminTherapyToys,
   getAdminTherapyToySummary,
   getTherapyToy,
@@ -30,6 +31,14 @@ export function useAdminTherapyToys(filters: AdminTherapyToyFilters = {}) {
   return useQuery({
     queryKey: therapyToyKeys.adminList(filters),
     queryFn: () => getAdminTherapyToys(filters),
+  });
+}
+
+export function useAdminTherapyToy(id: string) {
+  return useQuery({
+    queryKey: therapyToyKeys.detail(id),
+    queryFn: () => getAdminTherapyToy(id),
+    enabled: Boolean(id),
   });
 }
 

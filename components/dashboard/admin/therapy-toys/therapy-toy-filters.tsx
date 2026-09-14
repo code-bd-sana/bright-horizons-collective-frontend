@@ -31,7 +31,7 @@ const filterOptions: Record<FilterName, { label: string; values: string[]; width
     values: ['Little Steps', 'Grow Together', 'Personalized Pathways'],
     width: '2xl:w-48.5',
   },
-  status: { label: 'Status', values: ['Published', 'Draft'], width: '2xl:w-27.5' },
+  status: { label: 'Status', values: ['Published', 'Draft', 'Archived'], width: '2xl:w-27.5' },
 };
 
 function ToyFilterDropdown({

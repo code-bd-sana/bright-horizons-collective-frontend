@@ -75,7 +75,9 @@ export interface CreateTherapyToyInput {
   status?: TherapyToyStatus;
 }
 
-export type UpdateTherapyToyInput = Partial<CreateTherapyToyInput>;
+export type UpdateTherapyToyInput = Partial<CreateTherapyToyInput> & {
+  imageUrl?: string | null;
+};
 
 export interface UpdateTherapyToyVariables {
   id: string;

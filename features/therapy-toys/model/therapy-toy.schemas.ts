@@ -57,8 +57,16 @@ export const createTherapyToySchema = z
     path: ['maxAgeMonths'],
   });
 
+const updateTherapyToyInputShape = {
+  ...therapyToyInputShape,
+  imageUrl: z.preprocess(
+    (value) => (typeof value === 'string' && value.trim() === '' ? undefined : value),
+    httpUrlSchema.max(2048).nullable().optional()
+  ),
+};
+
 export const updateTherapyToySchema = z
-  .object(therapyToyInputShape)
+  .object(updateTherapyToyInputShape)
   .partial()
   .strict()
   .refine((value) => Object.keys(value).length > 0, {

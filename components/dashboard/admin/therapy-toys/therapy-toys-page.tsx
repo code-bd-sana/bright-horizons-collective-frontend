@@ -2,57 +2,122 @@
 
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { therapyToys } from './therapy-toys-data';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import {
+  useAdminTherapyToys,
+  useAdminTherapyToySummary,
+} from '@/features/therapy-toys/hooks/therapy-toys.queries';
+import {
+  useCreateTherapyToy,
+  useDeleteTherapyToy,
+  useUpdateTherapyToy,
+} from '@/features/therapy-toys/hooks/therapy-toys.mutations';
+import type { TherapyToy } from '@/features/therapy-toys/model/therapy-toy.types';
 import { TherapyToyFilters } from './therapy-toy-filters';
 import { TherapyToyPreviewModal } from './therapy-toy-preview-modal';
 import { TherapyToysSummary } from './therapy-toys-summary';
 import { TherapyToysTable } from './therapy-toys-table';
-import type { TherapyToy } from './therapy-toys-types';
+
+function useDebouncedValue(value: string, delay = 350) {
+  const [result, setResult] = useState(value);
+  useEffect(() => {
+    const timer = window.setTimeout(() => setResult(value), delay);
+    return () => window.clearTimeout(timer);
+  }, [delay, value]);
+  return result;
+}
+const membership = {
+  'Little Steps': 'LITTLE_STEPS',
+  'Grow Together': 'GROW_TOGETHER',
+  'Personalized Pathways': 'PERSONALIZED_PATHWAYS',
+} as const;
+const status = { Published: 'PUBLISHED', Draft: 'DRAFT', Archived: 'ARCHIVED' } as const;
+const ageRange = (value: string) =>
+  value === '0–12 months'
+    ? [0, 12]
+    : value === '1–3 years'
+      ? [12, 36]
+      : value === '3–5 years'
+        ? [36, 60]
+        : value === '5+ years'
+          ? [60, undefined]
+          : [undefined, undefined];
 
 export function TherapyToysPage() {
   const [search, setSearch] = useState('');
-  const [isToyPreviewOpen, setIsToyPreviewOpen] = useState(false);
-  const [filters, setFilters] = useState({
+  const debouncedSearch = useDebouncedValue(search);
+  const [filterValues, setFilterValues] = useState({
     category: 'all',
     age: 'all',
     membership: 'all',
     status: 'all',
   });
-
-  const filteredToys = useMemo(() => {
-    const query = search.trim().toLowerCase();
-    return therapyToys.filter((toy) => {
-      const ageMatches =
-        filters.age === 'all' || toy.ageRange.includes(filters.age.replace('+', ''));
-      return (
-        (filters.category === 'all' || toy.category === filters.category) &&
-        ageMatches &&
-        (filters.membership === 'all' || toy.membership === filters.membership) &&
-        (filters.status === 'all' || toy.status === filters.status) &&
-        (!query ||
-          `${toy.title} ${toy.brand} ${toy.category} ${toy.primarySkill}`
-            .toLowerCase()
-            .includes(query))
-      );
-    });
-  }, [filters, search]);
-
-  const updateFilter = (filter: keyof typeof filters, value: string) => {
-    setFilters((current) => ({ ...current, [filter]: value }));
+  const [page, setPage] = useState(1);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [preview, setPreview] = useState<TherapyToy | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<TherapyToy | null>(null);
+  const [minAgeMonths, maxAgeMonths] = ageRange(filterValues.age);
+  const filters = useMemo(
+    () => ({
+      page,
+      limit: 12,
+      search: debouncedSearch || undefined,
+      category: filterValues.category === 'all' ? undefined : filterValues.category,
+      minAgeMonths,
+      maxAgeMonths,
+      membership:
+        filterValues.membership === 'all'
+          ? undefined
+          : membership[filterValues.membership as keyof typeof membership],
+      status:
+        filterValues.status === 'all'
+          ? undefined
+          : status[filterValues.status as keyof typeof status],
+    }),
+    [debouncedSearch, filterValues, maxAgeMonths, minAgeMonths, page]
+  );
+  const toysQuery = useAdminTherapyToys(filters);
+  const summaryQuery = useAdminTherapyToySummary();
+  const updateToy = useUpdateTherapyToy();
+  const deleteToy = useDeleteTherapyToy();
+  const createToy = useCreateTherapyToy();
+  const updateFilter = (key: keyof typeof filterValues, value: string) => {
+    setPage(1);
+    setFilterValues((current) => ({ ...current, [key]: value }));
   };
-
-  const handleAction = (action: string, toy: TherapyToy) => {
-    if (action === 'View') {
-      setIsToyPreviewOpen(true);
-      return;
-    }
-
-    toast.success(`${action} is ready for “${toy.title}”.`);
+  const archive = (toy: TherapyToy) => {
+    const nextStatus = toy.status === 'PUBLISHED' ? 'ARCHIVED' : 'PUBLISHED';
+    updateToy.mutate(
+      { id: toy.id, input: { status: nextStatus } },
+      {
+        onSuccess: () =>
+          toast.success(`“${toy.name}” ${nextStatus === 'ARCHIVED' ? 'archived' : 'published'}.`),
+        onError: (error) => toast.error(error.message),
+      }
+    );
   };
-
+  const duplicate = (toy: TherapyToy) =>
+    createToy.mutate(
+      {
+        name: `${toy.name} (Copy)`,
+        description: toy.description,
+        developmentArea: toy.developmentArea,
+        price: toy.price ?? 0,
+        minAgeMonths: toy.minAgeMonths,
+        maxAgeMonths: toy.maxAgeMonths,
+        imageUrl: toy.imageUrl ?? undefined,
+        affiliateLink: toy.affiliateLink ?? undefined,
+        accessLevel: toy.accessLevel,
+        status: 'DRAFT',
+      },
+      {
+        onSuccess: () => toast.success('Therapy toy duplicated as a draft.'),
+        onError: (error) => toast.error(error.message),
+      }
+    );
   return (
     <section className="mx-auto w-full min-w-0 max-w-383.5 pb-8 text-[#3d3d3d]">
       <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -66,28 +131,70 @@ export function TherapyToysPage() {
         </div>
         <Link
           href="/dashboard/admin/therapy-toys/add-toy"
-          className="flex h-10 w-full items-center justify-center gap-2 rounded-full bg-[#2f7d7e] px-4 py-2.5 font-nunito text-sm font-medium leading-5 tracking-[-0.084px] text-white sm:w-auto"
+          className="flex h-10 w-full items-center justify-center gap-2 rounded-full bg-[#2f7d7e] px-4 py-2.5 font-nunito text-sm font-medium text-white sm:w-auto"
         >
-          <Plus aria-hidden="true" size={15} strokeWidth={2} />
+          <Plus size={15} />
           Add Therapy Toy
         </Link>
       </header>
       <div className="mt-8 space-y-8">
-        <TherapyToysSummary />
+        <TherapyToysSummary summary={summaryQuery.data} isLoading={summaryQuery.isLoading} />
         <div className="space-y-6">
           <TherapyToyFilters
             search={search}
-            category={filters.category}
-            age={filters.age}
-            membership={filters.membership}
-            status={filters.status}
+            {...filterValues}
             onSearchChange={setSearch}
             onFilterChange={updateFilter}
           />
-          <TherapyToysTable toys={filteredToys} onAction={handleAction} />
+          <TherapyToysTable
+            page={toysQuery.data}
+            isLoading={toysQuery.isLoading}
+            error={toysQuery.error}
+            selectedIds={selectedIds}
+            onSelectionChange={setSelectedIds}
+            onPreview={setPreview}
+            onArchive={archive}
+            onDelete={setDeleteTarget}
+            onDuplicate={duplicate}
+            onPageChange={setPage}
+          />
         </div>
       </div>
-      <TherapyToyPreviewModal isOpen={isToyPreviewOpen} onClose={setIsToyPreviewOpen} />
+      <TherapyToyPreviewModal toy={preview} onClose={(open) => !open && setPreview(null)} />
+      <Dialog open={Boolean(deleteTarget)} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+        <DialogContent className="w-md max-w-[calc(100%-2rem)] rounded-2xl p-6">
+          <DialogTitle>Delete therapy toy?</DialogTitle>
+          <p className="font-manrope text-sm text-[#607d8b]">
+            This permanently deletes “{deleteTarget?.name}” and its managed image.
+          </p>
+          <div className="flex justify-end gap-3">
+            <button
+              type="button"
+              onClick={() => setDeleteTarget(null)}
+              className="rounded-xl border px-4 py-2"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              disabled={deleteToy.isPending}
+              onClick={() =>
+                deleteTarget &&
+                deleteToy.mutate(deleteTarget.id, {
+                  onSuccess: () => {
+                    toast.success('Therapy toy deleted.');
+                    setDeleteTarget(null);
+                  },
+                  onError: (error) => toast.error(error.message),
+                })
+              }
+              className="rounded-xl bg-[#b24b4b] px-4 py-2 text-white disabled:opacity-50"
+            >
+              Delete
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }

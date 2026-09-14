@@ -90,6 +90,16 @@ export function getAdminTherapyToys(filters: AdminTherapyToyFilters = {}): Promi
   });
 }
 
+export function getAdminTherapyToy(id: string): Promise<TherapyToy> {
+  const toyId = parseInput(therapyToyIdSchema, id);
+
+  return handleApiCall(async () => {
+    const response = await browserApi.get(`/therapy-toys/admin/${toyId}`);
+    const envelope = parseResponse(therapyToyEnvelopeSchema, response.data);
+    return mapTherapyToy(envelope.data);
+  });
+}
+
 export function getAdminTherapyToySummary(): Promise<TherapyToyAdminSummary> {
   return handleApiCall(async () => {
     const response = await browserApi.get('/therapy-toys/admin/summary');
