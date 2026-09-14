@@ -106,7 +106,7 @@ export function TherapyToyPreviewModal({ toy, onClose }: TherapyToyPreviewModalP
                   <a
                     href={toy.affiliateLink}
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer sponsored"
                     aria-label="Open affiliate link"
                     className="flex size-10.5 shrink-0 items-center justify-center rounded-2xl border border-[#ece8e2] bg-white text-[#8b9598]"
                   >

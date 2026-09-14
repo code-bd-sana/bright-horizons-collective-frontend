@@ -7,6 +7,7 @@ import { FormEvent, useEffect, useRef, useState } from 'react';
 
 import { ExploreCard } from '@/components/dashboard/explore/explore-card';
 import { TherapyToyModal } from '@/components/explore/therapy-toy-modal';
+import type { TherapyToyModalToy } from '@/components/explore/therapy-toy-modal';
 import { useExploreCatalog } from '@/features/explore/hooks/use-explore-catalog';
 import { figmaExploreUiAssets } from '@/features/explore/data/figma-explore-assets';
 import {
@@ -186,7 +187,9 @@ function CardsGrid({
   columns?: 3 | 4;
   savingItemId: string | null;
   onSavedChange: (item: ExploreCardItem, saved: boolean) => void;
-  onOpenTherapyToy?: () => void;
+  onOpenTherapyToy?: (
+    item: import('@/features/explore/model/explore-types').TherapyToyExploreItem
+  ) => void;
 }) {
   return (
     <div
@@ -223,7 +226,9 @@ function SavedPanel({
   className?: string;
   savingItemId: string | null;
   onSavedChange: (item: ExploreCardItem, saved: boolean) => void;
-  onOpenTherapyToy?: () => void;
+  onOpenTherapyToy?: (
+    item: import('@/features/explore/model/explore-types').TherapyToyExploreItem
+  ) => void;
 }) {
   return (
     <section
@@ -324,7 +329,9 @@ function TherapyToyColumns({
   items: ExploreItem[];
   savingItemId: string | null;
   onSavedChange: (item: ExploreCardItem, saved: boolean) => void;
-  onOpenTherapyToy: () => void;
+  onOpenTherapyToy: (
+    item: import('@/features/explore/model/explore-types').TherapyToyExploreItem
+  ) => void;
 }) {
   return (
     <div className="columns-1 gap-6 sm:columns-2 2xl:columns-3">
@@ -343,7 +350,7 @@ function TherapyToyColumns({
 }
 
 export function DashboardExplorePage({ initialTab }: { initialTab: ExploreTab }) {
-  const [isToyModalOpen, setToyModalOpen] = useState(false);
+  const [selectedToy, setSelectedToy] = useState<TherapyToyModalToy | null>(null);
   const [filters, setFilters] = useState<ExploreFilters>(() => ({
     ...emptyExploreFilters,
     age: [],
@@ -365,6 +372,27 @@ export function DashboardExplorePage({ initialTab }: { initialTab: ExploreTab })
 
   const handleSavedChange = (item: ExploreCardItem, saved: boolean) => {
     setSaved({ itemId: item.id, saved });
+  };
+
+  const handleOpenTherapyToy = (
+    item: import('@/features/explore/model/explore-types').TherapyToyExploreItem
+  ) => {
+    const ageMatch = item.age.match(/(\d+)/g)?.map(Number) ?? [0, 36];
+    setSelectedToy({
+      id: item.id,
+      name: item.title,
+      imageUrl: item.imageSrc,
+      minAgeMonths: ageMatch[0] ?? 0,
+      maxAgeMonths: ageMatch[1] ?? 2160,
+      developmentAreas: item.skills,
+      badge: item.badge,
+      price: null,
+      description:
+        item.description ??
+        'A therapist-selected therapy toy recommendation to support playful developmental practice at home.',
+      affiliateLink: item.affiliateLink ?? null,
+      galleryImages: item.galleryImages,
+    });
   };
 
   const title =
@@ -441,7 +469,7 @@ export function DashboardExplorePage({ initialTab }: { initialTab: ExploreTab })
             items={data.items}
             savingItemId={savingItemId}
             onSavedChange={handleSavedChange}
-            onOpenTherapyToy={() => setToyModalOpen(true)}
+            onOpenTherapyToy={handleOpenTherapyToy}
           />
         ) : (
           <CardsGrid
@@ -500,11 +528,22 @@ export function DashboardExplorePage({ initialTab }: { initialTab: ExploreTab })
           className="mt-12 sm:mt-16 2xl:mt-24"
           savingItemId={savingItemId}
           onSavedChange={handleSavedChange}
-          onOpenTherapyToy={() => setToyModalOpen(true)}
+          onOpenTherapyToy={handleOpenTherapyToy}
         />
       ) : null}
 
-      <TherapyToyModal isOpen={isToyModalOpen} onClose={setToyModalOpen} />
+      <TherapyToyModal
+        toy={selectedToy}
+        saved={
+          selectedToy ? Boolean(data?.savedItems.some((item) => item.id === selectedToy.id)) : false
+        }
+        saving={selectedToy?.id === savingItemId}
+        canSave
+        onSavedChange={(saved) => {
+          if (selectedToy) setSaved({ itemId: selectedToy.id, saved });
+        }}
+        onClose={(open) => !open && setSelectedToy(null)}
+      />
     </div>
   );
 }

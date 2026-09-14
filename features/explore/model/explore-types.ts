@@ -58,6 +58,10 @@ export type TherapyToyExploreItem = ExploreItemBase & {
   kind: 'therapy-toy';
   age: string;
   skills: string[];
+  description?: string;
+  price?: number | null;
+  affiliateLink?: string | null;
+  galleryImages?: string[];
   compact?: boolean;
 };
 

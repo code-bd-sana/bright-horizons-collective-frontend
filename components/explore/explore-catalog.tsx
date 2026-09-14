@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 
-import { TherapyToyModal } from '@/components/explore/therapy-toy-modal';
+import { TherapyToyModal, type TherapyToyModalToy } from '@/components/explore/therapy-toy-modal';
 import {
   contentTypes,
   exploreItems,
@@ -36,7 +36,7 @@ function ResourceCard({
   height: number;
   saved: boolean;
   onSave: () => void;
-  onOpenToy?: () => void;
+  onOpenToy?: (item: ExploreItem) => void;
 }) {
   const action =
     item.type === 'Activities'
@@ -47,7 +47,7 @@ function ResourceCard({
 
   return (
     <article
-      onClick={item.type === 'Therapy Toys' ? onOpenToy : undefined}
+      onClick={item.type === 'Therapy Toys' ? () => onOpenToy?.(item) : undefined}
       className={`relative overflow-hidden rounded-2xl border border-[#EDEEF0] bg-white p-4 text-white shadow-[0px_2px_16px_rgba(198,202,209,0.22)] ${item.type === 'Therapy Toys' ? 'cursor-pointer' : ''}`}
       style={{ height: height || 540 }}
     >
@@ -134,7 +134,7 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
   const [query, setQuery] = useState('');
   const [filters, setFilters] = useState<SelectedFilters>(emptyFilters);
   const [savedIds, setSavedIds] = useState<string[]>([]);
-  const [isToyModalOpen, setToyModalOpen] = useState(false);
+  const [selectedToy, setSelectedToy] = useState<TherapyToyModalToy | null>(null);
   const [openGroup, setOpenGroup] = useState<FilterKey | null>('age');
 
   const results = useMemo(() => {
@@ -255,7 +255,21 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
                           : [...current, item.id]
                       )
                     }
-                    onOpenToy={() => setToyModalOpen(true)}
+                    onOpenToy={(item) =>
+                      setSelectedToy({
+                        id: item.id,
+                        name: item.title,
+                        imageUrl: item.image,
+                        minAgeMonths: 12,
+                        maxAgeMonths: 36,
+                        developmentAreas: [item.skill],
+                        badge: item.featured ? 'OT Favorite' : undefined,
+                        price: null,
+                        description:
+                          'A therapist-selected therapy toy recommendation to support playful developmental practice at home.',
+                        affiliateLink: null,
+                      })
+                    }
                   />
                 </div>
               ))}
@@ -279,7 +293,21 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
           )}
         </div>
       </div>
-      <TherapyToyModal isOpen={isToyModalOpen} onClose={setToyModalOpen} />
+      <TherapyToyModal
+        toy={selectedToy}
+        saved={selectedToy ? savedIds.includes(selectedToy.id) : false}
+        saving={false}
+        canSave
+        onSavedChange={(saved) => {
+          if (!selectedToy) return;
+          setSavedIds((current) =>
+            saved
+              ? [...new Set([...current, selectedToy.id])]
+              : current.filter((id) => id !== selectedToy.id)
+          );
+        }}
+        onClose={(open) => !open && setSelectedToy(null)}
+      />
     </section>
   );
 }
