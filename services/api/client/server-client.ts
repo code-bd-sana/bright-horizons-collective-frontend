@@ -6,7 +6,4 @@ const backendApiUrl =
 export const serverApi = axios.create({
   baseURL: backendApiUrl.replace(/\/$/, ''),
   timeout: 15_000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
 });
