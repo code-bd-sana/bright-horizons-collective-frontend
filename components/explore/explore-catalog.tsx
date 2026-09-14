@@ -3,9 +3,13 @@
 import { ArrowRight, Bookmark, ChevronDown, Clock3, Search } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 
 import { TherapyToyModal, type TherapyToyModalToy } from '@/components/explore/therapy-toy-modal';
+import { useTherapyToys } from '@/features/therapy-toys/hooks/therapy-toys.queries';
+import { mapTherapyToyToModal } from '@/features/therapy-toys/model/therapy-toy.mapper';
+import type { TherapyToy } from '@/features/therapy-toys/model/therapy-toy.types';
 import {
   contentTypes,
   exploreItems,
@@ -125,16 +129,77 @@ function ResourceCard({
   );
 }
 
+function RealTherapyToyCard({
+  toy,
+  saved,
+  onSave,
+  onOpen,
+}: {
+  toy: TherapyToy;
+  saved: boolean;
+  onSave: () => void;
+  onOpen: () => void;
+}) {
+  const modalToy = mapTherapyToyToModal(toy);
+  return (
+    <article className="relative mb-6 break-inside-avoid overflow-hidden rounded-2xl border border-[#EDEEF0] bg-white p-4 text-white shadow-[0px_2px_16px_rgba(198,202,209,0.22)]">
+      <div className="relative h-80 overflow-hidden rounded-xl bg-[#f4f8f6]">
+        {modalToy.imageUrl ? (
+          <Image
+            src={modalToy.imageUrl}
+            alt={toy.name}
+            fill
+            className="object-cover"
+            sizes="(min-width: 1280px) 23vw, 46vw"
+          />
+        ) : null}
+        <button
+          type="button"
+          onClick={onSave}
+          aria-label={saved ? `Remove ${toy.name} from saved` : `Save ${toy.name}`}
+          className="absolute right-3 top-3 flex size-8 items-center justify-center rounded-full bg-white/90 text-[#2f7d7e]"
+        >
+          {saved ? '♥' : '♡'}
+        </button>
+      </div>
+      <div className="flex flex-col items-start gap-3 pt-4 text-[#263238]">
+        <h3 className="font-nunito text-xl font-medium leading-7">{toy.name}</h3>
+        <div className="flex flex-wrap gap-1.5">
+          <span className="rounded-full bg-[#DCEEEE] px-2.5 py-0.5 font-nunito text-xs text-[#174A4D]">
+            {toy.minAgeMonths}–{toy.maxAgeMonths} mo
+          </span>
+          <span className="rounded-full bg-[#DCEEEE] px-2.5 py-0.5 font-nunito text-xs text-[#174A4D]">
+            {toy.developmentArea}
+          </span>
+        </div>
+        <button
+          type="button"
+          onClick={onOpen}
+          className="font-manrope text-base font-semibold text-[#2F7D7E]"
+        >
+          See Why We Recommend It →
+        </button>
+      </div>
+    </article>
+  );
+}
+
 type ExploreCatalogProps = {
   activeType: ExploreContentType;
   onActiveTypeChange: (type: ExploreContentType) => void;
 };
 
 export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalogProps) {
+  const router = useRouter();
   const [query, setQuery] = useState('');
   const [filters, setFilters] = useState<SelectedFilters>(emptyFilters);
   const [savedIds, setSavedIds] = useState<string[]>([]);
   const [selectedToy, setSelectedToy] = useState<TherapyToyModalToy | null>(null);
+  const publicToysQuery = useTherapyToys({
+    search: activeType === 'Therapy Toys' ? query || undefined : undefined,
+    category: activeType === 'Therapy Toys' ? filters.category[0] : undefined,
+    limit: 100,
+  });
   const [openGroup, setOpenGroup] = useState<FilterKey | null>('age');
 
   const results = useMemo(() => {
@@ -163,6 +228,18 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
         : [...current[key], option],
     }));
   };
+
+  const realToys = useMemo(() => {
+    if (activeType !== 'Therapy Toys') return [];
+    return (publicToysQuery.data?.items ?? []).filter((toy) => {
+      const values = [toy.developmentArea, `${toy.minAgeMonths}–${toy.maxAgeMonths} mo`];
+      return filterGroups.every(
+        ({ key }) =>
+          filters[key].length === 0 ||
+          filters[key].some((value) => values.includes(value) || value === toy.developmentArea)
+      );
+    });
+  }, [activeType, filters, publicToysQuery.data]);
 
   return (
     <section className="bg-[#FDFDFC] pb-20 pt-12">
@@ -240,7 +317,43 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
         </div>
 
         <div className="min-w-0 flex-1 w-full">
-          {results.length ? (
+          {activeType === 'Therapy Toys' ? (
+            publicToysQuery.isLoading ? (
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {Array.from({ length: 6 }, (_, index) => (
+                  <div key={index} className="h-128 animate-pulse rounded-2xl bg-[#edf4f1]" />
+                ))}
+              </div>
+            ) : publicToysQuery.isError ? (
+              <div className="rounded-2xl border border-[#f2c7c2] bg-[#fff8f7] p-8 text-center font-manrope text-sm text-[#b24b4b]">
+                Unable to load therapy toys.
+              </div>
+            ) : realToys.length ? (
+              <div className="columns-1 gap-6 lg:columns-2 xl:columns-3">
+                {realToys.map((toy) => (
+                  <RealTherapyToyCard
+                    key={toy.id}
+                    toy={toy}
+                    saved={savedIds.includes(toy.id)}
+                    onSave={() =>
+                      setSavedIds((current) =>
+                        current.includes(toy.id)
+                          ? current.filter((id) => id !== toy.id)
+                          : [...current, toy.id]
+                      )
+                    }
+                    onOpen={() => setSelectedToy(mapTherapyToyToModal(toy))}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="flex min-h-80 flex-col items-center justify-center rounded-2xl border border-dashed border-[#ACCBCB] px-6 text-center">
+                <p className="font-nunito text-xl font-semibold text-[#263238]">
+                  No therapy toys found.
+                </p>
+              </div>
+            )
+          ) : results.length ? (
             <div className="columns-1 gap-6 lg:columns-2 xl:columns-3">
               {results.map((item, index) => (
                 <div key={item.id} className="mb-6 break-inside-avoid">
@@ -297,7 +410,8 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
         toy={selectedToy}
         saved={selectedToy ? savedIds.includes(selectedToy.id) : false}
         saving={false}
-        canSave
+        canSave={false}
+        onLoginRequired={() => router.push('/login')}
         onSavedChange={(saved) => {
           if (!selectedToy) return;
           setSavedIds((current) =>

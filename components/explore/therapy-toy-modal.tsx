@@ -2,23 +2,12 @@
 
 import { Dialog, DialogClose, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { ReiconIcon } from '@/components/ui/reicon-icon';
+import type { TherapyToyModalToy } from '@/features/therapy-toys/model/therapy-toy.types';
 import { ExternalLink, X } from 'lucide-react';
 import Image from 'next/image';
 import { Heart } from 'reicon';
 
-export type TherapyToyModalToy = {
-  id: string;
-  name: string;
-  imageUrl: string | null;
-  galleryImages?: string[];
-  minAgeMonths: number;
-  maxAgeMonths: number;
-  developmentAreas: string[];
-  badge?: string;
-  price: number | null;
-  description: string;
-  affiliateLink: string | null;
-};
+export type { TherapyToyModalToy } from '@/features/therapy-toys/model/therapy-toy.types';
 
 type TherapyToyModalProps = {
   toy: TherapyToyModalToy | null;
@@ -26,6 +15,7 @@ type TherapyToyModalProps = {
   saving: boolean;
   canSave: boolean;
   onSavedChange: (saved: boolean) => void;
+  onLoginRequired?: () => void;
   onClose: (open: boolean) => void;
 };
 
@@ -43,6 +33,7 @@ export function TherapyToyModal({
   saving,
   canSave,
   onSavedChange,
+  onLoginRequired,
   onClose,
 }: TherapyToyModalProps) {
   const gallery = toy
@@ -145,8 +136,8 @@ export function TherapyToyModal({
                 <div className="flex items-center gap-3 max-sm:flex-col max-sm:items-stretch">
                   <button
                     type="button"
-                    disabled={!canSave || saving}
-                    onClick={() => onSavedChange(!saved)}
+                    disabled={saving}
+                    onClick={() => (canSave ? onSavedChange(!saved) : onLoginRequired?.())}
                     aria-label={saved ? 'Remove toy from saved' : 'Save toy'}
                     className="flex size-10 shrink-0 items-center justify-center rounded-full border-2 border-[#D8DDD9] bg-white text-[#607077] disabled:cursor-not-allowed disabled:opacity-50 max-sm:self-center"
                   >

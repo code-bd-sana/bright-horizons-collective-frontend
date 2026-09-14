@@ -199,6 +199,16 @@ export const deleteTherapyToyImageEnvelopeSchema = apiEnvelopeSchema(
   deleteTherapyToyImageResultSchema
 );
 export const therapyToyFavoriteEnvelopeSchema = apiEnvelopeSchema(therapyToyFavoriteResultSchema);
+export const therapyToyFavoritesEnvelopeSchema = apiEnvelopeSchema(
+  z.object({
+    toys: z.array(
+      z.object({
+        toy: z.object({ id: z.string().uuid() }).optional(),
+        toyId: z.string().uuid().optional(),
+      })
+    ),
+  })
+);
 
 export type BackendTherapyToy = z.infer<typeof therapyToySchema>;
 export type BackendTherapyToyPage = z.infer<typeof therapyToyPageSchema>;

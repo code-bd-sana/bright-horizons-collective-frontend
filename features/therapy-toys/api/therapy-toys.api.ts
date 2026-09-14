@@ -11,6 +11,7 @@ import {
   therapyToyAdminSummaryEnvelopeSchema,
   therapyToyEnvelopeSchema,
   therapyToyFavoriteEnvelopeSchema,
+  therapyToyFavoritesEnvelopeSchema,
   therapyToyIdSchema,
   therapyToyPageEnvelopeSchema,
   therapyToyUploadEnvelopeSchema,
@@ -29,6 +30,7 @@ import type {
   TherapyToyFilters,
   TherapyToyPage,
   TherapyToyUploadResult,
+  TherapyToyFavorites,
   UpdateTherapyToyVariables,
 } from '../model/therapy-toy.types';
 
@@ -172,5 +174,17 @@ export function toggleTherapyToyFavorite(id: string): Promise<TherapyToyFavorite
     const response = await browserApi.post(`/favorites/therapy-toys/${toyId}`);
     const result = parseResponse(therapyToyFavoriteEnvelopeSchema, response.data).data;
     return { status: result.status, type: result.type };
+  });
+}
+
+export function getTherapyToyFavorites(): Promise<TherapyToyFavorites> {
+  return handleApiCall(async () => {
+    const response = await browserApi.get('/favorites');
+    const data = parseResponse(therapyToyFavoritesEnvelopeSchema, response.data).data;
+    return {
+      toyIds: data.toys
+        .map((favorite) => favorite.toy?.id ?? favorite.toyId)
+        .filter((id): id is string => Boolean(id)),
+    };
   });
 }

@@ -8,6 +8,7 @@ import {
   getAdminTherapyToySummary,
   getTherapyToy,
   getTherapyToys,
+  getTherapyToyFavorites,
 } from '../api/therapy-toys.api';
 import type { AdminTherapyToyFilters, TherapyToyFilters } from '../model/therapy-toy.types';
 import { therapyToyKeys } from '../therapy-toy.keys';
@@ -46,5 +47,12 @@ export function useAdminTherapyToySummary() {
   return useQuery({
     queryKey: therapyToyKeys.adminSummary(),
     queryFn: getAdminTherapyToySummary,
+  });
+}
+
+export function useTherapyToyFavorites() {
+  return useQuery({
+    queryKey: [...therapyToyKeys.all, 'favorites'],
+    queryFn: getTherapyToyFavorites,
   });
 }

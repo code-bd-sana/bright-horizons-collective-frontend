@@ -34,6 +34,24 @@ export interface TherapyToy {
   updatedAt: string;
 }
 
+export interface TherapyToyModalToy {
+  id: string;
+  name: string;
+  imageUrl: string | null;
+  galleryImages?: string[];
+  minAgeMonths: number;
+  maxAgeMonths: number;
+  developmentAreas: string[];
+  badge?: string;
+  price: number | null;
+  description: string;
+  affiliateLink: string | null;
+}
+
+export interface TherapyToyFavorites {
+  toyIds: string[];
+}
+
 export interface TherapyToyPagination {
   page: number;
   limit: number;
