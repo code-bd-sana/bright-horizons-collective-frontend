@@ -18,20 +18,14 @@ import {
 } from '@/features/therapy-toys/hooks/therapy-toys.mutations';
 import type { TherapyToy, TherapyToyStatus } from '@/features/therapy-toys/model/therapy-toy.types';
 
-const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
-const acceptedImageTypes = ['image/jpeg', 'image/png', 'image/webp'] as const;
 const developmentAreas = ['Fine Motor', 'Gross Motor', 'Sensory', 'Visual Motor', 'Regulation'];
-const imageFileSchema = z.custom<File>(
-  (value) => typeof File !== 'undefined' && value instanceof File,
-  'Please select an image file.'
-);
 
 const formSchema = z
   .object({
-    name: z.string().trim().min(1, 'Please enter a toy name.').max(200),
-    description: z.string().trim().min(1, 'Please enter a description.').max(5000),
-    developmentArea: z.string().min(1, 'Please select a development area.'),
-    customDevelopmentArea: z.string().trim().max(100).optional(),
+    name: z.string().trim().min(1, 'Please enter a toy name.').max(200).default(''),
+    description: z.string().trim().min(1, 'Please enter a description.').max(5000).default(''),
+    developmentArea: z.string().min(1, 'Please select a development area.').default(''),
+    customDevelopmentArea: z.string().trim().max(100).default(''),
     price: z
       .string()
       .trim()
@@ -43,27 +37,22 @@ const formSchema = z
           number >= 0 &&
           /^\d+(?:\.\d{1,2})?$/.test(value.replace(/^\$/, ''))
         );
-      }, 'Enter a valid US dollar amount.'),
+      }, 'Enter a valid US dollar amount.')
+      .default(''),
     minAgeMonths: z
       .string()
       .trim()
       .min(1, 'Please enter a minimum age.')
-      .refine((value) => /^\d+$/.test(value), 'Use a whole number of months.'),
+      .refine((value) => /^\d+$/.test(value), 'Use a whole number of months.')
+      .default(''),
     maxAgeMonths: z
       .string()
       .trim()
       .min(1, 'Please enter a maximum age.')
-      .refine((value) => /^\d+$/.test(value), 'Use a whole number of months.'),
-    affiliateLink: z.string().trim().url('Please enter a valid affiliate link.'),
-    image: imageFileSchema
-      .nullable()
-      .refine(
-        (file) =>
-          !file || acceptedImageTypes.includes(file.type as (typeof acceptedImageTypes)[number]),
-        'Use a JPEG, PNG, or WebP image.'
-      )
-      .refine((file) => !file || file.size <= MAX_IMAGE_BYTES, 'Image must be 5 MB or smaller.'),
-    imageUrl: z.string().url().nullable().optional(),
+      .refine((value) => /^\d+$/.test(value), 'Use a whole number of months.')
+      .default(''),
+    affiliateLink: z.string().trim().url('Please enter a valid affiliate link.').default(''),
+    imageUrl: z.string().url().nullable().default(null),
   })
   .refine((value) => Number(value.maxAgeMonths) >= Number(value.minAgeMonths), {
     message: 'Maximum age must be greater than or equal to minimum age.',
@@ -93,19 +82,17 @@ function FieldError({ message }: { message?: string }) {
 
 function ImageField({
   initialUrl,
+  selectedImage,
+  onImageChange,
   onRemoveExisting,
 }: {
   initialUrl: string | null;
+  selectedImage: File | null;
+  onImageChange: (file: File | null) => void;
   onRemoveExisting: () => void;
 }) {
-  const {
-    control,
-    register,
-    setValue,
-    formState: { errors },
-  } = useFormContext<FormValues>();
+  const { control } = useFormContext<FormValues>();
   const imageUrl = useWatch({ control, name: 'imageUrl' });
-  const image = useWatch({ control, name: 'image' });
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const objectUrlRef = useRef<string | null>(null);
 
@@ -119,7 +106,7 @@ function ImageField({
     if (objectUrlRef.current) URL.revokeObjectURL(objectUrlRef.current);
     objectUrlRef.current = null;
     setImagePreview(null);
-    setValue('image', null, { shouldDirty: true, shouldValidate: true });
+    onImageChange(null);
     if (imageUrl) onRemoveExisting();
   };
 
@@ -128,7 +115,7 @@ function ImageField({
     if (objectUrlRef.current) URL.revokeObjectURL(objectUrlRef.current);
     objectUrlRef.current = file ? URL.createObjectURL(file) : null;
     setImagePreview(objectUrlRef.current);
-    setValue('image', file, { shouldDirty: true, shouldValidate: true });
+    onImageChange(file);
   };
 
   const preview = imagePreview ?? imageUrl ?? initialUrl;
@@ -161,10 +148,10 @@ function ImageField({
             <Upload aria-hidden="true" size={24} strokeWidth={1.8} />
           )}
           <span className="max-w-full truncate">
-            {image?.name ?? (preview ? 'Replace image' : 'Upload image')}
+            {selectedImage?.name ?? (preview ? 'Replace image' : 'Upload image')}
           </span>
           <input
-            {...register('image')}
+            name="therapyToyImage"
             accept="image/png,image/jpeg,image/webp"
             className="sr-only"
             type="file"
@@ -182,7 +169,6 @@ function ImageField({
           </button>
         ) : null}
       </div>
-      <FieldError message={errors.image?.message as string | undefined} />
       <p className="mt-1.5 font-manrope text-xs leading-4.5 text-[#607d8b]">
         One JPEG, PNG, or WebP image up to 5 MB.
       </p>
@@ -192,9 +178,13 @@ function ImageField({
 
 function ToyFields({
   initialUrl,
+  selectedImage,
+  onImageChange,
   onRemoveExisting,
 }: {
   initialUrl: string | null;
+  selectedImage: File | null;
+  onImageChange: (file: File | null) => void;
   onRemoveExisting: () => void;
 }) {
   const {
@@ -270,7 +260,12 @@ function ToyFields({
           <FieldError message={errors.maxAgeMonths?.message} />
         </label>
       </div>
-      <ImageField initialUrl={initialUrl} onRemoveExisting={onRemoveExisting} />
+      <ImageField
+        initialUrl={initialUrl}
+        selectedImage={selectedImage}
+        onImageChange={onImageChange}
+        onRemoveExisting={onRemoveExisting}
+      />
       <label className="mt-4 block">
         <span className={fieldLabelClassName}>Affiliate Link</span>
         <input {...register('affiliateLink')} type="url" className={inputClassName} />
@@ -287,6 +282,7 @@ export function TherapyToyForm({ toy, isLoading = false }: TherapyToyFormProps) 
   const router = useRouter();
   const [activeSubmitStatus, setActiveSubmitStatus] = useState<SubmitStatus | null>(null);
   const [imageRemoved, setImageRemoved] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const createToy = useCreateTherapyToy();
   const updateToy = useUpdateTherapyToy();
   const uploadImage = useUploadTherapyToyImage();
@@ -314,7 +310,6 @@ export function TherapyToyForm({ toy, isLoading = false }: TherapyToyFormProps) 
       minAgeMonths: toy ? String(toy.minAgeMonths) : '',
       maxAgeMonths: toy ? String(toy.maxAgeMonths) : '',
       affiliateLink: toy?.affiliateLink ?? '',
-      image: null,
       imageUrl: toy?.imageUrl ?? null,
     },
   });
@@ -333,10 +328,25 @@ export function TherapyToyForm({ toy, isLoading = false }: TherapyToyFormProps) 
     const uploadedUrls: string[] = [];
     try {
       let imageUrl = imageRemoved ? null : (values.imageUrl ?? null);
-      if (values.image) {
-        const uploaded = await uploadImage.mutateAsync(values.image);
-        imageUrl = uploaded.url;
-        uploadedUrls.push(uploaded.url);
+      if (selectedImage) {
+        console.log('[therapy-toy-form] selected image before upload', {
+          value: selectedImage,
+          constructor: selectedImage.constructor?.name,
+          name: selectedImage.name,
+          size: selectedImage.size,
+          type: selectedImage.type,
+        });
+        const uploaded = await uploadImage.mutateAsync(selectedImage);
+        const uploadedUrl = uploaded.url?.trim();
+        if (!uploadedUrl) {
+          throw new Error('The image upload did not return a public image URL.');
+        }
+        imageUrl = uploadedUrl;
+        form.setValue('imageUrl', uploadedUrl, { shouldDirty: true });
+        uploadedUrls.push(uploadedUrl);
+      }
+      if (!toy && !imageUrl) {
+        throw new Error('Please upload one image before creating the therapy toy.');
       }
       const payload = {
         name: values.name.trim(),
@@ -349,6 +359,7 @@ export function TherapyToyForm({ toy, isLoading = false }: TherapyToyFormProps) 
         imageUrl: imageUrl ?? undefined,
         status,
       };
+      console.log('[therapy-toy-form] submit payload', payload);
       if (toy) await updateToy.mutateAsync({ id: toy.id, input: { ...payload, imageUrl } });
       else await createToy.mutateAsync(payload);
       toast.success(
@@ -372,7 +383,21 @@ export function TherapyToyForm({ toy, isLoading = false }: TherapyToyFormProps) 
         ? 'DRAFT'
         : (toy?.status ?? 'PUBLISHED');
     setActiveSubmitStatus(status);
-    void form.handleSubmit((values) => submit(values, status))(event);
+    void form.handleSubmit(
+      (values) => submit(values, status),
+      (errors) => {
+        const firstError = Object.values(errors)[0];
+        console.error('[therapy-toy-form] validation failed', {
+          values: form.getValues(),
+          errors,
+        });
+        toast.error(
+          typeof firstError?.message === 'string'
+            ? firstError.message
+            : 'Please complete the required fields.'
+        );
+      }
+    )(event);
   };
 
   return (
@@ -409,7 +434,12 @@ export function TherapyToyForm({ toy, isLoading = false }: TherapyToyFormProps) 
         </header>
         <FormProvider {...form}>
           <form onSubmit={handleFormSubmit}>
-            <ToyFields initialUrl={toy?.imageUrl ?? null} onRemoveExisting={removeExistingImage} />
+            <ToyFields
+              initialUrl={toy?.imageUrl ?? null}
+              selectedImage={selectedImage}
+              onImageChange={setSelectedImage}
+              onRemoveExisting={removeExistingImage}
+            />
             <div className="flex flex-wrap gap-3 p-4 pt-0 sm:p-6 sm:pt-0 2xl:p-6 2xl:pt-0">
               <button
                 type="submit"

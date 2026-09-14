@@ -2,9 +2,25 @@ import type { BackendTherapyToy, BackendTherapyToyPage } from './therapy-toy.sch
 import type { TherapyToy, TherapyToyModalToy, TherapyToyPage } from './therapy-toy.types';
 import type { TherapyToyExploreItem } from '@/features/explore/model/explore-types';
 
+function normalizeManagedImageUrl(imageUrl: string | null): string | null {
+  const configuredAssetOrigin = process.env.NEXT_PUBLIC_ASSET_ORIGIN;
+  if (!imageUrl || !configuredAssetOrigin) return imageUrl;
+
+  try {
+    const sourceUrl = new URL(imageUrl);
+    if (!sourceUrl.pathname.startsWith('/uploads/therapy-toys/')) return imageUrl;
+
+    const assetOrigin = new URL(configuredAssetOrigin).origin;
+    return new URL(`${sourceUrl.pathname}${sourceUrl.search}${sourceUrl.hash}`, assetOrigin).href;
+  } catch {
+    return imageUrl;
+  }
+}
+
 export function mapTherapyToy(toy: BackendTherapyToy): TherapyToy {
   return {
     ...toy,
+    imageUrl: normalizeManagedImageUrl(toy.imageUrl),
     accessLevel: [...toy.accessLevel],
   };
 }
