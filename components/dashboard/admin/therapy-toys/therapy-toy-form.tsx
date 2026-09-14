@@ -105,6 +105,7 @@ function ImageField({
     formState: { errors },
   } = useFormContext<FormValues>();
   const imageUrl = useWatch({ control, name: 'imageUrl' });
+  const image = useWatch({ control, name: 'image' });
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const objectUrlRef = useRef<string | null>(null);
 
@@ -141,7 +142,7 @@ function ImageField({
         <label className="flex min-h-31.5 cursor-pointer flex-col items-center justify-center gap-2 rounded-[14px] border-2 border-dashed border-[#e7eceb] p-5.5 font-manrope text-xs leading-4.5 text-[#607d8b] transition-colors hover:bg-[#fcfaf7]">
           {preview ? (
             preview.startsWith('blob:') ? (
-              <img
+              <Image
                 src={preview}
                 alt="Therapy toy preview"
                 className="h-24 max-w-full rounded-xl object-contain"
