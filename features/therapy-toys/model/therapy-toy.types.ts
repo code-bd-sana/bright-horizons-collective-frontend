@@ -93,7 +93,7 @@ export interface CreateTherapyToyInput {
   status?: TherapyToyStatus;
 }
 
-export type UpdateTherapyToyInput = Partial<CreateTherapyToyInput> & {
+export type UpdateTherapyToyInput = Omit<Partial<CreateTherapyToyInput>, 'imageUrl'> & {
   imageUrl?: string | null;
 };
 

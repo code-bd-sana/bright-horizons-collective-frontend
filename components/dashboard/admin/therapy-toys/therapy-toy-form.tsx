@@ -142,7 +142,8 @@ function ImageField({
         <label className="flex min-h-31.5 cursor-pointer flex-col items-center justify-center gap-2 rounded-[14px] border-2 border-dashed border-[#e7eceb] p-5.5 font-manrope text-xs leading-4.5 text-[#607d8b] transition-colors hover:bg-[#fcfaf7]">
           {preview ? (
             preview.startsWith('blob:') ? (
-              <Image
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
                 src={preview}
                 alt="Therapy toy preview"
                 className="h-24 max-w-full rounded-xl object-contain"
@@ -365,8 +366,11 @@ export function TherapyToyForm({ toy, isLoading = false }: TherapyToyFormProps) 
   };
 
   const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
-    const submitter = event.nativeEvent.submitter as HTMLButtonElement | null;
-    const status = submitter?.dataset.status === 'draft' ? 'DRAFT' : (toy?.status ?? 'PUBLISHED');
+    const submitter = (event.nativeEvent as SubmitEvent).submitter;
+    const status =
+      submitter instanceof HTMLButtonElement && submitter.dataset.status === 'draft'
+        ? 'DRAFT'
+        : (toy?.status ?? 'PUBLISHED');
     setActiveSubmitStatus(status);
     void form.handleSubmit((values) => submit(values, status))(event);
   };
