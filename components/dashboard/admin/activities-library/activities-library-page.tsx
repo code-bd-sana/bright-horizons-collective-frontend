@@ -2,6 +2,7 @@
 
 import { Loader2, Plus } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -51,6 +52,7 @@ function matchDurationRange(durationStr: string | null | undefined, range: strin
 }
 
 export function ActivitiesLibraryPage() {
+  const router = useRouter();
   const [filters, setFilters] = useState<ActivityFiltersState>(defaultFilters);
   const [publishTarget, setPublishTarget] = useState<Activity | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Activity | null>(null);
@@ -156,9 +158,7 @@ export function ActivitiesLibraryPage() {
   }
 
   function handleDuplicate(activity: Activity) {
-    toast.info(
-      `Duplicate functionality for “${activity.title}” will be connected in the next step.`
-    );
+    router.push(`/dashboard/admin/activities-library/create?duplicateId=${activity.id}`);
   }
 
   return (

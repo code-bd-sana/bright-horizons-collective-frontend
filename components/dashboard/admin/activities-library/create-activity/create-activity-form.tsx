@@ -24,9 +24,10 @@ import { z } from 'zod';
 
 import {
   useCreateActivity,
+  useUpdateActivity,
   useUploadActivityImage,
 } from '@/features/activities/hooks/activities.mutations';
-import type { CreateActivityInput } from '@/features/activities/model/activity.types';
+import type { Activity, CreateActivityInput } from '@/features/activities/model/activity.types';
 import { ActivityFormSection } from './activity-form-section';
 import { ActivityFormSelect } from './activity-form-select';
 
@@ -121,22 +122,18 @@ function mapAccessLevel(level: 'little-steps' | 'grow-together' | 'personalized-
   }
 }
 
-export function CreateActivityForm() {
-  const router = useRouter();
-  const [submitStatus, setSubmitStatus] = useState<'DRAFT' | 'PUBLISHED'>('PUBLISHED');
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const objectUrlRef = useRef<string | null>(null);
+function reverseAccessLevel(
+  levels: string[] = []
+): 'little-steps' | 'grow-together' | 'personalized-pathways' {
+  if (levels.includes('LITTLE_STEPS')) return 'little-steps';
+  if (levels.includes('GROW_TOGETHER')) return 'grow-together';
+  if (levels.includes('PERSONALIZED_PATHWAYS')) return 'personalized-pathways';
+  return 'little-steps';
+}
 
-  const createActivityMutation = useCreateActivity();
-  const uploadImageMutation = useUploadActivityImage();
-
-  const isSubmitting = createActivityMutation.isPending || uploadImageMutation.isPending;
-
-  const form = useForm<ActivityFormValues>({
-    resolver: zodResolver(activityFormSchema),
-    mode: 'onBlur',
-    defaultValues: {
+function getInitialFormValues(activity?: Activity, isDuplicate = false): ActivityFormValues {
+  if (!activity) {
+    return {
       title: '',
       shortDescription: '',
       learningObjective: '',
@@ -156,7 +153,86 @@ export function CreateActivityForm() {
       parentTips: '',
       safetyNotes: '',
       accessLevel: 'little-steps',
-    },
+    };
+  }
+
+  const isStandard = categoryOptions.some(
+    (opt) =>
+      opt.value !== 'Other' &&
+      opt.value.toLowerCase() === activity.developmentCategory?.toLowerCase()
+  );
+  const matchedCategory = isStandard
+    ? (categoryOptions.find(
+        (opt) => opt.value.toLowerCase() === activity.developmentCategory.toLowerCase()
+      )?.value ?? activity.developmentCategory)
+    : 'Other';
+
+  return {
+    title: isDuplicate ? `${activity.title} (Copy)` : activity.title,
+    shortDescription: activity.shortDescription ?? '',
+    learningObjective: activity.learningObjective ?? '',
+    category: matchedCategory,
+    customCategory: isStandard ? '' : activity.developmentCategory,
+    minAgeMonths: String(activity.minAgeMonths ?? 0),
+    maxAgeMonths: String(activity.maxAgeMonths ?? 36),
+    developmentGoal: activity.developmentGoal ?? '',
+    materialsSummary: activity.materialsSummary ?? '',
+    otDesigned: activity.otDesigned ?? (activity.isOtDesigned ? 'Therapist-approved' : ''),
+    estimatedDuration: activity.estimatedDuration ?? '',
+    difficultyLevel: activity.difficultyLevel ?? 'EASY',
+    materials:
+      activity.materialsNeeded && activity.materialsNeeded.length > 0
+        ? activity.materialsNeeded.map((m) => ({ name: m.name }))
+        : [{ name: '' }],
+    steps:
+      activity.instructions && activity.instructions.length > 0
+        ? activity.instructions.map((s) => ({ title: s.title, description: s.description ?? '' }))
+        : [{ title: '', description: '' }],
+    makeEasier: activity.makeItEasier ?? '',
+    makeHarder: activity.makeItHarder ?? '',
+    parentTips: activity.parentTips ?? '',
+    safetyNotes: activity.safetyNotes ?? '',
+    accessLevel: reverseAccessLevel(activity.accessLevel),
+  };
+}
+
+type CreateActivityFormProps = {
+  activity?: Activity;
+  isDuplicate?: boolean;
+};
+
+export function CreateActivityForm({
+  activity,
+  isDuplicate = false,
+}: CreateActivityFormProps = {}) {
+  const router = useRouter();
+  const isEditMode = Boolean(activity && !isDuplicate);
+
+  const [submitStatus, setSubmitStatus] = useState<'DRAFT' | 'PUBLISHED'>(
+    activity?.status === 'DRAFT' ? 'DRAFT' : 'PUBLISHED'
+  );
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(
+    activity?.featuredImageUrl ?? null
+  );
+  const [existingImageUrl, setExistingImageUrl] = useState<string | null>(
+    activity?.featuredImageUrl ?? null
+  );
+  const objectUrlRef = useRef<string | null>(null);
+
+  const createActivityMutation = useCreateActivity();
+  const updateActivityMutation = useUpdateActivity();
+  const uploadImageMutation = useUploadActivityImage();
+
+  const isSubmitting =
+    createActivityMutation.isPending ||
+    updateActivityMutation.isPending ||
+    uploadImageMutation.isPending;
+
+  const form = useForm<ActivityFormValues>({
+    resolver: zodResolver(activityFormSchema),
+    mode: 'onBlur',
+    defaultValues: getInitialFormValues(activity, isDuplicate),
   });
 
   const {
@@ -190,6 +266,7 @@ export function CreateActivityForm() {
     objectUrlRef.current = null;
     setImagePreview(null);
     setSelectedImage(null);
+    setExistingImageUrl(null);
   };
 
   const handleFormSubmit = async (
@@ -197,11 +274,13 @@ export function CreateActivityForm() {
     targetStatus: 'DRAFT' | 'PUBLISHED' = 'PUBLISHED'
   ) => {
     try {
-      let featuredImageUrl: string | undefined = undefined;
+      let featuredImageUrl: string | undefined = existingImageUrl ?? undefined;
 
       if (selectedImage) {
         const uploadResult = await uploadImageMutation.mutateAsync(selectedImage);
         featuredImageUrl = uploadResult.url;
+      } else if (!imagePreview) {
+        featuredImageUrl = undefined;
       }
 
       const cleanMaterials = values.materials
@@ -237,13 +316,26 @@ export function CreateActivityForm() {
         status: targetStatus,
       };
 
-      await createActivityMutation.mutateAsync(payload);
+      if (isEditMode && activity) {
+        await updateActivityMutation.mutateAsync({
+          id: activity.id,
+          input: payload,
+        });
 
-      toast.success(
-        targetStatus === 'PUBLISHED'
-          ? `Activity “${values.title}” has been published!`
-          : `Activity “${values.title}” saved as draft!`
-      );
+        toast.success(
+          targetStatus === 'PUBLISHED'
+            ? `Activity “${values.title}” updated and published!`
+            : `Activity “${values.title}” updated as draft!`
+        );
+      } else {
+        await createActivityMutation.mutateAsync(payload);
+
+        toast.success(
+          targetStatus === 'PUBLISHED'
+            ? `Activity “${values.title}” has been published!`
+            : `Activity “${values.title}” saved as draft!`
+        );
+      }
 
       router.push('/dashboard/admin/activities-library');
     } catch (error) {
@@ -357,7 +449,10 @@ export function CreateActivityForm() {
                 )}
                 <span className="flex min-w-0 flex-col">
                   <span className="truncate font-nunito text-sm font-medium leading-5 text-[#263238]">
-                    {selectedImage?.name || 'Click to upload activity image'}
+                    {selectedImage?.name ||
+                      (existingImageUrl
+                        ? 'Current activity image (click to replace)'
+                        : 'Click to upload activity image')}
                   </span>
                   <span className="font-nunito text-xs leading-4 text-[#607d8b]">
                     PNG, JPG, WebP up to 5MB
@@ -635,7 +730,7 @@ export function CreateActivityForm() {
           {isSubmitting && submitStatus === 'PUBLISHED' && (
             <Loader2 className="size-4 animate-spin" />
           )}
-          Publish
+          {isEditMode ? 'Save Changes' : 'Publish'}
         </button>
       </footer>
     </form>

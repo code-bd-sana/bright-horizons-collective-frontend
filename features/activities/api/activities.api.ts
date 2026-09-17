@@ -87,6 +87,16 @@ export function getAdminActivities(params: Record<string, unknown> = {}): Promis
   });
 }
 
+export function getAdminActivity(id: string): Promise<Activity> {
+  const activityId = parseInput(activityIdSchema, id);
+
+  return handleApiCall(async () => {
+    const response = await browserApi.get(`/activities/${activityId}`);
+    const envelope = parseResponse(backendActivityEnvelopeSchema, response.data);
+    return envelope.data as Activity;
+  });
+}
+
 export function getAdminActivitySummary(): Promise<ActivitySummary> {
   return handleApiCall(async () => {
     const response = await browserApi.get('/activities/admin/summary');
