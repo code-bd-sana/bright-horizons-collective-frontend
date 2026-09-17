@@ -2,6 +2,7 @@
 
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -14,6 +15,7 @@ import {
   useCreateTherapyToy,
   useDeleteTherapyToy,
   useUpdateTherapyToy,
+  useUploadTherapyToyImage,
 } from '@/features/therapy-toys/hooks/therapy-toys.mutations';
 import type { TherapyToy } from '@/features/therapy-toys/model/therapy-toy.types';
 import { TherapyToyFilters } from './therapy-toy-filters';
@@ -46,7 +48,19 @@ const ageRange = (value: string) =>
           ? [60, undefined]
           : [undefined, undefined];
 
+function getDuplicateName(name: string): string {
+  const copyNumMatch = name.match(/^(.*) \(Copy (\d+)\)$/);
+  if (copyNumMatch) {
+    return `${copyNumMatch[1]} (Copy ${parseInt(copyNumMatch[2], 10) + 1})`;
+  }
+  if (name.endsWith(' (Copy)')) {
+    return `${name.slice(0, -7)} (Copy 2)`;
+  }
+  return `${name} (Copy)`;
+}
+
 export function TherapyToysPage() {
+  const router = useRouter();
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebouncedValue(search);
   const [filterValues, setFilterValues] = useState({
@@ -60,6 +74,7 @@ export function TherapyToysPage() {
   const [preview, setPreview] = useState<TherapyToy | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<TherapyToy | null>(null);
   const [statusTarget, setStatusTarget] = useState<TherapyToy | null>(null);
+  const [duplicatingId, setDuplicatingId] = useState<string | null>(null);
   const [minAgeMonths, maxAgeMonths] = ageRange(filterValues.age);
   const filters = useMemo(
     () => ({
@@ -85,29 +100,70 @@ export function TherapyToysPage() {
   const updateToy = useUpdateTherapyToy();
   const deleteToy = useDeleteTherapyToy();
   const createToy = useCreateTherapyToy();
+  const uploadImage = useUploadTherapyToyImage();
   const updateFilter = (key: keyof typeof filterValues, value: string) => {
     setPage(1);
     setFilterValues((current) => ({ ...current, [key]: value }));
   };
-  const duplicate = (toy: TherapyToy) =>
-    createToy.mutate(
-      {
-        name: `${toy.name} (Copy)`,
+  const duplicate = async (toy: TherapyToy) => {
+    setDuplicatingId(toy.id);
+    const toastId = toast.loading(`Duplicating “${toy.name}”...`);
+
+    try {
+      let duplicatedImageUrl: string | undefined = undefined;
+
+      if (toy.imageUrl) {
+        try {
+          const response = await fetch(toy.imageUrl);
+          if (response.ok) {
+            const blob = await response.blob();
+            let mimeType: 'image/jpeg' | 'image/png' | 'image/webp' = 'image/jpeg';
+            if (blob.type === 'image/png') mimeType = 'image/png';
+            else if (blob.type === 'image/webp') mimeType = 'image/webp';
+            else mimeType = 'image/jpeg';
+            const ext =
+              mimeType === 'image/png' ? 'png' : mimeType === 'image/webp' ? 'webp' : 'jpg';
+            const cleanSlug =
+              toy.name
+                .toLowerCase()
+                .replace(/[^a-z0-9]/g, '-')
+                .slice(0, 30) || 'toy';
+            const file = new File([blob], `${cleanSlug}-copy-${Date.now()}.${ext}`, {
+              type: mimeType,
+            });
+            const uploadResult = await uploadImage.mutateAsync(file);
+            duplicatedImageUrl = uploadResult.url;
+          }
+        } catch (imageError) {
+          console.warn(
+            '[therapy-toys] Could not clone image, continuing without image:',
+            imageError
+          );
+        }
+      }
+
+      const created = await createToy.mutateAsync({
+        name: getDuplicateName(toy.name),
         description: toy.description,
         developmentArea: toy.developmentArea,
         price: toy.price ?? 0,
         minAgeMonths: toy.minAgeMonths,
         maxAgeMonths: toy.maxAgeMonths,
-        imageUrl: toy.imageUrl ?? undefined,
+        imageUrl: duplicatedImageUrl,
         affiliateLink: toy.affiliateLink ?? undefined,
         accessLevel: toy.accessLevel,
         status: 'DRAFT',
-      },
-      {
-        onSuccess: () => toast.success('Therapy toy duplicated as a draft.'),
-        onError: (error) => toast.error(error.message),
-      }
-    );
+      });
+
+      toast.success(`“${toy.name}” duplicated as a draft.`, { id: toastId });
+      router.push(`/dashboard/admin/therapy-toys/${created.id}/edit`);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to duplicate therapy toy.';
+      toast.error(message, { id: toastId });
+    } finally {
+      setDuplicatingId(null);
+    }
+  };
   return (
     <section className="mx-auto w-full min-w-0 max-w-383.5 pb-8 text-[#3d3d3d]">
       <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -146,6 +202,7 @@ export function TherapyToysPage() {
             onArchive={setStatusTarget}
             onDelete={setDeleteTarget}
             onDuplicate={duplicate}
+            duplicatingId={duplicatingId}
             onPageChange={setPage}
           />
         </div>

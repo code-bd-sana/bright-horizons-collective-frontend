@@ -7,6 +7,7 @@ import {
   ChevronRight,
   Copy,
   Eye,
+  Loader2,
   Pencil,
   Trash2,
 } from 'lucide-react';
@@ -24,6 +25,7 @@ type Props = {
   onArchive: (toy: TherapyToy) => void;
   onDelete: (toy: TherapyToy) => void;
   onDuplicate: (toy: TherapyToy) => void;
+  duplicatingId?: string | null;
   onPageChange: (page: number) => void;
 };
 const tier = (value: string) =>
@@ -56,6 +58,7 @@ export function TherapyToysTable({
   onArchive,
   onDelete,
   onDuplicate,
+  duplicatingId,
   onPageChange,
 }: Props) {
   const toys = page?.items ?? [];
@@ -129,10 +132,11 @@ export function TherapyToysTable({
               </Link>
               <button
                 type="button"
+                disabled={duplicatingId === toy.id}
                 onClick={() => onDuplicate(toy)}
-                className="rounded-lg border px-3 py-2 text-xs"
+                className="rounded-lg border px-3 py-2 text-xs disabled:opacity-50"
               >
-                Duplicate
+                {duplicatingId === toy.id ? 'Duplicating...' : 'Duplicate'}
               </button>
               <button
                 type="button"
@@ -223,10 +227,15 @@ export function TherapyToysTable({
                     </Link>
                     <button
                       aria-label={`Duplicate ${toy.name}`}
+                      disabled={duplicatingId === toy.id}
                       onClick={() => onDuplicate(toy)}
-                      className="p-2"
+                      className="p-2 disabled:opacity-50"
                     >
-                      <Copy size={14} />
+                      {duplicatingId === toy.id ? (
+                        <Loader2 size={14} className="animate-spin text-[#2f7d7e]" />
+                      ) : (
+                        <Copy size={14} />
+                      )}
                     </button>
                     <button
                       aria-label={`${toy.status === 'PUBLISHED' ? 'Archive' : 'Publish'} ${toy.name}`}
