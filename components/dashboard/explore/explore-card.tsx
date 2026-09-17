@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { ArrowRight, Bookmark } from 'lucide-react';
 
 import {
   UniversalCard,
@@ -25,6 +26,7 @@ import { cn } from '@/lib/utils';
 type ExploreCardProps = {
   item: ExploreCardItem;
   className?: string;
+  height?: number;
   saving?: boolean;
   onSavedChange?: (item: ExploreCardItem, saved: boolean) => void;
   onOpenTherapyToy?: (item: TherapyToyExploreItem) => void;
@@ -220,80 +222,92 @@ function PrintableCard({
 function TherapyToyCard({
   item,
   className,
+  height,
   saving,
   onSavedChange,
   onOpenTherapyToy,
-}: RecipeCardProps<TherapyToyExploreItem>) {
-  return (
-    <UniversalCard
-      recipe="therapyToy"
-      state={item.saved ? 'saved' : 'default'}
-      className={cn('h-auto', item.compact ? 'aspect-422/470' : 'aspect-422/540', className)}
-    >
-      <UniversalCardMedia recipe="therapyToy">
-        <Image
-          src={item.imageSrc}
-          alt={item.imageAlt}
-          fill
-          sizes="(min-width: 1536px) 423px, (min-width: 640px) 50vw, 100vw"
-          className="object-cover"
-        />
-        <div className="absolute inset-x-0 bottom-0 h-[46%] bg-linear-to-t from-[#242424]/85 via-[#242424]/45 to-transparent backdrop-blur-[6px] mask-[linear-gradient(to_top,black_45%,transparent_100%)]" />
-        <UniversalCardOverlay className="inset-x-4 top-4 h-auto p-0">
-          <UniversalCardBadge className="min-h-0 bg-[#e3f7ec] px-2 py-1 font-manrope text-[10px] leading-3.5 text-[#16643b]">
-            {item.badge}
-          </UniversalCardBadge>
-          <UniversalCardSaveButton
-            label={item.title}
-            saved={item.saved}
-            disabled={saving}
-            onSavedChange={(saved) => onSavedChange?.(item, saved)}
-            iconSrc={figmaExploreUiAssets.therapyToy.bookmark}
-            savedIconSrc={figmaExploreUiAssets.therapyToy.bookmarkSaved}
-            className="size-6 sm:size-6"
-          />
-        </UniversalCardOverlay>
-      </UniversalCardMedia>
+}: RecipeCardProps<TherapyToyExploreItem> & { height?: number }) {
+  const isFeatured = item.badge ? true : false;
+  const imageSrc = item.imageSrc || '/Home/therapy-toy-kinetic-sand.png';
 
-      <UniversalCardBody recipe="therapyToy" className="gap-6">
-        <div className="flex min-w-0 flex-col gap-2">
-          <h3 className="max-w-full truncate font-nunito text-xl font-medium leading-7 text-white">
-            {item.title}
-          </h3>
-          <div className="flex flex-wrap gap-1.5">
-            <span className="rounded-full bg-[#dceeee] px-2.5 py-0.5 font-manrope text-xs font-semibold leading-4 text-[#174a4d]">
-              {item.age}
+  return (
+    <article
+      onClick={() => onOpenTherapyToy?.(item)}
+      className={cn(
+        'relative cursor-pointer overflow-hidden rounded-2xl border border-[#EDEEF0] bg-white p-4 text-white shadow-[0px_2px_16px_rgba(198,202,209,0.22)]',
+        className
+      )}
+      style={{ height: height || 540 }}
+    >
+      <Image
+        src={imageSrc}
+        alt={item.title}
+        fill
+        sizes="(min-width: 1280px) 23vw, 46vw"
+        className="object-cover"
+        unoptimized={Boolean(item.imageSrc?.startsWith('http'))}
+      />
+      <div className="absolute inset-x-0 bottom-0 h-[58%] bg-linear-to-t from-[#242424]/85 via-[#242424]/42 to-transparent" />
+
+      <div className="relative flex h-full flex-col justify-between">
+        <div className="flex items-start justify-between gap-3">
+          {isFeatured ? (
+            <span className="rounded-full bg-[#E3F7EC] px-2 py-1 font-manrope text-[10px] leading-3.5 text-[#16643B]">
+              {item.badge || 'OT Favorite'}
             </span>
-            {item.skills.map((skill) => (
-              <span
-                key={skill}
-                className="rounded-full bg-[#dceeee] px-2.5 py-0.5 font-manrope text-xs font-semibold leading-4 text-[#174a4d]"
-              >
-                {skill}
-              </span>
-            ))}
-          </div>
+          ) : (
+            <span />
+          )}
+          <button
+            type="button"
+            disabled={saving}
+            aria-label={item.saved ? `Remove ${item.title} from saved` : `Save ${item.title}`}
+            onClick={(event) => {
+              event.stopPropagation();
+              onSavedChange?.(item, !item.saved);
+            }}
+            className="flex size-6 items-center justify-center rounded-full bg-white/90 text-[#607077] shadow-[0px_1px_4px_rgba(0,0,0,0.12)] disabled:opacity-50"
+          >
+            <Bookmark className={item.saved ? 'size-4 fill-[#2F7D7E] text-[#2F7D7E]' : 'size-4'} />
+          </button>
         </div>
-        <button
-          type="button"
-          onClick={() => onOpenTherapyToy?.(item)}
-          className="inline-flex w-fit max-w-full items-center gap-1 rounded-[10px] p-2.5 font-manrope text-base font-semibold leading-6.75 tracking-[-0.24px] text-[#f2b59f] outline-none focus-visible:ring-2 focus-visible:ring-white"
-        >
-          See Why We Recommend It
-          <Image
-            src={
-              item.id.startsWith('saved-')
-                ? figmaExploreUiAssets.therapyToy.savedSectionArrow
-                : figmaExploreUiAssets.therapyToy.arrow
-            }
-            alt=""
-            width={20}
-            height={20}
-            className="shrink-0"
-          />
-        </button>
-      </UniversalCardBody>
-    </UniversalCard>
+
+        <div className="flex flex-col items-start gap-4">
+          <div>
+            <h3 className="font-nunito text-xl font-medium leading-7">{item.title}</h3>
+            <div className="mt-2 flex flex-wrap items-center gap-1.5">
+              <span className="rounded-full bg-[#DCEEEE] px-2.5 py-0.5 font-nunito text-xs leading-4 text-[#174A4D]">
+                {item.age}
+              </span>
+              {item.skills.map((skill) => (
+                <span
+                  key={skill}
+                  className="rounded-full bg-[#DCEEEE] px-2.5 py-0.5 font-nunito text-xs leading-4 text-[#174A4D]"
+                >
+                  {skill}
+                </span>
+              ))}
+              {item.price !== null && item.price !== undefined ? (
+                <span className="flex items-center gap-1 px-1 font-nunito text-xs leading-4 text-white">
+                  ${Number(item.price).toFixed(2)}
+                </span>
+              ) : null}
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={(event) => {
+              event.stopPropagation();
+              onOpenTherapyToy?.(item);
+            }}
+            className="flex items-center gap-1 px-2.5 py-2 font-manrope text-base font-semibold leading-6.75 tracking-[-0.24px] text-[#F2B59F]"
+          >
+            See Why We Recommend It
+            <ArrowRight className="size-5" />
+          </button>
+        </div>
+      </div>
+    </article>
   );
 }
 
@@ -301,5 +315,5 @@ export function ExploreCard(props: ExploreCardProps) {
   if (props.item.kind === 'activity') return <ActivityCard {...props} item={props.item} />;
   if (props.item.kind === 'parent-resource') return <ResourceCard {...props} item={props.item} />;
   if (props.item.kind === 'printable') return <PrintableCard {...props} item={props.item} />;
-  return <TherapyToyCard {...props} item={props.item} />;
+  return <TherapyToyCard {...props} item={props.item} height={props.height} />;
 }

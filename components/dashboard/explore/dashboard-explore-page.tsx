@@ -6,6 +6,7 @@ import { Check, ChevronDown } from 'lucide-react';
 import { FormEvent, useEffect, useRef, useState } from 'react';
 
 import { ExploreCard } from '@/components/dashboard/explore/explore-card';
+import { getMasonryCardHeight } from '@/components/explore/explore-catalog';
 import { TherapyToyModal } from '@/components/explore/therapy-toy-modal';
 import type { TherapyToyModalToy } from '@/components/explore/therapy-toy-modal';
 import { useExploreCatalog } from '@/features/explore/hooks/use-explore-catalog';
@@ -202,6 +203,7 @@ function CardsGrid({
         <ExploreCard
           key={item.id}
           item={item}
+          height={item.kind === 'therapy-toy' ? 540 : undefined}
           saving={savingItemId === item.id}
           onSavedChange={onSavedChange}
           onOpenTherapyToy={onOpenTherapyToy}
@@ -335,10 +337,11 @@ function TherapyToyColumns({
 }) {
   return (
     <div className="columns-1 gap-6 sm:columns-2 2xl:columns-3">
-      {items.map((item) => (
+      {items.map((item, index) => (
         <div key={item.id} className="mb-6 break-inside-avoid">
           <ExploreCard
             item={item}
+            height={getMasonryCardHeight(index, items.length)}
             saving={savingItemId === item.id}
             onSavedChange={onSavedChange}
             onOpenTherapyToy={onOpenTherapyToy}
@@ -386,7 +389,7 @@ export function DashboardExplorePage({ initialTab }: { initialTab: ExploreTab })
       maxAgeMonths: ageMatch[1] ?? 2160,
       developmentAreas: item.skills,
       badge: item.badge,
-      price: null,
+      price: item.price ?? null,
       description:
         item.description ??
         'A therapist-selected therapy toy recommendation to support playful developmental practice at home.',
@@ -453,14 +456,16 @@ export function DashboardExplorePage({ initialTab }: { initialTab: ExploreTab })
               <div
                 key={index}
                 className={cn(
-                  'animate-pulse rounded-3xl bg-[#e9f1ee]',
+                  'animate-pulse',
                   initialTab === 'therapy-toys'
-                    ? cn(
-                        'mb-6 h-auto break-inside-avoid rounded-2xl',
-                        index === 2 ? 'aspect-422/470' : 'aspect-422/540'
-                      )
-                    : 'h-108.5'
+                    ? 'mb-6 break-inside-avoid rounded-2xl bg-[#edf4f1]'
+                    : 'h-108.5 rounded-3xl bg-[#e9f1ee]'
                 )}
+                style={
+                  initialTab === 'therapy-toys'
+                    ? { height: getMasonryCardHeight(index, 6) }
+                    : undefined
+                }
               />
             ))}
           </div>

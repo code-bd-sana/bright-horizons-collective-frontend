@@ -29,7 +29,7 @@ const emptyFilters: SelectedFilters = {
   difficulty: [],
 };
 
-function getMasonryCardHeight(index: number, total: number): number {
+export function getMasonryCardHeight(index: number, total: number): number {
   if (total <= 0) return 540;
 
   const col1Count = Math.ceil(total / 3);
