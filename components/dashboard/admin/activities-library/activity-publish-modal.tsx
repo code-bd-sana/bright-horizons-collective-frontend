@@ -1,22 +1,22 @@
 'use client';
 
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
-import { AlertTriangle, Loader2, Trash2 } from 'lucide-react';
+import { Globe, Loader2 } from 'lucide-react';
 import type { Activity } from '@/features/activities/model/activity.types';
 
-type ActivityDeleteModalProps = {
+type ActivityPublishModalProps = {
   activity: Activity | null;
-  isDeleting?: boolean;
+  isPublishing?: boolean;
   onClose: (open: boolean) => void;
   onConfirm: (activity: Activity) => void;
 };
 
-export function ActivityDeleteModal({
+export function ActivityPublishModal({
   activity,
-  isDeleting = false,
+  isPublishing = false,
   onClose,
   onConfirm,
-}: ActivityDeleteModalProps) {
+}: ActivityPublishModalProps) {
   return (
     <Dialog open={Boolean(activity)} onOpenChange={onClose}>
       <DialogContent
@@ -26,31 +26,23 @@ export function ActivityDeleteModal({
         {activity && (
           <>
             <div className="flex items-start gap-3 sm:gap-4">
-              <span className="flex size-12 shrink-0 items-center justify-center rounded-[14px] bg-[#fce9e2] text-[#e57373]">
-                <Trash2 aria-hidden="true" size={22} strokeWidth={1.8} />
+              <span className="flex size-12 shrink-0 items-center justify-center rounded-[14px] bg-[#eaf7f5] text-[#2f7d7e]">
+                <Globe aria-hidden="true" size={22} strokeWidth={1.8} />
               </span>
               <div className="min-w-0 flex-1">
                 <DialogTitle className="font-nunito text-xl font-bold leading-7.5 text-[#263238]">
-                  Delete Activity?
+                  Publish Activity?
                 </DialogTitle>
                 <p className="pt-1.5 font-manrope text-sm leading-5.6 text-[#607d8b]">
-                  Deleting “{activity.title}” permanently removes it from the library.
-                </p>
-                <p className="mt-3 flex items-start gap-2 rounded-[14px] bg-[#fce9e2] px-3 py-2 font-manrope text-[13px] leading-4.75 text-[#e57373]">
-                  <AlertTriangle
-                    aria-hidden="true"
-                    size={14}
-                    strokeWidth={1.8}
-                    className="mt-0.5 shrink-0"
-                  />
-                  This action cannot be undone. All activity details and records will be removed.
+                  “{activity.title}” will be restored to the active library and made available to
+                  parents and weekly plans.
                 </p>
               </div>
             </div>
             <div className="flex flex-col-reverse gap-3 border-t border-[#e7eceb] pt-2.25 sm:flex-row sm:justify-end">
               <button
                 type="button"
-                disabled={isDeleting}
+                disabled={isPublishing}
                 onClick={() => onClose(false)}
                 className="w-full rounded-[14px] border border-[#e7eceb] px-5.25 py-2.75 font-manrope text-sm font-semibold leading-5 text-[#607d8b] transition-colors hover:bg-[#f8fbfa] disabled:opacity-50 sm:w-auto"
               >
@@ -58,12 +50,12 @@ export function ActivityDeleteModal({
               </button>
               <button
                 type="button"
-                disabled={isDeleting}
+                disabled={isPublishing}
                 onClick={() => onConfirm(activity)}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-[14px] bg-[#e57373] px-5 py-2.5 font-manrope text-sm font-semibold leading-5 text-white transition-colors hover:bg-[#cf6262] disabled:opacity-50 sm:w-auto"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-[14px] bg-[#2f7d7e] px-5 py-2.5 font-manrope text-sm font-semibold leading-5 text-white transition-colors hover:bg-[#276d6e] disabled:opacity-50 sm:w-auto"
               >
-                {isDeleting && <Loader2 className="size-4 animate-spin" />}
-                Delete Permanently
+                {isPublishing && <Loader2 className="size-4 animate-spin" />}
+                Publish
               </button>
             </div>
           </>

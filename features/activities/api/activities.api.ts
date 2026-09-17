@@ -4,12 +4,19 @@ import { ApiError, toApiError } from '@/services/api/client/api-error';
 import { browserApi } from '@/services/api/client/browser-client';
 import {
   activityAdminSummaryEnvelopeSchema,
+  activityIdSchema,
   activityUploadEnvelopeSchema,
   activityUploadMetadataSchema,
   backendActivitiesListEnvelopeSchema,
   backendActivityEnvelopeSchema,
+  updateActivitySchema,
 } from '../model/activity.schemas';
-import type { Activity, ActivitySummary, CreateActivityInput } from '../model/activity.types';
+import type {
+  Activity,
+  ActivitySummary,
+  CreateActivityInput,
+  UpdateActivityVariables,
+} from '../model/activity.types';
 
 function parseInput<T>(schema: ZodType<T>, value: unknown): T {
   const parsed = schema.safeParse(value);
@@ -85,5 +92,26 @@ export function getAdminActivitySummary(): Promise<ActivitySummary> {
     const response = await browserApi.get('/activities/admin/summary');
     const envelope = parseResponse(activityAdminSummaryEnvelopeSchema, response.data);
     return envelope.data as ActivitySummary;
+  });
+}
+
+export function updateActivity({ id, input }: UpdateActivityVariables): Promise<Activity> {
+  const activityId = parseInput(activityIdSchema, id);
+  const payload = parseInput(updateActivitySchema, input);
+
+  return handleApiCall(async () => {
+    const response = await browserApi.patch(`/activities/${activityId}`, payload);
+    const envelope = parseResponse(backendActivityEnvelopeSchema, response.data);
+    return envelope.data as Activity;
+  });
+}
+
+export function deleteActivity(id: string): Promise<Activity> {
+  const activityId = parseInput(activityIdSchema, id);
+
+  return handleApiCall(async () => {
+    const response = await browserApi.delete(`/activities/${activityId}`);
+    const envelope = parseResponse(backendActivityEnvelopeSchema, response.data);
+    return envelope.data as Activity;
   });
 }

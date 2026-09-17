@@ -9,10 +9,14 @@ import {
   useAdminActivities,
   useAdminActivitySummary,
 } from '@/features/activities/hooks/activities.queries';
+import {
+  useDeleteActivity,
+  useUpdateActivity,
+} from '@/features/activities/hooks/activities.mutations';
 import type { Activity } from '@/features/activities/model/activity.types';
-import { ActivityArchiveModal } from './activity-archive-modal';
 import { ActivityCard } from './activity-card';
 import { ActivityDeleteModal } from './activity-delete-modal';
+import { ActivityPublishModal } from './activity-publish-modal';
 import { ActivityFilters, type ActivityFiltersState, type FilterName } from './activity-filters';
 import { ActivitySummaryCards } from './activity-summary-cards';
 
@@ -48,8 +52,12 @@ function matchDurationRange(durationStr: string | null | undefined, range: strin
 
 export function ActivitiesLibraryPage() {
   const [filters, setFilters] = useState<ActivityFiltersState>(defaultFilters);
-  const [archiveTarget, setArchiveTarget] = useState<Activity | null>(null);
+  const [publishTarget, setPublishTarget] = useState<Activity | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Activity | null>(null);
+  const [archivingId, setArchivingId] = useState<string | null>(null);
+
+  const updateActivityMutation = useUpdateActivity();
+  const deleteActivityMutation = useDeleteActivity();
 
   const { data: summary, isLoading: isSummaryLoading } = useAdminActivitySummary();
 
@@ -97,14 +105,54 @@ export function ActivitiesLibraryPage() {
     setFilters(defaultFilters);
   };
 
-  function archiveActivity(activity: Activity) {
-    setArchiveTarget(null);
-    toast.info(`Archive functionality for “${activity.title}” will be connected in the next step.`);
+  function handleArchive(activity: Activity) {
+    setArchivingId(activity.id);
+    updateActivityMutation.mutate(
+      {
+        id: activity.id,
+        input: { status: 'ARCHIVED' },
+      },
+      {
+        onSuccess: () => {
+          toast.success(`Activity “${activity.title}” has been archived.`);
+          setArchivingId(null);
+        },
+        onError: (error) => {
+          toast.error(error.message || 'Failed to archive activity.');
+          setArchivingId(null);
+        },
+      }
+    );
   }
 
-  function deleteActivity(activity: Activity) {
-    setDeleteTarget(null);
-    toast.info(`Delete functionality for “${activity.title}” will be connected in the next step.`);
+  function handleConfirmPublish(activity: Activity) {
+    updateActivityMutation.mutate(
+      {
+        id: activity.id,
+        input: { status: 'PUBLISHED' },
+      },
+      {
+        onSuccess: () => {
+          toast.success(`Activity “${activity.title}” has been published!`);
+          setPublishTarget(null);
+        },
+        onError: (error) => {
+          toast.error(error.message || 'Failed to publish activity.');
+        },
+      }
+    );
+  }
+
+  function handleConfirmDelete(activity: Activity) {
+    deleteActivityMutation.mutate(activity.id, {
+      onSuccess: () => {
+        toast.success(`Activity “${activity.title}” has been deleted.`);
+        setDeleteTarget(null);
+      },
+      onError: (error) => {
+        toast.error(error.message || 'Failed to delete activity.');
+      },
+    });
   }
 
   function handleDuplicate(activity: Activity) {
@@ -182,7 +230,12 @@ export function ActivitiesLibraryPage() {
             <ActivityCard
               key={activity.id}
               activity={activity}
-              onArchive={setArchiveTarget}
+              isArchiving={archivingId === activity.id}
+              isDeleting={
+                deleteActivityMutation.isPending && deleteActivityMutation.variables === activity.id
+              }
+              onArchive={handleArchive}
+              onPublish={setPublishTarget}
               onDelete={setDeleteTarget}
               onDuplicate={handleDuplicate}
             />
@@ -190,15 +243,17 @@ export function ActivitiesLibraryPage() {
         </div>
       )}
 
-      <ActivityArchiveModal
-        activity={archiveTarget}
-        onClose={() => setArchiveTarget(null)}
-        onConfirm={archiveActivity}
+      <ActivityPublishModal
+        activity={publishTarget}
+        isPublishing={updateActivityMutation.isPending}
+        onClose={() => setPublishTarget(null)}
+        onConfirm={handleConfirmPublish}
       />
       <ActivityDeleteModal
         activity={deleteTarget}
+        isDeleting={deleteActivityMutation.isPending}
         onClose={() => setDeleteTarget(null)}
-        onConfirm={deleteActivity}
+        onConfirm={handleConfirmDelete}
       />
     </section>
   );

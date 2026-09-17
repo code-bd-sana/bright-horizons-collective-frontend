@@ -64,6 +64,11 @@ export type CreateActivityInput = {
 
 export type UpdateActivityInput = Partial<CreateActivityInput>;
 
+export type UpdateActivityVariables = {
+  id: string;
+  input: UpdateActivityInput;
+};
+
 export type ActivitySummary = {
   total: number;
   published: number;

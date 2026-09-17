@@ -91,3 +91,32 @@ export const activityUploadEnvelopeSchema = z.object({
     url: z.string().min(1),
   }),
 });
+
+export const activityIdSchema = z.string().trim().min(1, 'Activity ID is required.');
+
+export const updateActivitySchema = z
+  .object({
+    title: z.string().trim().min(1).optional(),
+    shortDescription: z.string().trim().min(1).optional(),
+    learningObjective: z.string().nullable().optional(),
+    developmentCategory: z.string().trim().min(1).optional(),
+    minAgeMonths: z.number().int().min(0).optional(),
+    maxAgeMonths: z.number().int().min(0).optional(),
+    ageGroup: z.string().nullable().optional(),
+    featuredImageUrl: z.string().nullable().optional(),
+    developmentGoal: z.string().trim().min(1).optional(),
+    materialsSummary: z.string().nullable().optional(),
+    isOtDesigned: z.boolean().optional(),
+    otDesigned: z.string().nullable().optional(),
+    estimatedDuration: z.string().nullable().optional(),
+    difficultyLevel: activityDifficultySchema.optional(),
+    materialsNeeded: z.array(materialItemSchema).or(z.any()).optional(),
+    instructions: z.array(instructionStepSchema).or(z.any()).optional(),
+    makeItEasier: z.string().nullable().optional(),
+    makeItHarder: z.string().nullable().optional(),
+    parentTips: z.string().nullable().optional(),
+    safetyNotes: z.string().nullable().optional(),
+    accessLevel: z.array(z.string()).optional(),
+    status: activityStatusSchema.optional(),
+  })
+  .strict();

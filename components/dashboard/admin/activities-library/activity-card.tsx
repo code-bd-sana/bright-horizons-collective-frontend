@@ -1,6 +1,16 @@
 'use client';
 
-import { Archive, Clock3, Copy, Eye, FileText, Layers3, PencilLine, Trash2 } from 'lucide-react';
+import {
+  Archive,
+  Clock3,
+  Copy,
+  Eye,
+  FileText,
+  Layers3,
+  Loader2,
+  PencilLine,
+  Trash2,
+} from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Activity } from '@/features/activities/model/activity.types';
@@ -38,13 +48,19 @@ function getDifficultyLabel(difficulty: string): string {
 export function ActivityCard({
   activity,
   onArchive,
+  onPublish,
   onDelete,
   onDuplicate,
+  isArchiving = false,
+  isDeleting = false,
 }: {
   activity: Activity;
   onArchive?: (activity: Activity) => void;
+  onPublish?: (activity: Activity) => void;
   onDelete?: (activity: Activity) => void;
   onDuplicate?: (activity: Activity) => void;
+  isArchiving?: boolean;
+  isDeleting?: boolean;
 }) {
   const isPublished = activity.status === 'PUBLISHED';
   const isDraft = activity.status === 'DRAFT';
@@ -143,20 +159,30 @@ export function ActivityCard({
             </button>
             <button
               type="button"
-              onClick={() => onArchive?.(activity)}
-              className="inline-flex items-center gap-1.5 font-manrope text-sm leading-5.5 hover:text-[#27898a] transition-colors"
+              disabled={isArchiving}
+              onClick={() => (isArchived ? onPublish?.(activity) : onArchive?.(activity))}
+              className="inline-flex items-center gap-1.5 font-manrope text-sm leading-5.5 hover:text-[#27898a] transition-colors disabled:opacity-50"
             >
-              <Archive aria-hidden="true" size={15} strokeWidth={1.5} />
+              {isArchiving ? (
+                <Loader2 aria-hidden="true" size={15} className="animate-spin text-[#27898a]" />
+              ) : (
+                <Archive aria-hidden="true" size={15} strokeWidth={1.5} />
+              )}
               {isArchived ? 'Publish' : 'Archive'}
             </button>
           </div>
           <button
             type="button"
             aria-label={`Delete ${activity.title}`}
+            disabled={isDeleting}
             onClick={() => onDelete?.(activity)}
-            className="ml-3 flex size-8 shrink-0 items-center justify-center text-[#fb6464] hover:text-[#d32f2f] transition-colors 2xl:ml-auto 2xl:size-auto"
+            className="ml-3 flex size-8 shrink-0 items-center justify-center text-[#fb6464] hover:text-[#d32f2f] transition-colors disabled:opacity-50 2xl:ml-auto 2xl:size-auto"
           >
-            <Trash2 aria-hidden="true" size={15} strokeWidth={1.5} />
+            {isDeleting ? (
+              <Loader2 aria-hidden="true" size={15} className="animate-spin text-[#fb6464]" />
+            ) : (
+              <Trash2 aria-hidden="true" size={15} strokeWidth={1.5} />
+            )}
           </button>
         </div>
       </div>
