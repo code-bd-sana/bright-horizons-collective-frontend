@@ -59,6 +59,7 @@ export function TherapyToysPage() {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [preview, setPreview] = useState<TherapyToy | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<TherapyToy | null>(null);
+  const [statusTarget, setStatusTarget] = useState<TherapyToy | null>(null);
   const [minAgeMonths, maxAgeMonths] = ageRange(filterValues.age);
   const filters = useMemo(
     () => ({
@@ -87,17 +88,6 @@ export function TherapyToysPage() {
   const updateFilter = (key: keyof typeof filterValues, value: string) => {
     setPage(1);
     setFilterValues((current) => ({ ...current, [key]: value }));
-  };
-  const archive = (toy: TherapyToy) => {
-    const nextStatus = toy.status === 'PUBLISHED' ? 'ARCHIVED' : 'PUBLISHED';
-    updateToy.mutate(
-      { id: toy.id, input: { status: nextStatus } },
-      {
-        onSuccess: () =>
-          toast.success(`“${toy.name}” ${nextStatus === 'ARCHIVED' ? 'archived' : 'published'}.`),
-        onError: (error) => toast.error(error.message),
-      }
-    );
   };
   const duplicate = (toy: TherapyToy) =>
     createToy.mutate(
@@ -153,7 +143,7 @@ export function TherapyToysPage() {
             selectedIds={selectedIds}
             onSelectionChange={setSelectedIds}
             onPreview={setPreview}
-            onArchive={archive}
+            onArchive={setStatusTarget}
             onDelete={setDeleteTarget}
             onDuplicate={duplicate}
             onPageChange={setPage}
@@ -161,6 +151,59 @@ export function TherapyToysPage() {
         </div>
       </div>
       <TherapyToyPreviewModal toy={preview} onClose={(open) => !open && setPreview(null)} />
+      <Dialog open={Boolean(statusTarget)} onOpenChange={(open) => !open && setStatusTarget(null)}>
+        <DialogContent className="w-md max-w-[calc(100%-2rem)] rounded-2xl p-6">
+          <DialogTitle>
+            {statusTarget?.status === 'PUBLISHED' ? 'Archive therapy toy?' : 'Publish therapy toy?'}
+          </DialogTitle>
+          <p className="font-manrope text-sm text-[#607d8b]">
+            {statusTarget?.status === 'PUBLISHED'
+              ? `“${statusTarget?.name}” will be archived and hidden from parents in the explore catalog.`
+              : `“${statusTarget?.name}” will be published and visible to parents in the explore catalog.`}
+          </p>
+          <div className="flex justify-end gap-3">
+            <button
+              type="button"
+              onClick={() => setStatusTarget(null)}
+              className="rounded-xl border px-4 py-2 font-manrope text-sm font-semibold text-[#607d8b]"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              disabled={updateToy.isPending}
+              onClick={() => {
+                if (!statusTarget) return;
+                const nextStatus = statusTarget.status === 'PUBLISHED' ? 'ARCHIVED' : 'PUBLISHED';
+                updateToy.mutate(
+                  {
+                    id: statusTarget.id,
+                    input: { status: nextStatus },
+                  },
+                  {
+                    onSuccess: () => {
+                      toast.success(
+                        nextStatus === 'ARCHIVED'
+                          ? 'Therapy toy archived.'
+                          : 'Therapy toy published.'
+                      );
+                      setStatusTarget(null);
+                    },
+                    onError: (error) => toast.error(error.message),
+                  }
+                );
+              }}
+              className={`rounded-xl px-4 py-2 font-manrope text-sm font-semibold text-white disabled:opacity-50 ${
+                statusTarget?.status === 'PUBLISHED'
+                  ? 'bg-[#8b4b3e] hover:bg-[#723b30]'
+                  : 'bg-[#2f7d7e] hover:bg-[#256465]'
+              }`}
+            >
+              {statusTarget?.status === 'PUBLISHED' ? 'Archive' : 'Publish'}
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
       <Dialog open={Boolean(deleteTarget)} onOpenChange={(open) => !open && setDeleteTarget(null)}>
         <DialogContent className="w-md max-w-[calc(100%-2rem)] rounded-2xl p-6">
           <DialogTitle>Delete therapy toy?</DialogTitle>
@@ -171,7 +214,7 @@ export function TherapyToysPage() {
             <button
               type="button"
               onClick={() => setDeleteTarget(null)}
-              className="rounded-xl border px-4 py-2"
+              className="rounded-xl border px-4 py-2 font-manrope text-sm font-semibold text-[#607d8b]"
             >
               Cancel
             </button>
@@ -188,7 +231,7 @@ export function TherapyToysPage() {
                   onError: (error) => toast.error(error.message),
                 })
               }
-              className="rounded-xl bg-[#b24b4b] px-4 py-2 text-white disabled:opacity-50"
+              className="rounded-xl bg-[#b24b4b] px-4 py-2 font-manrope text-sm font-semibold text-white disabled:opacity-50"
             >
               Delete
             </button>

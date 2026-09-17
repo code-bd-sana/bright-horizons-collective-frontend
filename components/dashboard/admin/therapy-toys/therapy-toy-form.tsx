@@ -22,10 +22,10 @@ const developmentAreas = ['Fine Motor', 'Gross Motor', 'Sensory', 'Visual Motor'
 
 const formSchema = z
   .object({
-    name: z.string().trim().min(1, 'Please enter a toy name.').max(200).default(''),
-    description: z.string().trim().min(1, 'Please enter a description.').max(5000).default(''),
-    developmentArea: z.string().min(1, 'Please select a development area.').default(''),
-    customDevelopmentArea: z.string().trim().max(100).default(''),
+    name: z.string().trim().min(1, 'Please enter a toy name.').max(200),
+    description: z.string().trim().min(1, 'Please enter a description.').max(5000),
+    developmentArea: z.string().min(1, 'Please select a development area.'),
+    customDevelopmentArea: z.string().trim().max(100),
     price: z
       .string()
       .trim()
@@ -37,22 +37,19 @@ const formSchema = z
           number >= 0 &&
           /^\d+(?:\.\d{1,2})?$/.test(value.replace(/^\$/, ''))
         );
-      }, 'Enter a valid US dollar amount.')
-      .default(''),
+      }, 'Enter a valid US dollar amount.'),
     minAgeMonths: z
       .string()
       .trim()
       .min(1, 'Please enter a minimum age.')
-      .refine((value) => /^\d+$/.test(value), 'Use a whole number of months.')
-      .default(''),
+      .refine((value) => /^\d+$/.test(value), 'Use a whole number of months.'),
     maxAgeMonths: z
       .string()
       .trim()
       .min(1, 'Please enter a maximum age.')
-      .refine((value) => /^\d+$/.test(value), 'Use a whole number of months.')
-      .default(''),
-    affiliateLink: z.string().trim().url('Please enter a valid affiliate link.').default(''),
-    imageUrl: z.string().url().nullable().default(null),
+      .refine((value) => /^\d+$/.test(value), 'Use a whole number of months.'),
+    affiliateLink: z.string().trim().url('Please enter a valid affiliate link.'),
+    imageUrl: z.string().url().nullable(),
   })
   .refine((value) => Number(value.maxAgeMonths) >= Number(value.minAgeMonths), {
     message: 'Maximum age must be greater than or equal to minimum age.',

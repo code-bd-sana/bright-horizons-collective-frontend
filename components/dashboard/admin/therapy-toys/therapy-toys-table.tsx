@@ -1,6 +1,15 @@
 'use client';
 
-import { Archive, ChevronLeft, ChevronRight, Copy, Eye, Pencil, Trash2 } from 'lucide-react';
+import {
+  Archive,
+  ArchiveRestore,
+  ChevronLeft,
+  ChevronRight,
+  Copy,
+  Eye,
+  Pencil,
+  Trash2,
+} from 'lucide-react';
 import Link from 'next/link';
 
 import type { TherapyToy, TherapyToyPage } from '@/features/therapy-toys/model/therapy-toy.types';
@@ -27,6 +36,15 @@ const date = (value: string) =>
   new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(
     new Date(value)
   );
+
+const statusBadge = (status: TherapyToy['status']) => {
+  if (status === 'PUBLISHED') return 'bg-[#edf6f2] text-[#2f7d7e]';
+  if (status === 'ARCHIVED') return 'bg-[#fce9e3] text-[#8b4b3e]';
+  return 'bg-[#fff8e1] text-[#b8860b]';
+};
+
+const statusLabel = (status: TherapyToy['status']) =>
+  status === 'PUBLISHED' ? 'Published' : status === 'ARCHIVED' ? 'Archived' : 'Draft';
 
 export function TherapyToysTable({
   page,
@@ -89,8 +107,10 @@ export function TherapyToysTable({
                   {toy.developmentArea} · {age(toy)}
                 </p>
               </div>
-              <span className="rounded-full bg-[#edf6f2] px-2.5 py-0.5 text-xs text-[#2f7d7e]">
-                {toy.status}
+              <span
+                className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusBadge(toy.status)}`}
+              >
+                {statusLabel(toy.status)}
               </span>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -178,8 +198,10 @@ export function TherapyToysTable({
                   </span>
                 </td>
                 <td>
-                  <span className="rounded-full bg-[#edf6f2] px-2.5 py-0.5 text-xs text-[#2f7d7e]">
-                    {toy.status}
+                  <span
+                    className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusBadge(toy.status)}`}
+                  >
+                    {statusLabel(toy.status)}
                   </span>
                 </td>
                 <td>{date(toy.updatedAt)}</td>
@@ -211,7 +233,11 @@ export function TherapyToysTable({
                       onClick={() => onArchive(toy)}
                       className="p-2"
                     >
-                      <Archive size={14} />
+                      {toy.status === 'PUBLISHED' ? (
+                        <Archive size={14} />
+                      ) : (
+                        <ArchiveRestore size={14} />
+                      )}
                     </button>
                     <button
                       aria-label={`Delete ${toy.name}`}
