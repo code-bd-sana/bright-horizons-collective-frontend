@@ -1,12 +1,6 @@
 'use client';
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { ChevronDown } from 'lucide-react';
 
 type Option = { label: string; value: string };
 
@@ -22,21 +16,28 @@ export function ActivityFormSelect({
   options: readonly Option[];
 }) {
   return (
-    <Select value={value} onValueChange={(nextValue) => onChange(nextValue ?? '')} items={options}>
-      <SelectTrigger className="h-11 w-full rounded-xl border-[#e1e8e6] bg-[#f4f8f7] px-3.5 font-nunito text-sm font-medium text-[#263238] shadow-none hover:bg-[#f4f8f7] focus-visible:border-[#2f7d7e] focus-visible:ring-0 data-placeholder:text-[#9ba6ab]">
-        <SelectValue placeholder={placeholder} />
-      </SelectTrigger>
-      <SelectContent className="rounded-xl bg-white p-2 shadow-[0_8px_12px_rgba(38,50,56,0.12)] ring-0">
+    <div className="relative">
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className={`h-11 w-full appearance-none rounded-xl border border-[#e1e8e6] bg-[#f4f8f7] px-3.5 pr-10 font-nunito text-sm font-medium leading-5 outline-none transition-colors focus:border-[#2f7d7e] ${
+          value ? 'text-[#263238]' : 'text-[#9ba6ab]'
+        }`}
+      >
+        <option value="" disabled hidden>
+          {placeholder}
+        </option>
         {options.map((option) => (
-          <SelectItem
-            key={option.value}
-            value={option.value}
-            className="min-h-8 rounded-lg px-2.5 py-1.5 font-nunito text-sm leading-5 text-[#263238] focus:bg-[#d5e5e5]"
-          >
+          <option key={option.value} value={option.value} className="bg-white text-[#263238]">
             {option.label}
-          </SelectItem>
+          </option>
         ))}
-      </SelectContent>
-    </Select>
+      </select>
+      <ChevronDown
+        aria-hidden="true"
+        size={16}
+        className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-[#607d8b]"
+      />
+    </div>
   );
 }
