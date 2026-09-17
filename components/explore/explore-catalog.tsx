@@ -29,6 +29,30 @@ const emptyFilters: SelectedFilters = {
   difficulty: [],
 };
 
+function getMasonryCardHeight(index: number, total: number): number {
+  if (total <= 0) return 540;
+
+  const col1Count = Math.ceil(total / 3);
+  const col2Count = Math.ceil((total - col1Count) / 2);
+
+  let col = 0;
+  let row = index;
+
+  if (index < col1Count) {
+    col = 0;
+    row = index;
+  } else if (index < col1Count + col2Count) {
+    col = 1;
+    row = index - col1Count;
+  } else {
+    col = 2;
+    row = index - (col1Count + col2Count);
+  }
+
+  const smallColForRow = (1 - (row % 3) + 3) % 3;
+  return col === smallColForRow ? 480 : 540;
+}
+
 function ResourceCard({
   item,
   height,
@@ -47,7 +71,7 @@ function ResourceCard({
       ? 'View Activity'
       : item.type === 'Parent Resources'
         ? 'Read Resource'
-        : 'View Toy';
+        : 'See Why We Recommend It';
 
   return (
     <article
@@ -117,6 +141,7 @@ function ResourceCard({
           ) : (
             <button
               type="button"
+              onClick={() => onOpenToy?.(item)}
               className="flex items-center gap-1 px-2.5 py-2 font-manrope text-base font-semibold leading-6.75 tracking-[-0.24px] text-[#F2B59F]"
             >
               {action}
@@ -131,54 +156,87 @@ function ResourceCard({
 
 function RealTherapyToyCard({
   toy,
+  height,
   saved,
   onSave,
   onOpen,
 }: {
   toy: TherapyToy;
+  height: number;
   saved: boolean;
   onSave: () => void;
   onOpen: () => void;
 }) {
-  const modalToy = mapTherapyToyToModal(toy);
+  const isFeatured = toy.status === 'PUBLISHED';
+  const imageSrc = toy.imageUrl || '/Home/therapy-toy-kinetic-sand.png';
+
   return (
-    <article className="relative mb-6 break-inside-avoid overflow-hidden rounded-2xl border border-[#EDEEF0] bg-white p-4 text-white shadow-[0px_2px_16px_rgba(198,202,209,0.22)]">
-      <div className="relative h-80 overflow-hidden rounded-xl bg-[#f4f8f6]">
-        {modalToy.imageUrl ? (
-          <Image
-            src={modalToy.imageUrl}
-            alt={toy.name}
-            fill
-            className="object-cover"
-            sizes="(min-width: 1280px) 23vw, 46vw"
-          />
-        ) : null}
-        <button
-          type="button"
-          onClick={onSave}
-          aria-label={saved ? `Remove ${toy.name} from saved` : `Save ${toy.name}`}
-          className="absolute right-3 top-3 flex size-8 items-center justify-center rounded-full bg-white/90 text-[#2f7d7e]"
-        >
-          {saved ? '♥' : '♡'}
-        </button>
-      </div>
-      <div className="flex flex-col items-start gap-3 pt-4 text-[#263238]">
-        <h3 className="font-nunito text-xl font-medium leading-7">{toy.name}</h3>
-        <div className="flex flex-wrap gap-1.5">
-          <span className="rounded-full bg-[#DCEEEE] px-2.5 py-0.5 font-nunito text-xs text-[#174A4D]">
-            {toy.minAgeMonths}–{toy.maxAgeMonths} mo
-          </span>
-          <span className="rounded-full bg-[#DCEEEE] px-2.5 py-0.5 font-nunito text-xs text-[#174A4D]">
-            {toy.developmentArea}
-          </span>
+    <article
+      onClick={onOpen}
+      className="relative cursor-pointer overflow-hidden rounded-2xl border border-[#EDEEF0] bg-white p-4 text-white shadow-[0px_2px_16px_rgba(198,202,209,0.22)]"
+      style={{ height: height || 540 }}
+    >
+      <Image
+        src={imageSrc}
+        alt={toy.name}
+        fill
+        sizes="(min-width: 1280px) 23vw, 46vw"
+        className="object-cover"
+        unoptimized={Boolean(toy.imageUrl?.startsWith('http'))}
+      />
+      <div className="absolute inset-x-0 bottom-0 h-[58%] bg-linear-to-t from-[#242424]/85 via-[#242424]/42 to-transparent" />
+
+      <div className="relative flex h-full flex-col justify-between">
+        <div className="flex items-start justify-between gap-3">
+          {isFeatured ? (
+            <span className="rounded-full bg-[#E3F7EC] px-2 py-1 font-manrope text-[10px] leading-3.5 text-[#16643B]">
+              OT Favorite
+            </span>
+          ) : (
+            <span />
+          )}
+          <button
+            type="button"
+            aria-label={saved ? `Remove ${toy.name} from saved` : `Save ${toy.name}`}
+            onClick={(event) => {
+              event.stopPropagation();
+              onSave();
+            }}
+            className="flex size-6 items-center justify-center rounded-full bg-white/90 text-[#607077] shadow-[0px_1px_4px_rgba(0,0,0,0.12)]"
+          >
+            <Bookmark className={saved ? 'size-4 fill-[#2F7D7E] text-[#2F7D7E]' : 'size-4'} />
+          </button>
         </div>
-        <button
-          type="button"
-          onClick={onOpen}
-          className="font-manrope text-base font-semibold text-[#2F7D7E]"
-        >
-          See Why We Recommend It →
-        </button>
+
+        <div className="flex flex-col items-start gap-4">
+          <div>
+            <h3 className="font-nunito text-xl font-medium leading-7">{toy.name}</h3>
+            <div className="mt-2 flex flex-wrap items-center gap-1.5">
+              <span className="rounded-full bg-[#DCEEEE] px-2.5 py-0.5 font-nunito text-xs leading-4 text-[#174A4D]">
+                {toy.minAgeMonths}–{toy.maxAgeMonths} mo
+              </span>
+              <span className="rounded-full bg-[#DCEEEE] px-2.5 py-0.5 font-nunito text-xs leading-4 text-[#174A4D]">
+                {toy.developmentArea}
+              </span>
+              {toy.price !== null && toy.price !== undefined ? (
+                <span className="flex items-center gap-1 px-1 font-nunito text-xs leading-4 text-white">
+                  ${toy.price.toFixed(2)}
+                </span>
+              ) : null}
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={(event) => {
+              event.stopPropagation();
+              onOpen();
+            }}
+            className="flex items-center gap-1 px-2.5 py-2 font-manrope text-base font-semibold leading-6.75 tracking-[-0.24px] text-[#F2B59F]"
+          >
+            See Why We Recommend It
+            <ArrowRight className="size-5" />
+          </button>
+        </div>
       </div>
     </article>
   );
@@ -319,9 +377,13 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
         <div className="min-w-0 flex-1 w-full">
           {activeType === 'Therapy Toys' ? (
             publicToysQuery.isLoading ? (
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="columns-1 gap-6 lg:columns-2 xl:columns-3">
                 {Array.from({ length: 6 }, (_, index) => (
-                  <div key={index} className="h-128 animate-pulse rounded-2xl bg-[#edf4f1]" />
+                  <div
+                    key={index}
+                    className="mb-6 break-inside-avoid animate-pulse rounded-2xl bg-[#edf4f1]"
+                    style={{ height: getMasonryCardHeight(index, 6) }}
+                  />
                 ))}
               </div>
             ) : publicToysQuery.isError ? (
@@ -330,20 +392,22 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
               </div>
             ) : realToys.length ? (
               <div className="columns-1 gap-6 lg:columns-2 xl:columns-3">
-                {realToys.map((toy) => (
-                  <RealTherapyToyCard
-                    key={toy.id}
-                    toy={toy}
-                    saved={savedIds.includes(toy.id)}
-                    onSave={() =>
-                      setSavedIds((current) =>
-                        current.includes(toy.id)
-                          ? current.filter((id) => id !== toy.id)
-                          : [...current, toy.id]
-                      )
-                    }
-                    onOpen={() => setSelectedToy(mapTherapyToyToModal(toy))}
-                  />
+                {realToys.map((toy, index) => (
+                  <div key={toy.id} className="mb-6 break-inside-avoid">
+                    <RealTherapyToyCard
+                      toy={toy}
+                      height={getMasonryCardHeight(index, realToys.length)}
+                      saved={savedIds.includes(toy.id)}
+                      onSave={() =>
+                        setSavedIds((current) =>
+                          current.includes(toy.id)
+                            ? current.filter((id) => id !== toy.id)
+                            : [...current, toy.id]
+                        )
+                      }
+                      onOpen={() => setSelectedToy(mapTherapyToyToModal(toy))}
+                    />
+                  </div>
                 ))}
               </div>
             ) : (
@@ -359,7 +423,7 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
                 <div key={item.id} className="mb-6 break-inside-avoid">
                   <ResourceCard
                     item={item}
-                    height={index % 3 === 1 ? 480 : 540}
+                    height={getMasonryCardHeight(index, results.length)}
                     saved={savedIds.includes(item.id)}
                     onSave={() =>
                       setSavedIds((current) =>
