@@ -34,6 +34,8 @@ export type Activity = {
   safetyNotes?: string | null;
   accessLevel: string[];
   status: ActivityStatus;
+  isFavorited?: boolean;
+  isCompleted?: boolean;
   createdAt: string;
   updatedAt: string;
 };

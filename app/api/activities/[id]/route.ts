@@ -32,8 +32,12 @@ export async function GET(_request: NextRequest, context: ActivityRouteContext) 
   const id = await readActivityId(context);
   if (!id.success) return invalidIdResponse();
 
+  const authHeaders = await readAuthHeaders();
+
   try {
-    const response = await serverApi.get(`/activities/${id.data}`);
+    const response = await serverApi.get(`/activities/${id.data}`, {
+      headers: authHeaders ?? {},
+    });
     return validatedUpstreamResponse(response.data, backendActivityEnvelopeSchema);
   } catch (error) {
     return safeBackendErrorResponse(error, 'Unable to load the activity.');

@@ -125,3 +125,23 @@ export function deleteActivity(id: string): Promise<Activity> {
     return envelope.data as Activity;
   });
 }
+
+export function toggleActivityFavorite(id: string): Promise<{ status: string; type: string }> {
+  const activityId = parseInput(activityIdSchema, id);
+
+  return handleApiCall(async () => {
+    const response = await browserApi.post(`/favorites/activities/${activityId}`);
+    return response.data.data;
+  });
+}
+
+export function toggleActivityComplete(
+  id: string
+): Promise<{ isCompleted: boolean; status: string }> {
+  const activityId = parseInput(activityIdSchema, id);
+
+  return handleApiCall(async () => {
+    const response = await browserApi.post(`/activities/${activityId}/toggle-complete`);
+    return response.data.data;
+  });
+}

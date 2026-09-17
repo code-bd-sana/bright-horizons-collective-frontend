@@ -36,6 +36,8 @@ export const backendActivitySchema = z.object({
   safetyNotes: z.string().nullable().optional(),
   accessLevel: z.array(z.string()).default([]),
   status: activityStatusSchema,
+  isFavorited: z.boolean().optional(),
+  isCompleted: z.boolean().optional(),
   createdAt: z.string().or(z.date().transform((d) => d.toISOString())),
   updatedAt: z.string().or(z.date().transform((d) => d.toISOString())),
 });

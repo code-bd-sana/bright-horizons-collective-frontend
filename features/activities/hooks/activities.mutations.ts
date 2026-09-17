@@ -4,6 +4,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   createActivity,
   deleteActivity,
+  toggleActivityComplete,
+  toggleActivityFavorite,
   updateActivity,
   uploadActivityImage,
 } from '../api/activities.api';
@@ -50,5 +52,27 @@ export function useDeleteActivity() {
 export function useUploadActivityImage() {
   return useMutation({
     mutationFn: uploadActivityImage,
+  });
+}
+
+export function useToggleActivityFavorite() {
+  const queryClient = useQueryClient();
+
+  return useMutation<{ status: string; type: string }, Error, string>({
+    mutationFn: (id: string) => toggleActivityFavorite(id),
+    onSuccess: (_data, id) => {
+      void queryClient.invalidateQueries({ queryKey: activityKeys.detail(id) });
+    },
+  });
+}
+
+export function useToggleActivityComplete() {
+  const queryClient = useQueryClient();
+
+  return useMutation<{ isCompleted: boolean; status: string }, Error, string>({
+    mutationFn: (id: string) => toggleActivityComplete(id),
+    onSuccess: (_data, id) => {
+      void queryClient.invalidateQueries({ queryKey: activityKeys.detail(id) });
+    },
   });
 }
