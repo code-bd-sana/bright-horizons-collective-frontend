@@ -64,12 +64,14 @@ export function useExploreCatalog(tab: ExploreTab, filters: ExploreFilters) {
   });
   const therapyToyData = useMemo<ExplorePagePayload | undefined>(() => {
     if (tab !== 'therapy-toys' || !therapyToysQuery.data) return undefined;
-    const savedIds = new Set([
-      ...(favoritesQuery.data?.toyIds ?? []),
-      ...Object.entries(savedOverrides)
-        .filter(([, saved]) => saved)
-        .map(([id]) => id),
-    ]);
+    const savedIds = new Set(
+      (favoritesQuery.data?.toyIds ?? []).filter((id) => savedOverrides[id] !== false)
+    );
+    for (const [id, saved] of Object.entries(savedOverrides)) {
+      if (saved) savedIds.add(id);
+      else savedIds.delete(id);
+    }
+
     const items = therapyToysQuery.data.items
       .map((toy) => mapTherapyToyToExploreItem(toy, savedIds.has(toy.id)))
       .filter((item) =>

@@ -59,5 +59,12 @@ export function useDeleteTherapyToyImage() {
 }
 
 export function useToggleTherapyToyFavorite() {
-  return useMutation({ mutationFn: toggleTherapyToyFavorite });
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: toggleTherapyToyFavorite,
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: [...therapyToyKeys.all, 'favorites'] });
+    },
+  });
 }

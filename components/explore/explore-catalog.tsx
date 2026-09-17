@@ -5,9 +5,16 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 import { TherapyToyModal, type TherapyToyModalToy } from '@/components/explore/therapy-toy-modal';
-import { useTherapyToys } from '@/features/therapy-toys/hooks/therapy-toys.queries';
+import { toggleTherapyToyFavorite } from '@/features/therapy-toys/api/therapy-toys.api';
+import {
+  useTherapyToys,
+  useTherapyToyFavorites,
+} from '@/features/therapy-toys/hooks/therapy-toys.queries';
+import { therapyToyKeys } from '@/features/therapy-toys/therapy-toy.keys';
 import { mapTherapyToyToModal } from '@/features/therapy-toys/model/therapy-toy.mapper';
 import type { TherapyToy } from '@/features/therapy-toys/model/therapy-toy.types';
 import {
@@ -18,6 +25,7 @@ import {
   type ExploreItem,
   type FilterKey,
 } from '@/lib/explore-data';
+import { useSession } from '@/services/api/auth/auth.queries';
 
 type SelectedFilters = Record<FilterKey, string[]>;
 
@@ -249,15 +257,98 @@ type ExploreCatalogProps = {
 
 export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalogProps) {
   const router = useRouter();
+  const queryClient = useQueryClient();
+  const { data: session } = useSession();
+  const isAuthenticated = Boolean(session?.user);
+
   const [query, setQuery] = useState('');
   const [filters, setFilters] = useState<SelectedFilters>(emptyFilters);
-  const [savedIds, setSavedIds] = useState<string[]>([]);
   const [selectedToy, setSelectedToy] = useState<TherapyToyModalToy | null>(null);
+  const [savedOverrides, setSavedOverrides] = useState<Record<string, boolean>>({});
+
+  const [savedResourceIds, setSavedResourceIds] = useState<string[]>(() => {
+    if (typeof window === 'undefined') return [];
+    try {
+      const stored = localStorage.getItem('bhc_saved_explore_resources');
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  });
+
   const publicToysQuery = useTherapyToys({
     search: activeType === 'Therapy Toys' ? query || undefined : undefined,
     category: activeType === 'Therapy Toys' ? filters.category[0] : undefined,
     limit: 100,
   });
+
+  const favoritesQuery = useTherapyToyFavorites({
+    enabled: isAuthenticated,
+  });
+
+  const savedToyIds = useMemo(() => {
+    if (!isAuthenticated) return new Set<string>();
+    const baseIds = favoritesQuery.data?.toyIds ?? [];
+    const ids = new Set(baseIds.filter((id) => savedOverrides[id] !== false));
+    for (const [id, saved] of Object.entries(savedOverrides)) {
+      if (saved) ids.add(id);
+      else ids.delete(id);
+    }
+    return ids;
+  }, [favoritesQuery.data?.toyIds, isAuthenticated, savedOverrides]);
+
+  const toggleToyFavoriteMutation = useMutation({
+    mutationFn: toggleTherapyToyFavorite,
+    onMutate: async (toyId: string) => {
+      const willBeSaved = !savedToyIds.has(toyId);
+      setSavedOverrides((prev) => ({ ...prev, [toyId]: willBeSaved }));
+      return { toyId, previousSaved: !willBeSaved };
+    },
+    onSuccess: (result) => {
+      if (result.status === 'favorited') {
+        toast.success('Added to favorites.');
+      } else {
+        toast.success('Removed from favorites.');
+      }
+    },
+    onError: (_error, toyId, context) => {
+      if (context) {
+        setSavedOverrides((prev) => ({ ...prev, [toyId]: context.previousSaved }));
+      }
+      toast.error('Failed to update favorite. Please try again.');
+    },
+    onSettled: () => {
+      void queryClient.invalidateQueries({ queryKey: [...therapyToyKeys.all, 'favorites'] });
+    },
+  });
+
+  const handleRequireLogin = () => {
+    toast.info('Please log in to save favorites.');
+    router.push('/login');
+  };
+
+  const handleToggleToySave = (toyId: string) => {
+    if (!isAuthenticated) {
+      handleRequireLogin();
+      return;
+    }
+    toggleToyFavoriteMutation.mutate(toyId);
+  };
+
+  const handleSaveResource = (id: string) => {
+    if (!isAuthenticated) {
+      handleRequireLogin();
+      return;
+    }
+    setSavedResourceIds((current) => {
+      const next = current.includes(id) ? current.filter((item) => item !== id) : [...current, id];
+      try {
+        localStorage.setItem('bhc_saved_explore_resources', JSON.stringify(next));
+      } catch {}
+      return next;
+    });
+  };
+
   const [openGroup, setOpenGroup] = useState<FilterKey | null>('age');
 
   const results = useMemo(() => {
@@ -397,14 +488,8 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
                     <RealTherapyToyCard
                       toy={toy}
                       height={getMasonryCardHeight(index, realToys.length)}
-                      saved={savedIds.includes(toy.id)}
-                      onSave={() =>
-                        setSavedIds((current) =>
-                          current.includes(toy.id)
-                            ? current.filter((id) => id !== toy.id)
-                            : [...current, toy.id]
-                        )
-                      }
+                      saved={isAuthenticated && savedToyIds.has(toy.id)}
+                      onSave={() => handleToggleToySave(toy.id)}
                       onOpen={() => setSelectedToy(mapTherapyToyToModal(toy))}
                     />
                   </div>
@@ -424,14 +509,8 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
                   <ResourceCard
                     item={item}
                     height={getMasonryCardHeight(index, results.length)}
-                    saved={savedIds.includes(item.id)}
-                    onSave={() =>
-                      setSavedIds((current) =>
-                        current.includes(item.id)
-                          ? current.filter((id) => id !== item.id)
-                          : [...current, item.id]
-                      )
-                    }
+                    saved={isAuthenticated && savedResourceIds.includes(item.id)}
+                    onSave={() => handleSaveResource(item.id)}
                     onOpenToy={(item) =>
                       setSelectedToy({
                         id: item.id,
@@ -472,17 +551,16 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
       </div>
       <TherapyToyModal
         toy={selectedToy}
-        saved={selectedToy ? savedIds.includes(selectedToy.id) : false}
-        saving={false}
-        canSave={false}
-        onLoginRequired={() => router.push('/login')}
-        onSavedChange={(saved) => {
+        saved={Boolean(selectedToy && isAuthenticated && savedToyIds.has(selectedToy.id))}
+        saving={
+          toggleToyFavoriteMutation.isPending &&
+          toggleToyFavoriteMutation.variables === selectedToy?.id
+        }
+        canSave={isAuthenticated}
+        onLoginRequired={handleRequireLogin}
+        onSavedChange={() => {
           if (!selectedToy) return;
-          setSavedIds((current) =>
-            saved
-              ? [...new Set([...current, selectedToy.id])]
-              : current.filter((id) => id !== selectedToy.id)
-          );
+          handleToggleToySave(selectedToy.id);
         }}
         onClose={(open) => !open && setSelectedToy(null)}
       />

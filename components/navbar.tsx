@@ -4,7 +4,8 @@ import { Logo } from '@/components/logo';
 import { Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useSession } from '@/services/api/auth/auth.queries';
 
 export interface NavItem {
   label: string;
@@ -37,39 +38,13 @@ export function Navbar({
 }: NavbarProps) {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { data: session } = useSession();
+  const isAuthenticated = Boolean(session?.user);
   const visibleNavItems = isAuthenticated
     ? navItems.filter((item) => item.href !== '/login')
     : navItems;
   const visibleCtaLabel = isAuthenticated ? 'Dashboard' : ctaLabel;
   const visibleCtaHref = isAuthenticated ? '/dashboard' : ctaHref;
-
-  useEffect(() => {
-    let isMounted = true;
-
-    const getSession = async () => {
-      try {
-        const response = await fetch('/api/auth/session', {
-          credentials: 'same-origin',
-          cache: 'no-store',
-        });
-
-        if (isMounted) {
-          setIsAuthenticated(response.ok);
-        }
-      } catch {
-        if (isMounted) {
-          setIsAuthenticated(false);
-        }
-      }
-    };
-
-    void getSession();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
 
   return (
     <nav className={`relative z-50 inline-flex w-fit items-center max-lg:w-full ${className}`}>

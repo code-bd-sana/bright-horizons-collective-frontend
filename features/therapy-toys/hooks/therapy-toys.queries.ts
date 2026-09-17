@@ -50,9 +50,10 @@ export function useAdminTherapyToySummary() {
   });
 }
 
-export function useTherapyToyFavorites() {
+export function useTherapyToyFavorites(options?: { enabled?: boolean }) {
   return useQuery({
     queryKey: [...therapyToyKeys.all, 'favorites'],
     queryFn: getTherapyToyFavorites,
+    enabled: options?.enabled ?? true,
   });
 }

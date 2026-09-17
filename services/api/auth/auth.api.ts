@@ -63,3 +63,12 @@ export async function resetPassword(input: ResetPasswordInput): Promise<MessageR
     throw toApiError(error);
   }
 }
+
+export async function getClientSession(): Promise<AuthSession | null> {
+  try {
+    const { data } = await browserApi.get<AuthSession>('/auth/session');
+    return data;
+  } catch {
+    return null;
+  }
+}
