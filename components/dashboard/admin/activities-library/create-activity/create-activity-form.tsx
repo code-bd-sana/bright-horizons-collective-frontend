@@ -192,7 +192,10 @@ export function CreateActivityForm() {
     setSelectedImage(null);
   };
 
-  const handleFormSubmit = async (values: ActivityFormValues) => {
+  const handleFormSubmit = async (
+    values: ActivityFormValues,
+    targetStatus: 'DRAFT' | 'PUBLISHED' = 'PUBLISHED'
+  ) => {
     try {
       let featuredImageUrl: string | undefined = undefined;
 
@@ -231,13 +234,13 @@ export function CreateActivityForm() {
         parentTips: values.parentTips?.trim() || undefined,
         safetyNotes: values.safetyNotes?.trim() || undefined,
         accessLevel: mapAccessLevel(values.accessLevel),
-        status: submitStatus,
+        status: targetStatus,
       };
 
       await createActivityMutation.mutateAsync(payload);
 
       toast.success(
-        submitStatus === 'PUBLISHED'
+        targetStatus === 'PUBLISHED'
           ? `Activity “${values.title}” has been published!`
           : `Activity “${values.title}” saved as draft!`
       );
@@ -249,8 +252,16 @@ export function CreateActivityForm() {
     }
   };
 
+  const submitWithStatus = (targetStatus: 'DRAFT' | 'PUBLISHED') => {
+    setSubmitStatus(targetStatus);
+    void handleSubmit((values) => handleFormSubmit(values, targetStatus))();
+  };
+
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)} className="min-w-0 space-y-4">
+    <form
+      onSubmit={handleSubmit((values) => handleFormSubmit(values, submitStatus))}
+      className="min-w-0 space-y-4"
+    >
       <ActivityFormSection title="Basic Information" icon={FileText}>
         <div className="space-y-5">
           <FormField label="Activity Title" required error={errors.title?.message}>
@@ -605,15 +616,12 @@ export function CreateActivityForm() {
         </fieldset>
       </ActivityFormSection>
 
-      <footer className="grid grid-cols-1 gap-3 rounded-[18px] border border-[#e3e9e8] bg-white px-4 py-4 shadow-[0_5px_10px_rgba(38,50,56,0.055)] sm:grid-cols-3 sm:px-5 2xl:flex 2xl:flex-wrap 2xl:items-center 2xl:justify-end">
+      <footer className="flex flex-col gap-3 rounded-[18px] border border-[#e3e9e8] bg-white px-4 py-4 shadow-[0_5px_10px_rgba(38,50,56,0.055)] sm:flex-row sm:items-center sm:justify-end sm:px-5">
         <button
           type="button"
           disabled={isSubmitting}
-          onClick={() => {
-            setSubmitStatus('DRAFT');
-            void handleSubmit(handleFormSubmit)();
-          }}
-          className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-[#2f8b8f] px-4 font-nunito text-sm font-bold text-[#278488] hover:bg-[#f4fafa] disabled:opacity-50 2xl:w-auto"
+          onClick={() => submitWithStatus('DRAFT')}
+          className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-[#2f8b8f] px-4 font-nunito text-sm font-bold text-[#278488] hover:bg-[#f4fafa] disabled:opacity-50 sm:w-auto"
         >
           {isSubmitting && submitStatus === 'DRAFT' && <Loader2 className="size-4 animate-spin" />}
           Save as Draft
@@ -621,19 +629,8 @@ export function CreateActivityForm() {
         <button
           type="button"
           disabled={isSubmitting}
-          onClick={() => toast.info('Preview is coming soon.')}
-          className="h-10 w-full rounded-xl border border-[#e1e8e6] px-4 font-nunito text-sm font-bold text-[#607d8b] hover:bg-[#f8fbfa] disabled:opacity-50 2xl:w-auto"
-        >
-          Preview
-        </button>
-        <button
-          type="button"
-          disabled={isSubmitting}
-          onClick={() => {
-            setSubmitStatus('PUBLISHED');
-            void handleSubmit(handleFormSubmit)();
-          }}
-          className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-[#2f7d7e] px-5 font-nunito text-sm font-bold text-white shadow-[inset_0_-2px_0_rgba(0,0,0,0.08)] hover:bg-[#276d6e] disabled:opacity-50 2xl:w-auto"
+          onClick={() => submitWithStatus('PUBLISHED')}
+          className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-[#2f7d7e] px-5 font-nunito text-sm font-bold text-white shadow-[inset_0_-2px_0_rgba(0,0,0,0.08)] hover:bg-[#276d6e] disabled:opacity-50 sm:w-auto"
         >
           {isSubmitting && submitStatus === 'PUBLISHED' && (
             <Loader2 className="size-4 animate-spin" />
