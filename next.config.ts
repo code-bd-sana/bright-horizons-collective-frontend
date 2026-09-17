@@ -20,9 +20,17 @@ const nextConfig: NextConfig = {
   images: {
     dangerouslyAllowLocalIP: isLocalDevelopmentAsset,
     remotePatterns: [
-      new URL('/uploads/therapy-toys/**', assetOrigin),
+      new URL('/uploads/**', assetOrigin),
       new URL('/figma/explore/**', frontendOrigin),
     ],
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/uploads/:path*',
+        destination: `${assetOrigin}/uploads/:path*`,
+      },
+    ];
   },
 };
 

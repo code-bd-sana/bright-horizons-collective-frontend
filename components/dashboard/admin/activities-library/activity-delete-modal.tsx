@@ -2,12 +2,12 @@
 
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { AlertTriangle, Trash2 } from 'lucide-react';
-import type { ActivityItem } from './activities-library-data';
+import type { Activity } from '@/features/activities/model/activity.types';
 
 type ActivityDeleteModalProps = {
-  activity: ActivityItem | null;
+  activity: Activity | null;
   onClose: (open: boolean) => void;
-  onConfirm: (activity: ActivityItem) => void;
+  onConfirm: (activity: Activity) => void;
 };
 
 export function ActivityDeleteModal({ activity, onClose, onConfirm }: ActivityDeleteModalProps) {

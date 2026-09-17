@@ -20,7 +20,11 @@ const adminActivityFiltersSchema = z.object({
   limit: z.coerce.number().min(1).default(50).optional(),
   search: z.string().optional(),
   developmentCategory: z.string().optional(),
+  minAgeMonths: z.coerce.number().optional(),
+  maxAgeMonths: z.coerce.number().optional(),
+  estimatedDuration: z.string().optional(),
   difficultyLevel: z.string().optional(),
+  membership: z.string().optional(),
   status: z.string().optional(),
 });
 

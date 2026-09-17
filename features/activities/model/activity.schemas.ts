@@ -60,6 +60,20 @@ export const backendActivitiesListEnvelopeSchema = z.object({
   }),
 });
 
+export const activityAdminSummarySchema = z.object({
+  total: z.number(),
+  published: z.number(),
+  draft: z.number(),
+  archived: z.number(),
+  categories: z.number(),
+});
+
+export const activityAdminSummaryEnvelopeSchema = z.object({
+  statusCode: z.number().optional(),
+  message: z.string().optional(),
+  data: activityAdminSummarySchema,
+});
+
 export const activityUploadMetadataSchema = z.object({
   name: z.string().min(1).max(255),
   size: z

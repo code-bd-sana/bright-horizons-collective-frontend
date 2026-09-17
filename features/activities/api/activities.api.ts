@@ -3,12 +3,13 @@ import type { ZodType } from 'zod';
 import { ApiError, toApiError } from '@/services/api/client/api-error';
 import { browserApi } from '@/services/api/client/browser-client';
 import {
+  activityAdminSummaryEnvelopeSchema,
   activityUploadEnvelopeSchema,
   activityUploadMetadataSchema,
   backendActivitiesListEnvelopeSchema,
   backendActivityEnvelopeSchema,
 } from '../model/activity.schemas';
-import type { Activity, CreateActivityInput } from '../model/activity.types';
+import type { Activity, ActivitySummary, CreateActivityInput } from '../model/activity.types';
 
 function parseInput<T>(schema: ZodType<T>, value: unknown): T {
   const parsed = schema.safeParse(value);
@@ -76,5 +77,13 @@ export function getAdminActivities(params: Record<string, unknown> = {}): Promis
       data: Activity[];
       meta: { total: number; page: number; limit: number; totalPages: number };
     };
+  });
+}
+
+export function getAdminActivitySummary(): Promise<ActivitySummary> {
+  return handleApiCall(async () => {
+    const response = await browserApi.get('/activities/admin/summary');
+    const envelope = parseResponse(activityAdminSummaryEnvelopeSchema, response.data);
+    return envelope.data as ActivitySummary;
   });
 }

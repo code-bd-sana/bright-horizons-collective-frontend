@@ -69,4 +69,5 @@ export type ActivitySummary = {
   published: number;
   draft: number;
   archived: number;
+  categories: number;
 };

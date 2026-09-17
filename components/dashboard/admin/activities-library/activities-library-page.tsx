@@ -1,42 +1,116 @@
 'use client';
 
-import { Plus } from 'lucide-react';
+import { Loader2, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
+
+import {
+  useAdminActivities,
+  useAdminActivitySummary,
+} from '@/features/activities/hooks/activities.queries';
+import type { Activity } from '@/features/activities/model/activity.types';
 import { ActivityArchiveModal } from './activity-archive-modal';
 import { ActivityCard } from './activity-card';
 import { ActivityDeleteModal } from './activity-delete-modal';
-import { ActivityLibraryControls } from './activity-library-controls';
-import { activityFilters, activityItems, type ActivityItem } from './activities-library-data';
+import { ActivityFilters, type ActivityFiltersState, type FilterName } from './activity-filters';
 import { ActivitySummaryCards } from './activity-summary-cards';
 
-export function ActivitiesLibraryPage() {
-  const [query, setQuery] = useState('');
-  const [activeFilter, setActiveFilter] = useState<(typeof activityFilters)[number]>('All');
-  const [activities, setActivities] = useState(activityItems);
-  const [archiveTarget, setArchiveTarget] = useState<ActivityItem | null>(null);
-  const [deleteTarget, setDeleteTarget] = useState<ActivityItem | null>(null);
-  const visibleActivities = useMemo(
-    () =>
-      activities.filter(
-        (activity) =>
-          (activeFilter === 'All' || activity.area === activeFilter) &&
-          `${activity.title} ${activity.description}`.toLowerCase().includes(query.toLowerCase())
-      ),
-    [activeFilter, activities, query]
-  );
+const defaultFilters: ActivityFiltersState = {
+  search: '',
+  category: 'all',
+  ageRange: 'all',
+  durationRange: 'all',
+  difficulty: 'all',
+  membership: 'all',
+  status: 'all',
+};
 
-  function archiveActivity(activity: ActivityItem) {
-    setActivities((current) => current.filter(({ id }) => id !== activity.id));
+function matchDurationRange(durationStr: string | null | undefined, range: string): boolean {
+  if (range === 'all') return true;
+  if (!durationStr) return false;
+  const match = durationStr.match(/\d+/);
+  if (!match) return true;
+  const mins = parseInt(match[0], 10);
+  switch (range) {
+    case 'under-10':
+      return mins < 10;
+    case '10-20':
+      return mins >= 10 && mins <= 20;
+    case '20-30':
+      return mins > 20 && mins <= 30;
+    case '30-plus':
+      return mins > 30;
+    default:
+      return true;
+  }
+}
+
+export function ActivitiesLibraryPage() {
+  const [filters, setFilters] = useState<ActivityFiltersState>(defaultFilters);
+  const [archiveTarget, setArchiveTarget] = useState<Activity | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Activity | null>(null);
+
+  const { data: summary, isLoading: isSummaryLoading } = useAdminActivitySummary();
+
+  const apiParams = useMemo(() => {
+    const params: Record<string, unknown> = {
+      limit: 100,
+    };
+    if (filters.search.trim()) params.search = filters.search.trim();
+    if (filters.category !== 'all') params.developmentCategory = filters.category;
+    if (filters.difficulty !== 'all') params.difficultyLevel = filters.difficulty;
+    if (filters.membership !== 'all') params.membership = filters.membership;
+    if (filters.status !== 'all') params.status = filters.status;
+
+    if (filters.ageRange !== 'all') {
+      const [min, max] = filters.ageRange.split('-').map(Number);
+      if (!isNaN(min)) params.minAgeMonths = min;
+      if (!isNaN(max)) params.maxAgeMonths = max;
+    }
+
+    return params;
+  }, [filters]);
+
+  const {
+    data: activitiesData,
+    isLoading: isActivitiesLoading,
+    isError,
+  } = useAdminActivities(apiParams);
+
+  const visibleActivities = useMemo(() => {
+    const list = activitiesData?.data ?? [];
+    return list.filter((activity) =>
+      matchDurationRange(activity.estimatedDuration, filters.durationRange)
+    );
+  }, [activitiesData?.data, filters.durationRange]);
+
+  const handleFilterChange = (filter: FilterName, value: string) => {
+    setFilters((prev) => ({ ...prev, [filter]: value }));
+  };
+
+  const handleSearchChange = (value: string) => {
+    setFilters((prev) => ({ ...prev, search: value }));
+  };
+
+  const handleResetFilters = () => {
+    setFilters(defaultFilters);
+  };
+
+  function archiveActivity(activity: Activity) {
     setArchiveTarget(null);
-    toast.success(`“${activity.title}” has been archived.`);
+    toast.info(`Archive functionality for “${activity.title}” will be connected in the next step.`);
   }
 
-  function deleteActivity(activity: ActivityItem) {
-    setActivities((current) => current.filter(({ id }) => id !== activity.id));
+  function deleteActivity(activity: Activity) {
     setDeleteTarget(null);
-    toast.success(`“${activity.title}” has been deleted permanently.`);
+    toast.info(`Delete functionality for “${activity.title}” will be connected in the next step.`);
+  }
+
+  function handleDuplicate(activity: Activity) {
+    toast.info(
+      `Duplicate functionality for “${activity.title}” will be connected in the next step.`
+    );
   }
 
   return (
@@ -47,7 +121,11 @@ export function ActivitiesLibraryPage() {
             Activities Library
           </h1>
           <p className="mt-0.5 font-manrope text-sm leading-5.5 text-[#6b6b6b]">
-            94 published activities across 6 development areas
+            {summary
+              ? `${summary.published} published activities across ${summary.categories} development areas`
+              : isSummaryLoading
+                ? 'Loading activities overview...'
+                : 'Manage and view all activities in the library'}
           </p>
         </div>
         <Link
@@ -58,32 +136,60 @@ export function ActivitiesLibraryPage() {
           Create Activity
         </Link>
       </header>
+
       <div className="mt-8">
-        <ActivitySummaryCards />
+        <ActivitySummaryCards summary={summary} isLoading={isSummaryLoading} />
       </div>
+
       <div className="mt-8">
-        <ActivityLibraryControls
-          query={query}
-          activeFilter={activeFilter}
-          onQueryChange={setQuery}
-          onFilterChange={setActiveFilter}
+        <ActivityFilters
+          filters={filters}
+          onSearchChange={handleSearchChange}
+          onFilterChange={handleFilterChange}
+          onResetFilters={handleResetFilters}
         />
       </div>
-      <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 2xl:grid-cols-3">
-        {visibleActivities.map((activity) => (
-          <ActivityCard
-            key={activity.id}
-            activity={activity}
-            onArchive={setArchiveTarget}
-            onDelete={setDeleteTarget}
-          />
-        ))}
-      </div>
-      {visibleActivities.length === 0 && (
-        <div className="mt-8 rounded-2xl border border-dashed border-[#d8dfdf] bg-white px-6 py-16 text-center font-manrope text-sm text-[#65758a]">
-          No activities match your search.
+
+      {isActivitiesLoading ? (
+        <div className="mt-8 flex min-h-64 flex-col items-center justify-center rounded-2xl border border-[#e8ebe8] bg-white p-12 text-[#607d8b]">
+          <Loader2 className="size-8 animate-spin text-[#2f7d7e]" />
+          <p className="mt-3 font-manrope text-sm">Loading activities...</p>
+        </div>
+      ) : isError ? (
+        <div className="mt-8 rounded-2xl border border-dashed border-[#e57373] bg-white p-12 text-center text-[#e57373]">
+          <p className="font-manrope text-sm font-medium">
+            Unable to load activities. Please try refreshing the page.
+          </p>
+        </div>
+      ) : visibleActivities.length === 0 ? (
+        <div className="mt-8 flex flex-col items-center justify-center rounded-2xl border border-dashed border-[#d8dfdf] bg-white px-6 py-16 text-center">
+          <p className="font-nunito text-lg font-semibold text-[#263238]">No activities found</p>
+          <p className="mt-1 max-w-md font-manrope text-sm text-[#65758a]">
+            No activities match your current search and filter criteria. Try adjusting the filters
+            or adding a new activity.
+          </p>
+          <button
+            type="button"
+            onClick={handleResetFilters}
+            className="mt-4 rounded-xl border border-[#2f7d7e] px-4 py-2 font-nunito text-sm font-bold text-[#278488] transition-colors hover:bg-[#edf6f5]"
+          >
+            Clear all filters
+          </button>
+        </div>
+      ) : (
+        <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 2xl:grid-cols-3">
+          {visibleActivities.map((activity) => (
+            <ActivityCard
+              key={activity.id}
+              activity={activity}
+              onArchive={setArchiveTarget}
+              onDelete={setDeleteTarget}
+              onDuplicate={handleDuplicate}
+            />
+          ))}
         </div>
       )}
+
       <ActivityArchiveModal
         activity={archiveTarget}
         onClose={() => setArchiveTarget(null)}
