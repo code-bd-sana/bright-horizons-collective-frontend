@@ -1,5 +1,5 @@
-import { MessagesPage } from '@/components/dashboard/messages/messages-page';
+import { ParentMessagesPage } from '@/components/dashboard/messages/parent-messages-page';
 
 export default function MessagesRoute() {
-  return <MessagesPage />;
+  return <ParentMessagesPage />;
 }
