@@ -6,7 +6,7 @@ import { AddChildSelect } from './add-child-select';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
-import { toast } from 'sonner';
+import { useAddChildWizard } from '@/features/child-profiles/context/add-child-context';
 
 const caregiverInfoSchema = z.object({
   name: z.string().trim().min(1, 'Please enter a name.'),
@@ -21,13 +21,20 @@ type CaregiverInfoValues = z.infer<typeof caregiverInfoSchema>;
 const relationships = ['Father', 'Mother', 'Caregiver', 'Grandparent', 'Foster parent', 'Other'];
 const countryOptions = [{ label: 'US', value: 'US' }];
 const inputClassName =
-  'h-11 w-full rounded-full border border-[#d8ddd9] bg-white px-4 py-2.5 font-manrope text-base leading-6 tracking-[-0.176px] text-[#515b60] shadow-[0_1px_2px_rgba(16,24,40,0.05)] outline-none focus:border-[#2f7d7e]';
+  'h-11 w-full rounded-full border border-[#d8ddd9] bg-white px-4 py-2.5 font-manrope text-base leading-6 tracking-[-0.176px] text-[#263238] placeholder:text-[#a8adaf] shadow-[0_1px_2px_rgba(16,24,40,0.05)] outline-none focus:border-[#2f7d7e]';
 
 export function AddChildCaregiverInfo() {
   const router = useRouter();
+  const { state, updateStep2 } = useAddChildWizard();
 
   function submitCaregiverInfo(data: CaregiverInfoValues) {
-    toast.success(`${data.name}'s caregiver information has been saved.`);
+    updateStep2({
+      caregiverName: data.name,
+      relationship: data.relationship,
+      email: data.email,
+      country: data.country,
+      phone: data.phone,
+    });
     router.push('/dashboard/child-profiles/add-child/development-focus');
   }
 
@@ -37,11 +44,11 @@ export function AddChildCaregiverInfo() {
 
       <DynamicForm
         defaultValues={{
-          name: 'Sarah',
-          relationship: 'Mother',
-          email: 'sarah@example.com',
-          country: 'US',
-          phone: '+1 (555) 000-0000',
+          name: state.caregiverName,
+          relationship: state.relationship,
+          email: state.email,
+          country: state.country || 'US',
+          phone: state.phone,
         }}
         fields={[]}
         onSubmit={submitCaregiverInfo}
@@ -59,7 +66,11 @@ export function AddChildCaregiverInfo() {
                   <span className="font-manrope text-lg font-medium leading-6.75 tracking-[-0.27px]">
                     Name
                   </span>
-                  <input className={inputClassName} {...form.register('name')} />
+                  <input
+                    placeholder="Caregiver's full name"
+                    className={inputClassName}
+                    {...form.register('name')}
+                  />
                   {form.formState.errors.name && (
                     <span className="font-manrope text-xs text-[#b24b4b]">
                       {form.formState.errors.name.message}
@@ -78,9 +89,11 @@ export function AddChildCaregiverInfo() {
                       return (
                         <button
                           aria-pressed={selected}
-                          className={`rounded-full border border-[#d4d6d7] px-2.25 py-1.75 font-nunito text-base font-medium leading-6 tracking-[-0.176px] transition-colors ${selected ? 'bg-[#f2b59f] text-[#515b60]' : 'bg-white text-[#7d8488]'}`}
+                          className={`rounded-full border border-[#d4d6d7] px-4 py-2 font-nunito text-base font-medium leading-6 tracking-[-0.176px] transition-colors ${selected ? 'border-[#2f7d7e] bg-[#2f7d7e] text-white' : 'bg-white text-[#515b60] hover:border-[#2f7d7e]'}`}
                           key={relationship}
-                          onClick={() => form.setValue('relationship', relationship)}
+                          onClick={() =>
+                            form.setValue('relationship', relationship, { shouldValidate: true })
+                          }
                           type="button"
                         >
                           {relationship}
@@ -88,6 +101,11 @@ export function AddChildCaregiverInfo() {
                       );
                     })}
                   </div>
+                  {form.formState.errors.relationship && (
+                    <span className="font-manrope text-xs text-[#b24b4b]">
+                      {form.formState.errors.relationship.message}
+                    </span>
+                  )}
                 </fieldset>
 
                 <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-2.5">
@@ -95,7 +113,12 @@ export function AddChildCaregiverInfo() {
                     <span className="font-manrope text-lg font-medium leading-6.75 tracking-[-0.27px]">
                       Email
                     </span>
-                    <input className={inputClassName} type="email" {...form.register('email')} />
+                    <input
+                      placeholder="caregiver@example.com"
+                      className={inputClassName}
+                      type="email"
+                      {...form.register('email')}
+                    />
                     {form.formState.errors.email && (
                       <span className="font-manrope text-xs text-[#b24b4b]">
                         {form.formState.errors.email.message}
@@ -106,7 +129,7 @@ export function AddChildCaregiverInfo() {
                     <span className="font-manrope text-lg font-medium leading-6.75 tracking-[-0.27px]">
                       Phone
                     </span>
-                    <span className="flex min-h-11 items-stretch rounded-[14px] border border-[#e7eceb] bg-[#f4f8f6] shadow-[0_1px_2px_rgba(16,24,40,0.05)] focus-within:border-[#2f7d7e]">
+                    <span className="flex min-h-11 items-stretch rounded-[14px] border border-[#d8ddd9] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.05)] focus-within:border-[#2f7d7e]">
                       <AddChildSelect
                         ariaLabel="Country code"
                         name="country"
@@ -123,7 +146,8 @@ export function AddChildCaregiverInfo() {
                       />
                       <input
                         aria-label="Phone number"
-                        className="min-w-0 flex-1 bg-transparent py-2.5 pl-3 pr-3.5 font-manrope text-base leading-6 tracking-[-0.176px] text-[#515b60] outline-none"
+                        placeholder="+1 (555) 000-0000"
+                        className="min-w-0 flex-1 bg-transparent py-2.5 pl-3 pr-3.5 font-manrope text-base leading-6 tracking-[-0.176px] text-[#263238] placeholder:text-[#a8adaf] outline-none"
                         {...form.register('phone')}
                       />
                     </span>
@@ -139,13 +163,20 @@ export function AddChildCaregiverInfo() {
 
             <div className="mt-8 flex flex-col gap-3 sm:mt-14 sm:flex-row sm:flex-wrap sm:gap-4">
               <button
-                className="h-14 w-full rounded-full border border-[#d5e5e5] bg-[#2f7d7e] px-4 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-white sm:w-auto"
+                type="button"
+                onClick={() => router.push('/dashboard/child-profiles/add-child')}
+                className="flex h-14 w-full items-center justify-center rounded-full border border-[#d4d6d7] bg-white px-6 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-[#515b60] transition-colors hover:bg-gray-50 sm:w-auto"
+              >
+                Back
+              </button>
+              <button
+                className="h-14 w-full rounded-full border border-[#d5e5e5] bg-[#2f7d7e] px-6 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-white transition-colors hover:bg-[#276a6b] sm:w-auto"
                 type="submit"
               >
                 Continue to Development &amp; Focus
               </button>
               <Link
-                className="flex h-14 w-full items-center justify-center rounded-full border border-[#d4d6d7] bg-white px-4 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-[#14094b] sm:w-30.75"
+                className="flex h-14 w-full items-center justify-center rounded-full border border-[#d4d6d7] bg-white px-6 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-[#515b60] transition-colors hover:bg-gray-50 sm:w-auto"
                 href="/dashboard/child-profiles"
               >
                 Cancel
@@ -157,3 +188,5 @@ export function AddChildCaregiverInfo() {
     </section>
   );
 }
+
+export default AddChildCaregiverInfo;

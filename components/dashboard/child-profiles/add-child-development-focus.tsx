@@ -5,7 +5,7 @@ import { AddChildStepper } from './add-child-stepper';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
-import { toast } from 'sonner';
+import { useAddChildWizard } from '@/features/child-profiles/context/add-child-context';
 
 const developmentFocusSchema = z.object({
   areasOfSupport: z.array(z.string()).min(1, 'Choose at least one area of support.'),
@@ -27,9 +27,13 @@ const supportAreas = [
 
 export function AddChildDevelopmentFocus() {
   const router = useRouter();
+  const { state, updateStep3 } = useAddChildWizard();
 
   function submitDevelopmentFocus(data: DevelopmentFocusValues) {
-    toast.success(`${data.areasOfSupport.length} development areas have been saved.`);
+    updateStep3({
+      areasOfSupport: data.areasOfSupport,
+      notes: data.notes,
+    });
     router.push('/dashboard/child-profiles/add-child/interests-preferences');
   }
 
@@ -39,16 +43,15 @@ export function AddChildDevelopmentFocus() {
 
       <DynamicForm
         defaultValues={{
-          areasOfSupport: ['Fine Motor', 'Focus & Attention'],
-          notes:
-            'Maya responds wonderfully to music during play routines. Enjoys bright colors and tactile textures.',
+          areasOfSupport: state.areasOfSupport,
+          notes: state.notes,
         }}
         fields={[]}
         onSubmit={submitDevelopmentFocus}
         schema={developmentFocusSchema}
       >
         {(form) => {
-          const selectedAreas = form.watch('areasOfSupport');
+          const selectedAreas = form.watch('areasOfSupport') || [];
 
           function toggleArea(area: string) {
             form.setValue(
@@ -79,7 +82,7 @@ export function AddChildDevelopmentFocus() {
                         return (
                           <button
                             aria-pressed={selected}
-                            className={`rounded-full border px-2.25 py-1.75 font-nunito text-base font-medium leading-6 tracking-[-0.176px] transition-colors ${selected ? 'border-[#fce9e3] bg-[#f2b59f] text-[#515b60]' : 'border-[#d4d6d7] bg-white text-[#7d8488]'}`}
+                            className={`rounded-full border px-4 py-2 font-nunito text-base font-medium leading-6 tracking-[-0.176px] transition-colors ${selected ? 'border-[#2f7d7e] bg-[#2f7d7e] text-white' : 'border-[#d4d6d7] bg-white text-[#515b60] hover:border-[#2f7d7e]'}`}
                             key={area}
                             onClick={() => toggleArea(area)}
                             type="button"
@@ -89,7 +92,7 @@ export function AddChildDevelopmentFocus() {
                         );
                       })}
                     </div>
-                    <p className="font-manrope text-base leading-6 tracking-[-0.176px] text-[#7d8488]">
+                    <p className="font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#7d8488]">
                       Select the developmental areas you&apos;d like to focus on right now.
                     </p>
                     {form.formState.errors.areasOfSupport && (
@@ -99,12 +102,14 @@ export function AddChildDevelopmentFocus() {
                     )}
                   </fieldset>
 
-                  <label className="flex flex-col gap-4">
+                  <label className="flex flex-col gap-2">
                     <span className="font-manrope text-lg font-medium leading-6.75 tracking-[-0.27px]">
-                      Specific Goals or Notes (Optional)
+                      Specific Goals or Notes{' '}
+                      <span className="text-[#7d8488] font-normal">(Optional)</span>
                     </span>
                     <textarea
-                      className="h-37.5 w-full resize-none rounded-3xl border border-[#d8ddd9] bg-white p-4 font-manrope text-base leading-6 tracking-[-0.176px] text-[#515b60] shadow-[0_1px_2px_rgba(16,24,40,0.05)] outline-none placeholder:text-[#a8adaf] focus:border-[#2f7d7e]"
+                      placeholder="e.g. Working on fine motor grip, responds well to music and tactile play..."
+                      className="h-37.5 w-full resize-none rounded-3xl border border-[#d8ddd9] bg-white p-4 font-manrope text-base leading-6 tracking-[-0.176px] text-[#263238] shadow-[0_1px_2px_rgba(16,24,40,0.05)] outline-none placeholder:text-[#a8adaf] focus:border-[#2f7d7e]"
                       {...form.register('notes')}
                     />
                   </label>
@@ -113,13 +118,22 @@ export function AddChildDevelopmentFocus() {
 
               <div className="mt-8 flex flex-col gap-3 sm:mt-14 sm:flex-row sm:flex-wrap sm:gap-4">
                 <button
-                  className="h-14 w-full rounded-full border border-[#d5e5e5] bg-[#2f7d7e] px-4 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-white sm:w-auto"
+                  type="button"
+                  onClick={() =>
+                    router.push('/dashboard/child-profiles/add-child/caregiver-information')
+                  }
+                  className="flex h-14 w-full items-center justify-center rounded-full border border-[#d4d6d7] bg-white px-6 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-[#515b60] transition-colors hover:bg-gray-50 sm:w-auto"
+                >
+                  Back
+                </button>
+                <button
+                  className="h-14 w-full rounded-full border border-[#d5e5e5] bg-[#2f7d7e] px-6 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-white transition-colors hover:bg-[#276a6b] sm:w-auto"
                   type="submit"
                 >
                   Continue to Interests &amp; Preferences
                 </button>
                 <Link
-                  className="flex h-14 w-full items-center justify-center rounded-full border border-[#d4d6d7] bg-white px-4 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-[#14094b] sm:w-30.75"
+                  className="flex h-14 w-full items-center justify-center rounded-full border border-[#d4d6d7] bg-white px-6 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-[#515b60] transition-colors hover:bg-gray-50 sm:w-auto"
                   href="/dashboard/child-profiles"
                 >
                   Cancel
@@ -132,3 +146,5 @@ export function AddChildDevelopmentFocus() {
     </section>
   );
 }
+
+export default AddChildDevelopmentFocus;
