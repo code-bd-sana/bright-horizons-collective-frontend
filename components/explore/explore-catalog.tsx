@@ -17,6 +17,8 @@ import {
 import { therapyToyKeys } from '@/features/therapy-toys/therapy-toy.keys';
 import { mapTherapyToyToModal } from '@/features/therapy-toys/model/therapy-toy.mapper';
 import type { TherapyToy } from '@/features/therapy-toys/model/therapy-toy.types';
+import { useActivities } from '@/features/activities/hooks/activities.queries';
+import type { Activity } from '@/features/activities/model/activity.types';
 import {
   contentTypes,
   exploreItems,
@@ -250,6 +252,94 @@ function RealTherapyToyCard({
   );
 }
 
+function formatAgeRange(minMonths?: number, maxMonths?: number): string {
+  const min = minMonths ?? 0;
+  const max = maxMonths ?? 2160;
+  if (min === 0 && max <= 12) return '0–12 mo';
+  if (min >= 12 && max <= 24) return '12–24 mo';
+  if (max <= 24) return `${min}–${max} mo`;
+  const minYears = Math.floor(min / 12);
+  const maxYears = Math.ceil(max / 12);
+  if (minYears === maxYears) return `${minYears} yr`;
+  if (maxYears >= 18) return `${minYears}+ yr`;
+  return `${minYears}–${maxYears} yr`;
+}
+
+function RealActivityCard({ activity, height }: { activity: Activity; height: number }) {
+  const router = useRouter();
+  const imageSrc =
+    activity.featuredImageUrl || '/images/admin/activities/stacking-sorting-challenge.png';
+
+  const badgeText =
+    activity.otDesigned ||
+    (activity.isOtDesigned
+      ? 'OT Approved'
+      : activity.difficultyLevel === 'CHALLENGING'
+        ? 'Advanced'
+        : activity.difficultyLevel === 'MODERATE'
+          ? 'Moderate'
+          : 'Easy');
+
+  return (
+    <article
+      onClick={() => router.push(`/explore/activities/${activity.id}`)}
+      className="relative cursor-pointer overflow-hidden rounded-2xl border border-[#EDEEF0] bg-white p-4 text-white shadow-[0px_2px_16px_rgba(198,202,209,0.22)] transition-transform hover:-translate-y-0.5"
+      style={{ height: height || 540 }}
+    >
+      <Image
+        src={imageSrc}
+        alt={activity.title}
+        fill
+        sizes="(min-width: 1280px) 23vw, 46vw"
+        className="object-cover"
+        unoptimized={Boolean(
+          activity.featuredImageUrl?.startsWith('http') ||
+          activity.featuredImageUrl?.startsWith('/uploads')
+        )}
+      />
+      <div className="absolute inset-x-0 bottom-0 h-[58%] bg-linear-to-t from-[#242424]/90 via-[#242424]/50 to-transparent" />
+
+      <div className="relative flex h-full flex-col justify-between">
+        <div className="flex items-start justify-between gap-3">
+          <span className="rounded-full bg-[#E3F7EC] px-2.5 py-1 font-manrope text-[10px] font-semibold leading-3.5 text-[#16643B]">
+            {badgeText}
+          </span>
+          {/* Bookmark & Completed buttons are removed as this card is strictly for show */}
+        </div>
+
+        <div className="flex flex-col items-start gap-4">
+          <div>
+            <h3 className="font-nunito text-xl font-medium leading-7 line-clamp-2">
+              {activity.title}
+            </h3>
+            <div className="mt-2 flex flex-wrap items-center gap-1.5">
+              <span className="rounded-full bg-[#DCEEEE] px-2.5 py-0.5 font-nunito text-xs leading-4 text-[#174A4D]">
+                {formatAgeRange(activity.minAgeMonths, activity.maxAgeMonths)}
+              </span>
+              <span className="rounded-full bg-[#DCEEEE] px-2.5 py-0.5 font-nunito text-xs leading-4 text-[#174A4D]">
+                {activity.developmentCategory}
+              </span>
+              <span className="flex items-center gap-1 px-1 font-nunito text-xs leading-4 text-white">
+                <Clock3 className="size-3" />
+                {activity.estimatedDuration || '15 min'}
+              </span>
+            </div>
+          </div>
+
+          <Link
+            href={`/explore/activities/${activity.id}`}
+            onClick={(e) => e.stopPropagation()}
+            className="flex items-center gap-1 px-2.5 py-2 font-manrope text-base font-semibold leading-6.75 tracking-[-0.24px] text-[#F2B59F] hover:text-[#f7cbba] transition-colors"
+          >
+            View Activity
+            <ArrowRight className="size-5" />
+          </Link>
+        </div>
+      </div>
+    </article>
+  );
+}
+
 type ExploreCatalogProps = {
   activeType: ExploreContentType;
   onActiveTypeChange: (type: ExploreContentType) => void;
@@ -282,6 +372,15 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
     limit: 100,
   });
 
+  const publicActivitiesQuery = useActivities(
+    {
+      search: activeType === 'Activities' ? query || undefined : undefined,
+      status: 'PUBLISHED',
+      limit: 100,
+    },
+    { enabled: activeType === 'Activities' }
+  );
+
   const favoritesQuery = useTherapyToyFavorites({
     enabled: isAuthenticated,
   });
@@ -295,7 +394,7 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
       else ids.delete(id);
     }
     return ids;
-  }, [favoritesQuery.data?.toyIds, isAuthenticated, savedOverrides]);
+  }, [favoritesQuery.data, isAuthenticated, savedOverrides]);
 
   const toggleToyFavoriteMutation = useMutation({
     mutationFn: toggleTherapyToyFavorite,
@@ -377,6 +476,64 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
         : [...current[key], option],
     }));
   };
+
+  const realActivities = useMemo(() => {
+    if (activeType !== 'Activities') return [];
+    const items = publicActivitiesQuery.data?.data ?? [];
+    const normalizedQuery = query.trim().toLowerCase();
+
+    return items
+      .filter((activity) => activity.status === 'PUBLISHED')
+      .filter((activity) => {
+        const matchesQuery =
+          !normalizedQuery ||
+          [
+            activity.title,
+            activity.shortDescription,
+            activity.developmentCategory,
+            activity.developmentGoal,
+            activity.difficultyLevel,
+            formatAgeRange(activity.minAgeMonths, activity.maxAgeMonths),
+          ]
+            .join(' ')
+            .toLowerCase()
+            .includes(normalizedQuery);
+
+        const matchesAge =
+          filters.age.length === 0 ||
+          filters.age.some((ageOpt) => {
+            if (ageOpt === '0–12 mo')
+              return activity.minAgeMonths <= 12 && activity.maxAgeMonths >= 0;
+            if (ageOpt === '12–24 mo')
+              return activity.minAgeMonths <= 24 && activity.maxAgeMonths >= 12;
+            if (ageOpt === '2–3 yr')
+              return activity.minAgeMonths <= 36 && activity.maxAgeMonths >= 24;
+            if (ageOpt === '3–5 yr')
+              return activity.minAgeMonths <= 60 && activity.maxAgeMonths >= 36;
+            if (ageOpt === '5–7 yr')
+              return activity.minAgeMonths <= 84 && activity.maxAgeMonths >= 60;
+            return true;
+          });
+
+        const matchesSkill =
+          filters.skill.length === 0 ||
+          filters.skill.some((skillOpt) =>
+            activity.developmentCategory?.toLowerCase().includes(skillOpt.toLowerCase())
+          );
+
+        const matchesDifficulty =
+          filters.difficulty.length === 0 ||
+          filters.difficulty.some((diffOpt) => {
+            const opt = diffOpt.toLowerCase();
+            if (opt === 'easy') return activity.difficultyLevel === 'EASY';
+            if (opt === 'moderate') return activity.difficultyLevel === 'MODERATE';
+            if (opt === 'advanced') return activity.difficultyLevel === 'CHALLENGING';
+            return true;
+          });
+
+        return matchesQuery && matchesAge && matchesSkill && matchesDifficulty;
+      });
+  }, [activeType, filters, publicActivitiesQuery.data?.data, query]);
 
   const realToys = useMemo(() => {
     if (activeType !== 'Therapy Toys') return [];
@@ -466,7 +623,50 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
         </div>
 
         <div className="min-w-0 flex-1 w-full">
-          {activeType === 'Therapy Toys' ? (
+          {activeType === 'Activities' ? (
+            publicActivitiesQuery.isLoading ? (
+              <div className="columns-1 gap-6 lg:columns-2 xl:columns-3">
+                {Array.from({ length: 6 }, (_, index) => (
+                  <div
+                    key={index}
+                    className="mb-6 break-inside-avoid animate-pulse rounded-2xl bg-[#edf4f1]"
+                    style={{ height: getMasonryCardHeight(index, 6) }}
+                  />
+                ))}
+              </div>
+            ) : publicActivitiesQuery.isError ? (
+              <div className="rounded-2xl border border-[#f2c7c2] bg-[#fff8f7] p-8 text-center font-manrope text-sm text-[#b24b4b]">
+                Unable to load activities.
+              </div>
+            ) : realActivities.length ? (
+              <div className="columns-1 gap-6 lg:columns-2 xl:columns-3">
+                {realActivities.map((activity, index) => (
+                  <div key={activity.id} className="mb-6 break-inside-avoid">
+                    <RealActivityCard
+                      activity={activity}
+                      height={getMasonryCardHeight(index, realActivities.length)}
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex min-h-80 flex-col items-center justify-center rounded-2xl border border-dashed border-[#ACCBCB] px-6 text-center">
+                <p className="font-nunito text-xl font-semibold text-[#263238]">
+                  No activities found.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setQuery('');
+                    setFilters(emptyFilters);
+                  }}
+                  className="mt-3 font-manrope text-sm font-semibold text-[#2F7D7E] underline"
+                >
+                  Clear search and filters
+                </button>
+              </div>
+            )
+          ) : activeType === 'Therapy Toys' ? (
             publicToysQuery.isLoading ? (
               <div className="columns-1 gap-6 lg:columns-2 xl:columns-3">
                 {Array.from({ length: 6 }, (_, index) => (

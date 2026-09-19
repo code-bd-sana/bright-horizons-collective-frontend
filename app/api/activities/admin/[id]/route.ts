@@ -36,7 +36,7 @@ export async function GET(_request: NextRequest, context: AdminActivityRouteCont
   if (!id.success) return invalidIdResponse();
 
   try {
-    const response = await serverApi.get(`/activities/${id.data}`, {
+    const response = await serverApi.get(`/activities/admin/${id.data}`, {
       headers: authHeaders,
     });
     return validatedUpstreamResponse(response.data, backendActivityEnvelopeSchema);

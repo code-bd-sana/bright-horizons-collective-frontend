@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
   if ('response' in query) return query.response;
 
   try {
-    const response = await serverApi.get('/activities', {
+    const response = await serverApi.get('/activities/admin', {
       params: query.data,
       headers: authHeaders,
     });

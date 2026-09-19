@@ -29,7 +29,11 @@ export async function GET(request: NextRequest) {
   if ('response' in query) return query.response;
 
   try {
-    const response = await serverApi.get('/activities', { params: query.data });
+    const params = {
+      ...query.data,
+      status: 'PUBLISHED',
+    };
+    const response = await serverApi.get('/activities', { params });
     return validatedUpstreamResponse(response.data, backendActivitiesListEnvelopeSchema);
   } catch (error) {
     return safeBackendErrorResponse(error, 'Unable to load activities.');

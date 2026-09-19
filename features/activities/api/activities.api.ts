@@ -73,6 +73,20 @@ export function uploadActivityImage(file: File): Promise<{ url: string }> {
   });
 }
 
+export function getActivities(params: Record<string, unknown> = {}): Promise<{
+  data: Activity[];
+  meta: { total: number; page: number; limit: number; totalPages: number };
+}> {
+  return handleApiCall(async () => {
+    const response = await browserApi.get('/activities', { params });
+    const envelope = parseResponse(backendActivitiesListEnvelopeSchema, response.data);
+    return envelope.data as {
+      data: Activity[];
+      meta: { total: number; page: number; limit: number; totalPages: number };
+    };
+  });
+}
+
 export function getAdminActivities(params: Record<string, unknown> = {}): Promise<{
   data: Activity[];
   meta: { total: number; page: number; limit: number; totalPages: number };
@@ -96,6 +110,8 @@ export function getAdminActivity(id: string): Promise<Activity> {
     return envelope.data as Activity;
   });
 }
+
+export const getActivity = getAdminActivity;
 
 export function getAdminActivitySummary(): Promise<ActivitySummary> {
   return handleApiCall(async () => {
