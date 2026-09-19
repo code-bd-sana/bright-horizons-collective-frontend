@@ -31,3 +31,13 @@ export function useThreadMessages(
     refetchInterval: options?.refetchInterval ?? 3000,
   });
 }
+
+export const useMessageThreads = useAdminThreads;
+
+export function useUnreadMessagesCount(options?: { refetchInterval?: number | false }) {
+  const { data: threads = [] } = useAdminThreads({
+    refetchInterval: options?.refetchInterval ?? 5000,
+  });
+
+  return threads.reduce((acc, t) => acc + (t.unreadCount || 0), 0);
+}

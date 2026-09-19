@@ -10,13 +10,17 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { X } from 'lucide-react';
 
+import { useUnreadMessagesCount } from '@/features/messages/hooks/messages.queries';
+
 function NavigationList({
   items,
   pathname,
+  unreadMessagesCount = 0,
   onNavigate,
 }: {
   items: RoleNavigationItem[];
   pathname: string;
+  unreadMessagesCount?: number;
   onNavigate?: () => void;
 }) {
   return (
@@ -24,6 +28,11 @@ function NavigationList({
       {items.map((item) => {
         const isActive =
           item.match === 'prefix' ? pathname.startsWith(item.href) : pathname === item.href;
+        const isMessages =
+          item.href === '/dashboard/messages' ||
+          item.href === '/dashboard/admin/messages' ||
+          item.name.toLowerCase() === 'messages';
+
         return (
           <Link
             key={item.name}
@@ -37,7 +46,15 @@ function NavigationList({
             )}
           >
             <Image src={item.icon} alt="" width={20} height={20} className="mr-2 shrink-0" />
-            {item.name}
+            <span className="truncate">{item.name}</span>
+            {isMessages && unreadMessagesCount > 0 && (
+              <span
+                className="ml-auto flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full bg-[#2f7d7e] px-1.5 font-nunito text-[11px] font-bold text-white shadow-xs"
+                aria-label={`${unreadMessagesCount} unread messages`}
+              >
+                {unreadMessagesCount > 99 ? '99+' : unreadMessagesCount}
+              </span>
+            )}
           </Link>
         );
       })}
@@ -52,6 +69,7 @@ export function Sidebar({ role = 'parent' }: { role?: AuthRole }) {
   const isAdmin = role === 'admin';
   const roleConfig = getRoleConfig(role);
   const { menuItems, otherItems, profile } = roleConfig;
+  const unreadMessagesCount = useUnreadMessagesCount();
 
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' });
@@ -86,7 +104,11 @@ export function Sidebar({ role = 'parent' }: { role?: AuthRole }) {
                 <p className="w-48 px-1 font-nunito text-xs font-medium leading-4 text-[#7d8488]">
                   MENU
                 </p>
-                <NavigationList items={menuItems} pathname={pathname} />
+                <NavigationList
+                  items={menuItems}
+                  pathname={pathname}
+                  unreadMessagesCount={unreadMessagesCount}
+                />
               </section>
 
               {!isAdmin && (
@@ -94,7 +116,11 @@ export function Sidebar({ role = 'parent' }: { role?: AuthRole }) {
                   <p className="w-48 px-1 font-nunito text-xs font-medium leading-4 text-[#7d8488]">
                     OTHERS
                   </p>
-                  <NavigationList items={otherItems} pathname={pathname} />
+                  <NavigationList
+                    items={otherItems}
+                    pathname={pathname}
+                    unreadMessagesCount={unreadMessagesCount}
+                  />
                 </section>
               )}
             </nav>
@@ -210,6 +236,7 @@ export function Sidebar({ role = 'parent' }: { role?: AuthRole }) {
               <NavigationList
                 items={menuItems}
                 pathname={pathname}
+                unreadMessagesCount={unreadMessagesCount}
                 onNavigate={() => setSidebarOpen(false)}
               />
             </section>
@@ -221,6 +248,7 @@ export function Sidebar({ role = 'parent' }: { role?: AuthRole }) {
                 <NavigationList
                   items={otherItems}
                   pathname={pathname}
+                  unreadMessagesCount={unreadMessagesCount}
                   onNavigate={() => setSidebarOpen(false)}
                 />
               </section>

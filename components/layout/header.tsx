@@ -9,6 +9,7 @@ import type { AuthRole } from '@/services/api/auth/auth.types';
 import { getRoleConfig } from '@/lib/role-config';
 import { useAppStore } from '@/store/use-app-store';
 import { useChildProfiles } from '@/features/child-profiles/hooks/child-profiles.queries';
+import { useUnreadMessagesCount } from '@/features/messages/hooks/messages.queries';
 import type { ChildProfile } from '@/features/child-profiles/model/child-profile.types';
 
 const notificationDescription =
@@ -241,6 +242,7 @@ export function Header({ role = 'parent' }: { role?: AuthRole }) {
   const [profilesOpen, setProfilesOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
   const [allRead, setAllRead] = useState(false);
+  const unreadMessagesCount = useUnreadMessagesCount();
 
   const { data: children = [], isLoading: isChildrenLoading } = useChildProfiles();
 
@@ -362,7 +364,9 @@ export function Header({ role = 'parent' }: { role?: AuthRole }) {
         >
           <span className="relative flex size-6 items-center justify-center text-[#27494e]">
             <MessageCircle aria-hidden="true" size={22} strokeWidth={1.7} />
-            <span className="absolute right-0.5 top-0.5 size-1.5 rounded-full bg-[#d4484a]" />
+            {unreadMessagesCount > 0 && (
+              <span className="absolute right-0.5 top-0.5 size-1.5 rounded-full bg-[#d4484a]" />
+            )}
           </span>
         </button>
         <button
