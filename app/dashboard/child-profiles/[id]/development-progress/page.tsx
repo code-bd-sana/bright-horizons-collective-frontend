@@ -1,19 +1,15 @@
-import { notFound } from 'next/navigation';
-import { childDetails } from '@/components/dashboard/child-profile-detail/types';
+'use client';
+
+import { useActiveChild } from '@/features/child-profiles/context/child-profile-detail-context';
 import { StatCards } from '@/components/dashboard/child-profile-detail/development-progress/stat-cards';
 import { DevelopmentAreas } from '@/components/dashboard/child-profile-detail/development-progress/development-areas';
 import { Highlights } from '@/components/dashboard/child-profile-detail/development-progress/highlights';
 import { NextSteps } from '@/components/dashboard/child-profile-detail/development-progress/next-steps';
 
-export default async function DevelopmentProgressPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = await params;
-  const child = childDetails[id];
+export default function DevelopmentProgressPage() {
+  const { child } = useActiveChild();
 
-  if (!child) notFound();
+  if (!child) return null;
 
   return (
     <div className="mx-auto mt-8 flex w-full min-w-0 max-w-343.5 flex-col gap-6 pb-12 sm:mt-10 sm:gap-8 2xl:mt-14 2xl:gap-10">

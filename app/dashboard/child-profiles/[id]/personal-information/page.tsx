@@ -1,9 +1,10 @@
+'use client';
+
 import Image from 'next/image';
-import { PenLine, AlertTriangle } from 'lucide-react';
-import { notFound } from 'next/navigation';
+import { PenLine, AlertTriangle, User } from 'lucide-react';
 import Link from 'next/link';
 
-import { childDetails } from '@/components/dashboard/child-profile-detail/types';
+import { useActiveChild } from '@/features/child-profiles/context/child-profile-detail-context';
 import { FieldLabel, SelectField, TextField, ToggleChips } from '@/components/ui/form-fields';
 
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
@@ -17,34 +18,35 @@ function Card({ title, children }: { title: string; children: React.ReactNode })
   );
 }
 
-export default async function PersonalInformationPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = await params;
-  const child = childDetails[id];
+export default function PersonalInformationPage() {
+  const { child } = useActiveChild();
 
-  if (!child) notFound();
+  if (!child) return null;
 
   return (
     <div className="mx-auto mt-8 flex w-full min-w-0 max-w-179.5 flex-col gap-8 pb-12 sm:mt-10 sm:gap-10 2xl:mt-14 2xl:gap-14">
       <div className="flex flex-col gap-6 sm:gap-8">
         <Card title="Basic Information">
           <div className="flex flex-col items-start gap-4 min-[400px]:flex-row min-[400px]:items-center">
-            <div className="flex h-16 w-16 shrink-0 overflow-hidden rounded-full shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
-              <div className="relative h-full w-full bg-[#B16262]">
-                <Image
-                  src={
-                    child.id === 'emma' ? '/Home/figma-child-detail-banner-emma.png' : child.image
-                  }
-                  alt=""
-                  fill
-                  className="object-cover"
-                  sizes="64px"
-                  style={{ objectPosition: child.imagePosition }}
-                />
-              </div>
+            <div className="flex h-16 w-16 shrink-0 overflow-hidden rounded-full bg-[#E5ECE9] shadow-[0_1px_2px_rgba(0,0,0,0.05)] items-center justify-center">
+              {child.photoUrl ? (
+                <div className="relative h-full w-full">
+                  <Image
+                    src={child.photoUrl}
+                    alt={child.name}
+                    fill
+                    className="object-cover"
+                    sizes="64px"
+                    unoptimized={
+                      child.photoUrl.startsWith('http') ||
+                      child.photoUrl.startsWith('/uploads') ||
+                      child.photoUrl.startsWith('data:')
+                    }
+                  />
+                </div>
+              ) : (
+                <User className="size-8 text-[#7D8488]" />
+              )}
             </div>
             <button
               type="button"
@@ -73,7 +75,7 @@ export default async function PersonalInformationPage({
             }
             placeholder="e.g. Girl, Boy, Non-binary, Prefer not to say..."
             options={['Girl', 'Boy', 'Non-binary', 'Prefer not to say']}
-            defaultValue="Girl"
+            defaultValue={child.gender || 'Girl'}
           />
 
           <div className="flex flex-col gap-1.5">
@@ -83,14 +85,35 @@ export default async function PersonalInformationPage({
                 id="age-years"
                 label=""
                 placeholder="Select Year"
-                options={['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10']}
+                options={[
+                  '0',
+                  '1',
+                  '2',
+                  '3',
+                  '4',
+                  '5',
+                  '6',
+                  '7',
+                  '8',
+                  '9',
+                  '10',
+                  '11',
+                  '12',
+                  '13',
+                  '14',
+                  '15',
+                  '16',
+                  '17',
+                ]}
+                defaultValue={String(child.ageYears ?? child.age ?? 0)}
                 hideLabel={true}
               />
               <SelectField
                 id="age-months"
                 label=""
                 placeholder="Select Month"
-                options={['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']}
+                options={['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11']}
+                defaultValue={String(child.ageMonths ?? 0)}
                 hideLabel={true}
               />
             </div>
@@ -102,30 +125,30 @@ export default async function PersonalInformationPage({
             id="caregiver-name"
             label="Name"
             placeholder="First name or nickname"
-            defaultValue="Sarah"
+            defaultValue={child.caregiverName || ''}
           />
 
           <ToggleChips
             label="Relationship to the child"
             helper=""
             options={['Father', 'Mother', 'Caregiver', 'Grandparent', 'Foster parent', 'Other']}
-            initiallySelected={['Mother']}
+            initiallySelected={child.caregiverRelationship ? [child.caregiverRelationship] : []}
           />
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-2.5">
             <TextField
               id="email"
               label="Email"
-              placeholder="sarah@example.com"
+              placeholder="caregiver@example.com"
               type="email"
-              defaultValue="sarah@example.com"
+              defaultValue={child.caregiverEmail || ''}
             />
             <TextField
               id="phone"
               label="Phone"
               placeholder="+1 (555) 000-0000"
               type="tel"
-              defaultValue="+1 (555) 000-0000"
+              defaultValue={child.caregiverPhone || ''}
             />
           </div>
         </Card>
@@ -144,7 +167,7 @@ export default async function PersonalInformationPage({
               'Sleep Routines',
               'Focus & Attention',
             ]}
-            initiallySelected={['Fine Motor', 'Focus & Attention']}
+            initiallySelected={child.areasOfSupport || []}
           />
 
           <label htmlFor="goals" className="flex flex-col gap-1.5">
@@ -152,7 +175,7 @@ export default async function PersonalInformationPage({
             <textarea
               id="goals"
               placeholder="e.g. Working on pincer grasp, needs help with transitioning between activities..."
-              defaultValue="Maya responds wonderfully to music during play routines. Enjoys bright colors and tactile textures."
+              defaultValue={child.notes || ''}
               className="min-h-37.5 w-full resize-y rounded-3xl border border-[#D8DDD9] bg-white px-4 py-3 font-manrope text-base leading-6 tracking-[-0.176px] text-[#515B60] shadow-[0_1px_2px_rgba(16,24,40,0.05)] outline-none transition-colors placeholder:text-[#A8ADAF] focus:border-[#2F7D7E]"
             />
           </label>
@@ -176,7 +199,7 @@ export default async function PersonalInformationPage({
               'Cats',
               'Dogs',
             ]}
-            initiallySelected={['Vehicles', 'Sports']}
+            initiallySelected={child.favorites || []}
           />
 
           <ToggleChips
@@ -192,7 +215,7 @@ export default async function PersonalInformationPage({
               'Pretend Play',
               'Science Experiments',
             ]}
-            initiallySelected={['Active', 'Outdoor Play']}
+            initiallySelected={child.activityTypes || []}
           />
         </Card>
       </div>
@@ -200,7 +223,7 @@ export default async function PersonalInformationPage({
       <div className="flex flex-col gap-3 sm:h-14 sm:flex-row sm:items-center sm:justify-start sm:gap-4">
         <button
           type="button"
-          className="flex h-14 w-full items-center justify-center rounded-full bg-[#2F7D7E] px-4 py-2 font-nunito text-base font-medium text-white shadow-[0px_0.6px_0px_0px_#401392,inset_0px_0.7px_2px_0px_#FFFFFF] sm:w-46.75"
+          className="flex h-14 w-full items-center justify-center rounded-full bg-[#2F7D7E] px-4 py-2 font-nunito text-base font-medium text-white shadow-[0px_0.6px_0px_0px_#401392,inset_0px_0.7px_2px_0px_#FFFFFF] transition-colors hover:bg-[#276a6b] sm:w-46.75"
         >
           Save Changes
         </button>

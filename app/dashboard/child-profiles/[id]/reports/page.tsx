@@ -1,12 +1,12 @@
-import { notFound } from 'next/navigation';
-import { childDetails } from '@/components/dashboard/child-profile-detail/types';
+'use client';
+
+import { useActiveChild } from '@/features/child-profiles/context/child-profile-detail-context';
 import { ReportsList } from '@/components/dashboard/child-profile-detail/reports/reports-list';
 
-export default async function ReportsPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  const child = childDetails[id];
+export default function ReportsPage() {
+  const { child } = useActiveChild();
 
-  if (!child) notFound();
+  if (!child) return null;
 
   return (
     <div className="mx-auto mt-8 flex w-full min-w-0 max-w-286.75 flex-col gap-6 pb-12 sm:mt-10 sm:gap-8 2xl:mt-14 2xl:gap-10">

@@ -3,9 +3,28 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, User } from 'lucide-react';
 
-import type { ChildDetail } from './types';
+import type { ChildProfile } from '@/features/child-profiles/model/child-profile.types';
+import { useActiveChild } from '@/features/child-profiles/context/child-profile-detail-context';
+
+function formatChildAge(child: { ageYears?: number; ageMonths?: number; age?: number }): string {
+  const years = child.ageYears ?? 0;
+  const months = child.ageMonths ?? 0;
+  if (years > 0 && months > 0) {
+    return `${years} yr ${months} mo`;
+  }
+  if (years > 0) {
+    return `${years} yr`;
+  }
+  if (months > 0) {
+    return `${months} mo`;
+  }
+  if (child.age && child.age > 0) {
+    return `${child.age} yr`;
+  }
+  return 'Age not specified';
+}
 
 const getTabs = (id: string) => [
   {
@@ -35,20 +54,32 @@ const getTabs = (id: string) => [
   },
 ];
 
-export function ProfileHeader({ child }: { child: ChildDetail }) {
+export function ProfileHeader({ child: propChild }: { child?: ChildProfile }) {
   const pathname = usePathname();
   const router = useRouter();
+  const activeContext = useActiveChild();
+  const child = propChild || activeContext.child;
+
+  if (!child) return null;
+
   const tabs = getTabs(child.id);
   const activeTab = tabs.find((tab) => tab.path === pathname) ?? tabs[0];
+
+  const focusTag = child.areasOfSupport?.[0] || child.developmentalStage || 'Development';
+  const focusDescription =
+    child.notes?.trim() ||
+    (child.areasOfSupport && child.areasOfSupport.length > 1
+      ? `Focusing on ${child.areasOfSupport.join(', ')}`
+      : `Supporting ${focusTag.toLowerCase()} through daily activities`);
 
   return (
     <div className="flex w-full flex-col gap-4 sm:gap-5">
       <div className="flex min-h-5.5 flex-wrap items-center gap-1.5 font-manrope text-sm leading-5.5 tracking-[-0.084px]">
-        <Link href="/dashboard/child-profiles" className="text-[#2f7d7e]">
+        <Link href="/dashboard/child-profiles" className="text-[#2f7d7e] hover:underline">
           Child Profiles
         </Link>
         <span className="text-lg leading-5.5 tracking-[-0.27px] text-[#d8ddd9]">/</span>
-        <span className="text-[#263238]">{child.name}</span>
+        <span className="text-[#263238] font-medium">{child.name}</span>
       </div>
 
       <nav className="w-full rounded-2xl border-b border-[#d8ddd9] bg-white p-2 shadow-[-46px_61px_10.5px_rgba(171,171,171,0),-29px_39px_10px_rgba(171,171,171,0.01),-17px_22px_8.5px_rgba(171,171,171,0.03),-7px_10px_6px_rgba(171,171,171,0.04),-2px_2px_3.5px_rgba(171,171,171,0.05)] sm:p-4">
@@ -86,7 +117,7 @@ export function ProfileHeader({ child }: { child: ChildDetail }) {
               <Link
                 key={tab.label}
                 href={tab.path}
-                className={`flex h-9 shrink-0 items-center gap-2 rounded-xl px-3 py-2 font-manrope text-sm leading-5.5 tracking-[-0.084px] ${
+                className={`flex h-9 shrink-0 items-center gap-2 rounded-xl px-3 py-2 font-manrope text-sm leading-5.5 tracking-[-0.084px] transition-colors ${
                   isActive ? 'bg-[#515b60] text-white' : 'text-[#515b60] hover:bg-gray-50'
                 }`}
               >
@@ -137,34 +168,40 @@ export function ProfileHeader({ child }: { child: ChildDetail }) {
 
           <div className="relative z-10 flex min-w-0 flex-col items-start gap-3 min-[420px]:flex-row min-[420px]:items-center sm:gap-4">
             <span className="flex size-20 shrink-0 items-center justify-center rounded-2xl border border-[#d5e5e5] bg-white p-2 shadow-[0_1px_1.5px_rgba(0,0,0,0.1),0_1px_1px_rgba(0,0,0,0.1)] sm:size-25 sm:p-2.5">
-              <span className="relative size-16 overflow-hidden rounded-2xl bg-[#b16262] shadow-[0_1px_2px_rgba(0,0,0,0.05)] sm:size-20">
-                <Image
-                  src={
-                    child.id === 'emma' ? '/Home/figma-child-detail-banner-emma.png' : child.image
-                  }
-                  alt={child.name}
-                  fill
-                  sizes="(max-width: 639px) 64px, 80px"
-                  className="object-cover"
-                  style={{ objectPosition: child.imagePosition }}
-                />
+              <span className="relative flex size-16 items-center justify-center overflow-hidden rounded-2xl bg-[#E5ECE9] shadow-[0_1px_2px_rgba(0,0,0,0.05)] sm:size-20">
+                {child.photoUrl ? (
+                  <Image
+                    src={child.photoUrl}
+                    alt={child.name}
+                    fill
+                    sizes="(max-width: 639px) 64px, 80px"
+                    className="object-cover"
+                    unoptimized={
+                      child.photoUrl.startsWith('http') ||
+                      child.photoUrl.startsWith('/uploads') ||
+                      child.photoUrl.startsWith('data:')
+                    }
+                  />
+                ) : (
+                  <User className="size-8 text-[#7D8488]" />
+                )}
               </span>
             </span>
             <div className="flex min-w-0 flex-col gap-2 sm:w-94.75">
-              <span className="w-fit rounded-full border border-[#accbcb] px-2.25 py-1.25 font-nunito text-xs font-medium leading-4 text-[#2f7d7e]">
-                Fine Motor
+              <span className="w-fit rounded-full border border-[#accbcb] bg-[#d5e5e5] px-2.25 py-1.25 font-nunito text-xs font-medium leading-4 text-[#2f7d7e]">
+                {focusTag}
               </span>
               <div className="flex flex-wrap items-center gap-2">
                 <h1 className="font-nunito text-2xl font-medium leading-8 tracking-[-0.16px] text-[#263238] sm:text-[32px] sm:leading-10">
                   {child.name}
                 </h1>
                 <span className="rounded-full border border-[#accbcb] bg-[#d5e5e5] px-2.25 py-1.25 font-nunito text-xs font-medium leading-4 text-[#2f7d7e]">
-                  {child.age}
+                  {formatChildAge(child)}
                 </span>
               </div>
               <p className="font-manrope text-xs leading-4.5 text-[#7d8488]">
-                <span className="text-[#1e282d]">Current focus:</span>{' '}
-                {child.focus.replace('Current focus: ', '')}
+                <span className="text-[#1e282d] font-medium">Current focus:</span>{' '}
+                {focusDescription}
               </p>
             </div>
           </div>
@@ -172,14 +209,14 @@ export function ProfileHeader({ child }: { child: ChildDetail }) {
           <div className="relative z-10 flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center sm:gap-4">
             <Link
               href={`/dashboard/child-profiles/${child.id}/personal-information`}
-              className="flex w-full items-center justify-center gap-1 rounded-full border border-[#d8ddd9] bg-white px-3 py-2 font-nunito text-sm font-medium leading-6 tracking-[-0.176px] text-[#2f7d7e] shadow-[inset_0_-6px_2px_rgba(255,255,255,0.07)] sm:w-auto"
+              className="flex w-full items-center justify-center gap-1 rounded-full border border-[#d8ddd9] bg-white px-3 py-2 font-nunito text-sm font-medium leading-6 tracking-[-0.176px] text-[#2f7d7e] shadow-[inset_0_-6px_2px_rgba(255,255,255,0.07)] transition-colors hover:bg-[#f8fbfa] sm:w-auto"
             >
               <Image src="/Home/figma-child-detail-edit.svg" alt="" width={16} height={16} />
               Edit Profile
             </Link>
             <Link
               href="/dashboard/child-profiles"
-              className="flex w-full items-center justify-center gap-1 rounded-full border border-[#d8ddd9] bg-white px-3 py-2 font-nunito text-sm font-medium leading-6 tracking-[-0.176px] text-[#2f7d7e] shadow-[inset_0_-6px_2px_rgba(255,255,255,0.07)] sm:w-auto"
+              className="flex w-full items-center justify-center gap-1 rounded-full border border-[#d8ddd9] bg-white px-3 py-2 font-nunito text-sm font-medium leading-6 tracking-[-0.176px] text-[#2f7d7e] shadow-[inset_0_-6px_2px_rgba(255,255,255,0.07)] transition-colors hover:bg-[#f8fbfa] sm:w-auto"
             >
               <Image src="/Home/figma-child-detail-switch.svg" alt="" width={16} height={16} />
               Switch Child

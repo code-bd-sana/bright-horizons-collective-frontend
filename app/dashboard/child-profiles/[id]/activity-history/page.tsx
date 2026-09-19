@@ -1,13 +1,13 @@
-import { notFound } from 'next/navigation';
-import { childDetails } from '@/components/dashboard/child-profile-detail/types';
+'use client';
+
+import { useActiveChild } from '@/features/child-profiles/context/child-profile-detail-context';
 import { ActivityHistoryFilters } from '@/components/dashboard/child-profile-detail/activity-history/activity-history-filters';
 import { ActivityTimeline } from '@/components/dashboard/child-profile-detail/activity-history/activity-timeline';
 
-export default async function ActivityHistoryPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  const child = childDetails[id];
+export default function ActivityHistoryPage() {
+  const { child } = useActiveChild();
 
-  if (!child) notFound();
+  if (!child) return null;
 
   return (
     <div className="mx-auto mt-8 flex w-full min-w-0 max-w-286.75 flex-col gap-6 pb-12 sm:mt-10 sm:gap-8 2xl:mt-14 2xl:gap-10">
