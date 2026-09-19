@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import {
   Search,
@@ -10,8 +9,6 @@ import {
   Send,
   X,
   Loader2,
-  Download,
-  ExternalLink,
   MessageSquare,
   Baby,
 } from 'lucide-react';
@@ -21,6 +18,10 @@ import { toast } from 'sonner';
 import { useAdminThreads, useThreadMessages } from '@/features/messages/hooks/messages.queries';
 import { useSendMessage } from '@/features/messages/hooks/messages.mutations';
 import { useSession } from '@/services/api/auth/auth.queries';
+import {
+  MessageAttachment,
+  isImageAttachment,
+} from '@/features/messages/components/message-attachment';
 import type { Message, MessageThread } from '@/features/messages/model/message.types';
 
 function formatMessageTime(isoString: string): string {
@@ -85,19 +86,13 @@ function formatFileSize(bytes?: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-function isImageAttachment(url: string): boolean {
-  return /\.(jpg|jpeg|png|gif|webp)$/i.test(url);
-}
-
-function getAttachmentFileName(url: string): string {
-  try {
-    const parts = url.split('/');
-    const fullName = parts[parts.length - 1];
-    const cleanName = fullName.replace(/^\d+-\d+-/, '');
-    return cleanName || 'Attachment';
-  } catch {
-    return 'Attachment';
+function getMessagePreview(msg?: Message | null): string {
+  if (!msg) return 'No messages yet';
+  if (msg.content?.trim()) return msg.content;
+  if (msg.attachment) {
+    return isImageAttachment(msg.attachment) ? '📷 Photo' : '📎 Attachment';
   }
+  return 'Message';
 }
 
 function formatChildAge(child?: { ageYears?: number; ageMonths?: number; age?: number }): string {
@@ -129,60 +124,6 @@ function DateSeparator({ label }: { label: string }) {
       <span className="rounded-full bg-[#eeeeee] px-4 py-1 font-manrope text-[11px] font-medium tracking-[0.22px] text-[#515b60]">
         {label}
       </span>
-    </div>
-  );
-}
-
-function MessageAttachment({ url }: { url: string }) {
-  const isImg = isImageAttachment(url);
-  const fileName = getAttachmentFileName(url);
-
-  if (isImg) {
-    return (
-      <div className="mt-2 overflow-hidden rounded-xl border border-black/10">
-        <a
-          href={url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="group relative block aspect-video max-w-72 bg-black/5"
-        >
-          <Image
-            src={url}
-            alt={fileName}
-            fill
-            sizes="280px"
-            className="object-cover transition-transform group-hover:scale-105"
-            unoptimized
-          />
-          <span className="absolute bottom-2 right-2 flex size-7 items-center justify-center rounded-full bg-black/60 text-white opacity-0 transition-opacity group-hover:opacity-100">
-            <ExternalLink className="size-3.5" />
-          </span>
-        </a>
-      </div>
-    );
-  }
-
-  return (
-    <div className="mt-2 flex max-w-72 items-center gap-3 rounded-xl border border-[#e8ebe8] bg-white p-3 shadow-xs">
-      <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-[#fce9e3] text-[#2f7d7e]">
-        <FileText className="size-5" />
-      </span>
-      <span className="flex min-w-0 flex-1 flex-col">
-        <span className="truncate font-nunito text-xs font-semibold text-[#263238]">
-          {fileName}
-        </span>
-        <span className="font-manrope text-[10px] text-[#7d8488]">PDF Document</span>
-      </span>
-      <a
-        href={url}
-        target="_blank"
-        rel="noopener noreferrer"
-        download={fileName}
-        className="flex size-8 shrink-0 items-center justify-center rounded-md text-[#2f7d7e] transition-colors hover:bg-[#f0f7f5]"
-        aria-label={`Download ${fileName}`}
-      >
-        <Download className="size-4" />
-      </a>
     </div>
   );
 }
@@ -371,7 +312,7 @@ export function AdminMessagesPage() {
                             unread > 0 ? 'font-semibold text-[#1e282d]' : 'text-[#7d8488]'
                           }`}
                         >
-                          {lastMsg ? lastMsg.content || '📎 Attachment' : 'No messages yet'}
+                          {getMessagePreview(lastMsg)}
                         </p>
                       </div>
                     </button>
@@ -467,6 +408,9 @@ export function AdminMessagesPage() {
                         formatMessageDateHeader(prevMsg.createdAt) !==
                           formatMessageDateHeader(msg.createdAt);
 
+                      const hasText = Boolean(msg.content?.trim());
+                      const hasAttachment = Boolean(msg.attachment);
+
                       return (
                         <div key={msg.id} className="flex flex-col">
                           {showDateHeader && (
@@ -477,12 +421,21 @@ export function AdminMessagesPage() {
                             /* Sent Bubble (Admin) */
                             <div className="flex w-full justify-end">
                               <div className="flex max-w-[85%] min-w-0 flex-col items-end gap-1 sm:max-w-md">
-                                <div className="rounded-bl-2xl rounded-tl-2xl rounded-tr-2xl bg-[#2f7d7e] px-4 py-3 font-manrope text-sm leading-6 tracking-[-0.176px] text-white sm:text-base">
-                                  {msg.content && (
+                                {hasText ? (
+                                  <div className="rounded-bl-2xl rounded-tl-2xl rounded-tr-2xl bg-[#2f7d7e] px-4 py-3 font-manrope text-sm leading-6 tracking-[-0.176px] text-white sm:text-base">
                                     <p className="whitespace-pre-wrap">{msg.content}</p>
-                                  )}
-                                  {msg.attachment && <MessageAttachment url={msg.attachment} />}
-                                </div>
+                                    {hasAttachment && (
+                                      <div className="mt-2.5">
+                                        <MessageAttachment
+                                          url={msg.attachment!}
+                                          isSentByMe={true}
+                                        />
+                                      </div>
+                                    )}
+                                  </div>
+                                ) : hasAttachment ? (
+                                  <MessageAttachment url={msg.attachment!} isSentByMe={true} />
+                                ) : null}
                                 <span className="font-manrope text-[11px] leading-4 text-[#7d8488]">
                                   {formatMessageTime(msg.createdAt)}
                                 </span>
@@ -497,12 +450,21 @@ export function AdminMessagesPage() {
                                   : 'P'}
                               </span>
                               <div className="flex min-w-0 max-w-[85%] flex-1 flex-col items-start gap-1 sm:max-w-md">
-                                <div className="rounded-bl-2xl rounded-br-2xl rounded-tr-2xl border border-[#e8ebe8] bg-white px-4 py-3 font-manrope text-sm leading-6 tracking-[-0.176px] text-[#272f3a] shadow-2xs sm:text-base">
-                                  {msg.content && (
+                                {hasText ? (
+                                  <div className="rounded-bl-2xl rounded-br-2xl rounded-tr-2xl border border-[#e8ebe8] bg-white px-4 py-3 font-manrope text-sm leading-6 tracking-[-0.176px] text-[#272f3a] shadow-2xs sm:text-base">
                                     <p className="whitespace-pre-wrap">{msg.content}</p>
-                                  )}
-                                  {msg.attachment && <MessageAttachment url={msg.attachment} />}
-                                </div>
+                                    {hasAttachment && (
+                                      <div className="mt-2.5">
+                                        <MessageAttachment
+                                          url={msg.attachment!}
+                                          isSentByMe={false}
+                                        />
+                                      </div>
+                                    )}
+                                  </div>
+                                ) : hasAttachment ? (
+                                  <MessageAttachment url={msg.attachment!} isSentByMe={false} />
+                                ) : null}
                                 <span className="font-manrope text-[11px] leading-4 text-[#7d8488]">
                                   {formatMessageTime(msg.createdAt)}
                                 </span>
