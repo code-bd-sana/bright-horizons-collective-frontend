@@ -1,5 +1,5 @@
-import { MessagesPage } from '@/components/dashboard/messages/messages-page';
+import { AdminMessagesPage } from '@/components/dashboard/admin/messages/admin-messages-page';
 
 export default function AdminMessagesRoute() {
-  return <MessagesPage />;
+  return <AdminMessagesPage />;
 }

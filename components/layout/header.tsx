@@ -235,6 +235,7 @@ export function Header({ role = 'parent' }: { role?: AuthRole }) {
   const isAdminDashboard = pathname === '/dashboard/admin';
   const isMessagesPage =
     pathname === '/dashboard/messages' || pathname === '/dashboard/admin/messages';
+  const messagesUrl = isAdmin ? '/dashboard/admin/messages' : '/dashboard/messages';
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [messagesOpen, setMessagesOpen] = useState(false);
   const [profilesOpen, setProfilesOpen] = useState(false);
@@ -642,6 +643,13 @@ export function Header({ role = 'parent' }: { role?: AuthRole }) {
                     ))}
                   </div>
                 </section>
+                <Link
+                  href={messagesUrl}
+                  onClick={() => setMessagesOpen(false)}
+                  className="flex h-10 w-full items-center justify-center rounded-xl bg-[#2f7d7e] font-nunito text-sm font-semibold text-white transition-opacity hover:opacity-95"
+                >
+                  Open Full Inbox
+                </Link>
               </div>
             </div>
           </section>
