@@ -1,12 +1,15 @@
 'use client';
 
+import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { Bell, Menu, MessageCircle } from 'lucide-react';
+import { Bell, Menu, MessageCircle, User } from 'lucide-react';
 import type { AuthRole } from '@/services/api/auth/auth.types';
 import { getRoleConfig } from '@/lib/role-config';
 import { useAppStore } from '@/store/use-app-store';
+import { useChildProfiles } from '@/features/child-profiles/hooks/child-profiles.queries';
+import type { ChildProfile } from '@/features/child-profiles/model/child-profile.types';
 
 const notificationDescription =
   'Weekly developmental goal plan for motor skills is now ready for review.';
@@ -32,27 +35,34 @@ type MessageThread = {
   message: string;
 };
 
-type ChildProfile = {
-  name: string;
-  age: string;
-  image: string;
-  imagePosition: string;
-};
+function formatChildAge(child: ChildProfile): string {
+  if (child.ageYears > 0 && child.ageMonths > 0) {
+    return `${child.ageYears} yr ${child.ageMonths} mo`;
+  }
+  if (child.ageYears > 0) {
+    return `${child.ageYears} yr`;
+  }
+  if (child.ageMonths > 0) {
+    return `${child.ageMonths} mo`;
+  }
+  if (child.age > 0) {
+    return `${child.age} yr`;
+  }
+  return 'Age not specified';
+}
 
-const childProfiles: ChildProfile[] = [
-  {
-    name: 'Emma',
-    age: '4 yr 3 mo',
-    image: '/Home/figma-dashboard-switch-emma-4.png',
-    imagePosition: '50% 26%',
-  },
-  {
-    name: 'Emma',
-    age: '3 yr 3 mo',
-    image: '/Home/figma-dashboard-switch-emma-3.png',
-    imagePosition: '50% 25%',
-  },
-];
+function formatChildAgeCompact(child: ChildProfile): string {
+  if (child.ageYears > 0) {
+    return `${child.ageYears}y`;
+  }
+  if (child.ageMonths > 0) {
+    return `${child.ageMonths}m`;
+  }
+  if (child.age > 0) {
+    return `${child.age}y`;
+  }
+  return '';
+}
 
 const unreadThreads: MessageThread[] = [
   {
@@ -168,32 +178,40 @@ function ChildProfileOption({
       type="button"
       aria-pressed={selected}
       onClick={onSelect}
-      className={`flex h-23 w-full items-center justify-between rounded-2xl p-3 text-left ${
-        selected ? 'border border-[#8fb9a8] bg-[#f2f3f3]' : 'bg-white'
+      className={`flex h-20 w-full items-center justify-between rounded-2xl p-3 text-left transition-colors ${
+        selected ? 'border border-[#8fb9a8] bg-[#f2f3f3]' : 'bg-white hover:bg-gray-50'
       }`}
     >
-      <span className="flex items-start gap-3">
+      <span className="flex items-center gap-3 min-w-0">
         <span className="flex size-11 shrink-0 items-center justify-center rounded-xl border border-[#d5e5e5] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.1)]">
-          <span className="relative size-9 overflow-hidden rounded-[10px] bg-[#b16262] shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
-            <Image
-              src={profile.image}
-              alt=""
-              fill
-              sizes="36px"
-              className="object-cover"
-              style={{ objectPosition: profile.imagePosition }}
-            />
+          <span className="relative size-9 overflow-hidden rounded-[10px] bg-[#E5ECE9] shadow-[0_1px_2px_rgba(0,0,0,0.05)] flex items-center justify-center">
+            {profile.photoUrl ? (
+              <Image
+                src={profile.photoUrl}
+                alt={profile.name}
+                fill
+                sizes="36px"
+                className="object-cover"
+                unoptimized={
+                  profile.photoUrl.startsWith('http') || profile.photoUrl.startsWith('/uploads')
+                }
+              />
+            ) : (
+              <User className="size-5 text-[#7D8488]" />
+            )}
           </span>
         </span>
-        <span className="flex flex-col">
-          <span className="font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-[#263238]">
+        <span className="flex flex-col min-w-0 truncate">
+          <span className="font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-[#263238] truncate">
             {profile.name}
           </span>
-          <span className="font-manrope text-xs leading-4.5 text-[#7d8488]">({profile.age})</span>
+          <span className="font-manrope text-xs leading-4.5 text-[#7d8488]">
+            ({formatChildAge(profile)})
+          </span>
         </span>
       </span>
       {selected ? (
-        <span className="flex size-7.5 items-center justify-center rounded-full border-2 border-[#2f7d7e] bg-[#2f7d7e] p-0.5">
+        <span className="flex size-7.5 shrink-0 items-center justify-center rounded-full border-2 border-[#2f7d7e] bg-[#2f7d7e] p-0.5">
           <Image
             src="/Home/figma-dashboard-switch-check.svg"
             alt="Selected"
@@ -202,14 +220,14 @@ function ChildProfileOption({
           />
         </span>
       ) : (
-        <span className="size-7.5 rounded-full border-2 border-[#d4d6d7] bg-white" />
+        <span className="size-7.5 shrink-0 rounded-full border-2 border-[#d4d6d7] bg-white" />
       )}
     </button>
   );
 }
 
 export function Header({ role = 'parent' }: { role?: AuthRole }) {
-  const { setSidebarOpen } = useAppStore();
+  const { setSidebarOpen, selectedChildId, setSelectedChildId } = useAppStore();
   const pathname = usePathname();
   const router = useRouter();
   const roleConfig = getRoleConfig(role);
@@ -221,8 +239,21 @@ export function Header({ role = 'parent' }: { role?: AuthRole }) {
   const [messagesOpen, setMessagesOpen] = useState(false);
   const [profilesOpen, setProfilesOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
-  const [selectedProfile, setSelectedProfile] = useState(0);
   const [allRead, setAllRead] = useState(false);
+
+  const { data: children = [], isLoading: isChildrenLoading } = useChildProfiles();
+
+  const activeChild = children.find((c) => c.id === selectedChildId) || children[0] || null;
+
+  useEffect(() => {
+    const match = pathname.match(/\/dashboard\/child-profiles\/([a-zA-Z0-9_-]+)/);
+    if (match && match[1] && match[1] !== 'add-child') {
+      const routeChildId = match[1];
+      if (children.some((c) => c.id === routeChildId) && selectedChildId !== routeChildId) {
+        setSelectedChildId(routeChildId);
+      }
+    }
+  }, [pathname, children, selectedChildId, setSelectedChildId]);
   const notificationButtonRef = useRef<HTMLButtonElement>(null);
   const notificationPanelRef = useRef<HTMLElement>(null);
   const messagesButtonRef = useRef<HTMLButtonElement>(null);
@@ -351,41 +382,63 @@ export function Header({ role = 'parent' }: { role?: AuthRole }) {
             <span className="absolute right-0.5 top-0.5 size-1.5 rounded-full bg-[#d4484a]" />
           </span>
         </button>
-        {roleConfig.header.showChildProfile && (
-          <button
-            ref={profileButtonRef}
-            type="button"
-            aria-label="Selected child: Emma, 4 years old"
-            aria-expanded={profilesOpen}
-            onClick={() => {
-              setProfilesOpen((open) => !open);
-              setMessagesOpen(false);
-              setNotificationsOpen(false);
-              setAccountOpen(false);
-            }}
-            className="hidden h-10 w-10 items-center justify-center overflow-hidden rounded-lg bg-[#d2e3dc] p-1 lg:flex xl:w-auto xl:justify-start xl:gap-2.5 xl:px-2"
-          >
-            <span className="relative size-7 shrink-0 overflow-hidden rounded-full bg-[#accbcb]">
+        {roleConfig.header.showChildProfile &&
+          (isChildrenLoading ? (
+            <div className="hidden h-10 w-28 animate-pulse rounded-lg bg-[#d2e3dc]/50 lg:block" />
+          ) : activeChild ? (
+            <button
+              ref={profileButtonRef}
+              type="button"
+              aria-label={`Selected child: ${activeChild.name}`}
+              aria-expanded={profilesOpen}
+              onClick={() => {
+                setProfilesOpen((open) => !open);
+                setMessagesOpen(false);
+                setNotificationsOpen(false);
+                setAccountOpen(false);
+              }}
+              className="hidden h-10 w-10 items-center justify-center overflow-hidden rounded-lg bg-[#d2e3dc] p-1 transition-colors hover:bg-[#c2d7cf] lg:flex xl:w-auto xl:justify-start xl:gap-2.5 xl:px-2"
+            >
+              <span className="relative size-7 shrink-0 overflow-hidden rounded-full bg-[#accbcb] flex items-center justify-center">
+                {activeChild.photoUrl ? (
+                  <Image
+                    src={activeChild.photoUrl}
+                    alt={activeChild.name}
+                    fill
+                    sizes="28px"
+                    className="object-cover"
+                    unoptimized={
+                      activeChild.photoUrl.startsWith('http') ||
+                      activeChild.photoUrl.startsWith('/uploads') ||
+                      activeChild.photoUrl.startsWith('data:')
+                    }
+                  />
+                ) : (
+                  <User className="size-4 text-[#263238]" />
+                )}
+              </span>
+              <span className="hidden whitespace-nowrap font-nunito text-sm font-medium leading-5 tracking-[-0.084px] text-[#1e282d] xl:inline">
+                {activeChild.name}
+                {formatChildAgeCompact(activeChild)
+                  ? ` · ${formatChildAgeCompact(activeChild)}`
+                  : ''}
+              </span>
               <Image
-                src="/Home/figma-dashboard-header-child.png"
-                alt="Emma"
-                fill
-                sizes="28px"
-                className="object-cover object-[50%_20%]"
+                src="/Home/figma-dashboard-header-chevron.svg"
+                alt=""
+                width={20}
+                height={20}
+                className="hidden shrink-0 xl:block"
               />
-            </span>
-            <span className="hidden whitespace-nowrap font-nunito text-sm font-medium leading-5 tracking-[-0.084px] text-[#1e282d] xl:inline">
-              {childProfiles[selectedProfile].name} · {selectedProfile === 0 ? '4y' : '3y'}
-            </span>
-            <Image
-              src="/Home/figma-dashboard-header-chevron.svg"
-              alt=""
-              width={20}
-              height={20}
-              className="hidden shrink-0 xl:block"
-            />
-          </button>
-        )}
+            </button>
+          ) : (
+            <Link
+              href="/dashboard/child-profiles/add-child"
+              className="hidden h-10 items-center gap-1 rounded-lg bg-[#2f7d7e]/10 px-3 py-1.5 font-nunito text-sm font-medium text-[#2f7d7e] transition-colors hover:bg-[#2f7d7e]/20 lg:flex"
+            >
+              + Add Child
+            </Link>
+          ))}
         <button
           ref={accountButtonRef}
           type="button"
@@ -502,29 +555,41 @@ export function Header({ role = 'parent' }: { role?: AuthRole }) {
                 <h2 className="text-lg leading-6.75 tracking-[-0.27px] text-[#263238]">
                   Switch Child Profile
                 </h2>
-                <p className="text-sm leading-5.5 tracking-[-0.084px] text-[#7d8488]">2 children</p>
+                <p className="text-sm leading-5.5 tracking-[-0.084px] text-[#7d8488]">
+                  {children.length} {children.length === 1 ? 'child' : 'children'}
+                </p>
               </div>
-              <div className="flex flex-col gap-2">
-                {childProfiles.map((profile, index) => (
-                  <ChildProfileOption
-                    key={profile.age}
-                    profile={profile}
-                    selected={selectedProfile === index}
-                    onSelect={() => {
-                      setSelectedProfile(index);
-                      setProfilesOpen(false);
-                    }}
-                  />
-                ))}
+              <div className="flex max-h-72 flex-col gap-2 overflow-y-auto">
+                {children.length > 0 ? (
+                  children.map((profile) => (
+                    <ChildProfileOption
+                      key={profile.id}
+                      profile={profile}
+                      selected={activeChild?.id === profile.id}
+                      onSelect={() => {
+                        setSelectedChildId(profile.id);
+                        setProfilesOpen(false);
+                        if (pathname.startsWith('/dashboard/child-profiles/')) {
+                          router.push(`/dashboard/child-profiles/${profile.id}`);
+                        }
+                      }}
+                    />
+                  ))
+                ) : (
+                  <p className="py-4 text-center font-manrope text-sm text-[#7d8488]">
+                    No child profiles found.
+                  </p>
+                )}
               </div>
-              <button
-                type="button"
-                className="relative flex h-10 w-full items-center justify-center gap-1 overflow-hidden rounded-full border border-[#accbcb] px-3 py-2 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-[#f8fafc]"
+              <Link
+                href="/dashboard/child-profiles/add-child"
+                onClick={() => setProfilesOpen(false)}
+                className="relative flex h-10 w-full items-center justify-center gap-1 overflow-hidden rounded-full border border-[#accbcb] px-3 py-2 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-[#f8fafc] transition-opacity hover:opacity-95"
               >
                 <span className="absolute inset-0 bg-linear-to-b from-[rgba(47,125,126,0.6)] to-[#2f7d7e]" />
                 <span className="relative">+ Add Another Child Profile</span>
                 <span className="pointer-events-none absolute inset-0 rounded-full shadow-[inset_0_-6px_2px_rgba(255,255,255,0.07)]" />
-              </button>
+              </Link>
             </div>
           </section>
         )}
