@@ -6,13 +6,13 @@ import { AddChildSelect } from './add-child-select';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Camera } from 'lucide-react';
+import { Camera, User } from 'lucide-react';
 import { useState } from 'react';
 import { z } from 'zod';
-import { toast } from 'sonner';
+import { useAddChildWizard } from '@/features/child-profiles/context/add-child-context';
 
 const basicInfoSchema = z.object({
-  nickname: z.string().trim().min(1, 'Please enter a nickname.'),
+  nickname: z.string().trim().min(1, 'Please enter a nickname or name.'),
   gender: z.string().optional(),
   ageYears: z.string().min(1, 'Select years.'),
   ageMonths: z.string().min(1, 'Select months.'),
@@ -27,22 +27,26 @@ const genderOptions = ['Girl', 'Boy', 'Non-binary', 'Prefer not to say'].map((va
 }));
 
 const yearOptions = Array.from({ length: 18 }, (_, value) => ({
-  label: String(value),
+  label: `${value} yr`,
   value: String(value),
 }));
 
 const monthOptions = Array.from({ length: 12 }, (_, value) => ({
-  label: String(value),
+  label: `${value} mo`,
   value: String(value),
 }));
 
 export function AddChildBasicInfo() {
   const router = useRouter();
-  const [photoPreview, setPhotoPreview] = useState('/Home/figma-child-profile-emma.png');
+  const { state, updateStep1 } = useAddChildWizard();
+
+  const [photoPreview, setPhotoPreview] = useState<string | null>(state.photoPreview || null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(state.photoFile || null);
 
   function updatePhoto(file: File | undefined, setPhoto: (file: File) => void) {
     if (!file) return;
 
+    setSelectedFile(file);
     setPhoto(file);
     const reader = new FileReader();
     reader.onload = () => setPhotoPreview(reader.result as string);
@@ -50,7 +54,14 @@ export function AddChildBasicInfo() {
   }
 
   function submitBasicInfo(data: BasicInfoValues) {
-    toast.success(`${data.nickname}'s basic information has been saved.`);
+    updateStep1({
+      nickname: data.nickname,
+      gender: data.gender,
+      ageYears: data.ageYears,
+      ageMonths: data.ageMonths,
+      photoFile: selectedFile,
+      photoPreview,
+    });
     router.push('/dashboard/child-profiles/add-child/caregiver-information');
   }
 
@@ -60,10 +71,10 @@ export function AddChildBasicInfo() {
 
       <DynamicForm
         defaultValues={{
-          nickname: 'Emma',
-          gender: 'Girl',
-          ageYears: '4',
-          ageMonths: '3',
+          nickname: state.nickname,
+          gender: state.gender,
+          ageYears: state.ageYears,
+          ageMonths: state.ageMonths,
           photo: undefined,
         }}
         fields={[]}
@@ -77,20 +88,27 @@ export function AddChildBasicInfo() {
                 Basic Information
               </h2>
               <div className="mt-8 flex flex-col items-start gap-4 min-[400px]:flex-row min-[400px]:items-center">
-                <span className="relative size-16 shrink-0 overflow-hidden rounded-full bg-[#b16262] shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
-                  <Image
-                    alt="Child profile preview"
-                    fill
-                    sizes="64px"
-                    src={photoPreview}
-                    className="object-cover object-[50%_25%]"
-                  />
+                <span className="relative flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#E5ECE9] shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
+                  {photoPreview ? (
+                    <Image
+                      alt="Child profile preview"
+                      fill
+                      sizes="64px"
+                      src={photoPreview}
+                      className="object-cover object-center"
+                      unoptimized={
+                        photoPreview.startsWith('data:') || photoPreview.startsWith('blob:')
+                      }
+                    />
+                  ) : (
+                    <User className="size-8 text-[#7D8488]" />
+                  )}
                 </span>
                 <label className="flex h-10 cursor-pointer items-center gap-2 rounded-full border border-[#e2e8e8] px-4 py-2 font-manrope text-sm font-semibold leading-5 text-[#7d8488] transition-colors hover:bg-[#f8fbfa]">
                   <Camera aria-hidden="true" size={14} strokeWidth={1.7} />
-                  Change photo
+                  {photoPreview ? 'Change photo' : 'Upload photo'}
                   <input
-                    accept="image/png,image/jpeg"
+                    accept="image/png,image/jpeg,image/webp"
                     className="sr-only"
                     onChange={(event) =>
                       updatePhoto(event.target.files?.[0], (file) => form.setValue('photo', file))
@@ -103,10 +121,11 @@ export function AddChildBasicInfo() {
               <div className="mt-8 space-y-6">
                 <label className="flex flex-col gap-1.5">
                   <span className="font-manrope text-lg font-medium leading-6.75 tracking-[-0.27px]">
-                    Nickname
+                    Nickname / Name
                   </span>
                   <input
-                    className="h-11 w-full rounded-full border border-[#d8ddd9] bg-white px-4 py-2.5 font-manrope text-base leading-6 tracking-[-0.176px] text-[#515b60] shadow-[0_1px_2px_rgba(16,24,40,0.05)] outline-none focus:border-[#2f7d7e]"
+                    placeholder="e.g. Liam, Maya"
+                    className="h-11 w-full rounded-full border border-[#d8ddd9] bg-white px-4 py-2.5 font-manrope text-base leading-6 tracking-[-0.176px] text-[#263238] placeholder:text-[#a8adaf] shadow-[0_1px_2px_rgba(16,24,40,0.05)] outline-none focus:border-[#2f7d7e]"
                     {...form.register('nickname')}
                   />
                   {form.formState.errors.nickname && (
@@ -152,6 +171,11 @@ export function AddChildBasicInfo() {
                         placeholder="Select Year"
                         value={form.watch('ageYears')}
                       />
+                      {form.formState.errors.ageYears && (
+                        <span className="mt-1 block font-manrope text-xs text-[#b24b4b]">
+                          {form.formState.errors.ageYears.message}
+                        </span>
+                      )}
                     </div>
                     <div>
                       <span className="sr-only">Months</span>
@@ -168,6 +192,11 @@ export function AddChildBasicInfo() {
                         placeholder="Select Month"
                         value={form.watch('ageMonths')}
                       />
+                      {form.formState.errors.ageMonths && (
+                        <span className="mt-1 block font-manrope text-xs text-[#b24b4b]">
+                          {form.formState.errors.ageMonths.message}
+                        </span>
+                      )}
                     </div>
                   </div>
                 </fieldset>
@@ -176,13 +205,13 @@ export function AddChildBasicInfo() {
 
             <div className="mt-8 flex flex-col gap-3 sm:mt-14 sm:flex-row sm:flex-wrap sm:gap-4">
               <button
-                className="h-14 w-full rounded-full border border-[#d5e5e5] bg-[#2f7d7e] px-4 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-white sm:w-auto"
+                className="h-14 w-full rounded-full border border-[#d5e5e5] bg-[#2f7d7e] px-6 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-white transition-colors hover:bg-[#276a6b] sm:w-auto"
                 type="submit"
               >
                 Continue to Caregiver Information
               </button>
               <Link
-                className="flex h-14 w-full items-center justify-center rounded-full border border-[#d4d6d7] bg-white px-4 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-[#14094b] sm:w-30.75"
+                className="flex h-14 w-full items-center justify-center rounded-full border border-[#d4d6d7] bg-white px-6 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-[#515b60] transition-colors hover:bg-gray-50 sm:w-auto"
                 href="/dashboard/child-profiles"
               >
                 Cancel
@@ -194,3 +223,5 @@ export function AddChildBasicInfo() {
     </section>
   );
 }
+
+export default AddChildBasicInfo;
