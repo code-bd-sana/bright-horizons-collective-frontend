@@ -1,14 +1,22 @@
 'use client';
 
 import Image from 'next/image';
-import Link from 'next/link';
-import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useMemo, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 
-import { membershipPlans, type MembershipPlan } from '@/components/membership/membership-plans';
+import {
+  membershipPlans as defaultPlans,
+  type MembershipPlan,
+  type MembershipTier,
+} from '@/components/membership/membership-plans';
 import { MembershipComparison } from '@/components/membership/membership-comparison';
 import { MembershipFaqSection } from '@/components/membership/membership-faq-section';
 import { MembershipFinalCta } from '@/components/membership/membership-final-cta';
 import { MembershipTestimonials } from '@/components/membership/membership-testimonials';
+import { useSession } from '@/services/api/auth/auth.queries';
 
 const MEMBERSHIP_ASSET_ROOT = '/Membership/';
 const HOME_ASSET_ROOT = '/Home/';
@@ -21,9 +29,11 @@ const formatPrice = (price: number | undefined) => (price === undefined ? '' : `
 
 function BillingToggle({
   billingCycle,
+  annualDiscount,
   onChange,
 }: {
   billingCycle: BillingCycle;
+  annualDiscount?: number;
   onChange: (billingCycle: BillingCycle) => void;
 }) {
   const optionClass = (option: BillingCycle) =>
@@ -55,8 +65,8 @@ function BillingToggle({
         className={`${optionClass('annual')} h-10 w-44.5 gap-1 px-2 text-sm sm:h-10.5 sm:w-48.25 sm:gap-1.5 sm:px-3 sm:text-base`}
       >
         <span className="whitespace-nowrap">Bill annually</span>
-        <span className="flex h-5 w-16.5 items-center justify-center rounded-[12px] border border-[#F5EEFF] bg-white font-nunito text-[11px] font-medium leading-4 text-[#2F7D7E] sm:h-5.5 sm:w-18.5 sm:text-xs">
-          Save 20%
+        <span className="flex h-5 items-center justify-center rounded-[12px] border border-[#F5EEFF] bg-white px-2 font-nunito text-[11px] font-medium leading-4 text-[#2F7D7E] sm:h-5.5 sm:text-xs">
+          Save {annualDiscount ?? 20}%
         </span>
       </button>
     </div>
@@ -80,27 +90,57 @@ function FeatureCheck({ paid = false }: { paid?: boolean }) {
 function MembershipCard({
   plan,
   billingCycle,
+  isCurrentPlan,
+  isCheckingOut,
+  onSelectPlan,
   className = '',
 }: {
   plan: MembershipPlan;
   billingCycle: BillingCycle;
+  isCurrentPlan: boolean;
+  isCheckingOut: boolean;
+  onSelectPlan: (plan: MembershipPlan) => void;
   className?: string;
 }) {
-  const isFree = !plan.monthlyPrice;
-  const displayedPrice = formatPrice(
-    billingCycle === 'annual' ? plan.annualPrice : plan.monthlyPrice
-  );
+  const isFree = plan.tier === 'LITTLE_STEPS' || (!plan.monthlyPrice && !plan.annualPrice);
+
+  const effectiveMonthly =
+    plan.effectiveMonthlyPrice !== undefined
+      ? plan.effectiveMonthlyPrice
+      : (plan.monthlyPrice ?? 0) * (1 - (plan.monthlyDiscount ?? 0) / 100);
+
+  const regularAnnual =
+    plan.annualPrice && plan.annualPrice > 0 ? plan.annualPrice : (plan.monthlyPrice ?? 0) * 12;
+
+  const effectiveAnnual =
+    plan.effectiveAnnualPrice !== undefined
+      ? plan.effectiveAnnualPrice
+      : regularAnnual * (1 - (plan.annualDiscount ?? 0) / 100);
+
+  const displayedPrice = isFree
+    ? 'Free'
+    : billingCycle === 'annual'
+      ? formatPrice(effectiveAnnual)
+      : formatPrice(effectiveMonthly);
+
+  const regularPrice = billingCycle === 'annual' ? regularAnnual : (plan.monthlyPrice ?? 0);
+
+  const discountPercent =
+    billingCycle === 'annual' ? (plan.annualDiscount ?? 0) : (plan.monthlyDiscount ?? 0);
+
+  const hasDiscount = !isFree && discountPercent > 0;
+  const isPopular = Boolean(plan.isPopular || plan.popular);
 
   return (
     <article
       aria-label={`${plan.name} membership`}
-      className={`relative min-h-150 w-full max-w-105.5 rounded-[20px] bg-white p-6 sm:min-h-0 sm:h-163.5 sm:p-8 ${
-        plan.popular
+      className={`relative min-h-150 w-full max-w-105.5 rounded-[20px] bg-white p-6 sm:min-h-163.5 sm:p-8 flex flex-col justify-between ${
+        isPopular
           ? 'border-2 border-[rgba(47,125,126,0.2)] shadow-[0_99px_14px_rgba(47,125,126,0),0_63px_12.5px_rgba(47,125,126,0.01),0_36px_10.5px_rgba(47,125,126,0.05),0_16px_8px_rgba(47,125,126,0.09),0_4px_4.5px_rgba(47,125,126,0.1)]'
           : 'border border-[#D8DDD9] shadow-[0_2px_6px_rgba(23,74,77,0.06)]'
       } ${className}`}
     >
-      {plan.popular && (
+      {isPopular && (
         <>
           <span className="pointer-events-none absolute -top-16 left-1/2 flex size-17.5 -translate-x-1/2 items-center justify-center min-[1400px]:left-52.25 min-[1400px]:translate-x-0">
             <span className="relative block size-17.5 -scale-y-100 rotate-180">
@@ -121,35 +161,80 @@ function MembershipCard({
       )}
 
       <div className="flex w-full flex-col gap-4">
-        <div className={plan.popular ? 'h-21' : 'h-15'}>
+        <div className={isPopular ? 'min-h-21' : 'min-h-15'}>
           <h2 className="font-nunito text-xl font-semibold leading-7 text-[#2F7D7E]">
             {plan.name}
           </h2>
           <p className="mt-2 font-manrope text-sm leading-6 text-[#515B60]">{plan.description}</p>
         </div>
 
-        <div className="flex h-26.5 flex-col gap-2">
-          <p
-            className="flex h-12 items-baseline gap-1 font-nunito text-[40px] font-semibold leading-12 tracking-[-0.4px] text-[#263238]"
-            aria-live="polite"
-          >
-            {isFree ? 'Free' : displayedPrice}
-            {!isFree && billingCycle === 'annual' && (
-              <span className="font-manrope text-base font-normal leading-6 tracking-[-0.176px] text-[#A8ADAF] line-through">
-                {formatPrice(plan.annualRegularPrice)}
+        <div className="flex flex-col gap-2">
+          <div className="flex flex-wrap items-baseline gap-1.5" aria-live="polite">
+            <span className="font-nunito text-[40px] font-semibold leading-12 tracking-[-0.4px] text-[#263238]">
+              {displayedPrice}
+            </span>
+            {!isFree && (
+              <span className="font-manrope text-sm font-medium text-[#7d8488]">
+                {billingCycle === 'annual' ? '/ year' : '/ month'}
               </span>
             )}
-          </p>
-          <Link
-            href="/register"
-            className={`flex h-12.5 w-full items-center justify-center rounded-full border-2 px-6.5 py-3.5 font-manrope text-[14.4px] font-bold leading-[21.6px] whitespace-nowrap ${
-              plan.popular
-                ? 'border-[#D5E5E5] bg-[#2F7D7E] text-white'
-                : 'border-[#D5E5E5] bg-white text-[#2F7D7E]'
-            }`}
-          >
-            {plan.action}
-          </Link>
+            {hasDiscount && (
+              <span className="font-manrope text-base font-normal leading-6 tracking-[-0.176px] text-[#A8ADAF] line-through">
+                {formatPrice(regularPrice)}
+              </span>
+            )}
+            {hasDiscount && (
+              <span className="rounded-full bg-[#edf6f2] px-2 py-0.5 font-manrope text-[10px] font-bold text-[#2f7d7e]">
+                {billingCycle === 'annual' ? `Save ${discountPercent}%` : `-${discountPercent}%`}
+              </span>
+            )}
+          </div>
+
+          {!isFree && billingCycle === 'annual' && effectiveAnnual > 0 && (
+            <p className="font-manrope text-xs text-[#7d8488]">
+              Equivalent to ${Math.round(effectiveAnnual / 12)}/month, billed annually
+            </p>
+          )}
+
+          <div className="pt-2">
+            {isCurrentPlan ? (
+              <button
+                type="button"
+                disabled
+                className="flex h-12.5 w-full items-center justify-center rounded-full border-2 border-[#d5e5e5] bg-[#edf6f2] px-6.5 py-3.5 font-manrope text-[14.4px] font-bold text-[#2f7d7e] opacity-90 cursor-default"
+              >
+                Current Plan
+              </button>
+            ) : isFree ? (
+              <button
+                type="button"
+                onClick={() => onSelectPlan(plan)}
+                className="flex h-12.5 w-full items-center justify-center rounded-full border-2 border-[#D5E5E5] bg-white px-6.5 py-3.5 font-manrope text-[14.4px] font-bold leading-[21.6px] text-[#2F7D7E] transition-colors hover:bg-[#f5f8f7]"
+              >
+                Start Free
+              </button>
+            ) : (
+              <button
+                type="button"
+                disabled={isCheckingOut}
+                onClick={() => onSelectPlan(plan)}
+                className={`flex h-12.5 w-full items-center justify-center gap-2 rounded-full border-2 px-6.5 py-3.5 font-manrope text-[14.4px] font-bold leading-[21.6px] whitespace-nowrap transition-all disabled:opacity-60 ${
+                  isPopular
+                    ? 'border-[#D5E5E5] bg-[#2F7D7E] text-white hover:bg-[#266b6c]'
+                    : 'border-[#D5E5E5] bg-white text-[#2F7D7E] hover:bg-[#f5f8f7]'
+                }`}
+              >
+                {isCheckingOut ? (
+                  <>
+                    <Loader2 size={18} className="animate-spin" />
+                    <span>Preparing Checkout...</span>
+                  </>
+                ) : (
+                  <span>Choose {plan.name}</span>
+                )}
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="flex flex-col gap-2 py-4">
@@ -176,7 +261,135 @@ function MembershipCard({
 }
 
 export function MembershipPage() {
+  const router = useRouter();
+  const { data: session } = useSession();
   const [billingCycle, setBillingCycle] = useState<BillingCycle>('annual');
+  const [checkoutPlanId, setCheckoutPlanId] = useState<string | null>(null);
+
+  // Fetch live membership plans from Next.js BFF API
+  const { data: serverPlans } = useQuery<MembershipPlan[]>({
+    queryKey: ['public-membership-plans'],
+    queryFn: async () => {
+      const res = await fetch('/api/memberships/plans');
+      if (!res.ok) throw new Error('Failed to load membership plans');
+      const data = await res.json();
+      return Array.isArray(data) ? data : data?.data || [];
+    },
+    staleTime: 30 * 1000,
+  });
+
+  // Fetch current user active subscription (if logged in)
+  const { data: currentSubscription } = useQuery<{
+    status?: string;
+    plan?: { id?: string; tier?: MembershipTier };
+  }>({
+    queryKey: ['my-subscription'],
+    queryFn: async () => {
+      const res = await fetch('/api/memberships/my-subscription');
+      if (!res.ok) return null;
+      return res.json();
+    },
+    enabled: Boolean(session?.user),
+    staleTime: 15 * 1000,
+  });
+
+  // Merge live server plans with default fallback structure
+  const plans = useMemo(() => {
+    if (!serverPlans || serverPlans.length === 0) return defaultPlans;
+
+    const tierOrder: MembershipTier[] = ['LITTLE_STEPS', 'GROW_TOGETHER', 'PERSONALIZED_PATHWAYS'];
+
+    return tierOrder.map((tier) => {
+      const matched = serverPlans.find((p) => p.tier === tier);
+      const fallback = defaultPlans.find((p) => p.tier === tier) || defaultPlans[0];
+
+      if (!matched) return fallback;
+
+      return {
+        ...fallback,
+        ...matched,
+        features:
+          matched.features && matched.features.length > 0 ? matched.features : fallback.features,
+        featuresHeading:
+          tier === 'GROW_TOGETHER'
+            ? 'Everything in Little Steps, plus:'
+            : tier === 'PERSONALIZED_PATHWAYS'
+              ? 'Includes everything in Grow Together plus'
+              : undefined,
+      };
+    });
+  }, [serverPlans]);
+
+  // Calculate highest annual discount among plans for billing toggle
+  const maxAnnualDiscount = useMemo(() => {
+    const discounts = plans.map((p) => p.annualDiscount || 0).filter((d) => d > 0);
+    return discounts.length > 0 ? Math.max(...discounts) : 20;
+  }, [plans]);
+
+  // Handle plan checkout or registration
+  const handleSelectPlan = async (plan: MembershipPlan) => {
+    const isFree = plan.tier === 'LITTLE_STEPS' || (!plan.monthlyPrice && !plan.annualPrice);
+
+    if (isFree) {
+      if (session?.user) {
+        router.push('/dashboard');
+      } else {
+        router.push('/register');
+      }
+      return;
+    }
+
+    // Paid Plan Selection
+    if (!session?.user) {
+      toast.info('Please sign in or create an account to activate your subscription.');
+      const planParam = plan.id ? `&plan=${plan.id}` : '';
+      router.push(`/register?cycle=${billingCycle.toUpperCase()}${planParam}`);
+      return;
+    }
+
+    if (!plan.id) {
+      toast.error('Plan identifier missing. Please refresh and try again.');
+      return;
+    }
+
+    setCheckoutPlanId(plan.id);
+    try {
+      const res = await fetch('/api/payments/create-checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          planId: plan.id,
+          billingCycle: billingCycle.toUpperCase(), // 'MONTHLY' | 'ANNUAL'
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || 'Unable to start checkout session.');
+      }
+
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error('No checkout URL received.');
+      }
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : 'Unable to initiate checkout. Please try again.'
+      );
+      setCheckoutPlanId(null);
+    }
+  };
+
+  const isUserOnPlan = (tier?: MembershipTier) => {
+    if (!session?.user || !currentSubscription) return false;
+    if (tier === 'LITTLE_STEPS') {
+      return (
+        currentSubscription.status === 'FREE' || currentSubscription.plan?.tier === 'LITTLE_STEPS'
+      );
+    }
+    return currentSubscription.status === 'ACTIVE' && currentSubscription.plan?.tier === tier;
+  };
 
   return (
     <main className="relative overflow-x-clip bg-[#FDFDFC] text-[#263238]">
@@ -261,25 +474,44 @@ export function MembershipPage() {
         </div>
 
         <div className="relative z-10 mx-auto mt-10 flex w-fit min-[1400px]:absolute min-[1400px]:top-142.5 min-[1400px]:left-1/2 min-[1400px]:mt-0 min-[1400px]:-translate-x-1/2">
-          <BillingToggle billingCycle={billingCycle} onChange={setBillingCycle} />
+          <BillingToggle
+            billingCycle={billingCycle}
+            annualDiscount={maxAnnualDiscount}
+            onChange={setBillingCycle}
+          />
         </div>
 
         <div className="relative z-10 mx-auto mt-24 grid w-full max-w-328.5 grid-cols-1 justify-items-center gap-x-6 gap-y-16 min-[740px]:grid-cols-2 min-[1180px]:grid-cols-3 min-[1400px]:absolute min-[1400px]:top-181 min-[1400px]:left-1/2 min-[1400px]:mt-0 min-[1400px]:flex min-[1400px]:w-328.5 min-[1400px]:-translate-x-1/2 min-[1400px]:items-start min-[1400px]:gap-6">
-          <MembershipCard
-            plan={membershipPlans[0]}
-            billingCycle={billingCycle}
-            className="min-[1400px]:mt-14 min-[1400px]:shrink-0"
-          />
-          <MembershipCard
-            plan={membershipPlans[1]}
-            billingCycle={billingCycle}
-            className="mt-10 min-[740px]:mt-0 min-[1400px]:shrink-0"
-          />
-          <MembershipCard
-            plan={membershipPlans[2]}
-            billingCycle={billingCycle}
-            className="min-[1400px]:mt-14 min-[1400px]:shrink-0"
-          />
+          {plans[0] && (
+            <MembershipCard
+              plan={plans[0]}
+              billingCycle={billingCycle}
+              isCurrentPlan={isUserOnPlan(plans[0].tier)}
+              isCheckingOut={checkoutPlanId === plans[0].id}
+              onSelectPlan={handleSelectPlan}
+              className="min-[1400px]:mt-14 min-[1400px]:shrink-0"
+            />
+          )}
+          {plans[1] && (
+            <MembershipCard
+              plan={plans[1]}
+              billingCycle={billingCycle}
+              isCurrentPlan={isUserOnPlan(plans[1].tier)}
+              isCheckingOut={checkoutPlanId === plans[1].id}
+              onSelectPlan={handleSelectPlan}
+              className="mt-10 min-[740px]:mt-0 min-[1400px]:shrink-0"
+            />
+          )}
+          {plans[2] && (
+            <MembershipCard
+              plan={plans[2]}
+              billingCycle={billingCycle}
+              isCurrentPlan={isUserOnPlan(plans[2].tier)}
+              isCheckingOut={checkoutPlanId === plans[2].id}
+              onSelectPlan={handleSelectPlan}
+              className="min-[1400px]:mt-14 min-[1400px]:shrink-0"
+            />
+          )}
         </div>
       </section>
       <MembershipComparison />

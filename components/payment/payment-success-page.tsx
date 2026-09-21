@@ -48,8 +48,17 @@ function PaymentSuccessContent() {
         if (!response.ok) {
           throw new Error('Verification failed');
         }
-        const data = await response.json();
-        if (isMounted) {
+        const raw = await response.json();
+        const unwrapped =
+          raw && typeof raw === 'object' && 'data' in raw && !('subscription' in raw)
+            ? (raw as Record<string, unknown>).data
+            : raw;
+        const data = unwrapped as {
+          subscription?: SubscriptionData;
+          plan?: SubscriptionData['plan'] & { monthlyPrice?: number };
+        } | null;
+
+        if (isMounted && data) {
           if (data.subscription) {
             setSubscription(data.subscription);
           } else if (data.plan) {
