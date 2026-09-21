@@ -19,7 +19,8 @@ export async function POST(request: NextRequest) {
     const response = await serverApi.post('/payments/create-checkout-session', body, {
       headers: authHeaders,
     });
-    return NextResponse.json(response.data);
+    const data = response.data?.data ?? response.data;
+    return NextResponse.json(data);
   } catch (error) {
     return safeBackendErrorResponse(error, 'Unable to create checkout session.');
   }

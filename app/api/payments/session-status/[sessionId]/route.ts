@@ -15,7 +15,8 @@ export async function GET(
     const response = await serverApi.get(`/payments/session-status/${sessionId}`, {
       headers: authHeaders,
     });
-    return NextResponse.json(response.data);
+    const data = response.data?.data ?? response.data;
+    return NextResponse.json(data);
   } catch (error) {
     return safeBackendErrorResponse(error, 'Unable to verify payment session.');
   }
