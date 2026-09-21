@@ -28,6 +28,16 @@ const trialBenefits = ['7-day premium trial', 'Cancel anytime', 'Secure payment'
 
 const formatPrice = (price: number | undefined) => (price === undefined ? '' : `$${price}`);
 
+const formatShortDate = (dateStr: string | null | undefined): string => {
+  if (!dateStr) return '';
+  const date = new Date(dateStr);
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+};
+
 function BillingToggle({
   billingCycle,
   annualDiscount,
@@ -46,7 +56,8 @@ function BillingToggle({
 
   return (
     <div
-      aria-label="Billing frequency"
+      role="group"
+      aria-label="Billing cycle selector"
       className="flex h-11 w-full max-w-69 items-center gap-0.5 overflow-hidden rounded-[24px] bg-[#D5E5E5] p-0.5 sm:h-12 sm:max-w-75"
     >
       <button
@@ -93,10 +104,12 @@ function MembershipCard({
   billingCycle,
   isCurrentPlan,
   isLowerTier,
+  isCycleDowngrade = false,
   isUpgrade,
   unusedCredit,
   daysRemaining,
   activePlanName,
+  activePeriodEnd,
   isCheckingOut,
   onSelectPlan,
   className = '',
@@ -105,10 +118,12 @@ function MembershipCard({
   billingCycle: BillingCycle;
   isCurrentPlan: boolean;
   isLowerTier: boolean;
+  isCycleDowngrade?: boolean;
   isUpgrade: boolean;
   unusedCredit: number;
   daysRemaining: number;
   activePlanName?: string;
+  activePeriodEnd?: string;
   isCheckingOut: boolean;
   onSelectPlan: (plan: MembershipPlan) => void;
   className?: string;
@@ -225,6 +240,14 @@ function MembershipCard({
             </p>
           )}
 
+          {isCycleDowngrade && (
+            <p className="font-manrope text-xs font-semibold text-[#a05a3a]">
+              Your account is subscribed annually
+              {activePeriodEnd ? ` through ${formatShortDate(activePeriodEnd)}` : ''}. Switching to
+              monthly billing opens after your annual term ends.
+            </p>
+          )}
+
           <div className="pt-2">
             {/* 1. Lower Tier -> Downgrade Strictly Blocked */}
             {isLowerTier ? (
@@ -236,6 +259,16 @@ function MembershipCard({
               >
                 <ShieldCheck size={15} />
                 <span>Active on Higher Tier</span>
+              </button>
+            ) : isCycleDowngrade ? (
+              <button
+                type="button"
+                disabled
+                title={`You have an active Annual subscription to ${activePlanName}. Switching to monthly billing is not permitted until your current annual term ends.`}
+                className="flex h-12.5 w-full items-center justify-center gap-1.5 rounded-full border border-[#e8ebe8] bg-[#f8faf9] px-4 py-3.5 font-manrope text-xs font-bold text-[#90a4ae] cursor-not-allowed"
+              >
+                <ShieldCheck size={15} />
+                <span>Active on Annual Plan</span>
               </button>
             ) : isCurrentPlan ? (
               daysRemaining <= 7 && daysRemaining > 0 ? (
@@ -458,6 +491,14 @@ export function MembershipPage() {
       return;
     }
 
+    // Check cycle downgrade attempt (Annual -> Monthly)
+    if (checkIsCycleDowngrade(plan)) {
+      toast.error(
+        `You have an active Annual subscription to ${activePlanName}. Switching to monthly billing takes effect after your current annual term ends.`
+      );
+      return;
+    }
+
     setCheckoutPlanId(plan.id);
     try {
       const res = await fetch('/api/payments/create-checkout-session', {
@@ -475,7 +516,7 @@ export function MembershipPage() {
       }
 
       if (data.url) {
-        window.location.href = data.url;
+        window.location.assign(data.url);
       } else {
         throw new Error('No checkout URL received.');
       }
@@ -506,6 +547,16 @@ export function MembershipPage() {
     if (!isSubActive || !plan.tier) return false;
     const cardRank = TIER_RANKS[plan.tier] || 1;
     return cardRank < activeRank;
+  };
+
+  const checkIsCycleDowngrade = (plan: MembershipPlan) => {
+    if (!isSubActive || !plan.tier || !currentSubscription) return false;
+    const cardRank = TIER_RANKS[plan.tier] || 1;
+    return (
+      cardRank <= activeRank &&
+      currentSubscription.billingCycle === 'ANNUAL' &&
+      billingCycle === 'monthly'
+    );
   };
 
   const checkIsUpgrade = (plan: MembershipPlan) => {
@@ -616,10 +667,12 @@ export function MembershipPage() {
               billingCycle={billingCycle}
               isCurrentPlan={checkIsCurrentPlan(plans[0])}
               isLowerTier={checkIsLowerTier(plans[0])}
+              isCycleDowngrade={checkIsCycleDowngrade(plans[0])}
               isUpgrade={checkIsUpgrade(plans[0])}
               unusedCredit={activeUnusedCredit}
               daysRemaining={activeDaysRemaining}
               activePlanName={activePlanName}
+              activePeriodEnd={currentSubscription?.currentPeriodEnd}
               isCheckingOut={checkoutPlanId === plans[0].id}
               onSelectPlan={handleSelectPlan}
               className="min-[1400px]:mt-14 min-[1400px]:shrink-0"
@@ -631,10 +684,12 @@ export function MembershipPage() {
               billingCycle={billingCycle}
               isCurrentPlan={checkIsCurrentPlan(plans[1])}
               isLowerTier={checkIsLowerTier(plans[1])}
+              isCycleDowngrade={checkIsCycleDowngrade(plans[1])}
               isUpgrade={checkIsUpgrade(plans[1])}
               unusedCredit={activeUnusedCredit}
               daysRemaining={activeDaysRemaining}
               activePlanName={activePlanName}
+              activePeriodEnd={currentSubscription?.currentPeriodEnd}
               isCheckingOut={checkoutPlanId === plans[1].id}
               onSelectPlan={handleSelectPlan}
               className="mt-10 min-[740px]:mt-0 min-[1400px]:shrink-0"
@@ -646,10 +701,12 @@ export function MembershipPage() {
               billingCycle={billingCycle}
               isCurrentPlan={checkIsCurrentPlan(plans[2])}
               isLowerTier={checkIsLowerTier(plans[2])}
+              isCycleDowngrade={checkIsCycleDowngrade(plans[2])}
               isUpgrade={checkIsUpgrade(plans[2])}
               unusedCredit={activeUnusedCredit}
               daysRemaining={activeDaysRemaining}
               activePlanName={activePlanName}
+              activePeriodEnd={currentSubscription?.currentPeriodEnd}
               isCheckingOut={checkoutPlanId === plans[2].id}
               onSelectPlan={handleSelectPlan}
               className="min-[1400px]:mt-14 min-[1400px]:shrink-0"
