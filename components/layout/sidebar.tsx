@@ -11,6 +11,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { X } from 'lucide-react';
 
 import { useUnreadMessagesCount } from '@/features/messages/hooks/messages.queries';
+import { SidebarPlanWidget } from '@/components/layout/sidebar-plan-widget';
 
 function NavigationList({
   items,
@@ -125,38 +126,7 @@ export function Sidebar({ role = 'parent' }: { role?: AuthRole }) {
               )}
             </nav>
 
-            {!isAdmin && (
-              <section
-                className="relative mt-auto mb-4 flex h-41.5 w-60.75 shrink-0 flex-col justify-end gap-4 overflow-hidden rounded-xl border-2 border-transparent p-4"
-                aria-label="Current membership plan"
-              >
-                <span
-                  aria-hidden="true"
-                  className="absolute inset-0 rounded-[10px]"
-                  style={{
-                    backgroundImage:
-                      'linear-gradient(164.974553deg, rgb(255, 255, 255) 12.806%, rgb(251, 222, 213) 45.344%, rgb(250, 214, 203) 68.311%, rgb(249, 208, 195) 96.064%, rgb(246, 189, 171) 112.33%)',
-                  }}
-                />
-                <div className="relative z-10 flex w-44 flex-col gap-1">
-                  <p className="font-manrope text-[10px] font-medium uppercase leading-3.75 tracking-[0.2px] text-[#515b60]">
-                    Current Plan
-                  </p>
-                  <p className="font-nunito text-lg font-semibold leading-6 tracking-[-0.27px] text-[#263238]">
-                    Grow Together
-                  </p>
-                  <p className="font-manrope text-xs leading-4.5 text-[#515b60]">
-                    Renews Aug 1, 2026
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  className="relative z-10 flex min-h-12 w-51.5 items-center justify-center rounded-full border border-[#e8ebe8] bg-white px-3.25 py-1.75 font-nunito text-center text-sm font-medium leading-5 tracking-[-0.084px] text-[#2f7d7e]"
-                >
-                  <span className="w-38">Upgrade Personalized Pathways</span>
-                </button>
-              </section>
-            )}
+            {!isAdmin && <SidebarPlanWidget variant="sidebar-desktop" />}
           </div>
 
           <div className="relative flex w-full flex-col gap-2 border-r border-[#f6f4f4] p-3">
@@ -256,32 +226,7 @@ export function Sidebar({ role = 'parent' }: { role?: AuthRole }) {
           </nav>
 
           {!isAdmin && (
-            <section
-              className="relative mt-6 flex min-h-38 flex-col justify-end gap-3 overflow-hidden rounded-xl p-4"
-              aria-label="Current membership plan"
-            >
-              <span
-                aria-hidden="true"
-                className="absolute inset-0 rounded-xl bg-[linear-gradient(165deg,#fff_13%,#fbded5_45%,#fad6cb_68%,#f9d0c3_96%)]"
-              />
-              <div className="relative z-10">
-                <p className="font-manrope text-[10px] font-medium uppercase leading-3.75 tracking-[0.2px] text-[#515b60]">
-                  Current Plan
-                </p>
-                <p className="mt-1 font-nunito text-lg font-semibold leading-6 text-[#263238]">
-                  Grow Together
-                </p>
-                <p className="mt-1 font-manrope text-xs leading-4.5 text-[#515b60]">
-                  Renews Aug 1, 2026
-                </p>
-              </div>
-              <button
-                type="button"
-                className="relative z-10 min-h-11 rounded-full border border-[#e8ebe8] bg-white px-3 font-nunito text-sm font-medium text-[#2f7d7e]"
-              >
-                Upgrade Personalized Pathways
-              </button>
-            </section>
+            <SidebarPlanWidget variant="sidebar-mobile" onNavigate={() => setSidebarOpen(false)} />
           )}
         </div>
 

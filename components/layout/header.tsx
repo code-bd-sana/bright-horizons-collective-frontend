@@ -10,6 +10,7 @@ import { getRoleConfig } from '@/lib/role-config';
 import { useAppStore } from '@/store/use-app-store';
 import { useChildProfiles } from '@/features/child-profiles/hooks/child-profiles.queries';
 import { useUnreadMessagesCount } from '@/features/messages/hooks/messages.queries';
+import { SidebarPlanWidget } from '@/components/layout/sidebar-plan-widget';
 import type { ChildProfile } from '@/features/child-profiles/model/child-profile.types';
 
 const notificationDescription =
@@ -497,17 +498,10 @@ export function Header({ role = 'parent' }: { role?: AuthRole }) {
 
               <div className="flex flex-col gap-3">
                 {!isAdmin && (
-                  <div className="rounded-xl border-2 border-transparent bg-[linear-gradient(175.51deg,#fff_24.82%,#fbded5_128.91%,#fad6cb_202.39%,#f9d0c3_291.18%,#f6bdab_343.23%)] p-4">
-                    <p className="font-manrope text-[10px] font-medium uppercase leading-3.75 tracking-[0.2px] text-[#515b60]">
-                      Current Plan
-                    </p>
-                    <p className="mt-1 font-nunito text-lg font-semibold leading-6 tracking-[-0.27px] text-[#263238]">
-                      Grow Together
-                    </p>
-                    <p className="mt-1 font-manrope text-xs leading-4.5 text-[#515b60]">
-                      Renews Aug 1, 2026
-                    </p>
-                  </div>
+                  <SidebarPlanWidget
+                    variant="header-dropdown"
+                    onNavigate={() => setAccountOpen(false)}
+                  />
                 )}
 
                 <div className="flex flex-col gap-3">
