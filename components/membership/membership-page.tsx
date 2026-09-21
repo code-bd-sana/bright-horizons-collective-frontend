@@ -4,11 +4,12 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Loader2 } from 'lucide-react';
+import { Loader2, ShieldCheck, ArrowUpRight } from 'lucide-react';
 import { toast } from 'sonner';
 
 import {
   membershipPlans as defaultPlans,
+  TIER_RANKS,
   type MembershipPlan,
   type MembershipTier,
 } from '@/components/membership/membership-plans';
@@ -91,6 +92,11 @@ function MembershipCard({
   plan,
   billingCycle,
   isCurrentPlan,
+  isLowerTier,
+  isUpgrade,
+  unusedCredit,
+  daysRemaining,
+  activePlanName,
   isCheckingOut,
   onSelectPlan,
   className = '',
@@ -98,6 +104,11 @@ function MembershipCard({
   plan: MembershipPlan;
   billingCycle: BillingCycle;
   isCurrentPlan: boolean;
+  isLowerTier: boolean;
+  isUpgrade: boolean;
+  unusedCredit: number;
+  daysRemaining: number;
+  activePlanName?: string;
   isCheckingOut: boolean;
   onSelectPlan: (plan: MembershipPlan) => void;
   className?: string;
@@ -117,11 +128,15 @@ function MembershipCard({
       ? plan.effectiveAnnualPrice
       : regularAnnual * (1 - (plan.annualDiscount ?? 0) / 100);
 
-  const displayedPrice = isFree
-    ? 'Free'
-    : billingCycle === 'annual'
-      ? formatPrice(effectiveAnnual)
-      : formatPrice(effectiveMonthly);
+  const basePrice = billingCycle === 'annual' ? effectiveAnnual : effectiveMonthly;
+
+  // Prorated calculation for upgrades
+  const proratedCharge =
+    isUpgrade && unusedCredit > 0
+      ? Math.max(0.5, Math.round((basePrice - unusedCredit) * 100) / 100)
+      : basePrice;
+
+  const displayedPrice = isFree ? 'Free' : formatPrice(proratedCharge);
 
   const regularPrice = billingCycle === 'annual' ? regularAnnual : (plan.monthlyPrice ?? 0);
 
@@ -190,21 +205,64 @@ function MembershipCard({
             )}
           </div>
 
-          {!isFree && billingCycle === 'annual' && effectiveAnnual > 0 && (
+          {/* Proration Credit Badge */}
+          {isUpgrade && unusedCredit > 0 && (
+            <div className="rounded-xl border border-[rgba(47,125,126,0.25)] bg-[#edf6f2] px-3 py-1.5 text-xs text-[#2f7d7e]">
+              <span className="font-semibold">Upgrade Credit Applied:</span> Less $
+              {unusedCredit.toFixed(2)} from your active {activePlanName} plan.
+            </div>
+          )}
+
+          {!isFree && billingCycle === 'annual' && effectiveAnnual > 0 && !isUpgrade && (
             <p className="font-manrope text-xs text-[#7d8488]">
               Equivalent to ${Math.round(effectiveAnnual / 12)}/month, billed annually
             </p>
           )}
 
+          {isLowerTier && (
+            <p className="font-manrope text-xs font-semibold text-[#a05a3a]">
+              Your account currently has access to our higher {activePlanName} tier.
+            </p>
+          )}
+
           <div className="pt-2">
-            {isCurrentPlan ? (
+            {/* 1. Lower Tier -> Downgrade Strictly Blocked */}
+            {isLowerTier ? (
               <button
                 type="button"
                 disabled
-                className="flex h-12.5 w-full items-center justify-center rounded-full border-2 border-[#d5e5e5] bg-[#edf6f2] px-6.5 py-3.5 font-manrope text-[14.4px] font-bold text-[#2f7d7e] opacity-90 cursor-default"
+                title={`You have active access to ${activePlanName}. Downgrading is not permitted until your current subscription period ends.`}
+                className="flex h-12.5 w-full items-center justify-center gap-1.5 rounded-full border border-[#e8ebe8] bg-[#f8faf9] px-4 py-3.5 font-manrope text-xs font-bold text-[#90a4ae] cursor-not-allowed"
               >
-                Current Plan
+                <ShieldCheck size={15} />
+                <span>Active on Higher Tier</span>
               </button>
+            ) : isCurrentPlan ? (
+              daysRemaining <= 7 && daysRemaining > 0 ? (
+                <button
+                  type="button"
+                  disabled={isCheckingOut}
+                  onClick={() => onSelectPlan(plan)}
+                  className="flex h-12.5 w-full items-center justify-center gap-2 rounded-full border-2 border-[#2f7d7e] bg-[#2f7d7e] px-6.5 py-3.5 font-manrope text-[14.4px] font-bold text-white shadow-xs transition-opacity hover:opacity-90"
+                >
+                  {isCheckingOut ? (
+                    <>
+                      <Loader2 size={18} className="animate-spin" />
+                      <span>Renewing...</span>
+                    </>
+                  ) : (
+                    <span>Renew Plan ({daysRemaining}d left)</span>
+                  )}
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  disabled
+                  className="flex h-12.5 w-full items-center justify-center rounded-full border-2 border-[#d5e5e5] bg-[#edf6f2] px-6.5 py-3.5 font-manrope text-[14.4px] font-bold text-[#2f7d7e] opacity-90 cursor-default"
+                >
+                  Current Plan
+                </button>
+              )
             ) : isFree ? (
               <button
                 type="button"
@@ -212,6 +270,25 @@ function MembershipCard({
                 className="flex h-12.5 w-full items-center justify-center rounded-full border-2 border-[#D5E5E5] bg-white px-6.5 py-3.5 font-manrope text-[14.4px] font-bold leading-[21.6px] text-[#2F7D7E] transition-colors hover:bg-[#f5f8f7]"
               >
                 Start Free
+              </button>
+            ) : isUpgrade ? (
+              <button
+                type="button"
+                disabled={isCheckingOut}
+                onClick={() => onSelectPlan(plan)}
+                className="flex h-12.5 w-full items-center justify-center gap-2 rounded-full border-2 border-[#2F7D7E] bg-[#2F7D7E] px-6.5 py-3.5 font-manrope text-[14.4px] font-bold leading-[21.6px] text-white shadow-sm transition-all hover:bg-[#266b6c] disabled:opacity-60"
+              >
+                {isCheckingOut ? (
+                  <>
+                    <Loader2 size={18} className="animate-spin" />
+                    <span>Preparing Checkout...</span>
+                  </>
+                ) : (
+                  <>
+                    <ArrowUpRight size={16} />
+                    <span>Upgrade to {plan.name}</span>
+                  </>
+                )}
               </button>
             ) : (
               <button
@@ -281,7 +358,14 @@ export function MembershipPage() {
   // Fetch current user active subscription (if logged in)
   const { data: currentSubscription } = useQuery<{
     status?: string;
-    plan?: { id?: string; tier?: MembershipTier };
+    tierRank?: number;
+    billingCycle?: string;
+    amountPaid?: number;
+    currentPeriodStart?: string;
+    currentPeriodEnd?: string;
+    daysRemaining?: number;
+    unusedCredit?: number;
+    plan?: { id?: string; tier?: MembershipTier; name?: string };
   }>({
     queryKey: ['my-subscription'],
     queryFn: async () => {
@@ -326,6 +410,18 @@ export function MembershipPage() {
     return discounts.length > 0 ? Math.max(...discounts) : 20;
   }, [plans]);
 
+  // Active subscription analysis
+  const isSubActive = currentSubscription?.status === 'ACTIVE';
+  const activeRank =
+    isSubActive && currentSubscription?.tierRank
+      ? currentSubscription.tierRank
+      : session?.user
+        ? 1
+        : 0;
+  const activePlanName = currentSubscription?.plan?.name ?? 'Little Steps';
+  const activeDaysRemaining = currentSubscription?.daysRemaining ?? 0;
+  const activeUnusedCredit = currentSubscription?.unusedCredit ?? 0;
+
   // Handle plan checkout or registration
   const handleSelectPlan = async (plan: MembershipPlan) => {
     const isFree = plan.tier === 'LITTLE_STEPS' || (!plan.monthlyPrice && !plan.annualPrice);
@@ -349,6 +445,16 @@ export function MembershipPage() {
 
     if (!plan.id) {
       toast.error('Plan identifier missing. Please refresh and try again.');
+      return;
+    }
+
+    const cardRank = plan.tier ? TIER_RANKS[plan.tier] : 1;
+
+    // Check downgrade attempt
+    if (isSubActive && cardRank < activeRank) {
+      toast.error(
+        `Downgrading from ${activePlanName} is not permitted while your subscription is active. Downgrades take effect after your current period ends.`
+      );
       return;
     }
 
@@ -381,14 +487,36 @@ export function MembershipPage() {
     }
   };
 
-  const isUserOnPlan = (tier?: MembershipTier) => {
+  const checkIsCurrentPlan = (plan: MembershipPlan) => {
     if (!session?.user || !currentSubscription) return false;
-    if (tier === 'LITTLE_STEPS') {
+    if (plan.tier === 'LITTLE_STEPS') {
       return (
-        currentSubscription.status === 'FREE' || currentSubscription.plan?.tier === 'LITTLE_STEPS'
+        currentSubscription.status === 'FREE' ||
+        (!isSubActive && currentSubscription.plan?.tier === 'LITTLE_STEPS')
       );
     }
-    return currentSubscription.status === 'ACTIVE' && currentSubscription.plan?.tier === tier;
+    return (
+      isSubActive &&
+      currentSubscription.plan?.tier === plan.tier &&
+      currentSubscription.billingCycle === billingCycle.toUpperCase()
+    );
+  };
+
+  const checkIsLowerTier = (plan: MembershipPlan) => {
+    if (!isSubActive || !plan.tier) return false;
+    const cardRank = TIER_RANKS[plan.tier] || 1;
+    return cardRank < activeRank;
+  };
+
+  const checkIsUpgrade = (plan: MembershipPlan) => {
+    if (!isSubActive || !plan.tier) return false;
+    const cardRank = TIER_RANKS[plan.tier] || 1;
+    const isTierUpgrade = cardRank > activeRank;
+    const isCycleUpgrade =
+      cardRank === activeRank &&
+      billingCycle === 'annual' &&
+      currentSubscription?.billingCycle === 'MONTHLY';
+    return isTierUpgrade || isCycleUpgrade;
   };
 
   return (
@@ -486,7 +614,12 @@ export function MembershipPage() {
             <MembershipCard
               plan={plans[0]}
               billingCycle={billingCycle}
-              isCurrentPlan={isUserOnPlan(plans[0].tier)}
+              isCurrentPlan={checkIsCurrentPlan(plans[0])}
+              isLowerTier={checkIsLowerTier(plans[0])}
+              isUpgrade={checkIsUpgrade(plans[0])}
+              unusedCredit={activeUnusedCredit}
+              daysRemaining={activeDaysRemaining}
+              activePlanName={activePlanName}
               isCheckingOut={checkoutPlanId === plans[0].id}
               onSelectPlan={handleSelectPlan}
               className="min-[1400px]:mt-14 min-[1400px]:shrink-0"
@@ -496,7 +629,12 @@ export function MembershipPage() {
             <MembershipCard
               plan={plans[1]}
               billingCycle={billingCycle}
-              isCurrentPlan={isUserOnPlan(plans[1].tier)}
+              isCurrentPlan={checkIsCurrentPlan(plans[1])}
+              isLowerTier={checkIsLowerTier(plans[1])}
+              isUpgrade={checkIsUpgrade(plans[1])}
+              unusedCredit={activeUnusedCredit}
+              daysRemaining={activeDaysRemaining}
+              activePlanName={activePlanName}
               isCheckingOut={checkoutPlanId === plans[1].id}
               onSelectPlan={handleSelectPlan}
               className="mt-10 min-[740px]:mt-0 min-[1400px]:shrink-0"
@@ -506,7 +644,12 @@ export function MembershipPage() {
             <MembershipCard
               plan={plans[2]}
               billingCycle={billingCycle}
-              isCurrentPlan={isUserOnPlan(plans[2].tier)}
+              isCurrentPlan={checkIsCurrentPlan(plans[2])}
+              isLowerTier={checkIsLowerTier(plans[2])}
+              isUpgrade={checkIsUpgrade(plans[2])}
+              unusedCredit={activeUnusedCredit}
+              daysRemaining={activeDaysRemaining}
+              activePlanName={activePlanName}
               isCheckingOut={checkoutPlanId === plans[2].id}
               onSelectPlan={handleSelectPlan}
               className="min-[1400px]:mt-14 min-[1400px]:shrink-0"

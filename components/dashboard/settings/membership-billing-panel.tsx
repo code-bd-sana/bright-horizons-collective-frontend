@@ -139,13 +139,31 @@ function CurrentPlanCard() {
       </div>
 
       <div className="mt-5 grid gap-2.5 sm:grid-cols-2">
-        <Link
-          href="/membership"
-          className="flex min-h-12 items-center justify-center gap-2 rounded-full border-2 border-[#d5e5e5] bg-[#2f7d7e] px-6 py-3 font-manrope text-[14.4px] font-bold text-white shadow-xs transition-opacity hover:opacity-90"
-        >
-          <Sparkles size={16} />
-          <span>{isActivePaid ? 'Change or Upgrade Plan' : 'Upgrade Membership'}</span>
-        </Link>
+        {subscription?.plan?.tier === 'PERSONALIZED_PATHWAYS' && isActivePaid ? (
+          <Link
+            href="/membership"
+            className="flex min-h-12 items-center justify-center gap-2 rounded-full border-2 border-[#a05a3a] bg-[#a05a3a] px-6 py-3 font-manrope text-[14.4px] font-bold text-white shadow-xs transition-opacity hover:opacity-90"
+          >
+            <ShieldCheck size={16} />
+            <span>Highest Tier Active</span>
+          </Link>
+        ) : subscription?.plan?.tier === 'GROW_TOGETHER' && isActivePaid ? (
+          <Link
+            href="/membership"
+            className="flex min-h-12 items-center justify-center gap-2 rounded-full border-2 border-[#d5e5e5] bg-[#2f7d7e] px-6 py-3 font-manrope text-[14.4px] font-bold text-white shadow-xs transition-opacity hover:opacity-90"
+          >
+            <Sparkles size={16} />
+            <span>Upgrade to Personalized Pathways</span>
+          </Link>
+        ) : (
+          <Link
+            href="/membership"
+            className="flex min-h-12 items-center justify-center gap-2 rounded-full border-2 border-[#d5e5e5] bg-[#2f7d7e] px-6 py-3 font-manrope text-[14.4px] font-bold text-white shadow-xs transition-opacity hover:opacity-90"
+          >
+            <Sparkles size={16} />
+            <span>Upgrade Membership</span>
+          </Link>
+        )}
         <Link
           href="/membership"
           className="flex min-h-12 items-center justify-center rounded-full border-2 border-[#e8ebe8] bg-white px-6 py-3 font-manrope text-[14.4px] font-bold text-[#2f7d7e] transition-colors hover:bg-[#f5f8f7]"

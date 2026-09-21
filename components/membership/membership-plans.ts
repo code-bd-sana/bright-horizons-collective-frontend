@@ -1,5 +1,11 @@
 export type MembershipTier = 'LITTLE_STEPS' | 'GROW_TOGETHER' | 'PERSONALIZED_PATHWAYS';
 
+export const TIER_RANKS: Record<MembershipTier, number> = {
+  LITTLE_STEPS: 1,
+  GROW_TOGETHER: 2,
+  PERSONALIZED_PATHWAYS: 3,
+};
+
 export type MembershipPlan = {
   id?: string;
   tier?: MembershipTier;
