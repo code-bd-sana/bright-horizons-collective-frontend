@@ -148,6 +148,12 @@ export const roleConfigs: Record<AuthRole, RoleConfig> = {
         match: 'prefix',
       },
       {
+        name: 'Support',
+        href: '/dashboard/admin/support',
+        icon: '/Home/figma-dashboard-nav-support.svg',
+        match: 'prefix',
+      },
+      {
         name: 'Settings',
         href: '/dashboard/admin/settings',
         icon: '/Home/figma-admin-sidebar-settings.svg',

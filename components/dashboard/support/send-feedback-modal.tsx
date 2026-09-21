@@ -2,7 +2,8 @@
 
 // Feedback dialog.
 import { Dialog, DialogClose, DialogContent, DialogTitle } from '@/components/ui/dialog';
-import { Star, X } from 'lucide-react';
+import { useCreateTicket } from '@/features/support/hooks/support.mutations';
+import { Loader2, Star, X } from 'lucide-react';
 import { FormEvent, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -11,13 +12,27 @@ type SendFeedbackModalProps = { isOpen: boolean; onClose: (open: boolean) => voi
 export function SendFeedbackModal({ isOpen, onClose }: SendFeedbackModalProps) {
   const [rating, setRating] = useState(5);
   const [comments, setComments] = useState('');
+  const createTicketMutation = useCreateTicket();
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    onClose(false);
-    toast.success('Thank you for your feedback!');
-    setRating(5);
-    setComments('');
+    if (!comments.trim()) return;
+
+    try {
+      await createTicketMutation.mutateAsync({
+        type: 'FEEDBACK',
+        subject: 'Product Feedback',
+        message: comments.trim(),
+        rating,
+      });
+      toast.success('Thank you for your feedback!');
+      setRating(5);
+      setComments('');
+      onClose(false);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Unable to submit feedback.';
+      toast.error(errorMessage);
+    }
   };
 
   return (
@@ -49,8 +64,9 @@ export function SendFeedbackModal({ isOpen, onClose }: SendFeedbackModalProps) {
                   type="button"
                   aria-label={`${value} star${value === 1 ? '' : 's'}`}
                   aria-pressed={rating === value}
+                  disabled={createTicketMutation.isPending}
                   onClick={() => setRating(value)}
-                  className="text-[#f59e0b] outline-none focus-visible:ring-2 focus-visible:ring-[#2f7d7e]"
+                  className="text-[#f59e0b] outline-none focus-visible:ring-2 focus-visible:ring-[#2f7d7e] disabled:opacity-60"
                 >
                   <Star
                     size={26}
@@ -68,22 +84,32 @@ export function SendFeedbackModal({ isOpen, onClose }: SendFeedbackModalProps) {
               onChange={(event) => setComments(event.target.value)}
               placeholder="Tell us what you love or what we can improve..."
               required
-              className="mt-1.5 h-37.5 w-full resize-none rounded-md border border-[#dce4ed] p-4 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#515b60] shadow-[0_1px_2px_rgba(16,24,40,0.05)] outline-none placeholder:text-[#a8adaf] focus:border-[#2f7d7e]"
+              disabled={createTicketMutation.isPending}
+              className="mt-1.5 h-37.5 w-full resize-none rounded-md border border-[#dce4ed] p-4 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#515b60] shadow-[0_1px_2px_rgba(16,24,40,0.05)] outline-none placeholder:text-[#a8adaf] focus:border-[#2f7d7e] disabled:opacity-60"
             />
           </label>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:gap-4">
             <button
               type="button"
               onClick={() => onClose(false)}
-              className="h-14 w-full rounded-full border border-[#d4d6d7] font-nunito text-base font-medium tracking-[-0.176px] text-[#14094b] sm:w-30.75"
+              disabled={createTicketMutation.isPending}
+              className="h-14 w-full rounded-full border border-[#d4d6d7] font-nunito text-base font-medium tracking-[-0.176px] text-[#14094b] sm:w-30.75 disabled:opacity-60"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="h-14 w-full rounded-full border border-[#d5e5e5] bg-[#2f7d7e] font-nunito text-base font-medium tracking-[-0.176px] text-white sm:w-46.75"
+              disabled={createTicketMutation.isPending}
+              className="flex h-14 w-full items-center justify-center gap-2 rounded-full border border-[#d5e5e5] bg-[#2f7d7e] font-nunito text-base font-medium tracking-[-0.176px] text-white sm:w-46.75 disabled:opacity-60"
             >
-              Submit Feedback
+              {createTicketMutation.isPending ? (
+                <>
+                  <Loader2 size={18} className="animate-spin" />
+                  <span>Submitting...</span>
+                </>
+              ) : (
+                <span>Submit Feedback</span>
+              )}
             </button>
           </div>
         </form>
