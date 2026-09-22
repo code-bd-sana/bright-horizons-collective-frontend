@@ -20,10 +20,10 @@ export type UserProfile = {
 
 export type UpdateUserProfileInput = {
   name?: string;
-  phone?: string;
-  profileImage?: string;
-  relationship?: string;
-  language?: string;
+  phone?: string | null;
+  profileImage?: string | null;
+  relationship?: string | null;
+  language?: string | null;
 };
 
 export const userProfileKeys = {
@@ -97,7 +97,6 @@ export function useUpdateUserProfile() {
       queryClient.invalidateQueries({ queryKey: userProfileKeys.all });
       queryClient.invalidateQueries({ queryKey: ['session'] });
       queryClient.invalidateQueries({ queryKey: ['auth-session'] });
-      toast.success('Account settings saved successfully.');
     },
     onError: (error: Error) => {
       toast.error(error.message || 'Failed to save account settings.');

@@ -57,12 +57,30 @@ function AccountPanelForm({ initialProfile }: { initialProfile?: UserProfile }) 
       setIsUploading(true);
       const url = await uploadAvatar(file);
       setProfileImage(url);
-      toast.success('Profile photo uploaded. Click "Save Changes" to persist.');
+      await updateProfileMutation.mutateAsync({
+        profileImage: url,
+      });
+      toast.success('Profile photo updated successfully.');
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Failed to upload photo.');
     } finally {
       setIsUploading(false);
       e.target.value = '';
+    }
+  };
+
+  const handleRemovePhoto = async () => {
+    try {
+      setIsUploading(true);
+      setProfileImage(null);
+      await updateProfileMutation.mutateAsync({
+        profileImage: null,
+      });
+      toast.success('Profile photo removed successfully.');
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to remove photo.');
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -74,13 +92,20 @@ function AccountPanelForm({ initialProfile }: { initialProfile?: UserProfile }) 
       return;
     }
 
-    updateProfileMutation.mutate({
-      name: name.trim(),
-      phone: phone.trim() || undefined,
-      relationship: relationship.trim() || undefined,
-      language: language.trim() || undefined,
-      profileImage: profileImage ?? undefined,
-    });
+    updateProfileMutation.mutate(
+      {
+        name: name.trim(),
+        phone: phone.trim() || undefined,
+        relationship: relationship.trim() || undefined,
+        language: language.trim() || undefined,
+        profileImage: profileImage ?? null,
+      },
+      {
+        onSuccess: () => {
+          toast.success('Account settings saved successfully.');
+        },
+      }
+    );
   };
 
   const initials = name
@@ -126,30 +151,43 @@ function AccountPanelForm({ initialProfile }: { initialProfile?: UserProfile }) 
             <p className="mt-1 font-manrope text-xs leading-4.5 text-[#7d8488]">
               JPG, PNG or WebP. Max 5MB
             </p>
-            <label
-              className={`mx-auto mt-2 flex min-h-8 w-fit cursor-pointer items-center gap-1.5 rounded-full border border-[#d5e5e5] bg-white px-3 font-nunito text-xs font-medium text-[#2f7d7e] transition-colors hover:bg-[#edf6f2] min-[420px]:mx-0 ${
-                isUploading ? 'pointer-events-none opacity-60' : ''
-              }`}
-            >
-              {isUploading ? (
-                <>
-                  <Loader2 size={14} className="animate-spin" />
-                  <span>Uploading...</span>
-                </>
-              ) : (
-                <>
-                  <Upload size={14} strokeWidth={1.7} aria-hidden="true" />
-                  <span>Upload photo</span>
-                </>
+            <div className="mx-auto mt-2 flex flex-wrap items-center gap-2 min-[420px]:mx-0">
+              <label
+                className={`flex min-h-8 w-fit cursor-pointer items-center gap-1.5 rounded-full border border-[#d5e5e5] bg-white px-3 font-nunito text-xs font-medium text-[#2f7d7e] transition-colors hover:bg-[#edf6f2] ${
+                  isUploading ? 'pointer-events-none opacity-60' : ''
+                }`}
+              >
+                {isUploading ? (
+                  <>
+                    <Loader2 size={14} className="animate-spin" />
+                    <span>Updating...</span>
+                  </>
+                ) : (
+                  <>
+                    <Upload size={14} strokeWidth={1.7} aria-hidden="true" />
+                    <span>{profileImage ? 'Change photo' : 'Upload photo'}</span>
+                  </>
+                )}
+                <input
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  onChange={handleFileChange}
+                  disabled={isUploading}
+                  className="sr-only"
+                />
+              </label>
+
+              {profileImage && (
+                <button
+                  type="button"
+                  onClick={handleRemovePhoto}
+                  disabled={isUploading}
+                  className="flex min-h-8 items-center rounded-full border border-[#e8ebe8] bg-white px-3 font-nunito text-xs font-medium text-[#c62828] transition-colors hover:bg-[#fdeeed] disabled:opacity-50"
+                >
+                  Remove
+                </button>
               )}
-              <input
-                type="file"
-                accept="image/png,image/jpeg,image/webp"
-                onChange={handleFileChange}
-                disabled={isUploading}
-                className="sr-only"
-              />
-            </label>
+            </div>
           </div>
         </div>
       </section>
