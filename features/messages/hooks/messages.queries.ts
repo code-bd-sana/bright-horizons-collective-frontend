@@ -8,7 +8,7 @@ export function useParentThread(options?: { refetchInterval?: number | false }) 
   return useQuery({
     queryKey: messageKeys.parentThread(),
     queryFn: getParentThread,
-    refetchInterval: options?.refetchInterval ?? 3000, // 3s polling for live conversation
+    refetchInterval: options?.refetchInterval ?? false,
   });
 }
 
@@ -16,7 +16,7 @@ export function useAdminThreads(options?: { refetchInterval?: number | false }) 
   return useQuery({
     queryKey: messageKeys.adminThreads(),
     queryFn: getAdminThreads,
-    refetchInterval: options?.refetchInterval ?? 4000, // 4s polling for inbox updates
+    refetchInterval: options?.refetchInterval ?? false,
   });
 }
 
@@ -28,7 +28,7 @@ export function useThreadMessages(
     queryKey: messageKeys.threadMessages(threadId ?? ''),
     queryFn: () => getThreadMessages(threadId!),
     enabled: Boolean(threadId),
-    refetchInterval: options?.refetchInterval ?? 3000,
+    refetchInterval: options?.refetchInterval ?? false,
   });
 }
 
@@ -36,7 +36,7 @@ export const useMessageThreads = useAdminThreads;
 
 export function useUnreadMessagesCount(options?: { refetchInterval?: number | false }) {
   const { data: threads = [] } = useAdminThreads({
-    refetchInterval: options?.refetchInterval ?? 5000,
+    refetchInterval: options?.refetchInterval ?? false,
   });
 
   return threads.reduce((acc, t) => acc + (t.unreadCount || 0), 0);
