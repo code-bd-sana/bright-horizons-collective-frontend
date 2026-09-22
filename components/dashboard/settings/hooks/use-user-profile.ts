@@ -95,11 +95,62 @@ export function useUpdateUserProfile() {
     onSuccess: (updated) => {
       queryClient.setQueryData(userProfileKeys.profile(), updated);
       queryClient.invalidateQueries({ queryKey: userProfileKeys.all });
-      queryClient.invalidateQueries({ queryKey: ['session'] });
-      queryClient.invalidateQueries({ queryKey: ['auth-session'] });
     },
     onError: (error: Error) => {
       toast.error(error.message || 'Failed to save account settings.');
+    },
+  });
+}
+
+export type ChangePasswordInput = {
+  currentPassword: string;
+  newPassword: string;
+};
+
+export async function changePassword(input: ChangePasswordInput): Promise<void> {
+  const res = await fetch('/api/users/password', {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(input),
+  });
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.message || 'Failed to change password');
+  }
+}
+
+export function useChangePassword() {
+  return useMutation({
+    mutationFn: changePassword,
+    onSuccess: () => {
+      toast.success('Your password has been changed successfully.');
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Failed to change password.');
+    },
+  });
+}
+
+export async function deactivateAccount(): Promise<void> {
+  const res = await fetch('/api/users/profile', {
+    method: 'DELETE',
+  });
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.message || 'Failed to deactivate account');
+  }
+}
+
+export function useDeactivateAccount() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: deactivateAccount,
+    onSuccess: () => {
+      queryClient.clear();
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Failed to deactivate account.');
     },
   });
 }

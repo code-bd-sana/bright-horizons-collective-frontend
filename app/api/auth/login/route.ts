@@ -118,9 +118,14 @@ export async function POST(request: NextRequest) {
       if (status === 401) recordFailedAttempt(request);
 
       const upstreamMessage = backendErrorMessage(error);
+      const isDeactivated = Boolean(
+        upstreamMessage &&
+        (upstreamMessage.toLowerCase().includes('deactivated') ||
+          upstreamMessage.toLowerCase().includes('support'))
+      );
       const message =
         status === 401
-          ? upstreamMessage === 'Your account is deactivated. Please contact support to reactivate.'
+          ? isDeactivated
             ? upstreamMessage
             : 'Invalid email or password.'
           : status === 429
