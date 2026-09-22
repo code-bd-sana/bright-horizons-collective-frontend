@@ -121,7 +121,12 @@ function PersonalInformationForm({ child, refetch }: { child: ChildProfile; refe
       setIsUploadingPhoto(true);
       const res = await uploadAvatarMutation.mutateAsync(file);
       setPhotoUrl(res.url);
-      toast.success('Photo uploaded successfully.');
+      await updateMutation.mutateAsync({
+        id: child.id,
+        input: { photoUrl: res.url },
+      });
+      refetch();
+      toast.success('Photo updated successfully.');
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Failed to upload photo.';
       toast.error(msg);
@@ -131,8 +136,22 @@ function PersonalInformationForm({ child, refetch }: { child: ChildProfile; refe
     }
   };
 
-  const handleRemovePhoto = () => {
-    setPhotoUrl(null);
+  const handleRemovePhoto = async () => {
+    try {
+      setIsUploadingPhoto(true);
+      setPhotoUrl(null);
+      await updateMutation.mutateAsync({
+        id: child.id,
+        input: { photoUrl: null },
+      });
+      refetch();
+      toast.success('Photo removed successfully.');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to remove photo.';
+      toast.error(msg);
+    } finally {
+      setIsUploadingPhoto(false);
+    }
   };
 
   const handleSaveChanges = async (e: FormEvent) => {
@@ -148,7 +167,7 @@ function PersonalInformationForm({ child, refetch }: { child: ChildProfile; refe
         id: child.id,
         input: {
           name: name.trim(),
-          photoUrl: photoUrl ?? undefined,
+          photoUrl: photoUrl ?? null,
           gender: gender || undefined,
           ageYears: parseInt(ageYears, 10) || 0,
           ageMonths: parseInt(ageMonths, 10) || 0,

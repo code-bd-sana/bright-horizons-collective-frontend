@@ -4,7 +4,7 @@ export const childIdSchema = z.string().uuid('Invalid child ID.');
 
 export const createChildProfileSchema = z.object({
   name: z.string().trim().min(1, 'Please enter a name or nickname.'),
-  photoUrl: z.string().optional(),
+  photoUrl: z.string().nullable().optional(),
   gender: z.string().optional(),
   ageYears: z.coerce.number().min(0).max(17).default(0),
   ageMonths: z.coerce.number().min(0).max(11).default(0),

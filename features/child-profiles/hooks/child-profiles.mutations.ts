@@ -30,9 +30,9 @@ export function useUpdateChildProfile() {
   return useMutation({
     mutationFn: ({ id, input }: { id: string; input: UpdateChildProfileInput }) =>
       updateChildProfile(id, input),
-    onSuccess: (_, variables) => {
-      void queryClient.invalidateQueries({ queryKey: childProfileKeys.detail(variables.id) });
-      void queryClient.invalidateQueries({ queryKey: childProfileKeys.lists() });
+    onSuccess: (data, variables) => {
+      queryClient.setQueryData(childProfileKeys.detail(variables.id), data);
+      void queryClient.invalidateQueries({ queryKey: childProfileKeys.all });
     },
   });
 }

@@ -23,7 +23,7 @@ export type ChildProfile = {
 
 export type CreateChildProfileInput = {
   name: string;
-  photoUrl?: string;
+  photoUrl?: string | null;
   gender?: string;
   ageYears: number;
   ageMonths: number;
