@@ -167,14 +167,19 @@ export function useThreadSocket(
 
     joinThread(threadId);
 
+    const isCurrentThread = (incomingThreadId?: string) => {
+      if (!incomingThreadId || !threadId) return false;
+      return incomingThreadId.toLowerCase() === threadId.toLowerCase();
+    };
+
     const handleNewMessage = (msg: Message) => {
-      if (msg.threadId === threadId) {
+      if (isCurrentThread(msg?.threadId)) {
         onNewMessageRef.current?.(msg);
       }
     };
 
     const handleMessagesRead = (payload: { threadId: string; readerUserId: string }) => {
-      if (payload.threadId === threadId) {
+      if (isCurrentThread(payload?.threadId)) {
         onMessagesReadRef.current?.(payload);
       }
     };
@@ -185,7 +190,7 @@ export function useThreadSocket(
       role?: string;
       isTyping: boolean;
     }) => {
-      if (payload.threadId === threadId) {
+      if (isCurrentThread(payload?.threadId)) {
         onUserTypingRef.current?.(payload);
       }
     };

@@ -168,6 +168,7 @@ export function ParentMessagesPage() {
       toast.error('File size cannot exceed 10 MB.');
       return;
     }
+    setSelectedFile(file);
   };
 
   const adminName = thread?.admin?.name || 'Jaicy, OT';
