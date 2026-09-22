@@ -33,7 +33,10 @@ export function TextField({
   optional,
   type = 'text',
   className = '',
-  defaultValue = '',
+  defaultValue,
+  value,
+  onChange,
+  disabled = false,
 }: {
   id: string;
   label: string | ReactNode;
@@ -42,6 +45,9 @@ export function TextField({
   type?: React.HTMLInputTypeAttribute;
   className?: string;
   defaultValue?: string;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  disabled?: boolean;
 }) {
   return (
     <label htmlFor={id} className={`flex min-w-0 flex-col gap-1.5 ${className}`}>
@@ -52,7 +58,10 @@ export function TextField({
         placeholder={placeholder}
         required={!optional}
         defaultValue={defaultValue}
-        className={inputClassName}
+        value={value}
+        onChange={onChange}
+        disabled={disabled}
+        className={`${inputClassName} ${disabled ? 'opacity-60 cursor-not-allowed' : ''}`}
       />
     </label>
   );
@@ -65,7 +74,10 @@ export function SelectField({
   optional,
   options,
   hideLabel = false,
-  defaultValue = '',
+  defaultValue,
+  value,
+  onChange,
+  disabled = false,
 }: {
   id: string;
   label: string | ReactNode;
@@ -74,16 +86,26 @@ export function SelectField({
   options: string[];
   hideLabel?: boolean;
   defaultValue?: string;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  disabled?: boolean;
 }) {
   return (
     <label htmlFor={id} className={`flex min-w-0 flex-col ${hideLabel ? '' : 'gap-1.5'}`}>
       {!hideLabel &&
         (typeof label === 'string' ? <FieldLabel optional={optional}>{label}</FieldLabel> : label)}
-      <span className={`${inputClassName} flex items-center justify-between px-3.5`}>
+      <span
+        className={`${inputClassName} flex items-center justify-between px-3.5 ${
+          disabled ? 'opacity-60 cursor-not-allowed' : ''
+        }`}
+      >
         <select
           id={id}
           required={!optional}
           defaultValue={defaultValue}
+          value={value}
+          onChange={onChange}
+          disabled={disabled}
           className="min-w-0 flex-1 appearance-none bg-transparent font-manrope text-base leading-6 tracking-[-0.176px] outline-none"
         >
           <option value="" disabled>
@@ -106,21 +128,37 @@ export function ToggleChips({
   helper,
   options,
   initiallySelected = [],
+  value,
+  onChange,
+  singleSelect = false,
+  disabled = false,
 }: {
   label: string;
   helper: string;
   options: string[];
   initiallySelected?: string[];
+  value?: string[];
+  onChange?: (selected: string[]) => void;
+  singleSelect?: boolean;
+  disabled?: boolean;
 }) {
-  const [selected, setSelected] = useState(() => new Set(initiallySelected));
+  const [internalSelected, setInternalSelected] = useState(() => new Set(initiallySelected));
+  const currentSet = value !== undefined ? new Set(value) : internalSelected;
 
   const toggle = (option: string) => {
-    setSelected((current) => {
-      const next = new Set(current);
+    if (disabled) return;
+    let next: Set<string>;
+    if (singleSelect) {
+      next = currentSet.has(option) ? new Set() : new Set([option]);
+    } else {
+      next = new Set(currentSet);
       if (next.has(option)) next.delete(option);
       else next.add(option);
-      return next;
-    });
+    }
+    if (value === undefined) {
+      setInternalSelected(next);
+    }
+    onChange?.(Array.from(next));
   };
 
   return (
@@ -130,27 +168,30 @@ export function ToggleChips({
       </legend>
       <div className="flex flex-wrap gap-x-4 gap-y-3">
         {options.map((option) => {
-          const isSelected = selected.has(option);
+          const isSelected = currentSet.has(option);
           return (
             <button
               key={option}
               type="button"
+              disabled={disabled}
               aria-pressed={isSelected}
               onClick={() => toggle(option)}
               className={`rounded-full border px-2.5 py-1.5 font-nunito text-base font-medium leading-6 tracking-[-0.176px] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2F7D7E] ${
                 isSelected
                   ? 'border-[#FCE9E3] bg-[#F2B59F] text-[#493630]'
                   : 'border-[#D4D6D7] bg-white text-[#7D8488]'
-              }`}
+              } ${disabled ? 'opacity-60 cursor-not-allowed' : ''}`}
             >
               {option}
             </button>
           );
         })}
       </div>
-      <p className="font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#515B60]">
-        {helper}
-      </p>
+      {helper ? (
+        <p className="font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#515B60]">
+          {helper}
+        </p>
+      ) : null}
     </fieldset>
   );
 }
