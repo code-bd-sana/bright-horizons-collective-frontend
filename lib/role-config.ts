@@ -80,7 +80,7 @@ export const roleConfigs: Record<AuthRole, RoleConfig> = {
     profile: {
       name: 'Sarah Johnson',
       roleLabel: 'Parent',
-      image: '/Home/figma-dashboard-avatar.png',
+      image: '',
       imageClassName: 'object-cover object-[50%_10%]',
       chevron: '/Home/figma-dashboard-chevron.svg',
       logout: '/Home/figma-dashboard-logout.svg',

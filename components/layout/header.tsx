@@ -11,6 +11,7 @@ import { useAppStore } from '@/store/use-app-store';
 import { useChildProfiles } from '@/features/child-profiles/hooks/child-profiles.queries';
 import { useUnreadMessagesCount } from '@/features/messages/hooks/messages.queries';
 import { SidebarPlanWidget } from '@/components/layout/sidebar-plan-widget';
+import { useUserProfile } from '@/components/dashboard/settings/hooks/use-user-profile';
 import type { ChildProfile } from '@/features/child-profiles/model/child-profile.types';
 
 const notificationDescription =
@@ -249,6 +250,20 @@ export function Header({ role = 'parent' }: { role?: AuthRole }) {
 
   const activeChild = children.find((c) => c.id === selectedChildId) || children[0] || null;
 
+  const { data: userProfile } = useUserProfile();
+  const userName = userProfile?.name || roleConfig.profile.name;
+  const userEmail = userProfile?.email || roleConfig.header.accountEmail;
+  const userPhoto = userProfile?.profileImage;
+  const userInitials = userName
+    ? userName
+        .trim()
+        .split(/\s+/)
+        .map((n) => n[0])
+        .slice(0, 2)
+        .join('')
+        .toUpperCase()
+    : 'U';
+
   useEffect(() => {
     const match = pathname.match(/\/dashboard\/child-profiles\/([a-zA-Z0-9_-]+)/);
     if (match && match[1] && match[1] !== 'add-child') {
@@ -456,15 +471,20 @@ export function Header({ role = 'parent' }: { role?: AuthRole }) {
             setNotificationsOpen(false);
             setProfilesOpen(false);
           }}
-          className="relative size-10 shrink-0 overflow-hidden rounded-full bg-[#2f7d7e]"
+          className="relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#2f7d7e]"
         >
-          <Image
-            alt={roleConfig.profile.name}
-            fill
-            sizes="40px"
-            className={roleConfig.profile.imageClassName}
-            src={roleConfig.profile.image}
-          />
+          {userPhoto ? (
+            <Image
+              alt={userName}
+              fill
+              sizes="40px"
+              className="object-cover"
+              unoptimized={userPhoto.startsWith('http') || userPhoto.startsWith('/uploads')}
+              src={userPhoto}
+            />
+          ) : (
+            <span className="font-nunito text-sm font-bold text-white">{userInitials}</span>
+          )}
         </button>
 
         {accountOpen && (
@@ -476,22 +496,31 @@ export function Header({ role = 'parent' }: { role?: AuthRole }) {
             <div className="flex flex-col gap-6">
               <div className="flex items-center gap-2.5">
                 <span className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-[#d8ddd9] bg-[#2f7d7e] p-0.5">
-                  <span className="relative size-full overflow-hidden rounded-full">
-                    <Image
-                      alt={roleConfig.profile.name}
-                      fill
-                      sizes="52px"
-                      className={roleConfig.profile.imageClassName}
-                      src={roleConfig.profile.image}
-                    />
+                  <span className="relative flex size-full items-center justify-center overflow-hidden rounded-full">
+                    {userPhoto ? (
+                      <Image
+                        alt={userName}
+                        fill
+                        sizes="52px"
+                        className="object-cover"
+                        unoptimized={
+                          userPhoto.startsWith('http') || userPhoto.startsWith('/uploads')
+                        }
+                        src={userPhoto}
+                      />
+                    ) : (
+                      <span className="font-nunito text-lg font-bold text-white">
+                        {userInitials}
+                      </span>
+                    )}
                   </span>
                 </span>
                 <div className="flex min-w-0 flex-1 flex-col gap-1">
                   <p className="font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-[#263238]">
-                    {roleConfig.profile.name}
+                    {userName}
                   </p>
                   <p className="truncate font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#7d8488]">
-                    {roleConfig.header.accountEmail}
+                    {userEmail}
                   </p>
                 </div>
               </div>
@@ -505,16 +534,26 @@ export function Header({ role = 'parent' }: { role?: AuthRole }) {
                 )}
 
                 <div className="flex flex-col gap-3">
-                  {roleConfig.header.accountMenuItems.map((item) => (
-                    <button
-                      key={item.label}
-                      type="button"
-                      className="flex h-10 items-center gap-2 px-2 py-2.5 text-left font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#515b60]"
-                    >
-                      <Image src={item.icon} alt="" width={20} height={20} className="shrink-0" />
-                      <span>{item.label}</span>
-                    </button>
-                  ))}
+                  {roleConfig.header.accountMenuItems.map((item) => {
+                    const targetHref =
+                      item.label === 'Membership and Billing'
+                        ? '/membership'
+                        : item.label === 'Support and Help'
+                          ? '/dashboard/support'
+                          : '/dashboard/settings';
+
+                    return (
+                      <Link
+                        key={item.label}
+                        href={targetHref}
+                        onClick={() => setAccountOpen(false)}
+                        className="flex h-10 items-center gap-2 px-2 py-2.5 text-left font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#515b60] transition-colors hover:text-[#263238]"
+                      >
+                        <Image src={item.icon} alt="" width={20} height={20} className="shrink-0" />
+                        <span>{item.label}</span>
+                      </Link>
+                    );
+                  })}
                 </div>
 
                 <Image

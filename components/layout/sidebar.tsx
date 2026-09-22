@@ -12,6 +12,7 @@ import { X } from 'lucide-react';
 
 import { useUnreadMessagesCount } from '@/features/messages/hooks/messages.queries';
 import { SidebarPlanWidget } from '@/components/layout/sidebar-plan-widget';
+import { useUserProfile } from '@/components/dashboard/settings/hooks/use-user-profile';
 
 function NavigationList({
   items,
@@ -71,6 +72,20 @@ export function Sidebar({ role = 'parent' }: { role?: AuthRole }) {
   const roleConfig = getRoleConfig(role);
   const { menuItems, otherItems, profile } = roleConfig;
   const unreadMessagesCount = useUnreadMessagesCount();
+
+  const { data: userProfile } = useUserProfile();
+  const userName = userProfile?.name || profile.name;
+  const userRoleLabel = userProfile?.relationship || profile.roleLabel;
+  const userPhoto = userProfile?.profileImage;
+  const userInitials = userName
+    ? userName
+        .trim()
+        .split(/\s+/)
+        .map((n) => n[0])
+        .slice(0, 2)
+        .join('')
+        .toUpperCase()
+    : 'U';
 
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' });
@@ -137,22 +152,30 @@ export function Sidebar({ role = 'parent' }: { role?: AuthRole }) {
               height={1}
               className="absolute left-1/2 top-0 h-px w-57.5 -translate-x-1/2"
             />
-            <button type="button" className="flex w-full items-center px-3 py-3 text-left">
-              <span className="relative mr-3 size-10 shrink-0 overflow-hidden rounded-full bg-[#2f7d7e]">
-                <Image
-                  src={profile.image}
-                  alt={profile.name}
-                  fill
-                  sizes="40px"
-                  className={profile.imageClassName}
-                />
+            <Link
+              href={isAdmin ? '/dashboard/admin/settings' : '/dashboard/settings'}
+              className="flex w-full items-center rounded-xl px-3 py-3 text-left transition-colors hover:bg-[#f6f4f4]/60"
+            >
+              <span className="relative mr-3 flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#2f7d7e]">
+                {userPhoto ? (
+                  <Image
+                    src={userPhoto}
+                    alt={userName}
+                    fill
+                    sizes="40px"
+                    className="object-cover"
+                    unoptimized={userPhoto.startsWith('http') || userPhoto.startsWith('/uploads')}
+                  />
+                ) : (
+                  <span className="font-nunito text-sm font-bold text-white">{userInitials}</span>
+                )}
               </span>
               <span className="flex min-w-0 flex-1 flex-col gap-1">
-                <span className="font-nunito text-sm font-medium leading-5 tracking-[-0.084px] text-[#515b60]">
-                  {profile.name}
+                <span className="truncate font-nunito text-sm font-medium leading-5 tracking-[-0.084px] text-[#515b60]">
+                  {userName}
                 </span>
-                <span className="font-manrope text-xs leading-4.5 text-[#7d8488]">
-                  {profile.roleLabel}
+                <span className="truncate font-manrope text-xs leading-4.5 text-[#7d8488]">
+                  {userRoleLabel}
                 </span>
               </span>
               <Image
@@ -162,7 +185,7 @@ export function Sidebar({ role = 'parent' }: { role?: AuthRole }) {
                 height={20}
                 className="ml-3 shrink-0"
               />
-            </button>
+            </Link>
             <button
               type="button"
               onClick={handleLogout}
@@ -231,23 +254,34 @@ export function Sidebar({ role = 'parent' }: { role?: AuthRole }) {
         </div>
 
         <div className="border-t border-[#f6f4f4] p-3">
-          <div className="flex items-center px-3 py-2">
-            <span className="relative mr-3 size-10 shrink-0 overflow-hidden rounded-full bg-[#2f7d7e]">
-              <Image
-                src={profile.image}
-                alt={profile.name}
-                fill
-                sizes="40px"
-                className={profile.imageClassName}
-              />
+          <Link
+            href={isAdmin ? '/dashboard/admin/settings' : '/dashboard/settings'}
+            onClick={() => setSidebarOpen(false)}
+            className="flex items-center rounded-xl px-3 py-2 transition-colors hover:bg-[#f6f4f4]/60"
+          >
+            <span className="relative mr-3 flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#2f7d7e]">
+              {userPhoto ? (
+                <Image
+                  src={userPhoto}
+                  alt={userName}
+                  fill
+                  sizes="40px"
+                  className="object-cover"
+                  unoptimized={userPhoto.startsWith('http') || userPhoto.startsWith('/uploads')}
+                />
+              ) : (
+                <span className="font-nunito text-sm font-bold text-white">{userInitials}</span>
+              )}
             </span>
             <span className="min-w-0 flex-1">
-              <span className="block font-nunito text-sm font-medium text-[#515b60]">
-                {profile.name}
+              <span className="block truncate font-nunito text-sm font-medium text-[#515b60]">
+                {userName}
               </span>
-              <span className="block font-manrope text-xs text-[#7d8488]">{profile.roleLabel}</span>
+              <span className="block truncate font-manrope text-xs text-[#7d8488]">
+                {userRoleLabel}
+              </span>
             </span>
-          </div>
+          </Link>
           <button
             type="button"
             onClick={handleLogout}
