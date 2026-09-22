@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import {
-  ArrowRight,
+  // ArrowRight,
   ShieldCheck,
   CheckCircle2,
   Clock,
@@ -200,68 +200,68 @@ function CurrentPlanCard() {
   );
 }
 
-function PaymentMethodCard() {
-  return (
-    <section className="rounded-2xl border border-[#e8ebe8] bg-white p-4 sm:p-8">
-      <div className="flex items-center justify-between">
-        <h2 className="font-nunito text-xl font-semibold leading-7 text-[#263238] sm:text-2xl sm:leading-8">
-          Payment Security & Method
-        </h2>
-        <span className="flex items-center gap-1.5 rounded-full bg-[#edf6f2] px-3 py-1 font-manrope text-xs font-semibold text-[#2f7d7e]">
-          <ShieldCheck size={15} />
-          <span>256-bit Encrypted</span>
-        </span>
-      </div>
+// function PaymentMethodCard() {
+//   return (
+//     <section className="rounded-2xl border border-[#e8ebe8] bg-white p-4 sm:p-8">
+//       <div className="flex items-center justify-between">
+//         <h2 className="font-nunito text-xl font-semibold leading-7 text-[#263238] sm:text-2xl sm:leading-8">
+//           Payment Security & Method
+//         </h2>
+//         <span className="flex items-center gap-1.5 rounded-full bg-[#edf6f2] px-3 py-1 font-manrope text-xs font-semibold text-[#2f7d7e]">
+//           <ShieldCheck size={15} />
+//           <span>256-bit Encrypted</span>
+//         </span>
+//       </div>
 
-      <div className="mt-6 flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-        <div className="h-46 w-full max-w-full rounded-2xl bg-linear-to-br from-[#04342c] to-[#12584c] p-5 text-white shadow-[0_10px_20px_-5px_rgba(4,52,44,0.3)] sm:max-w-85.75 flex flex-col justify-between">
-          <div className="flex items-start justify-between">
-            <span className="grid size-6.25 grid-cols-3 gap-px rounded-lg bg-[#e4d8a0] p-1">
-              {Array.from({ length: 6 }, (_, index) => (
-                <span className="rounded-[1px] bg-[#bcae62]" key={index} />
-              ))}
-            </span>
-            <span className="font-nunito text-xs font-bold tracking-[1.2px]">STRIPE SECURE</span>
-          </div>
-          <div>
-            <p className="font-manrope text-xs text-white/70">Payment Mode</p>
-            <p className="font-manrope text-sm font-semibold tracking-wide text-white">
-              One-Time Encrypted Checkout
-            </p>
-          </div>
-          <div className="flex items-end justify-between">
-            <div>
-              <p className="font-nunito text-[10px] uppercase leading-3.75 text-white/70">
-                Standard
-              </p>
-              <p className="font-nunito text-sm leading-5">PCI-DSS Level 1</p>
-            </div>
-            <span className="flex h-6 items-center rounded bg-white/15 px-2 font-mono text-[11px] font-bold">
-              SSL SECURE
-            </span>
-          </div>
-        </div>
+//       <div className="mt-6 flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+//         <div className="h-46 w-full max-w-full rounded-2xl bg-linear-to-br from-[#04342c] to-[#12584c] p-5 text-white shadow-[0_10px_20px_-5px_rgba(4,52,44,0.3)] sm:max-w-85.75 flex flex-col justify-between">
+//           <div className="flex items-start justify-between">
+//             <span className="grid size-6.25 grid-cols-3 gap-px rounded-lg bg-[#e4d8a0] p-1">
+//               {Array.from({ length: 6 }, (_, index) => (
+//                 <span className="rounded-[1px] bg-[#bcae62]" key={index} />
+//               ))}
+//             </span>
+//             <span className="font-nunito text-xs font-bold tracking-[1.2px]">STRIPE SECURE</span>
+//           </div>
+//           <div>
+//             <p className="font-manrope text-xs text-white/70">Payment Mode</p>
+//             <p className="font-manrope text-sm font-semibold tracking-wide text-white">
+//               One-Time Encrypted Checkout
+//             </p>
+//           </div>
+//           <div className="flex items-end justify-between">
+//             <div>
+//               <p className="font-nunito text-[10px] uppercase leading-3.75 text-white/70">
+//                 Standard
+//               </p>
+//               <p className="font-nunito text-sm leading-5">PCI-DSS Level 1</p>
+//             </div>
+//             <span className="flex h-6 items-center rounded bg-white/15 px-2 font-mono text-[11px] font-bold">
+//               SSL SECURE
+//             </span>
+//           </div>
+//         </div>
 
-        <div className="flex-1 space-y-3">
-          <h3 className="font-nunito text-base font-semibold text-[#263238]">
-            Direct, Transparent Payment Model
-          </h3>
-          <p className="font-manrope text-xs leading-relaxed text-[#515b60] sm:text-sm">
-            All subscriptions are processed via <strong>Stripe Checkout</strong>. We do not store
-            credit card numbers on our servers. You are only charged when you explicitly choose to
-            subscribe or renew.
-          </p>
-          <Link
-            href="/membership"
-            className="inline-flex items-center gap-1.5 font-manrope text-xs font-semibold text-[#2f7d7e] transition-colors hover:text-[#216263]"
-          >
-            Explore Upgrade Options <ArrowRight size={14} />
-          </Link>
-        </div>
-      </div>
-    </section>
-  );
-}
+//         <div className="flex-1 space-y-3">
+//           <h3 className="font-nunito text-base font-semibold text-[#263238]">
+//             Direct, Transparent Payment Model
+//           </h3>
+//           <p className="font-manrope text-xs leading-relaxed text-[#515b60] sm:text-sm">
+//             All subscriptions are processed via <strong>Stripe Checkout</strong>. We do not store
+//             credit card numbers on our servers. You are only charged when you explicitly choose to
+//             subscribe or renew.
+//           </p>
+//           <Link
+//             href="/membership"
+//             className="inline-flex items-center gap-1.5 font-manrope text-xs font-semibold text-[#2f7d7e] transition-colors hover:text-[#216263]"
+//           >
+//             Explore Upgrade Options <ArrowRight size={14} />
+//           </Link>
+//         </div>
+//       </div>
+//     </section>
+//   );
+// }
 
 function BillingHistoryTable() {
   const { data: history = [], isLoading } = useQuery<BillingRecord[]>({
@@ -406,7 +406,7 @@ export function MembershipBillingPanel() {
   return (
     <div className="w-full max-w-227 space-y-6">
       <CurrentPlanCard />
-      <PaymentMethodCard />
+      {/* <PaymentMethodCard /> */}
       <BillingHistoryTable />
     </div>
   );
