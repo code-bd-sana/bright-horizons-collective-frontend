@@ -83,22 +83,36 @@ function AccountPanelForm({ initialProfile }: { initialProfile?: UserProfile }) 
     });
   };
 
-  const avatarSrc = profileImage || '/Home/figma-dashboard-profile-avatar.png';
+  const initials = name
+    ? name
+        .trim()
+        .split(/\s+/)
+        .map((n) => n[0])
+        .slice(0, 2)
+        .join('')
+        .toUpperCase()
+    : 'U';
 
   return (
     <form onSubmit={handleSubmit}>
       {/* 1. Profile Picture Card */}
       <section className="flex min-h-41 items-center rounded-2xl border border-[#e8ebe8] bg-white p-4 sm:p-8">
         <div className="flex w-full flex-col items-center gap-3 text-center min-[420px]:flex-row min-[420px]:text-left sm:gap-4">
-          <span className="relative size-25 shrink-0 overflow-hidden rounded-2xl border-2 border-[#d5e5e5] bg-[#2f7d7e] p-1">
-            <Image
-              src={avatarSrc}
-              alt={name || 'Profile'}
-              fill
-              sizes="92px"
-              unoptimized={avatarSrc.startsWith('http') || avatarSrc.startsWith('/uploads')}
-              className="object-cover object-[50%_12%]"
-            />
+          <span className="relative flex size-25 shrink-0 items-center justify-center overflow-hidden rounded-2xl border-2 border-[#d5e5e5] bg-[#2f7d7e] p-1">
+            {profileImage ? (
+              <Image
+                src={profileImage}
+                alt={name || 'Profile'}
+                fill
+                sizes="92px"
+                unoptimized={profileImage.startsWith('http') || profileImage.startsWith('/uploads')}
+                className="object-cover"
+              />
+            ) : (
+              <span className="font-nunito text-3xl font-bold tracking-wider text-white">
+                {initials}
+              </span>
+            )}
             {isUploading && (
               <span className="absolute inset-0 flex items-center justify-center bg-black/40">
                 <Loader2 size={24} className="animate-spin text-white" />
