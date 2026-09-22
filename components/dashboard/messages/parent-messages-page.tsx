@@ -12,7 +12,10 @@ import { useSession } from '@/services/api/auth/auth.queries';
 import { useAppStore } from '@/store/use-app-store';
 import { useChildProfiles } from '@/features/child-profiles/hooks/child-profiles.queries';
 import { MessageAttachment } from '@/features/messages/components/message-attachment';
-import type { Message } from '@/features/messages/model/message.types';
+import type { Message, MessageThread } from '@/features/messages/model/message.types';
+import { useQueryClient } from '@tanstack/react-query';
+import { useThreadSocket } from '@/features/messages/socket/messages-socket-context';
+import { messageKeys } from '@/features/messages/message.keys';
 
 function formatMessageTime(isoString: string): string {
   try {
@@ -65,6 +68,7 @@ function DateSeparator({ label }: { label: string }) {
 }
 
 export function ParentMessagesPage() {
+  const queryClient = useQueryClient();
   const { data: session } = useSession();
   const { data: thread, isLoading, isError } = useParentThread();
   const sendMessageMutation = useSendMessage();
@@ -75,10 +79,46 @@ export function ParentMessagesPage() {
 
   const [message, setMessage] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [partnerTyping, setPartnerTyping] = useState(false);
+  const typingTimerRef = useRef<NodeJS.Timeout | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const currentUserId = session?.user?.id;
+
+  const { sendTyping } = useThreadSocket(thread?.id, {
+    onNewMessage: (msg) => {
+      queryClient.setQueryData(messageKeys.parentThread(), (old: MessageThread | undefined) => {
+        if (!old) return old;
+        if (old.messages.some((m) => m.id === msg.id)) return old;
+        return { ...old, messages: [...old.messages, msg] };
+      });
+      setPartnerTyping(false);
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    },
+    onMessagesRead: (payload) => {
+      queryClient.setQueryData(messageKeys.parentThread(), (old: MessageThread | undefined) => {
+        if (!old) return old;
+        return {
+          ...old,
+          messages: old.messages.map((m) =>
+            m.senderId !== payload.readerUserId ? { ...m, isRead: true } : m
+          ),
+        };
+      });
+    },
+    onUserTyping: (payload) => {
+      if (payload.userId !== currentUserId) {
+        setPartnerTyping(payload.isTyping);
+        if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
+        if (payload.isTyping) {
+          typingTimerRef.current = setTimeout(() => {
+            setPartnerTyping(false);
+          }, 3500);
+        }
+      }
+    },
+  });
 
   const messages = thread?.messages || [];
 
@@ -91,6 +131,9 @@ export function ParentMessagesPage() {
     e.preventDefault();
     const content = message.trim();
     if (!content && !selectedFile) return;
+
+    sendTyping(false);
+    if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
 
     try {
       await sendMessageMutation.mutateAsync({
@@ -108,6 +151,15 @@ export function ParentMessagesPage() {
     }
   };
 
+  const handleMessageChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setMessage(e.target.value);
+    sendTyping(true);
+    if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
+    typingTimerRef.current = setTimeout(() => {
+      sendTyping(false);
+    }, 2500);
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -116,7 +168,6 @@ export function ParentMessagesPage() {
       toast.error('File size cannot exceed 10 MB.');
       return;
     }
-    setSelectedFile(file);
   };
 
   const adminName = thread?.admin?.name || 'Jaicy, OT';
@@ -326,12 +377,24 @@ export function ParentMessagesPage() {
             </div>
           )}
 
+          {/* Typing Indicator */}
+          {partnerTyping && (
+            <div className="mb-2 flex items-center gap-2 px-1 font-manrope text-xs italic text-[#7d8488]">
+              <span className="flex items-center gap-1">
+                <span className="size-1.5 animate-bounce rounded-full bg-[#2f7d7e]" />
+                <span className="size-1.5 animate-bounce rounded-full bg-[#2f7d7e] [animation-delay:0.2s]" />
+                <span className="size-1.5 animate-bounce rounded-full bg-[#2f7d7e] [animation-delay:0.4s]" />
+              </span>
+              <span>{adminName} is typing...</span>
+            </div>
+          )}
+
           <form onSubmit={handleSend} className="flex flex-col gap-2">
             <div className="flex items-end gap-2">
               <div className="relative flex min-h-11 flex-1 items-center rounded-2xl border border-[#d8ddd9] bg-white px-3 py-2 shadow-2xs focus-within:border-[#2f7d7e]">
                 <textarea
                   value={message}
-                  onChange={(e) => setMessage(e.target.value)}
+                  onChange={handleMessageChange}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                       e.preventDefault();

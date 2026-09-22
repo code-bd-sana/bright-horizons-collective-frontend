@@ -23,6 +23,9 @@ import {
   isImageAttachment,
 } from '@/features/messages/components/message-attachment';
 import type { Message, MessageThread } from '@/features/messages/model/message.types';
+import { useQueryClient } from '@tanstack/react-query';
+import { useThreadSocket } from '@/features/messages/socket/messages-socket-context';
+import { messageKeys } from '@/features/messages/message.keys';
 
 function formatMessageTime(isoString: string): string {
   try {
@@ -129,6 +132,7 @@ function DateSeparator({ label }: { label: string }) {
 }
 
 export function AdminMessagesPage() {
+  const queryClient = useQueryClient();
   const { data: session } = useSession();
   const { data: threads = [], isLoading: isThreadsLoading } = useAdminThreads();
   const sendMessageMutation = useSendMessage();
@@ -139,6 +143,8 @@ export function AdminMessagesPage() {
 
   const [replyText, setReplyText] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [partnerTyping, setPartnerTyping] = useState(false);
+  const typingTimerRef = useRef<NodeJS.Timeout | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -157,6 +163,51 @@ export function AdminMessagesPage() {
   const { data: activeThreadMessages = [], isLoading: isMessagesLoading } = useThreadMessages(
     activeThread?.id
   );
+
+  const { sendTyping } = useThreadSocket(activeThread?.id, {
+    onNewMessage: (msg) => {
+      // Update active thread messages in cache
+      queryClient.setQueryData(
+        messageKeys.threadMessages(msg.threadId),
+        (old: Message[] | undefined) => {
+          if (!old) return [msg];
+          if (old.some((m) => m.id === msg.id)) return old;
+          return [...old, msg];
+        }
+      );
+      // Update thread list in cache so sidebar preview shows latest message
+      queryClient.setQueryData(messageKeys.adminThreads(), (old: MessageThread[] | undefined) => {
+        if (!old) return old;
+        return old.map((t) =>
+          t.id === msg.threadId ? { ...t, messages: [msg], updatedAt: msg.createdAt } : t
+        );
+      });
+      if (msg.threadId === activeThread?.id) {
+        setPartnerTyping(false);
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }
+    },
+    onMessagesRead: (payload) => {
+      queryClient.setQueryData(
+        messageKeys.threadMessages(payload.threadId),
+        (old: Message[] | undefined) => {
+          if (!old) return old;
+          return old.map((m) => (m.senderId !== payload.readerUserId ? { ...m, isRead: true } : m));
+        }
+      );
+    },
+    onUserTyping: (payload) => {
+      if (payload.userId !== currentUserId && payload.threadId === activeThread?.id) {
+        setPartnerTyping(payload.isTyping);
+        if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
+        if (payload.isTyping) {
+          typingTimerRef.current = setTimeout(() => {
+            setPartnerTyping(false);
+          }, 3500);
+        }
+      }
+    },
+  });
 
   // Filter threads by search query (matching parent name or child name)
   const filteredThreads = useMemo(() => {
@@ -181,6 +232,9 @@ export function AdminMessagesPage() {
     if (!content && !selectedFile) return;
     if (!activeThread?.id) return;
 
+    sendTyping(false);
+    if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
+
     try {
       await sendMessageMutation.mutateAsync({
         threadId: activeThread.id,
@@ -195,6 +249,15 @@ export function AdminMessagesPage() {
       const msg = err instanceof Error ? err.message : 'Failed to send message.';
       toast.error(msg);
     }
+  };
+
+  const handleReplyChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setReplyText(e.target.value);
+    sendTyping(true);
+    if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
+    typingTimerRef.current = setTimeout(() => {
+      sendTyping(false);
+    }, 2500);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -506,12 +569,24 @@ export function AdminMessagesPage() {
                   </div>
                 )}
 
+                {/* Typing Indicator */}
+                {partnerTyping && (
+                  <div className="mb-2 flex items-center gap-2 px-1 font-manrope text-xs italic text-[#7d8488]">
+                    <span className="flex items-center gap-1">
+                      <span className="size-1.5 animate-bounce rounded-full bg-[#2f7d7e]" />
+                      <span className="size-1.5 animate-bounce rounded-full bg-[#2f7d7e] [animation-delay:0.2s]" />
+                      <span className="size-1.5 animate-bounce rounded-full bg-[#2f7d7e] [animation-delay:0.4s]" />
+                    </span>
+                    <span>{activeThread.parent?.name || 'Parent'} is typing...</span>
+                  </div>
+                )}
+
                 <form onSubmit={handleSendReply} className="flex flex-col gap-2">
                   <div className="flex items-end gap-2">
                     <div className="relative flex min-h-11 flex-1 items-center rounded-2xl border border-[#d8ddd9] bg-white px-3 py-2 shadow-2xs focus-within:border-[#2f7d7e]">
                       <textarea
                         value={replyText}
-                        onChange={(e) => setReplyText(e.target.value)}
+                        onChange={handleReplyChange}
                         onKeyDown={(e) => {
                           if (e.key === 'Enter' && !e.shiftKey) {
                             e.preventDefault();
