@@ -1,6 +1,10 @@
 'use client';
 
-import { useResourceFormStore, useUploadResourceAttachment } from '@/features/parent-resources';
+import {
+  useResourceFormStore,
+  useSaveResourceDraft,
+  useUploadResourceAttachment,
+} from '@/features/parent-resources';
 import { Download, FileText, Loader2, X } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -43,6 +47,7 @@ export function AddResourceAttachments() {
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const { attachments, addAttachment, removeAttachment } = useResourceFormStore();
+  const { saveDraft, isSavingDraft } = useSaveResourceDraft();
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const uploadAttachmentMutation = useUploadResourceAttachment();
@@ -212,9 +217,11 @@ export function AddResourceAttachments() {
       <ResourceFormNavigation
         currentStep={3}
         isSubmitting={isUploading}
+        isSavingDraft={isSavingDraft}
+        showPrimaryAction={false}
         onNext={saveAndContinue}
-        onSaveChanges={saveAttachments}
-        onSaveDraft={() => toast.success('Attachments saved as draft.')}
+        onPrevious={() => router.push('/dashboard/admin/parent-resources/add-resource/content')}
+        onSaveDraft={() => void saveDraft()}
       />
     </section>
   );

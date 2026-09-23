@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { useResourceFormStore } from '@/features/parent-resources';
+import { useResourceFormStore, useSaveResourceDraft } from '@/features/parent-resources';
 import { ResourceFormNavigation } from './resource-form-navigation';
 import { ResourceFormStepper } from './resource-form-stepper';
 
@@ -20,19 +20,22 @@ export function AddResourceSeo() {
     keywords: storeKeywords,
     setSeo,
   } = useResourceFormStore();
+  const { saveDraft, isSavingDraft } = useSaveResourceDraft();
 
   const [metaTitle, setMetaTitle] = useState(storeTitle || '');
   const [keywords, setKeywords] = useState(storeKeywords || 'sensory, toddler, development');
   const [shortDescription, setShortDescription] = useState(storeDesc || '');
 
-  function saveSeo() {
+  function saveSeo(showToast = true) {
     setSeo({
       seoTitle: metaTitle,
       seoDescription: shortDescription,
       keywords,
     });
-    const seoFields = [metaTitle, keywords, shortDescription].filter(Boolean).length;
-    toast.success(seoFields ? 'SEO details saved.' : 'SEO details skipped.');
+    if (showToast) {
+      const seoFields = [metaTitle, keywords, shortDescription].filter(Boolean).length;
+      toast.success(seoFields ? 'SEO details saved.' : 'SEO details skipped.');
+    }
   }
 
   function saveAndContinue() {
@@ -114,11 +117,19 @@ export function AddResourceSeo() {
 
       <ResourceFormNavigation
         currentStep={6}
+        isSavingDraft={isSavingDraft}
+        showPrimaryAction={false}
         onNext={saveAndContinue}
-        onSaveChanges={saveSeo}
-        onSaveDraft={() => {
-          saveSeo();
-          toast.success('SEO details saved as draft.');
+        onPrevious={() => {
+          saveSeo(false);
+          router.push('/dashboard/admin/parent-resources/add-resource/membership');
+        }}
+        onSaveDraft={async () => {
+          saveSeo(false);
+          await saveDraft({
+            seoTitle: metaTitle?.trim() || undefined,
+            seoDescription: shortDescription?.trim() || undefined,
+          });
         }}
       />
     </section>

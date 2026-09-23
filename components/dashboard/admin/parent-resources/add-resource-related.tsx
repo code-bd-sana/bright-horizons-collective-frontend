@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 
 import { ResourceFormNavigation } from './resource-form-navigation';
 import { ResourceFormStepper } from './resource-form-stepper';
-import { useResourceFormStore } from '@/features/parent-resources';
+import { useResourceFormStore, useSaveResourceDraft } from '@/features/parent-resources';
 import { useActivities } from '@/features/activities/hooks/activities.queries';
 
 type RelatedFieldProps = {
@@ -130,6 +130,7 @@ export function AddResourceRelated() {
   const router = useRouter();
   const { relatedActivitiesIds, relatedResourcesIds, setRelated } = useResourceFormStore();
   const { data: activitiesResult } = useActivities({ limit: 50 });
+  const { saveDraft, isSavingDraft } = useSaveResourceDraft();
 
   const activitiesList = useMemo(() => activitiesResult?.data ?? [], [activitiesResult?.data]);
 
@@ -144,7 +145,7 @@ export function AddResourceRelated() {
   const [relatedPlans, setRelatedPlans] = useState('');
   const [relatedToys, setRelatedToys] = useState('');
 
-  function saveRelated() {
+  function saveRelated(showToast = true) {
     // Find selected activity id
     const selectedActivity = activitiesList.find((a) => a.title === relatedActivities);
     const activityIds = selectedActivity ? [selectedActivity.id] : relatedActivitiesIds;
@@ -154,12 +155,16 @@ export function AddResourceRelated() {
       relatedResourcesIds,
     });
 
-    const selectedCount = [relatedActivities, relatedPlans, relatedToys].filter(Boolean).length;
-    toast.success(
-      selectedCount
-        ? `${selectedCount} related item${selectedCount === 1 ? '' : 's'} saved.`
-        : 'Related content saved.'
-    );
+    if (showToast) {
+      const selectedCount = [relatedActivities, relatedPlans, relatedToys].filter(Boolean).length;
+      toast.success(
+        selectedCount
+          ? `${selectedCount} related item${selectedCount === 1 ? '' : 's'} saved.`
+          : 'Related content saved.'
+      );
+    }
+
+    return activityIds;
   }
 
   function saveAndContinue() {
@@ -233,11 +238,19 @@ export function AddResourceRelated() {
 
       <ResourceFormNavigation
         currentStep={4}
+        isSavingDraft={isSavingDraft}
+        showPrimaryAction={false}
         onNext={saveAndContinue}
-        onSaveChanges={saveRelated}
-        onSaveDraft={() => {
-          saveRelated();
-          toast.success('Related content saved as draft.');
+        onPrevious={() => {
+          saveRelated(false);
+          router.push('/dashboard/admin/parent-resources/add-resource/attachments');
+        }}
+        onSaveDraft={async () => {
+          const activityIds = saveRelated(false);
+          await saveDraft({
+            relatedActivitiesIds: activityIds,
+            relatedResourcesIds,
+          });
         }}
       />
     </section>

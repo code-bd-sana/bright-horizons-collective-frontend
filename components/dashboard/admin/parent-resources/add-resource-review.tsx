@@ -5,6 +5,7 @@ import { BookOpen, Clock3, Download, FileText } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { ResourceFormNavigation } from './resource-form-navigation';
@@ -28,6 +29,7 @@ export function AddResourceReview() {
   } = useResourceFormStore();
 
   const createResourceMutation = useCreateParentResource();
+  const [savingStatus, setSavingStatus] = useState<'PUBLISHED' | 'DRAFT' | null>(null);
 
   async function handleSave(status: 'PUBLISHED' | 'DRAFT') {
     if (!title?.trim()) {
@@ -42,6 +44,7 @@ export function AddResourceReview() {
       return;
     }
 
+    setSavingStatus(status);
     const payload = getCreatePayload();
     payload.status = status;
 
@@ -49,7 +52,7 @@ export function AddResourceReview() {
       await createResourceMutation.mutateAsync(payload);
       toast.success(
         status === 'PUBLISHED'
-          ? `“${title}” has been published successfully!`
+          ? `“${title}” has been added successfully!`
           : `“${title}” has been saved as draft!`
       );
       resetForm();
@@ -57,6 +60,8 @@ export function AddResourceReview() {
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Failed to save resource.';
       toast.error(message);
+    } finally {
+      setSavingStatus(null);
     }
   }
 
@@ -194,9 +199,12 @@ export function AddResourceReview() {
       <ResourceFormNavigation
         currentStep={7}
         showNext={false}
-        saveChangesText="Publish Resource"
-        isSubmitting={createResourceMutation.isPending}
-        onSaveChanges={() => void handleSave('PUBLISHED')}
+        showPrimaryAction={true}
+        primaryActionText="Add Resource"
+        isSubmitting={savingStatus === 'PUBLISHED'}
+        isSavingDraft={savingStatus === 'DRAFT'}
+        onPrevious={() => router.push('/dashboard/admin/parent-resources/add-resource/seo')}
+        onPrimaryAction={() => void handleSave('PUBLISHED')}
         onSaveDraft={() => void handleSave('DRAFT')}
       />
     </section>

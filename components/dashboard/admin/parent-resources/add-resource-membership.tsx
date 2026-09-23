@@ -5,7 +5,11 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { useResourceFormStore } from '@/features/parent-resources';
+import {
+  useResourceFormStore,
+  useSaveResourceDraft,
+  UI_TO_BACKEND_TIER,
+} from '@/features/parent-resources';
 import { ResourceFormNavigation } from './resource-form-navigation';
 import { ResourceFormStepper } from './resource-form-stepper';
 
@@ -41,12 +45,15 @@ type MembershipTier = (typeof membershipTiers)[number]['id'];
 export function AddResourceMembership() {
   const router = useRouter();
   const { membershipTier: storeTier, setMembershipTier: setStoreTier } = useResourceFormStore();
+  const { saveDraft, isSavingDraft } = useSaveResourceDraft();
   const [membershipTier, setMembershipTier] = useState<MembershipTier>(storeTier || 'little-steps');
 
-  function saveMembership() {
+  function saveMembership(showToast = true) {
     setStoreTier(membershipTier);
-    const tier = membershipTiers.find(({ id }) => id === membershipTier);
-    toast.success(`${tier?.name} access saved.`);
+    if (showToast) {
+      const tier = membershipTiers.find(({ id }) => id === membershipTier);
+      toast.success(`${tier?.name} access saved.`);
+    }
   }
 
   function saveAndContinue() {
@@ -124,11 +131,18 @@ export function AddResourceMembership() {
 
       <ResourceFormNavigation
         currentStep={5}
+        isSavingDraft={isSavingDraft}
+        showPrimaryAction={false}
         onNext={saveAndContinue}
-        onSaveChanges={saveMembership}
-        onSaveDraft={() => {
-          saveMembership();
-          toast.success('Membership tier saved as draft.');
+        onPrevious={() => {
+          saveMembership(false);
+          router.push('/dashboard/admin/parent-resources/add-resource/related');
+        }}
+        onSaveDraft={async () => {
+          saveMembership(false);
+          await saveDraft({
+            accessLevel: UI_TO_BACKEND_TIER[membershipTier],
+          });
         }}
       />
     </section>

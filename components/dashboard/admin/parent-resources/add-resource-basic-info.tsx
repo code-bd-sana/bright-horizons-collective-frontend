@@ -1,6 +1,11 @@
 'use client';
 
-import { useResourceFormStore, useUploadParentResourceFile } from '@/features/parent-resources';
+import {
+  useResourceFormStore,
+  useSaveResourceDraft,
+  useUploadParentResourceFile,
+  UI_TO_BACKEND_RESOURCE_TYPE,
+} from '@/features/parent-resources';
 import { DynamicForm } from '@/components/ui/dynamic-form';
 import { ChevronDown, FileText, ImageUp, Loader2 } from 'lucide-react';
 import Link from 'next/link';
@@ -75,6 +80,7 @@ export function AddResourceBasicInfo() {
   const [localCoverName, setLocalCoverName] = useState(coverImageName);
   const [isUploadingCover, setIsUploadingCover] = useState(false);
   const uploadCoverMutation = useUploadParentResourceFile();
+  const { saveDraft, isSavingDraft } = useSaveResourceDraft();
 
   function saveBasicInfo(data: BasicInfoValues) {
     const finalCategory =
@@ -316,9 +322,10 @@ export function AddResourceBasicInfo() {
             <ResourceFormNavigation
               currentStep={1}
               nextButtonType="submit"
-              saveChangesButtonType="submit"
               isSubmitting={isUploadingCover}
-              onSaveDraft={() => {
+              isSavingDraft={isSavingDraft}
+              showPrimaryAction={false}
+              onSaveDraft={async () => {
                 const values = form.getValues();
                 const finalCategory =
                   values.category === 'Other'
@@ -332,7 +339,16 @@ export function AddResourceBasicInfo() {
                   author: values.author,
                   readingTime: values.readingTime,
                 });
-                toast.success('Basic info saved as draft.');
+                await saveDraft({
+                  title: values.title?.trim(),
+                  summary: values.summary?.trim(),
+                  category: finalCategory,
+                  resourceType: values.resourceType
+                    ? UI_TO_BACKEND_RESOURCE_TYPE[values.resourceType]
+                    : undefined,
+                  author: values.author?.trim(),
+                  estimatedReadTime: values.readingTime?.trim(),
+                });
               }}
             />
           </>

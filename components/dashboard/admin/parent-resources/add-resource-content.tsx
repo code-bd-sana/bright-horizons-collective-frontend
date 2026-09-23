@@ -1,6 +1,6 @@
 'use client';
 
-import { useResourceFormStore } from '@/features/parent-resources';
+import { useResourceFormStore, useSaveResourceDraft } from '@/features/parent-resources';
 import { DynamicForm } from '@/components/ui/dynamic-form';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -33,6 +33,7 @@ const toolbarActions = Object.keys(toolbarSnippets);
 export function AddResourceContent() {
   const router = useRouter();
   const { content, setContent } = useResourceFormStore();
+  const { saveDraft, isSavingDraft } = useSaveResourceDraft();
 
   function saveContent(data: ContentValues) {
     setContent(data.content);
@@ -125,10 +126,17 @@ export function AddResourceContent() {
               <ResourceFormNavigation
                 currentStep={2}
                 nextButtonType="submit"
-                saveChangesButtonType="submit"
-                onSaveDraft={() => {
-                  setContent(form.getValues('content'));
-                  toast.success('Content saved as draft.');
+                isSavingDraft={isSavingDraft}
+                showPrimaryAction={false}
+                onPrevious={() => {
+                  const currentContent = form.getValues('content');
+                  setContent(currentContent);
+                  router.push('/dashboard/admin/parent-resources/add-resource');
+                }}
+                onSaveDraft={async () => {
+                  const currentContent = form.getValues('content');
+                  setContent(currentContent);
+                  await saveDraft({ content: currentContent });
                 }}
               />
             </>
