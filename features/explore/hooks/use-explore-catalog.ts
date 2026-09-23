@@ -12,12 +12,17 @@ import type {
   SaveExploreItemRequest,
 } from '@/features/explore/model/explore-types';
 import {
+  getActivities,
+  getActivityFavorites,
+  toggleActivityFavorite,
+} from '@/features/activities/api/activities.api';
+import { mapActivityToExploreItem } from '@/features/activities/model/activity.mapper';
+import {
   getTherapyToyFavorites,
   getTherapyToys,
   toggleTherapyToyFavorite,
 } from '@/features/therapy-toys/api/therapy-toys.api';
 import { mapTherapyToyToExploreItem } from '@/features/therapy-toys/model/therapy-toy.mapper';
-import type { TherapyToyFavoriteResult } from '@/features/therapy-toys/model/therapy-toy.types';
 
 const exploreQueryRoot = ['dashboard-explore'] as const;
 type SaveMutationContext = {
@@ -48,20 +53,65 @@ export function useExploreCatalog(tab: ExploreTab, filters: ExploreFilters) {
   const queryClient = useQueryClient();
   const [savedOverrides, setSavedOverrides] = useState<Record<string, boolean>>({});
   const queryKey = [...exploreQueryRoot, tab, filters] as const;
+
   const query = useQuery({
     queryKey,
     queryFn: () => demoExploreRepository.getPage({ tab, filters }),
+    enabled: tab === 'parent-resources',
   });
+
+  const activitiesQuery = useQuery({
+    queryKey: ['activities', 'public', 'dashboard'],
+    queryFn: () => getActivities({ limit: 100 }),
+    enabled: tab === 'activities',
+  });
+
+  const activityFavoritesQuery = useQuery({
+    queryKey: ['activities', 'favorites'],
+    queryFn: getActivityFavorites,
+    enabled: tab === 'activities',
+  });
+
   const therapyToysQuery = useQuery({
     queryKey: ['therapy-toys', 'public', 'dashboard'],
     queryFn: () => getTherapyToys({ limit: 100 }),
     enabled: tab === 'therapy-toys',
   });
+
   const favoritesQuery = useQuery({
     queryKey: ['therapy-toys', 'favorites'],
     queryFn: getTherapyToyFavorites,
     enabled: tab === 'therapy-toys',
   });
+
+  const activityData = useMemo<ExplorePagePayload | undefined>(() => {
+    if (tab !== 'activities' || !activitiesQuery.data) return undefined;
+
+    const savedIds = new Set(
+      (activityFavoritesQuery.data?.activityIds ?? []).filter((id) => savedOverrides[id] !== false)
+    );
+    for (const [id, saved] of Object.entries(savedOverrides)) {
+      if (saved) savedIds.add(id);
+      else savedIds.delete(id);
+    }
+
+    const items = (activitiesQuery.data.data ?? [])
+      .map((activity) => mapActivityToExploreItem(activity, savedIds.has(activity.id)))
+      .filter((item) =>
+        (Object.entries(filters) as [keyof ExploreFilters, string[]][]).every(
+          ([key, selected]) =>
+            !selected.length || selected.some((value) => item.filters[key]?.includes(value))
+        )
+      );
+
+    return {
+      tab,
+      items,
+      printableItems: [],
+      savedItems: items.filter((item) => item.saved),
+    };
+  }, [activitiesQuery.data, activityFavoritesQuery.data, filters, savedOverrides, tab]);
+
   const therapyToyData = useMemo<ExplorePagePayload | undefined>(() => {
     if (tab !== 'therapy-toys' || !therapyToysQuery.data) return undefined;
     const savedIds = new Set(
@@ -82,19 +132,21 @@ export function useExploreCatalog(tab: ExploreTab, filters: ExploreFilters) {
       );
     return { tab, items, printableItems: [], savedItems: items.filter((item) => item.saved) };
   }, [favoritesQuery.data, filters, savedOverrides, tab, therapyToysQuery.data]);
+
   const saveMutation = useMutation<
-    TherapyToyFavoriteResult,
+    { status: string; type: string },
     Error,
     SaveExploreItemRequest,
     SaveMutationContext
   >({
     mutationFn: async (request) => {
+      if (tab === 'activities') return toggleActivityFavorite(request.itemId);
       if (tab === 'therapy-toys') return toggleTherapyToyFavorite(request.itemId);
       await demoExploreRepository.setSaved(request);
-      return { status: request.saved ? 'favorited' : 'unfavorited', type: 'toy' };
+      return { status: request.saved ? 'favorited' : 'unfavorited', type: 'resource' };
     },
     onMutate: async (request): Promise<SaveMutationContext> => {
-      if (tab === 'therapy-toys') {
+      if (tab === 'activities' || tab === 'therapy-toys') {
         const previous = savedOverrides[request.itemId];
         setSavedOverrides((current) => ({ ...current, [request.itemId]: request.saved }));
         return { previousOverride: previous };
@@ -107,7 +159,7 @@ export function useExploreCatalog(tab: ExploreTab, filters: ExploreFilters) {
       return { previousPayload: previous };
     },
     onError: (_error, request, context) => {
-      if (tab === 'therapy-toys') {
+      if (tab === 'activities' || tab === 'therapy-toys') {
         setSavedOverrides((current) => {
           const next = { ...current };
           if (context?.previousOverride === undefined) delete next[request.itemId];
@@ -117,17 +169,35 @@ export function useExploreCatalog(tab: ExploreTab, filters: ExploreFilters) {
       } else if (context?.previousPayload)
         queryClient.setQueryData(queryKey, context.previousPayload);
     },
-    onSettled: () =>
-      tab === 'therapy-toys'
-        ? queryClient.invalidateQueries({ queryKey: ['therapy-toys', 'favorites'] })
-        : queryClient.invalidateQueries({ queryKey: exploreQueryRoot }),
+    onSettled: () => {
+      if (tab === 'activities') {
+        queryClient.invalidateQueries({ queryKey: ['activities', 'favorites'] });
+        queryClient.invalidateQueries({ queryKey: ['favorites'] });
+      } else if (tab === 'therapy-toys') {
+        queryClient.invalidateQueries({ queryKey: ['therapy-toys', 'favorites'] });
+        queryClient.invalidateQueries({ queryKey: ['favorites'] });
+      } else {
+        queryClient.invalidateQueries({ queryKey: exploreQueryRoot });
+      }
+    },
   });
 
   return {
     ...query,
-    data: tab === 'therapy-toys' ? therapyToyData : query.data,
-    isLoading: tab === 'therapy-toys' ? therapyToysQuery.isLoading : query.isLoading,
-    isError: tab === 'therapy-toys' ? therapyToysQuery.isError : query.isError,
+    data:
+      tab === 'activities' ? activityData : tab === 'therapy-toys' ? therapyToyData : query.data,
+    isLoading:
+      tab === 'activities'
+        ? activitiesQuery.isLoading
+        : tab === 'therapy-toys'
+          ? therapyToysQuery.isLoading
+          : query.isLoading,
+    isError:
+      tab === 'activities'
+        ? activitiesQuery.isError
+        : tab === 'therapy-toys'
+          ? therapyToysQuery.isError
+          : query.isError,
     setSaved: saveMutation.mutate,
     savingItemId: saveMutation.isPending ? (saveMutation.variables?.itemId ?? null) : null,
   };

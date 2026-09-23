@@ -161,3 +161,23 @@ export function toggleActivityComplete(
     return response.data.data;
   });
 }
+
+export function getActivityFavorites(): Promise<{ activityIds: string[] }> {
+  return handleApiCall(async () => {
+    try {
+      const response = await browserApi.get('/favorites');
+      const data = response.data?.data;
+      const activities = (data?.activities ?? []) as Array<{
+        activityId?: string;
+        activity?: { id?: string };
+      }>;
+      return {
+        activityIds: activities
+          .map((favorite) => favorite.activity?.id ?? favorite.activityId)
+          .filter((id): id is string => Boolean(id)),
+      };
+    } catch {
+      return { activityIds: [] };
+    }
+  });
+}

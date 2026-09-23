@@ -91,6 +91,7 @@ export function validatedUpstreamResponse<T>(payload: unknown, schema: ZodType<T
   const parsed = schema.safeParse(payload);
 
   if (!parsed.success) {
+    console.error('validatedUpstreamResponse validation failed:', parsed.error.issues);
     return NextResponse.json(
       { message: 'The upstream service returned an invalid response.' },
       { status: 502, headers: { 'Cache-Control': 'no-store' } }

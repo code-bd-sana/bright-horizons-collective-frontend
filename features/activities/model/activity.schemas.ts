@@ -51,15 +51,26 @@ export const backendActivityEnvelopeSchema = z.object({
 export const backendActivitiesListEnvelopeSchema = z.object({
   statusCode: z.number().optional(),
   message: z.string().optional(),
-  data: z.object({
-    data: z.array(backendActivitySchema),
-    meta: z.object({
-      total: z.number(),
-      page: z.number(),
-      limit: z.number(),
-      totalPages: z.number(),
+  data: z.union([
+    z.object({
+      data: z.array(backendActivitySchema),
+      meta: z.object({
+        total: z.number(),
+        page: z.number(),
+        limit: z.number(),
+        totalPages: z.number(),
+      }),
     }),
-  }),
+    z.array(backendActivitySchema).transform((items) => ({
+      data: items,
+      meta: {
+        total: items.length,
+        page: 1,
+        limit: items.length || 1,
+        totalPages: 1,
+      },
+    })),
+  ]),
 });
 
 export const activityAdminSummarySchema = z.object({

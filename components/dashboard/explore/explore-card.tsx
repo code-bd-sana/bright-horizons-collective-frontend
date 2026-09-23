@@ -55,6 +55,9 @@ function ActivityCard({
           maskSize="253.045px 244.813px"
           frameClassName="left-1/2 top-[-172px] h-[516px] w-[344px] -translate-x-1/2"
           sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+          unoptimized={Boolean(
+            item.imageSrc?.startsWith('http') || item.imageSrc?.startsWith('/uploads')
+          )}
         />
         <UniversalCardOverlay className="pointer-events-none z-30">
           <UniversalCardBadge tone="activity">{item.badge}</UniversalCardBadge>

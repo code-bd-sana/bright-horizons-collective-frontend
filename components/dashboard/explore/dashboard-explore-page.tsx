@@ -192,6 +192,17 @@ function CardsGrid({
     item: import('@/features/explore/model/explore-types').TherapyToyExploreItem
   ) => void;
 }) {
+  if (items.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-[#d8dfdf] bg-white px-6 py-16 text-center">
+        <p className="font-nunito text-lg font-semibold text-[#263238]">No items found</p>
+        <p className="mt-1 max-w-md font-manrope text-sm text-[#65758a]">
+          No items match your current filter criteria. Try adjusting or clearing your filters.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div
       className={cn(
