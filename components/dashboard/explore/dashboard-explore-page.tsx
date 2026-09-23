@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Check, ChevronDown } from 'lucide-react';
 import { FormEvent, useEffect, useRef, useState } from 'react';
+import { toast } from 'sonner';
 
 import { ExploreCard } from '@/components/dashboard/explore/explore-card';
 import { getMasonryCardHeight } from '@/components/explore/explore-catalog';
@@ -385,7 +386,19 @@ export function DashboardExplorePage({ initialTab }: { initialTab: ExploreTab })
   };
 
   const handleSavedChange = (item: ExploreCardItem, saved: boolean) => {
-    setSaved({ itemId: item.id, saved });
+    setSaved(
+      { itemId: item.id, saved },
+      {
+        onSuccess: () => {
+          toast.success(
+            saved ? `Saved "${item.title}" to favorites` : `Removed "${item.title}" from favorites`
+          );
+        },
+        onError: () => {
+          toast.error('Failed to update favorite status');
+        },
+      }
+    );
   };
 
   const handleOpenTherapyToy = (

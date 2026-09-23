@@ -59,19 +59,20 @@ function ActivityCard({
             item.imageSrc?.startsWith('http') || item.imageSrc?.startsWith('/uploads')
           )}
         />
-        <UniversalCardOverlay className="pointer-events-none z-30">
-          <UniversalCardBadge tone="activity">{item.badge}</UniversalCardBadge>
-          <UniversalCardSaveButton
-            label={item.title}
-            saved={item.saved}
-            disabled={saving}
-            onSavedChange={(saved) => onSavedChange?.(item, saved)}
-            iconSrc={figmaExploreUiAssets.activity.bookmark}
-            savedIconSrc={figmaExploreUiAssets.activity.bookmarkSaved}
-            className="pointer-events-auto"
-          />
-        </UniversalCardOverlay>
       </UniversalCardMedia>
+
+      <UniversalCardOverlay className="pointer-events-none z-30">
+        <UniversalCardBadge tone="activity">{item.badge}</UniversalCardBadge>
+        <UniversalCardSaveButton
+          label={item.title}
+          saved={item.saved}
+          disabled={saving}
+          onSavedChange={(saved) => onSavedChange?.(item, saved)}
+          iconSrc={figmaExploreUiAssets.activity.bookmark}
+          savedIconSrc={figmaExploreUiAssets.activity.bookmarkSaved}
+          className="pointer-events-auto"
+        />
+      </UniversalCardOverlay>
 
       <UniversalCardBody recipe="activity">
         <h3 className="truncate font-nunito text-2xl font-medium leading-8 text-(--explore-text-primary) max-xl:text-lg max-xl:leading-6">

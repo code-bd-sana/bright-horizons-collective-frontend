@@ -95,20 +95,22 @@ export function useExploreCatalog(tab: ExploreTab, filters: ExploreFilters) {
       else savedIds.delete(id);
     }
 
-    const items = (activitiesQuery.data.data ?? [])
-      .map((activity) => mapActivityToExploreItem(activity, savedIds.has(activity.id)))
-      .filter((item) =>
-        (Object.entries(filters) as [keyof ExploreFilters, string[]][]).every(
-          ([key, selected]) =>
-            !selected.length || selected.some((value) => item.filters[key]?.includes(value))
-        )
-      );
+    const allMapped = (activitiesQuery.data.data ?? []).map((activity) =>
+      mapActivityToExploreItem(activity, savedIds.has(activity.id))
+    );
+    const items = allMapped.filter((item) =>
+      (Object.entries(filters) as [keyof ExploreFilters, string[]][]).every(
+        ([key, selected]) =>
+          !selected.length || selected.some((value) => item.filters[key]?.includes(value))
+      )
+    );
+    const savedItems = allMapped.filter((item) => item.saved);
 
     return {
       tab,
       items,
       printableItems: [],
-      savedItems: items.filter((item) => item.saved),
+      savedItems,
     };
   }, [activitiesQuery.data, activityFavoritesQuery.data, filters, savedOverrides, tab]);
 
@@ -122,15 +124,18 @@ export function useExploreCatalog(tab: ExploreTab, filters: ExploreFilters) {
       else savedIds.delete(id);
     }
 
-    const items = therapyToysQuery.data.items
-      .map((toy) => mapTherapyToyToExploreItem(toy, savedIds.has(toy.id)))
-      .filter((item) =>
-        (Object.entries(filters) as [keyof ExploreFilters, string[]][]).every(
-          ([key, selected]) =>
-            !selected.length || selected.some((value) => item.filters[key]?.includes(value))
-        )
-      );
-    return { tab, items, printableItems: [], savedItems: items.filter((item) => item.saved) };
+    const allMapped = therapyToysQuery.data.items.map((toy) =>
+      mapTherapyToyToExploreItem(toy, savedIds.has(toy.id))
+    );
+    const items = allMapped.filter((item) =>
+      (Object.entries(filters) as [keyof ExploreFilters, string[]][]).every(
+        ([key, selected]) =>
+          !selected.length || selected.some((value) => item.filters[key]?.includes(value))
+      )
+    );
+    const savedItems = allMapped.filter((item) => item.saved);
+
+    return { tab, items, printableItems: [], savedItems };
   }, [favoritesQuery.data, filters, savedOverrides, tab, therapyToysQuery.data]);
 
   const saveMutation = useMutation<

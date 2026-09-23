@@ -24,7 +24,13 @@ function getDifficultyLabel(difficulty: string): string {
   }
 }
 
-export function ActivityDetailHero({ activity }: { activity: Activity }) {
+export function ActivityDetailHero({
+  activity,
+  hideStatus = false,
+}: {
+  activity: Activity;
+  hideStatus?: boolean;
+}) {
   const isPublished = activity.status === 'PUBLISHED';
   const isDraft = activity.status === 'DRAFT';
 
@@ -66,19 +72,21 @@ export function ActivityDetailHero({ activity }: { activity: Activity }) {
             {formatAgeRange(activity.minAgeMonths, activity.maxAgeMonths)}
           </span>
         </div>
-        <div className="absolute right-4 top-4">
-          <span
-            className={`rounded-full px-3 py-1 font-manrope text-xs font-semibold leading-4 ${
-              isPublished
-                ? 'bg-white text-[#007b75] shadow-xs'
-                : isDraft
-                  ? 'border border-[#fef3c7] bg-[#fffbeb] text-[#b45309]'
-                  : 'border border-[#e5e7eb] bg-[#f3f4f6] text-[#6b7280]'
-            }`}
-          >
-            {isPublished ? 'Published' : isDraft ? 'Draft' : 'Archived'}
-          </span>
-        </div>
+        {!hideStatus && (
+          <div className="absolute right-4 top-4">
+            <span
+              className={`rounded-full px-3 py-1 font-manrope text-xs font-semibold leading-4 ${
+                isPublished
+                  ? 'bg-white text-[#007b75] shadow-xs'
+                  : isDraft
+                    ? 'border border-[#fef3c7] bg-[#fffbeb] text-[#b45309]'
+                    : 'border border-[#e5e7eb] bg-[#f3f4f6] text-[#6b7280]'
+              }`}
+            >
+              {isPublished ? 'Published' : isDraft ? 'Draft' : 'Archived'}
+            </span>
+          </div>
+        )}
       </div>
       <div className="mt-8">
         <div className="max-w-180">

@@ -62,6 +62,9 @@ export function useToggleActivityFavorite() {
     mutationFn: (id: string) => toggleActivityFavorite(id),
     onSuccess: (_data, id) => {
       void queryClient.invalidateQueries({ queryKey: activityKeys.detail(id) });
+      void queryClient.invalidateQueries({ queryKey: ['activities', 'favorites'] });
+      void queryClient.invalidateQueries({ queryKey: ['favorites'] });
+      void queryClient.invalidateQueries({ queryKey: activityKeys.lists() });
     },
   });
 }
