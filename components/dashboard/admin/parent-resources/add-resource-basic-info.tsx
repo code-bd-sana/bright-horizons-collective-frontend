@@ -13,15 +13,39 @@ import { ResourceFormStepper } from './resource-form-stepper';
 
 const resourceTypes = ['Article', 'PDF', 'Printable', 'Checklist', 'Guide'] as const;
 
-const basicInfoSchema = z.object({
-  title: z.string().trim().min(1, 'Please enter a resource title.'),
-  summary: z.string().trim().min(1, 'Please enter a summary.'),
-  category: z.string().min(1, 'Please select a category.'),
-  resourceType: z.enum(resourceTypes, { message: 'Please select a resource type.' }),
-  author: z.string().trim().min(1, 'Please enter an author.'),
-  readingTime: z.string().trim().min(1, 'Please enter an estimated reading time.'),
-  coverImage: z.unknown().optional(),
-});
+const PRESET_CATEGORIES = [
+  'Sensory Development',
+  'Fine Motor',
+  'Daily Living',
+  'Communication',
+  'Emotional Regulation',
+  'Gross Motor',
+  'Parent Education',
+] as const;
+
+const basicInfoSchema = z
+  .object({
+    title: z.string().trim().min(1, 'Please enter a resource title.'),
+    summary: z.string().trim().min(1, 'Please enter a summary.'),
+    category: z.string().min(1, 'Please select a category.'),
+    customCategory: z.string().optional(),
+    resourceType: z.enum(resourceTypes, { message: 'Please select a resource type.' }),
+    author: z.string().trim().min(1, 'Please enter an author.'),
+    readingTime: z.string().trim().min(1, 'Please enter an estimated reading time.'),
+    coverImage: z.unknown().optional(),
+  })
+  .refine(
+    (data) => {
+      if (data.category === 'Other') {
+        return Boolean(data.customCategory && data.customCategory.trim().length > 0);
+      }
+      return true;
+    },
+    {
+      message: 'Please enter a custom category name.',
+      path: ['customCategory'],
+    }
+  );
 
 type BasicInfoValues = z.infer<typeof basicInfoSchema>;
 
@@ -42,15 +66,24 @@ export function AddResourceBasicInfo() {
     setBasicInfo,
   } = useResourceFormStore();
 
+  const isCustomCategory =
+    Boolean(category) &&
+    !PRESET_CATEGORIES.includes(category as (typeof PRESET_CATEGORIES)[number]);
+  const initialCategory = isCustomCategory ? 'Other' : category || '';
+  const initialCustomCategory = isCustomCategory ? category : '';
+
   const [localCoverName, setLocalCoverName] = useState(coverImageName);
   const [isUploadingCover, setIsUploadingCover] = useState(false);
   const uploadCoverMutation = useUploadParentResourceFile();
 
   function saveBasicInfo(data: BasicInfoValues) {
+    const finalCategory =
+      data.category === 'Other' ? (data.customCategory?.trim() ?? '') : data.category;
+
     setBasicInfo({
       title: data.title,
       summary: data.summary,
-      category: data.category,
+      category: finalCategory,
       resourceType: data.resourceType,
       author: data.author,
       readingTime: data.readingTime,
@@ -79,7 +112,8 @@ export function AddResourceBasicInfo() {
         defaultValues={{
           title: title || '',
           summary: summary || '',
-          category: category || '',
+          category: initialCategory,
+          customCategory: initialCustomCategory,
           resourceType: resourceType || 'Article',
           author: author || 'Sarah K.',
           readingTime: readingTime || '',
@@ -139,13 +173,12 @@ export function AddResourceBasicInfo() {
                         className={`${inputClassName} appearance-none pr-10`}
                       >
                         <option value="">Select category</option>
-                        <option>Sensory Development</option>
-                        <option>Fine Motor</option>
-                        <option>Daily Living</option>
-                        <option>Communication</option>
-                        <option>Emotional Regulation</option>
-                        <option>Gross Motor</option>
-                        <option>Parent Education</option>
+                        {PRESET_CATEGORIES.map((cat) => (
+                          <option key={cat} value={cat}>
+                            {cat}
+                          </option>
+                        ))}
+                        <option value="Other">Other</option>
                       </select>
                       <ChevronDown
                         aria-hidden="true"
@@ -157,6 +190,22 @@ export function AddResourceBasicInfo() {
                       <span className="mt-1 block font-manrope text-xs text-[#b24b4b]">
                         {form.formState.errors.category.message}
                       </span>
+                    )}
+
+                    {form.watch('category') === 'Other' && (
+                      <div className="mt-2.5">
+                        <input
+                          {...form.register('customCategory')}
+                          className={inputClassName}
+                          placeholder="Type custom category name..."
+                          autoFocus
+                        />
+                        {form.formState.errors.customCategory && (
+                          <span className="mt-1 block font-manrope text-xs text-[#b24b4b]">
+                            {form.formState.errors.customCategory.message}
+                          </span>
+                        )}
+                      </div>
                     )}
                   </label>
 
@@ -271,10 +320,14 @@ export function AddResourceBasicInfo() {
               isSubmitting={isUploadingCover}
               onSaveDraft={() => {
                 const values = form.getValues();
+                const finalCategory =
+                  values.category === 'Other'
+                    ? (values.customCategory?.trim() ?? '')
+                    : values.category;
                 setBasicInfo({
                   title: values.title,
                   summary: values.summary,
-                  category: values.category,
+                  category: finalCategory,
                   resourceType: values.resourceType,
                   author: values.author,
                   readingTime: values.readingTime,
