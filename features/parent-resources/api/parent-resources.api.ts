@@ -150,9 +150,7 @@ export function toggleParentResourceFavorite(
   const resourceId = parseInput(parentResourceIdSchema, id);
 
   return handleApiCall(async () => {
-    const response = await browserApi.post('/favorites/toggle', {
-      parentResourceId: resourceId,
-    });
+    const response = await browserApi.post(`/favorites/parent-resources/${resourceId}`);
     return response.data.data;
   });
 }

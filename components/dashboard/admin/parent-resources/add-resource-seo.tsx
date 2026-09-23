@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { useResourceFormStore } from '@/features/parent-resources';
 import { ResourceFormNavigation } from './resource-form-navigation';
 import { ResourceFormStepper } from './resource-form-stepper';
 
@@ -13,11 +14,23 @@ const fieldClassName =
 
 export function AddResourceSeo() {
   const router = useRouter();
-  const [metaTitle, setMetaTitle] = useState('');
-  const [keywords, setKeywords] = useState('sensory, toddler, development');
-  const [shortDescription, setShortDescription] = useState('');
+  const {
+    seoTitle: storeTitle,
+    seoDescription: storeDesc,
+    keywords: storeKeywords,
+    setSeo,
+  } = useResourceFormStore();
+
+  const [metaTitle, setMetaTitle] = useState(storeTitle || '');
+  const [keywords, setKeywords] = useState(storeKeywords || 'sensory, toddler, development');
+  const [shortDescription, setShortDescription] = useState(storeDesc || '');
 
   function saveSeo() {
+    setSeo({
+      seoTitle: metaTitle,
+      seoDescription: shortDescription,
+      keywords,
+    });
     const seoFields = [metaTitle, keywords, shortDescription].filter(Boolean).length;
     toast.success(seoFields ? 'SEO details saved.' : 'SEO details skipped.');
   }
@@ -99,7 +112,15 @@ export function AddResourceSeo() {
         </div>
       </section>
 
-      <ResourceFormNavigation currentStep={6} onNext={saveAndContinue} onSaveChanges={saveSeo} />
+      <ResourceFormNavigation
+        currentStep={6}
+        onNext={saveAndContinue}
+        onSaveChanges={saveSeo}
+        onSaveDraft={() => {
+          saveSeo();
+          toast.success('SEO details saved as draft.');
+        }}
+      />
     </section>
   );
 }

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { useResourceFormStore } from '@/features/parent-resources';
 import { ResourceFormNavigation } from './resource-form-navigation';
 import { ResourceFormStepper } from './resource-form-stepper';
 
@@ -39,9 +40,11 @@ type MembershipTier = (typeof membershipTiers)[number]['id'];
 
 export function AddResourceMembership() {
   const router = useRouter();
-  const [membershipTier, setMembershipTier] = useState<MembershipTier>('little-steps');
+  const { membershipTier: storeTier, setMembershipTier: setStoreTier } = useResourceFormStore();
+  const [membershipTier, setMembershipTier] = useState<MembershipTier>(storeTier || 'little-steps');
 
   function saveMembership() {
+    setStoreTier(membershipTier);
     const tier = membershipTiers.find(({ id }) => id === membershipTier);
     toast.success(`${tier?.name} access saved.`);
   }
@@ -123,6 +126,10 @@ export function AddResourceMembership() {
         currentStep={5}
         onNext={saveAndContinue}
         onSaveChanges={saveMembership}
+        onSaveDraft={() => {
+          saveMembership();
+          toast.success('Membership tier saved as draft.');
+        }}
       />
     </section>
   );

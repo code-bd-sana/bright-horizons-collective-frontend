@@ -3,11 +3,13 @@
 import { ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 import { ResourceFormNavigation } from './resource-form-navigation';
 import { ResourceFormStepper } from './resource-form-stepper';
+import { useResourceFormStore } from '@/features/parent-resources';
+import { useActivities } from '@/features/activities/hooks/activities.queries';
 
 type RelatedFieldProps = {
   id: string;
@@ -126,11 +128,32 @@ function RelatedField({ id, label, options, value, example, onChange }: RelatedF
 
 export function AddResourceRelated() {
   const router = useRouter();
-  const [relatedActivities, setRelatedActivities] = useState('');
+  const { relatedActivitiesIds, relatedResourcesIds, setRelated } = useResourceFormStore();
+  const { data: activitiesResult } = useActivities({ limit: 50 });
+
+  const activitiesList = useMemo(() => activitiesResult?.data ?? [], [activitiesResult?.data]);
+
+  const matchingActivity = useMemo(() => {
+    if (!relatedActivitiesIds?.length) return undefined;
+    return activitiesList.find((a) => relatedActivitiesIds.includes(a.id));
+  }, [relatedActivitiesIds, activitiesList]);
+
+  const [selectedActivityTitle, setSelectedActivityTitle] = useState<string | null>(null);
+  const relatedActivities = selectedActivityTitle ?? matchingActivity?.title ?? '';
+
   const [relatedPlans, setRelatedPlans] = useState('');
   const [relatedToys, setRelatedToys] = useState('');
 
   function saveRelated() {
+    // Find selected activity id
+    const selectedActivity = activitiesList.find((a) => a.title === relatedActivities);
+    const activityIds = selectedActivity ? [selectedActivity.id] : relatedActivitiesIds;
+
+    setRelated({
+      relatedActivitiesIds: activityIds,
+      relatedResourcesIds,
+    });
+
     const selectedCount = [relatedActivities, relatedPlans, relatedToys].filter(Boolean).length;
     toast.success(
       selectedCount
@@ -143,6 +166,10 @@ export function AddResourceRelated() {
     saveRelated();
     router.push('/dashboard/admin/parent-resources/add-resource/membership');
   }
+
+  const activityOptions = activitiesList.length
+    ? activitiesList.map((a) => a.title)
+    : ['Color Sorting Sensory Play', 'Sensory Bin: Kinetic Sand', 'Bubble Wrap Stomp Counting'];
 
   return (
     <section className="mx-auto w-full min-w-0 max-w-231.5 pb-8 pt-6 text-[#263238] lg:pt-0 2xl:pt-0">
@@ -173,13 +200,9 @@ export function AddResourceRelated() {
             id="related-activities"
             label="Related Activities"
             value={relatedActivities}
-            onChange={setRelatedActivities}
+            onChange={setSelectedActivityTitle}
             example="Color Sorting Sensory Play, Sensory Bin: Kinetic Sand"
-            options={[
-              'Color Sorting Sensory Play',
-              'Sensory Bin: Kinetic Sand',
-              'Bubble Wrap Stomp Counting',
-            ]}
+            options={activityOptions}
           />
           <RelatedField
             id="related-weekly-plans"
@@ -212,6 +235,10 @@ export function AddResourceRelated() {
         currentStep={4}
         onNext={saveAndContinue}
         onSaveChanges={saveRelated}
+        onSaveDraft={() => {
+          saveRelated();
+          toast.success('Related content saved as draft.');
+        }}
       />
     </section>
   );

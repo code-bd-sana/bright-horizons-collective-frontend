@@ -10,6 +10,8 @@ type ResourceFormNavigationProps = {
   showNext?: boolean;
   nextButtonType?: 'button' | 'submit';
   saveChangesButtonType?: 'button' | 'submit';
+  isSubmitting?: boolean;
+  saveChangesText?: string;
   onNext?: () => void;
   onSaveChanges?: () => void;
   onSaveDraft?: () => void;
@@ -21,6 +23,8 @@ export function ResourceFormNavigation({
   showNext = true,
   nextButtonType = 'button',
   saveChangesButtonType = 'button',
+  isSubmitting = false,
+  saveChangesText = 'Save Changes',
   onNext,
   onSaveChanges,
   onSaveDraft,
@@ -50,8 +54,9 @@ export function ResourceFormNavigation({
         {showNext && (
           <button
             type={nextButtonType}
+            disabled={isSubmitting}
             onClick={nextButtonType === 'button' ? onNext : undefined}
-            className="h-10.5 rounded-[14px] border border-[#2f7d7e] px-4.25 font-manrope text-sm font-semibold leading-5 text-[#2f7d7e]"
+            className="h-10.5 rounded-[14px] border border-[#2f7d7e] px-4.25 font-manrope text-sm font-semibold leading-5 text-[#2f7d7e] disabled:opacity-50"
           >
             Next →
           </button>
@@ -60,24 +65,27 @@ export function ResourceFormNavigation({
       <div className="grid gap-2 sm:flex sm:flex-wrap sm:justify-end 2xl:flex 2xl:flex-wrap 2xl:justify-end">
         <button
           type="button"
+          disabled={isSubmitting}
           onClick={onSaveDraft ?? (() => toast.success('Resource saved as a draft.'))}
-          className="h-10.5 rounded-[14px] border border-[#e7eceb] px-4.25 font-manrope text-sm font-semibold leading-5 text-[#607d8b]"
+          className="h-10.5 rounded-[14px] border border-[#e7eceb] px-4.25 font-manrope text-sm font-semibold leading-5 text-[#607d8b] disabled:opacity-50"
         >
-          Save as Draft
+          {isSubmitting ? 'Saving...' : 'Save as Draft'}
         </button>
         <button
           type="button"
+          disabled={isSubmitting}
           onClick={onPreview ?? (() => toast.message('Resource preview is ready.'))}
-          className="h-10.5 rounded-[14px] border border-[#e7eceb] px-4.25 font-manrope text-sm font-semibold leading-5 text-[#607d8b]"
+          className="h-10.5 rounded-[14px] border border-[#e7eceb] px-4.25 font-manrope text-sm font-semibold leading-5 text-[#607d8b] disabled:opacity-50"
         >
           Preview
         </button>
         <button
           type={saveChangesButtonType}
+          disabled={isSubmitting}
           onClick={saveChangesButtonType === 'button' ? onSaveChanges : undefined}
-          className="h-10.5 rounded-[14px] bg-[#2f7d7e] px-5 font-manrope text-sm font-semibold leading-5 text-white"
+          className="flex h-10.5 items-center justify-center gap-2 rounded-[14px] bg-[#2f7d7e] px-5 font-manrope text-sm font-semibold leading-5 text-white disabled:opacity-50"
         >
-          Save Changes
+          {isSubmitting ? 'Submitting...' : saveChangesText}
         </button>
       </div>
     </footer>

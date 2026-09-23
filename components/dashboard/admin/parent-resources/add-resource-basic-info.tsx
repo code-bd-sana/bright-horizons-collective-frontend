@@ -1,7 +1,8 @@
 'use client';
 
+import { useResourceFormStore, useUploadParentResourceFile } from '@/features/parent-resources';
 import { DynamicForm } from '@/components/ui/dynamic-form';
-import { ChevronDown, FileText, ImageUp } from 'lucide-react';
+import { ChevronDown, FileText, ImageUp, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -28,11 +29,33 @@ const inputClassName =
   'h-10.75 w-full rounded-[14px] border border-[#d9e1e0] bg-white px-3.75 font-manrope text-sm leading-5.25 text-[#263238] shadow-[0_1px_2px_rgba(16,24,40,0.05)] outline-none placeholder:text-[#9aa8ae] focus:border-[#2f7d7e]';
 
 export function AddResourceBasicInfo() {
-  const [coverImageName, setCoverImageName] = useState('');
   const router = useRouter();
+  const {
+    title,
+    summary,
+    category,
+    resourceType,
+    author,
+    readingTime,
+    coverImageUrl,
+    coverImageName,
+    setBasicInfo,
+  } = useResourceFormStore();
+
+  const [localCoverName, setLocalCoverName] = useState(coverImageName);
+  const [isUploadingCover, setIsUploadingCover] = useState(false);
+  const uploadCoverMutation = useUploadParentResourceFile();
 
   function saveBasicInfo(data: BasicInfoValues) {
-    toast.success(`Basic information for “${data.title}” has been saved.`);
+    setBasicInfo({
+      title: data.title,
+      summary: data.summary,
+      category: data.category,
+      resourceType: data.resourceType,
+      author: data.author,
+      readingTime: data.readingTime,
+    });
+    toast.success(`Basic info for “${data.title}” saved.`);
     router.push('/dashboard/admin/parent-resources/add-resource/content');
   }
 
@@ -54,12 +77,12 @@ export function AddResourceBasicInfo() {
 
       <DynamicForm
         defaultValues={{
-          title: '',
-          summary: '',
-          category: '',
-          resourceType: 'Article',
-          author: 'Sarah K.',
-          readingTime: '',
+          title: title || '',
+          summary: summary || '',
+          category: category || '',
+          resourceType: resourceType || 'Article',
+          author: author || 'Sarah K.',
+          readingTime: readingTime || '',
           coverImage: undefined,
         }}
         fields={[]}
@@ -184,21 +207,59 @@ export function AddResourceBasicInfo() {
                 <label className="block">
                   <span className="font-manrope text-sm font-semibold leading-5">Cover Image</span>
                   <span className="mt-1.5 flex h-14 min-w-0 cursor-pointer items-center gap-3 rounded-[14px] border border-dashed border-[#c8d3d1] px-4.5 font-manrope text-sm leading-5 text-[#607d8b] hover:bg-[#f8fbfa]">
-                    <ImageUp aria-hidden="true" className="shrink-0" size={18} strokeWidth={1.7} />
+                    {isUploadingCover ? (
+                      <Loader2
+                        aria-hidden="true"
+                        className="size-4.5 animate-spin text-[#2f7d7e]"
+                      />
+                    ) : (
+                      <ImageUp
+                        aria-hidden="true"
+                        className="shrink-0"
+                        size={18}
+                        strokeWidth={1.7}
+                      />
+                    )}
                     <span className="truncate">
-                      {coverImageName || 'Click to upload cover image'}
+                      {isUploadingCover
+                        ? 'Uploading cover image...'
+                        : localCoverName ||
+                          (coverImageUrl ? 'Change cover image' : 'Click to upload cover image')}
                     </span>
                     <input
                       accept="image/png,image/jpeg,image/webp"
                       className="sr-only"
                       type="file"
-                      onChange={(event) => {
+                      disabled={isUploadingCover}
+                      onChange={async (event) => {
                         const file = event.target.files?.[0];
+                        if (!file) return;
                         form.setValue('coverImage', file);
-                        setCoverImageName(file?.name ?? '');
+                        setLocalCoverName(file.name);
+                        setIsUploadingCover(true);
+                        try {
+                          const result = await uploadCoverMutation.mutateAsync(file);
+                          setBasicInfo({
+                            coverImageUrl: result.url,
+                            coverImageName: file.name,
+                            coverImageFile: file,
+                          });
+                          toast.success('Cover image uploaded successfully.');
+                        } catch (err: unknown) {
+                          const message =
+                            err instanceof Error ? err.message : 'Cover upload failed.';
+                          toast.error(message);
+                        } finally {
+                          setIsUploadingCover(false);
+                        }
                       }}
                     />
                   </span>
+                  {coverImageUrl && (
+                    <span className="mt-1 block font-manrope text-xs text-[#2f7d7e]">
+                      ✓ Image uploaded and attached
+                    </span>
+                  )}
                 </label>
               </div>
             </section>
@@ -207,6 +268,19 @@ export function AddResourceBasicInfo() {
               currentStep={1}
               nextButtonType="submit"
               saveChangesButtonType="submit"
+              isSubmitting={isUploadingCover}
+              onSaveDraft={() => {
+                const values = form.getValues();
+                setBasicInfo({
+                  title: values.title,
+                  summary: values.summary,
+                  category: values.category,
+                  resourceType: values.resourceType,
+                  author: values.author,
+                  readingTime: values.readingTime,
+                });
+                toast.success('Basic info saved as draft.');
+              }}
             />
           </>
         )}

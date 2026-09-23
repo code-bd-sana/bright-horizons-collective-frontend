@@ -1,6 +1,7 @@
 'use client';
 
-import { Download, FileText, X } from 'lucide-react';
+import { useResourceFormStore, useUploadResourceAttachment } from '@/features/parent-resources';
+import { Download, FileText, Loader2, X } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
@@ -15,15 +16,25 @@ const acceptedFileTypes = [
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
   'image/png',
   'image/jpeg',
+  'image/webp',
 ] as const;
 
 const maximumFileSize = 10 * 1024 * 1024;
 
 function isAcceptedFile(file: File) {
-  return acceptedFileTypes.includes(file.type as (typeof acceptedFileTypes)[number]);
+  return (
+    acceptedFileTypes.includes(file.type as (typeof acceptedFileTypes)[number]) ||
+    file.name.endsWith('.pdf') ||
+    file.name.endsWith('.docx') ||
+    file.name.endsWith('.xlsx') ||
+    file.name.endsWith('.png') ||
+    file.name.endsWith('.jpg') ||
+    file.name.endsWith('.jpeg')
+  );
 }
 
 function formatFileSize(bytes: number) {
+  if (!bytes) return '0 KB';
   if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
@@ -31,10 +42,12 @@ function formatFileSize(bytes: number) {
 export function AddResourceAttachments() {
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
-  const [attachments, setAttachments] = useState<File[]>([]);
+  const { attachments, addAttachment, removeAttachment } = useResourceFormStore();
   const [isDragging, setIsDragging] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const uploadAttachmentMutation = useUploadResourceAttachment();
 
-  function addFiles(files: FileList | File[]) {
+  async function addFiles(files: FileList | File[]) {
     const validFiles = Array.from(files).filter((file) => {
       if (file.size > maximumFileSize) {
         toast.error(`“${file.name}” is larger than the 10MB file limit.`);
@@ -51,15 +64,26 @@ export function AddResourceAttachments() {
 
     if (!validFiles.length) return;
 
-    setAttachments((currentAttachments) => {
-      const knownFiles = new Set(
-        currentAttachments.map((file) => `${file.name}-${file.size}-${file.lastModified}`)
+    setIsUploading(true);
+    let uploadedCount = 0;
+
+    for (const file of validFiles) {
+      try {
+        const uploaded = await uploadAttachmentMutation.mutateAsync(file);
+        addAttachment(uploaded);
+        uploadedCount++;
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'Upload failed';
+        toast.error(`Failed to upload “${file.name}”: ${message}`);
+      }
+    }
+
+    setIsUploading(false);
+    if (uploadedCount > 0) {
+      toast.success(
+        `Uploaded ${uploadedCount} attachment${uploadedCount === 1 ? '' : 's'} successfully.`
       );
-      const additions = validFiles.filter(
-        (file) => !knownFiles.has(`${file.name}-${file.size}-${file.lastModified}`)
-      );
-      return [...currentAttachments, ...additions];
-    });
+    }
   }
 
   function saveAttachments() {
@@ -114,35 +138,46 @@ export function AddResourceAttachments() {
             onDrop={(event) => {
               event.preventDefault();
               setIsDragging(false);
-              addFiles(event.dataTransfer.files);
+              void addFiles(event.dataTransfer.files);
             }}
           >
-            <Download
-              aria-hidden="true"
-              className="mx-auto size-6 text-[#b0bec5]"
-              strokeWidth={1.7}
-            />
+            {isUploading ? (
+              <Loader2 className="mx-auto size-8 animate-spin text-[#2f7d7e]" />
+            ) : (
+              <Download
+                aria-hidden="true"
+                className="mx-auto size-6 text-[#b0bec5]"
+                strokeWidth={1.7}
+              />
+            )}
             <p className="mt-3 font-manrope text-sm leading-5.25 text-[#607d8b]">
-              Drag &amp; drop files here, or{' '}
-              <button
-                type="button"
-                onClick={() => inputRef.current?.click()}
-                className="font-semibold text-[#2f7d7e] underline-offset-2 hover:underline focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-[#2f7d7e]"
-              >
-                browse to upload
-              </button>
+              {isUploading ? (
+                'Uploading attachment...'
+              ) : (
+                <>
+                  Drag &amp; drop files here, or{' '}
+                  <button
+                    type="button"
+                    onClick={() => inputRef.current?.click()}
+                    className="font-semibold text-[#2f7d7e] underline-offset-2 hover:underline focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-[#2f7d7e]"
+                  >
+                    browse to upload
+                  </button>
+                </>
+              )}
             </p>
             <p className="mt-1.5 font-manrope text-xs leading-4.5 text-[#b0bec5]">
-              Supported: PDF, DOCX, XLSX, PNG, JPG · Max 10MB per file
+              Supported: PDF, DOCX, XLSX, PNG, JPG, WEBP · Max 10MB per file
             </p>
             <input
               ref={inputRef}
-              accept=".pdf,.docx,.xlsx,.png,.jpg,.jpeg"
+              accept=".pdf,.docx,.xlsx,.png,.jpg,.jpeg,.webp"
               className="sr-only"
               multiple
+              disabled={isUploading}
               type="file"
               onChange={(event) => {
-                if (event.target.files) addFiles(event.target.files);
+                if (event.target.files) void addFiles(event.target.files);
                 event.target.value = '';
               }}
             />
@@ -150,26 +185,19 @@ export function AddResourceAttachments() {
 
           {attachments.length > 0 && (
             <ul className="divide-y divide-[#e7eceb] overflow-hidden rounded-[14px] border border-[#e7eceb]">
-              {attachments.map((file) => (
-                <li
-                  key={`${file.name}-${file.size}-${file.lastModified}`}
-                  className="flex items-center gap-3 p-3"
-                >
+              {attachments.map((attachment, index) => (
+                <li key={`${attachment.name}-${index}`} className="flex items-center gap-3 p-3">
                   <FileText aria-hidden="true" className="size-4 shrink-0 text-[#2f7d7e]" />
                   <span className="min-w-0 flex-1 truncate font-manrope text-sm text-[#263238]">
-                    {file.name}
+                    {attachment.name}
                   </span>
                   <span className="shrink-0 font-manrope text-xs text-[#607d8b]">
-                    {formatFileSize(file.size)}
+                    {formatFileSize(attachment.size)}
                   </span>
                   <button
                     type="button"
-                    aria-label={`Remove ${file.name}`}
-                    onClick={() =>
-                      setAttachments((currentAttachments) =>
-                        currentAttachments.filter((attachment) => attachment !== file)
-                      )
-                    }
+                    aria-label={`Remove ${attachment.name}`}
+                    onClick={() => removeAttachment(index)}
                     className="flex size-7 shrink-0 items-center justify-center rounded-[10px] text-[#607d8b] hover:bg-[#edf6f2] hover:text-[#2f7d7e] focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-[#2f7d7e]"
                   >
                     <X aria-hidden="true" size={15} strokeWidth={1.8} />
@@ -183,8 +211,10 @@ export function AddResourceAttachments() {
 
       <ResourceFormNavigation
         currentStep={3}
+        isSubmitting={isUploading}
         onNext={saveAndContinue}
         onSaveChanges={saveAttachments}
+        onSaveDraft={() => toast.success('Attachments saved as draft.')}
       />
     </section>
   );
