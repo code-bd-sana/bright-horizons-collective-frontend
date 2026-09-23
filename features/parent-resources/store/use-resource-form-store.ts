@@ -45,7 +45,11 @@ export interface ResourceFormState {
   // Step 7 / General: Status
   status: ContentStatus;
 
+  // Edit Mode
+  editingResourceId: string | null;
+
   // Actions
+  setEditingResourceId: (id: string | null) => void;
   setBasicInfo: (
     info: Partial<{
       title: string;
@@ -76,6 +80,7 @@ export interface ResourceFormState {
 }
 
 const initialState = {
+  editingResourceId: null as string | null,
   title: '',
   summary: '',
   category: '',
@@ -98,6 +103,8 @@ const initialState = {
 
 export const useResourceFormStore = create<ResourceFormState>((set, get) => ({
   ...initialState,
+
+  setEditingResourceId: (editingResourceId) => set({ editingResourceId }),
 
   setBasicInfo: (info) => set((state) => ({ ...state, ...info })),
 
@@ -132,6 +139,7 @@ export const useResourceFormStore = create<ResourceFormState>((set, get) => ({
 
   populateFromResource: (resource: ParentResource) => {
     set({
+      editingResourceId: resource.id,
       title: resource.title || '',
       summary: resource.summary || '',
       category: resource.category || '',

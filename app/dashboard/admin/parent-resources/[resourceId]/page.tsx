@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 
 import { ResourceDetailsPage } from '@/components/dashboard/admin/parent-resources/resource-details-page';
-import { parentResources } from '@/components/dashboard/admin/parent-resources/parent-resources-data';
+import { readAuthHeaders } from '@/lib/api/bff';
 import { serverApi } from '@/services/api/client/server-client';
 import type { ParentResource } from '@/features/parent-resources';
 
@@ -11,17 +11,16 @@ export default async function ParentResourceDetailsRoute({
   params: Promise<{ resourceId: string }>;
 }) {
   const { resourceId } = await params;
+  const authHeaders = await readAuthHeaders();
 
   let resource: ParentResource | null = null;
   try {
-    const response = await serverApi.get(`/parent-resources/${resourceId}`);
-    resource = (response.data?.data as ParentResource) ?? null;
+    const response = await serverApi.get(`/parent-resources/${resourceId}`, {
+      headers: authHeaders ?? {},
+    });
+    resource = (response.data?.data as ParentResource) ?? (response.data as ParentResource) ?? null;
   } catch {
-    // Proceed to fallback
-  }
-
-  if (!resource) {
-    resource = parentResources.find((item) => item.id === resourceId) ?? null;
+    // Backend returned not found or error
   }
 
   if (!resource) {

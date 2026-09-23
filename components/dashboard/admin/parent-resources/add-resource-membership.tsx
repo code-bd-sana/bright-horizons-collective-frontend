@@ -44,7 +44,11 @@ type MembershipTier = (typeof membershipTiers)[number]['id'];
 
 export function AddResourceMembership() {
   const router = useRouter();
-  const { membershipTier: storeTier, setMembershipTier: setStoreTier } = useResourceFormStore();
+  const {
+    membershipTier: storeTier,
+    setMembershipTier: setStoreTier,
+    editingResourceId,
+  } = useResourceFormStore();
   const { saveDraft, isSavingDraft } = useSaveResourceDraft();
   const [membershipTier, setMembershipTier] = useState<MembershipTier>(storeTier || 'little-steps');
 
@@ -71,7 +75,9 @@ export function AddResourceMembership() {
         Back to Parent Resources
       </Link>
 
-      <h1 className="mt-5 font-nunito text-2xl font-bold leading-9">Create Resource</h1>
+      <h1 className="mt-5 font-nunito text-2xl font-bold leading-9">
+        {editingResourceId ? 'Edit Resource' : 'Create Resource'}
+      </h1>
 
       <div className="mt-5 overflow-x-auto rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_12px_rgba(0,0,0,0.06)]">
         <ResourceFormStepper currentStep={4} />

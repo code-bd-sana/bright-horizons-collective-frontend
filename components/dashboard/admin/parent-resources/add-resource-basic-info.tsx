@@ -68,6 +68,7 @@ export function AddResourceBasicInfo() {
     readingTime,
     coverImageUrl,
     coverImageName,
+    editingResourceId,
     setBasicInfo,
   } = useResourceFormStore();
 
@@ -108,7 +109,9 @@ export function AddResourceBasicInfo() {
         Back to Parent Resources
       </Link>
 
-      <h1 className="mt-5 font-nunito text-2xl font-bold leading-9">Create Resource</h1>
+      <h1 className="mt-5 font-nunito text-2xl font-bold leading-9">
+        {editingResourceId ? 'Edit Resource' : 'Create Resource'}
+      </h1>
 
       <div className="mt-5 overflow-x-auto rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_12px_rgba(0,0,0,0.06)]">
         <ResourceFormStepper currentStep={1} />

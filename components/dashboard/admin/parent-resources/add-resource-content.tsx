@@ -17,7 +17,7 @@ type ContentValues = z.infer<typeof contentSchema>;
 
 export function AddResourceContent() {
   const router = useRouter();
-  const { content, setContent } = useResourceFormStore();
+  const { content, setContent, editingResourceId } = useResourceFormStore();
   const { saveDraft, isSavingDraft } = useSaveResourceDraft();
 
   function saveContent(data: ContentValues) {
@@ -36,7 +36,9 @@ export function AddResourceContent() {
         Back to Parent Resources
       </Link>
 
-      <h1 className="mt-5 font-nunito text-2xl font-bold leading-9">Create Resource</h1>
+      <h1 className="mt-5 font-nunito text-2xl font-bold leading-9">
+        {editingResourceId ? 'Edit Resource' : 'Create Resource'}
+      </h1>
 
       <div className="mt-5 overflow-x-auto rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_12px_rgba(0,0,0,0.06)]">
         <ResourceFormStepper currentStep={2} />

@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 
 import {
   useCreateParentResource,
+  useUpdateParentResource,
   useResourceFormStore,
   useSaveResourceDraft,
 } from '@/features/parent-resources';
@@ -24,12 +25,14 @@ export function AddResourceSeo() {
     seoTitle: storeTitle,
     seoDescription: storeDesc,
     keywords: storeKeywords,
+    editingResourceId,
     setSeo,
     getCreatePayload,
     resetForm,
   } = useResourceFormStore();
   const { saveDraft, isSavingDraft } = useSaveResourceDraft();
   const createResourceMutation = useCreateParentResource();
+  const updateResourceMutation = useUpdateParentResource();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [metaTitle, setMetaTitle] = useState(storeTitle || '');
@@ -74,12 +77,20 @@ export function AddResourceSeo() {
     payload.status = 'PUBLISHED';
 
     try {
-      await createResourceMutation.mutateAsync(payload);
-      toast.success(`“${payload.title}” has been added successfully!`);
+      if (editingResourceId) {
+        await updateResourceMutation.mutateAsync({
+          id: editingResourceId,
+          input: payload,
+        });
+        toast.success(`“${payload.title}” has been updated successfully!`);
+      } else {
+        await createResourceMutation.mutateAsync(payload);
+        toast.success(`“${payload.title}” has been added successfully!`);
+      }
       resetForm();
       router.push('/dashboard/admin/parent-resources');
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Failed to add resource.';
+      const message = err instanceof Error ? err.message : 'Failed to save resource.';
       toast.error(message);
     } finally {
       setIsSubmitting(false);
@@ -96,7 +107,9 @@ export function AddResourceSeo() {
         Back to Parent Resources
       </Link>
 
-      <h1 className="mt-5 font-nunito text-2xl font-bold leading-9">Create Resource</h1>
+      <h1 className="mt-5 font-nunito text-2xl font-bold leading-9">
+        {editingResourceId ? 'Edit Resource' : 'Create Resource'}
+      </h1>
 
       <div className="mt-5 overflow-x-auto rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_12px_rgba(0,0,0,0.06)]">
         <ResourceFormStepper currentStep={5} />
@@ -162,8 +175,10 @@ export function AddResourceSeo() {
         currentStep={5}
         showNext={false}
         showPrimaryAction={true}
-        primaryActionText="Add Resource"
-        isSubmitting={isSubmitting}
+        primaryActionText={editingResourceId ? 'Save Changes' : 'Add Resource'}
+        isSubmitting={
+          isSubmitting || updateResourceMutation.isPending || createResourceMutation.isPending
+        }
         isSavingDraft={isSavingDraft}
         onPrevious={() => {
           saveSeo(false);

@@ -46,7 +46,8 @@ function formatFileSize(bytes: number) {
 export function AddResourceAttachments() {
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
-  const { attachments, addAttachment, removeAttachment } = useResourceFormStore();
+  const { attachments, addAttachment, removeAttachment, editingResourceId } =
+    useResourceFormStore();
   const { saveDraft, isSavingDraft } = useSaveResourceDraft();
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -114,7 +115,9 @@ export function AddResourceAttachments() {
         Back to Parent Resources
       </Link>
 
-      <h1 className="mt-5 font-nunito text-2xl font-bold leading-9">Create Resource</h1>
+      <h1 className="mt-5 font-nunito text-2xl font-bold leading-9">
+        {editingResourceId ? 'Edit Resource' : 'Create Resource'}
+      </h1>
 
       <div className="mt-5 overflow-x-auto rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_12px_rgba(0,0,0,0.06)]">
         <ResourceFormStepper currentStep={3} />

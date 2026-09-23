@@ -33,7 +33,7 @@ export function ParentResourcesPage() {
   const [archiveTarget, setArchiveTarget] = useState<ParentResource | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<ParentResource | null>(null);
 
-  const { populateFromResource } = useResourceFormStore();
+  const { populateFromResource, resetForm } = useResourceFormStore();
   const deleteMutation = useDeleteParentResource();
   const updateMutation = useUpdateParentResource();
 
@@ -164,6 +164,7 @@ export function ParentResourcesPage() {
         </div>
         <Link
           href="/dashboard/admin/parent-resources/add-resource"
+          onClick={() => resetForm()}
           className="flex h-10 w-full items-center justify-center gap-2 rounded-full bg-[#2f7d7e] px-4 py-2.5 font-nunito text-sm font-medium leading-5 tracking-[-0.084px] text-white sm:w-auto"
         >
           <Plus aria-hidden="true" size={16} strokeWidth={2} />

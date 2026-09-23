@@ -2,14 +2,15 @@
 
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { useCreateParentResource } from './parent-resources.mutations';
+import { useCreateParentResource, useUpdateParentResource } from './parent-resources.mutations';
 import { useResourceFormStore } from '../store/use-resource-form-store';
 import type { CreateParentResourceInput } from '../model/parent-resource.types';
 
 export function useSaveResourceDraft() {
   const router = useRouter();
-  const { getCreatePayload, resetForm } = useResourceFormStore();
+  const { getCreatePayload, resetForm, editingResourceId } = useResourceFormStore();
   const createResourceMutation = useCreateParentResource();
+  const updateResourceMutation = useUpdateParentResource();
 
   async function saveDraft(overrideData?: Partial<CreateParentResourceInput>): Promise<boolean> {
     const payload = getCreatePayload();
@@ -30,8 +31,16 @@ export function useSaveResourceDraft() {
     payload.status = 'DRAFT';
 
     try {
-      await createResourceMutation.mutateAsync(payload);
-      toast.success(`“${payload.title}” has been saved as draft in database.`);
+      if (editingResourceId) {
+        await updateResourceMutation.mutateAsync({
+          id: editingResourceId,
+          input: payload,
+        });
+        toast.success(`“${payload.title}” draft updated in database.`);
+      } else {
+        await createResourceMutation.mutateAsync(payload);
+        toast.success(`“${payload.title}” has been saved as draft in database.`);
+      }
       resetForm();
       router.push('/dashboard/admin/parent-resources');
       return true;
@@ -44,6 +53,6 @@ export function useSaveResourceDraft() {
 
   return {
     saveDraft,
-    isSavingDraft: createResourceMutation.isPending,
+    isSavingDraft: createResourceMutation.isPending || updateResourceMutation.isPending,
   };
 }
