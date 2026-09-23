@@ -101,7 +101,7 @@ export function AddResourceAttachments() {
 
   function saveAndContinue() {
     saveAttachments();
-    router.push('/dashboard/admin/parent-resources/add-resource/related');
+    router.push('/dashboard/admin/parent-resources/add-resource/membership');
   }
 
   return (

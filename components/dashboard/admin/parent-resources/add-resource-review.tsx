@@ -84,11 +84,11 @@ export function AddResourceReview() {
       <h1 className="mt-5 font-nunito text-2xl font-bold leading-9">Create Resource</h1>
 
       <div className="mt-5 overflow-x-auto rounded-2xl border border-[#e7eceb] bg-white p-4.25 shadow-[0_4px_12px_rgba(0,0,0,0.06)]">
-        <ResourceFormStepper currentStep={7} />
+        <ResourceFormStepper currentStep={6} />
       </div>
 
       <section className="mt-5 rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:p-5 2xl:p-6.25">
-        <h2 className="font-nunito text-lg font-bold leading-6.75">7. Review &amp; Publish</h2>
+        <h2 className="font-nunito text-lg font-bold leading-6.75">6. Review &amp; Publish</h2>
         <p className="mt-5 font-manrope text-sm leading-5.25 text-[#607d8b]">
           Preview how this resource will appear in the Parent Dashboard. Verify all details before
           publishing.
@@ -197,7 +197,7 @@ export function AddResourceReview() {
       </section>
 
       <ResourceFormNavigation
-        currentStep={7}
+        currentStep={6}
         showNext={false}
         showPrimaryAction={true}
         primaryActionText="Add Resource"

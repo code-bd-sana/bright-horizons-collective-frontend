@@ -1,5 +1,5 @@
-import { AddResourceRelated } from '@/components/dashboard/admin/parent-resources/add-resource-related';
+import { redirect } from 'next/navigation';
 
 export default function AddResourceRelatedPage() {
-  return <AddResourceRelated />;
+  redirect('/dashboard/admin/parent-resources/add-resource/membership');
 }

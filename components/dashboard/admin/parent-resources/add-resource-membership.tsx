@@ -74,11 +74,11 @@ export function AddResourceMembership() {
       <h1 className="mt-5 font-nunito text-2xl font-bold leading-9">Create Resource</h1>
 
       <div className="mt-5 overflow-x-auto rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_12px_rgba(0,0,0,0.06)]">
-        <ResourceFormStepper currentStep={5} />
+        <ResourceFormStepper currentStep={4} />
       </div>
 
       <section className="mt-5 rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:p-5 2xl:p-6.25">
-        <h2 className="font-nunito text-lg font-bold leading-6.75">5. Membership</h2>
+        <h2 className="font-nunito text-lg font-bold leading-6.75">4. Membership</h2>
 
         <div className="mt-5 max-w-215 space-y-4">
           <p className="max-w-179.5 font-manrope text-sm leading-5.25 text-[#607d8b]">
@@ -130,13 +130,13 @@ export function AddResourceMembership() {
       </section>
 
       <ResourceFormNavigation
-        currentStep={5}
+        currentStep={4}
         isSavingDraft={isSavingDraft}
         showPrimaryAction={false}
         onNext={saveAndContinue}
         onPrevious={() => {
           saveMembership(false);
-          router.push('/dashboard/admin/parent-resources/add-resource/related');
+          router.push('/dashboard/admin/parent-resources/add-resource/attachments');
         }}
         onSaveDraft={async () => {
           saveMembership(false);

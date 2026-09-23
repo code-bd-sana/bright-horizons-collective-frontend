@@ -8,14 +8,13 @@ export const resourceFormSteps = [
     label: 'Attachments',
     href: '/dashboard/admin/parent-resources/add-resource/attachments',
   },
-  { number: 4, label: 'Related', href: '/dashboard/admin/parent-resources/add-resource/related' },
   {
-    number: 5,
+    number: 4,
     label: 'Membership',
     href: '/dashboard/admin/parent-resources/add-resource/membership',
   },
-  { number: 6, label: 'SEO', href: '/dashboard/admin/parent-resources/add-resource/seo' },
-  { number: 7, label: 'Review', href: '/dashboard/admin/parent-resources/add-resource/review' },
+  { number: 5, label: 'SEO', href: '/dashboard/admin/parent-resources/add-resource/seo' },
+  { number: 6, label: 'Review', href: '/dashboard/admin/parent-resources/add-resource/review' },
 ] as const;
 
 export type ResourceFormStep = (typeof resourceFormSteps)[number]['number'];

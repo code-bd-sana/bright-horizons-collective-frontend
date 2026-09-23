@@ -56,11 +56,11 @@ export function AddResourceSeo() {
       <h1 className="mt-5 font-nunito text-2xl font-bold leading-9">Create Resource</h1>
 
       <div className="mt-5 overflow-x-auto rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_12px_rgba(0,0,0,0.06)]">
-        <ResourceFormStepper currentStep={6} />
+        <ResourceFormStepper currentStep={5} />
       </div>
 
       <section className="mt-5 rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:p-5 2xl:p-6.25">
-        <h2 className="font-nunito text-lg font-bold leading-6.75">6. SEO</h2>
+        <h2 className="font-nunito text-lg font-bold leading-6.75">5. SEO</h2>
 
         <div className="mt-5 max-w-214.75 space-y-5">
           <p className="font-manrope text-[13px] leading-5 text-[#607d8b]">
@@ -116,7 +116,7 @@ export function AddResourceSeo() {
       </section>
 
       <ResourceFormNavigation
-        currentStep={6}
+        currentStep={5}
         isSavingDraft={isSavingDraft}
         showPrimaryAction={false}
         onNext={saveAndContinue}
