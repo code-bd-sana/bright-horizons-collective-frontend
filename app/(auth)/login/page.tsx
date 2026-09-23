@@ -1,17 +1,21 @@
 'use client';
 
-import { Logo } from '@/components/logo';
-import { loginSchema, type LoginFormValues } from '@/services/api/auth/auth.schemas';
-import { useLoginMutation } from '@/services/api/auth/auth.mutations';
+import { Suspense, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { useSearchParams } from 'next/navigation';
 
-export default function LoginPage() {
+import { Logo } from '@/components/logo';
+import { loginSchema, type LoginFormValues } from '@/services/api/auth/auth.schemas';
+import { useLoginMutation } from '@/services/api/auth/auth.mutations';
+
+function LoginForm() {
+  const searchParams = useSearchParams();
+  const redirectUrl = searchParams.get('redirect');
   const [showPassword, setShowPassword] = useState(false);
-  const { mutate: login, isPending } = useLoginMutation();
+  const { mutate: login, isPending } = useLoginMutation(redirectUrl);
   const {
     register,
     handleSubmit,
@@ -149,7 +153,12 @@ export default function LoginPage() {
 
         <p className="mt-5 font-manrope text-sm leading-5 text-[#515b60] xl:mt-6">
           Do not have an account?{' '}
-          <Link href="/register" className="font-semibold text-[#167e87] hover:underline">
+          <Link
+            href={
+              redirectUrl ? `/register?redirect=${encodeURIComponent(redirectUrl)}` : '/register'
+            }
+            className="font-semibold text-[#167e87] hover:underline"
+          >
             Sign Up
           </Link>
         </p>
@@ -228,5 +237,13 @@ export default function LoginPage() {
         </div>
       </aside>
     </main>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginForm />
+    </Suspense>
   );
 }

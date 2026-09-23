@@ -1,5 +1,12 @@
 'use client';
 
+import { Suspense, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+
 import { Logo } from '@/components/logo';
 import {
   getPasswordRuleErrors,
@@ -7,17 +14,14 @@ import {
   type RegisterFormValues,
 } from '@/services/api/auth/auth.schemas';
 import { useRegisterMutation } from '@/services/api/auth/auth.mutations';
-import { zodResolver } from '@hookform/resolvers/zod';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
 
-export default function RegisterPage() {
+function RegisterForm() {
+  const searchParams = useSearchParams();
+  const redirectUrl = searchParams.get('redirect');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [passwordValue, setPasswordValue] = useState('');
-  const { mutate: createAccount, isPending } = useRegisterMutation();
+  const { mutate: createAccount, isPending } = useRegisterMutation(redirectUrl);
   const {
     register,
     handleSubmit,
@@ -211,7 +215,10 @@ export default function RegisterPage() {
 
         <p className="mt-5 font-manrope text-sm leading-5 text-[#515b60] xl:mt-6">
           Already have an account?{' '}
-          <Link href="/login" className="font-semibold text-[#167e87] hover:underline">
+          <Link
+            href={redirectUrl ? `/login?redirect=${encodeURIComponent(redirectUrl)}` : '/login'}
+            className="font-semibold text-[#167e87] hover:underline"
+          >
             Login
           </Link>
         </p>
@@ -290,5 +297,13 @@ export default function RegisterPage() {
         </div>
       </aside>
     </main>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={null}>
+      <RegisterForm />
+    </Suspense>
   );
 }

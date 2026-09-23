@@ -1,42 +1,81 @@
 'use client';
 
+import { useState } from 'react';
 import { ArrowRight, Bookmark, Check, Loader2, ShieldCheck, TrendingUp } from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import {
   useToggleActivityComplete,
   useToggleActivityFavorite,
 } from '@/features/activities/hooks/activities.mutations';
 import type { Activity } from '@/features/activities/model/activity.types';
+import { useSession } from '@/services/api/auth/auth.queries';
 
 export function ActivitySidePanels({ activity }: { activity: Activity }) {
-  const isCompleted = Boolean(activity.isCompleted);
-  const isFavorited = Boolean(activity.isFavorited);
+  const { data: session } = useSession();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const [favoritedOverride, setFavoritedOverride] = useState<boolean | null>(null);
+  const [completedOverride, setCompletedOverride] = useState<boolean | null>(null);
+
+  const isCompleted = completedOverride ?? Boolean(activity.isCompleted);
+  const isFavorited = favoritedOverride ?? Boolean(activity.isFavorited);
 
   const toggleFavoriteMutation = useToggleActivityFavorite();
   const toggleCompleteMutation = useToggleActivityComplete();
 
+  const getRedirectUrl = () => {
+    if (typeof window !== 'undefined') {
+      return `${window.location.pathname}${window.location.search}`;
+    }
+    return pathname;
+  };
+
   const handleToggleFavorite = () => {
+    if (!session?.user) {
+      toast.info('Please log in to save this activity.');
+      router.push(`/login?redirect=${encodeURIComponent(getRedirectUrl())}`);
+      return;
+    }
+
+    const nextSaved = !isFavorited;
+    setFavoritedOverride(nextSaved);
+
     toggleFavoriteMutation.mutate(activity.id, {
       onSuccess: (data) => {
         if (data?.status === 'favorited') {
+          setFavoritedOverride(true);
           toast.success('Activity saved for later');
         } else {
+          setFavoritedOverride(false);
           toast.success('Removed from saved activities');
         }
       },
       onError: () => {
+        setFavoritedOverride(null);
         toast.error('Failed to update favorite status');
       },
     });
   };
 
   const handleComplete = () => {
+    if (!session?.user) {
+      toast.info('Please log in to complete this activity.');
+      router.push(`/login?redirect=${encodeURIComponent(getRedirectUrl())}`);
+      return;
+    }
+
     if (isCompleted) return;
+
+    setCompletedOverride(true);
     toggleCompleteMutation.mutate(activity.id, {
       onSuccess: () => {
+        setCompletedOverride(true);
         toast.success('Activity marked as completed');
       },
       onError: () => {
+        setCompletedOverride(null);
         toast.error('Failed to complete activity');
       },
     });

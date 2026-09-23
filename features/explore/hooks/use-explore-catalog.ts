@@ -178,6 +178,7 @@ export function useExploreCatalog(tab: ExploreTab, filters: ExploreFilters) {
       if (tab === 'activities') {
         queryClient.invalidateQueries({ queryKey: ['activities', 'favorites'] });
         queryClient.invalidateQueries({ queryKey: ['favorites'] });
+        queryClient.invalidateQueries({ queryKey: ['activities'] });
       } else if (tab === 'therapy-toys') {
         queryClient.invalidateQueries({ queryKey: ['therapy-toys', 'favorites'] });
         queryClient.invalidateQueries({ queryKey: ['favorites'] });

@@ -10,6 +10,7 @@ import {
   uploadActivityImage,
 } from '../api/activities.api';
 import { activityKeys } from '../activity.keys';
+import type { Activity } from '../model/activity.types';
 
 export function useCreateActivity() {
   const queryClient = useQueryClient();
@@ -60,11 +61,19 @@ export function useToggleActivityFavorite() {
 
   return useMutation<{ status: string; type: string }, Error, string>({
     mutationFn: (id: string) => toggleActivityFavorite(id),
-    onSuccess: (_data, id) => {
-      void queryClient.invalidateQueries({ queryKey: activityKeys.detail(id) });
+    onSuccess: (data, id) => {
+      const isFavorited = data.status === 'favorited';
+      queryClient.setQueryData(activityKeys.detail(id), (old: Activity | undefined) => {
+        if (!old) return old;
+        return {
+          ...old,
+          isFavorited,
+        };
+      });
+      void queryClient.invalidateQueries({ queryKey: activityKeys.all });
       void queryClient.invalidateQueries({ queryKey: ['activities', 'favorites'] });
       void queryClient.invalidateQueries({ queryKey: ['favorites'] });
-      void queryClient.invalidateQueries({ queryKey: activityKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: ['activities', 'public', 'dashboard'] });
     },
   });
 }
@@ -74,8 +83,18 @@ export function useToggleActivityComplete() {
 
   return useMutation<{ isCompleted: boolean; status: string }, Error, string>({
     mutationFn: (id: string) => toggleActivityComplete(id),
-    onSuccess: (_data, id) => {
-      void queryClient.invalidateQueries({ queryKey: activityKeys.detail(id) });
+    onSuccess: (data, id) => {
+      queryClient.setQueryData(activityKeys.detail(id), (old: Activity | undefined) => {
+        if (!old) return old;
+        return {
+          ...old,
+          isCompleted: data.isCompleted,
+        };
+      });
+      void queryClient.invalidateQueries({ queryKey: activityKeys.all });
+      void queryClient.invalidateQueries({ queryKey: ['activities', 'public', 'dashboard'] });
+      void queryClient.invalidateQueries({ queryKey: ['activities', 'completed'] });
+      void queryClient.invalidateQueries({ queryKey: ['child-progress'] });
     },
   });
 }

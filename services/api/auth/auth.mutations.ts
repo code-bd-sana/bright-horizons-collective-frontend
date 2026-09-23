@@ -12,10 +12,11 @@ import {
   resetPassword,
   verifyPasswordResetOtp,
 } from './auth.api';
+import { activityKeys } from '@/features/activities/activity.keys';
 import { authKeys } from './auth.keys';
 import type { VerifyOtpResult } from './auth.types';
 
-export function useLoginMutation() {
+export function useLoginMutation(redirectUrl?: string | null) {
   const queryClient = useQueryClient();
   const router = useRouter();
 
@@ -23,8 +24,14 @@ export function useLoginMutation() {
     mutationFn: login,
     onSuccess: (session) => {
       queryClient.setQueryData(authKeys.session(), session);
+      void queryClient.invalidateQueries({ queryKey: activityKeys.all });
+      void queryClient.invalidateQueries({ queryKey: ['favorites'] });
       toast.success('Welcome back!');
-      router.replace(getRoleConfig(session.role).homePath);
+      const target =
+        redirectUrl && redirectUrl.startsWith('/') && !redirectUrl.startsWith('//')
+          ? redirectUrl
+          : getRoleConfig(session.role).homePath;
+      router.replace(target);
       router.refresh();
     },
     onError: (error) => {
@@ -35,7 +42,7 @@ export function useLoginMutation() {
   });
 }
 
-export function useRegisterMutation() {
+export function useRegisterMutation(redirectUrl?: string | null) {
   const queryClient = useQueryClient();
   const router = useRouter();
 
@@ -43,8 +50,14 @@ export function useRegisterMutation() {
     mutationFn: registerAccount,
     onSuccess: (session) => {
       queryClient.setQueryData(authKeys.session(), session);
+      void queryClient.invalidateQueries({ queryKey: activityKeys.all });
+      void queryClient.invalidateQueries({ queryKey: ['favorites'] });
       toast.success('Your account has been created successfully!');
-      router.replace('/dashboard');
+      const target =
+        redirectUrl && redirectUrl.startsWith('/') && !redirectUrl.startsWith('//')
+          ? redirectUrl
+          : '/dashboard';
+      router.replace(target);
       router.refresh();
     },
     onError: (error) => {
