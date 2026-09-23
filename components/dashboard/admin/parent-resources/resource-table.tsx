@@ -1,44 +1,64 @@
+'use client';
+
 import {
   Archive,
   ChevronLeft,
   ChevronRight,
-  Copy,
-  Download,
-  Ellipsis,
   Eye,
   FileText,
+  Loader2,
+  Paperclip,
   Pencil,
+  RotateCcw,
   Trash2,
 } from 'lucide-react';
 import type { ParentResource } from './parent-resources-types';
+import { BACKEND_TO_UI_RESOURCE_TYPE } from '@/features/parent-resources';
 
-type ResourceTableProps = {
+export type ResourceTableProps = {
   resources: ParentResource[];
+  isLoading?: boolean;
+  meta?: { total: number; page: number; limit: number; totalPages: number };
+  currentPage?: number;
+  onPageChange?: (page: number) => void;
   onAction: (action: string, resource: ParentResource) => void;
 };
 
-const actions = [
-  { label: 'Preview', icon: Eye },
-  { label: 'Edit', icon: Pencil },
-  { label: 'Duplicate', icon: Copy },
-  { label: 'Archive', icon: Archive },
-  { label: 'Delete', icon: Trash2 },
-] as const;
-
-function StatusBadge({ status }: { status: ParentResource['status'] }) {
-  return (
-    <span
-      className={`inline-flex rounded-full px-2.5 py-0.5 font-manrope text-xs leading-4 ${status === 'Published' ? 'bg-[#d5e5e5] text-[#174a4d]' : 'bg-[#fce9e3] text-[#8b4b3e]'}`}
-    >
-      {status}
-    </span>
-  );
+function getMembershipLabel(accessLevel: string[] = []): string {
+  if (accessLevel.includes('LITTLE_STEPS')) return 'Little Steps';
+  if (accessLevel.includes('GROW_TOGETHER')) return 'Grow Together';
+  if (accessLevel.includes('PERSONALIZED_PATHWAYS')) return 'Personalized Pathways';
+  return 'Little Steps';
 }
 
-function MembershipBadge({ membership }: { membership: string }) {
+function getMembershipBadgeClass(membership: string): string {
+  if (membership === 'Personalized Pathways') {
+    return 'bg-[#fce9e2] text-[#a05a3a]';
+  }
+  if (membership === 'Grow Together') {
+    return 'bg-[#dcefe7] text-[#2f7d7e]';
+  }
+  return 'bg-[#edf6f2] text-[#2f7d7e]';
+}
+
+function StatusBadge({ status }: { status: string }) {
+  if (status === 'PUBLISHED') {
+    return (
+      <span className="inline-flex rounded-full bg-[#d5e5e5] px-2.5 py-0.5 font-manrope text-xs font-semibold leading-4 text-[#174a4d]">
+        Published
+      </span>
+    );
+  }
+  if (status === 'DRAFT') {
+    return (
+      <span className="inline-flex rounded-full bg-[#fff3e0] px-2.5 py-0.5 font-manrope text-xs font-semibold leading-4 text-[#b8860b]">
+        Draft
+      </span>
+    );
+  }
   return (
-    <span className="inline-flex rounded-full bg-[#edf6f2] px-2.5 py-0.5 font-manrope text-xs font-semibold leading-4 text-[#2f7d7e] whitespace-nowrap">
-      {membership}
+    <span className="inline-flex rounded-full bg-[#f0f3f4] px-2.5 py-0.5 font-manrope text-xs font-semibold leading-4 text-[#607d8b]">
+      Archived
     </span>
   );
 }
@@ -50,225 +70,331 @@ function ResourceActions({
   resource: ParentResource;
   onAction: ResourceTableProps['onAction'];
 }) {
+  const isArchived = resource.status === 'ARCHIVED';
+
   return (
-    <div className="grid w-full grid-cols-5 gap-1 2xl:flex 2xl:w-auto">
-      {actions.map(({ label, icon: Icon }) => (
-        <button
-          key={label}
-          type="button"
-          aria-label={`${label} ${resource.title}`}
-          onClick={() => onAction(label, resource)}
-          className="flex h-9 min-w-0 items-center justify-center rounded-[10px] border border-[#e7eceb] text-[#607d8b] transition-colors hover:bg-[#e9f1ee] hover:text-[#2f7d7e] 2xl:size-7 2xl:border-0"
-        >
-          <Icon aria-hidden="true" size={14} strokeWidth={1.6} />
-        </button>
-      ))}
+    <div className="flex items-center gap-1">
+      <button
+        type="button"
+        title="Preview resource"
+        aria-label={`Preview ${resource.title}`}
+        onClick={() => onAction('Preview', resource)}
+        className="flex size-7 items-center justify-center rounded-[10px] text-[#607d8b] transition-colors hover:bg-[#e9f1ee] hover:text-[#2f7d7e]"
+      >
+        <Eye aria-hidden="true" size={14} strokeWidth={1.6} />
+      </button>
+
+      <button
+        type="button"
+        title="Edit resource"
+        aria-label={`Edit ${resource.title}`}
+        onClick={() => onAction('Edit', resource)}
+        className="flex size-7 items-center justify-center rounded-[10px] text-[#607d8b] transition-colors hover:bg-[#e9f1ee] hover:text-[#2f7d7e]"
+      >
+        <Pencil aria-hidden="true" size={14} strokeWidth={1.6} />
+      </button>
+
+      <button
+        type="button"
+        title={isArchived ? 'Restore resource' : 'Archive resource'}
+        aria-label={`${isArchived ? 'Restore' : 'Archive'} ${resource.title}`}
+        onClick={() => onAction(isArchived ? 'Restore' : 'Archive', resource)}
+        className={`flex size-7 items-center justify-center rounded-[10px] transition-colors ${
+          isArchived
+            ? 'text-[#2f7d7e] hover:bg-[#edf6f2]'
+            : 'text-[#607d8b] hover:bg-[#fff8e1] hover:text-[#b8860b]'
+        }`}
+      >
+        {isArchived ? (
+          <RotateCcw aria-hidden="true" size={14} strokeWidth={1.6} />
+        ) : (
+          <Archive aria-hidden="true" size={14} strokeWidth={1.6} />
+        )}
+      </button>
+
+      <button
+        type="button"
+        title="Delete resource"
+        aria-label={`Delete ${resource.title}`}
+        onClick={() => onAction('Delete', resource)}
+        className="flex size-7 items-center justify-center rounded-[10px] text-[#607d8b] transition-colors hover:bg-[#fce9e2] hover:text-[#d32f2f]"
+      >
+        <Trash2 aria-hidden="true" size={14} strokeWidth={1.6} />
+      </button>
     </div>
   );
 }
 
-function ResourceCheckbox({ label }: { label: string }) {
-  return (
-    <input
-      aria-label={label}
-      type="checkbox"
-      className="size-4 shrink-0 appearance-none rounded-lg border border-[#a8b6bd] bg-white checked:border-[#2f7d7e] checked:bg-[#2f7d7e] focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-[#2f7d7e]"
-    />
-  );
+function formatDate(dateStr?: string | null) {
+  if (!dateStr) return '—';
+  try {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  } catch {
+    return dateStr;
+  }
 }
 
-export function ResourceTable({ resources, onAction }: ResourceTableProps) {
+export function ResourceTable({
+  resources,
+  isLoading = false,
+  meta,
+  currentPage = 1,
+  onPageChange,
+  onAction,
+}: ResourceTableProps) {
+  const totalPages = meta?.totalPages ?? 1;
+
   return (
     <div className="flex min-w-0 flex-col gap-6">
       <section className="grid gap-3 xl:grid-cols-2 2xl:block">
+        {/* Mobile / Tablet cards */}
         <div className="contents 2xl:hidden">
-          {resources.map((resource) => (
-            <article
-              key={resource.id}
-              className="min-w-0 space-y-4 rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_12px_rgba(0,0,0,0.06)]"
-            >
-              <div className="flex gap-3">
-                <FileText
-                  aria-hidden="true"
-                  className="mt-0.5 size-4 shrink-0 text-[#2f7d7e]"
-                  strokeWidth={1.7}
-                />
-                <div className="min-w-0">
-                  <h2 className="font-nunito text-base font-medium leading-6 text-[#263238]">
-                    {resource.title}
-                  </h2>
-                  <p className="font-manrope text-xs leading-4.5 text-[#6c7787]">
-                    {resource.author} · {resource.readTime}
-                  </p>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-3 font-manrope text-xs leading-4.5 text-[#607d8b]">
-                <p>
-                  Category <span className="mt-1 block text-[#263238]">{resource.category}</span>
-                </p>
-                <p>
-                  Type <span className="mt-1 block text-[#263238]">{resource.type}</span>
-                </p>
-                <p>
-                  Downloads <span className="mt-1 block text-[#263238]">{resource.downloads}</span>
-                </p>
-                <p>
-                  Updated <span className="mt-1 block text-[#263238]">{resource.updatedAt}</span>
-                </p>
-              </div>
-              <div className="flex flex-col gap-3 border-t border-[#e7eceb] pt-3">
-                <div className="flex flex-wrap items-center gap-2">
-                  <StatusBadge status={resource.status} />
-                  <MembershipBadge membership={resource.membership} />
-                </div>
-                <ResourceActions resource={resource} onAction={onAction} />
-              </div>
-            </article>
-          ))}
-          {resources.length === 0 ? (
-            <p className="rounded-2xl border border-[#e7eceb] bg-white p-8 text-center font-manrope text-sm text-[#607d8b] xl:col-span-2">
-              No resources match these filters.
-            </p>
-          ) : null}
-        </div>
-        <div className="hidden overflow-x-auto rounded-2xl border border-[#e7eceb] bg-white shadow-[0_4px_12px_rgba(0,0,0,0.06)] 2xl:block">
-          <div role="table" className="min-w-379.25">
-            <div
-              role="row"
-              className="grid h-12.25 grid-cols-[280px_107px_77px_152px_64px_77px_77px_156px] justify-between border-b border-[#e7eceb] bg-[#f4f8f6] px-4 font-manrope text-xs font-semibold leading-4.5 text-[#607d8b]"
-            >
-              <div role="columnheader" className="flex items-center gap-8">
-                <ResourceCheckbox label="Select all resources" />
-                <span>Resource</span>
-              </div>
-              <div role="columnheader" className="flex items-center">
-                Category
-              </div>
-              <div role="columnheader" className="flex items-center">
-                Type
-              </div>
-              <div role="columnheader" className="flex items-center">
-                Membership
-              </div>
-              <div role="columnheader" className="flex items-center">
-                Downloads
-              </div>
-              <div role="columnheader" className="flex items-center">
-                Status
-              </div>
-              <div role="columnheader" className="flex items-center">
-                Last Updated
-              </div>
-              <div role="columnheader" className="flex items-center">
-                Actions
-              </div>
+          {isLoading ? (
+            <div className="flex items-center justify-center rounded-2xl border border-[#e7eceb] bg-white p-12 text-[#607d8b] xl:col-span-2">
+              <Loader2 className="size-6 animate-spin text-[#2f7d7e]" />
+              <span className="ml-2 font-manrope text-sm">Loading resources...</span>
             </div>
-            <div role="rowgroup">
-              {resources.map((resource, index) => (
-                <div
+          ) : resources.length === 0 ? (
+            <p className="rounded-2xl border border-[#e7eceb] bg-white p-8 text-center font-manrope text-sm text-[#607d8b] xl:col-span-2">
+              No resources found matching the selected filters.
+            </p>
+          ) : (
+            resources.map((resource) => {
+              const membership = getMembershipLabel(resource.accessLevel);
+              const uiType =
+                BACKEND_TO_UI_RESOURCE_TYPE[resource.resourceType] || resource.resourceType;
+              const attachmentsCount = resource.attachments?.length ?? 0;
+
+              return (
+                <article
                   key={resource.id}
-                  role="row"
-                  className={`grid grid-cols-[280px_107px_77px_152px_64px_77px_77px_156px] justify-between border-b border-[#e7eceb] px-4 font-manrope text-sm leading-5.5 text-[#263238] last:border-b-0 ${index === 0 ? 'h-27.5' : 'h-22.25'}`}
+                  className="min-w-0 space-y-4 rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_12px_rgba(0,0,0,0.06)]"
                 >
-                  <div role="cell" className="flex items-center gap-8">
-                    <ResourceCheckbox label={`Select ${resource.title}`} />
-                    <div className="w-45">
-                      <p className="font-manrope text-sm font-semibold leading-5.25 text-[#263238]">
+                  <div className="flex gap-3">
+                    <FileText
+                      aria-hidden="true"
+                      className="mt-0.5 size-4 shrink-0 text-[#2f7d7e]"
+                      strokeWidth={1.7}
+                    />
+                    <div className="min-w-0">
+                      <h2 className="font-nunito text-base font-bold leading-6 text-[#263238]">
                         {resource.title}
-                      </p>
-                      <p className="font-manrope text-xs leading-4.5 whitespace-nowrap text-[#607d8b]">
-                        {resource.author} · {resource.readTime}
+                      </h2>
+                      <p className="font-manrope text-xs leading-4.5 text-[#6c7787]">
+                        {resource.author || 'Jaicy'} · {resource.estimatedReadTime || '5 min read'}
                       </p>
                     </div>
                   </div>
-                  <div
-                    role="cell"
-                    className="flex items-center text-sm leading-5 whitespace-normal"
-                  >
-                    {resource.category}
+                  <div className="grid grid-cols-2 gap-3 font-manrope text-xs leading-4.5 text-[#607d8b]">
+                    <p>
+                      Category{' '}
+                      <span className="mt-1 block font-medium text-[#263238]">
+                        {resource.category || 'General'}
+                      </span>
+                    </p>
+                    <p>
+                      Type <span className="mt-1 block font-medium text-[#263238]">{uiType}</span>
+                    </p>
+                    <p>
+                      Attachments{' '}
+                      <span className="mt-1 block font-medium text-[#263238]">
+                        {attachmentsCount > 0
+                          ? `${attachmentsCount} ${attachmentsCount === 1 ? 'file' : 'files'}`
+                          : '—'}
+                      </span>
+                    </p>
+                    <p>
+                      Updated{' '}
+                      <span className="mt-1 block font-medium text-[#263238]">
+                        {formatDate(resource.updatedAt)}
+                      </span>
+                    </p>
                   </div>
-                  <div role="cell" className="flex items-center gap-1.5 whitespace-nowrap">
-                    <FileText
-                      aria-hidden="true"
-                      size={14}
-                      strokeWidth={1.6}
-                      className="text-[#607d8b]"
-                    />
-                    {resource.type}
+                  <div className="flex flex-col gap-3 border-t border-[#e7eceb] pt-3">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <StatusBadge status={resource.status} />
+                      <span
+                        className={`inline-flex rounded-full px-2.5 py-0.5 font-manrope text-xs font-semibold leading-4 ${getMembershipBadgeClass(membership)}`}
+                      >
+                        {membership}
+                      </span>
+                    </div>
+                    <div className="flex justify-end pt-1">
+                      <ResourceActions resource={resource} onAction={onAction} />
+                    </div>
                   </div>
-                  <div role="cell" className="flex items-center">
-                    <MembershipBadge membership={resource.membership} />
-                  </div>
-                  <div role="cell" className="flex items-center gap-1 text-sm">
-                    <Download
-                      aria-hidden="true"
-                      size={12}
-                      strokeWidth={1.7}
-                      className="text-[#607d8b]"
-                    />
-                    {resource.downloads}
-                  </div>
-                  <div role="cell" className="flex items-center">
-                    <StatusBadge status={resource.status} />
-                  </div>
-                  <div
-                    role="cell"
-                    className="flex items-center whitespace-nowrap text-xs leading-4.5"
-                  >
-                    {resource.updatedAt}
-                  </div>
-                  <div role="cell" className="flex items-center">
-                    <ResourceActions resource={resource} onAction={onAction} />
-                  </div>
+                </article>
+              );
+            })
+          )}
+        </div>
+
+        {/* Desktop Table */}
+        <div className="hidden overflow-x-auto rounded-2xl border border-[#e7eceb] bg-white shadow-[0_4px_12px_rgba(0,0,0,0.06)] 2xl:block">
+          <div role="table" className="min-w-350">
+            <div
+              role="row"
+              className="grid h-12.25 grid-cols-[minmax(240px,1.6fr)_140px_100px_150px_110px_95px_110px_130px] items-center border-b border-[#e7eceb] bg-[#f4f8f6] px-5 font-manrope text-xs font-semibold leading-4.5 text-[#607d8b]"
+            >
+              <div role="columnheader">Resource</div>
+              <div role="columnheader">Category</div>
+              <div role="columnheader">Type</div>
+              <div role="columnheader">Membership</div>
+              <div role="columnheader">Attachments</div>
+              <div role="columnheader">Status</div>
+              <div role="columnheader">Last Updated</div>
+              <div role="columnheader" className="text-right">
+                Actions
+              </div>
+            </div>
+
+            <div role="rowgroup">
+              {isLoading ? (
+                <div className="flex h-48 items-center justify-center text-[#607d8b]">
+                  <Loader2 className="size-6 animate-spin text-[#2f7d7e]" />
+                  <span className="ml-2 font-manrope text-sm">Loading resources...</span>
                 </div>
-              ))}
+              ) : resources.length === 0 ? (
+                <div className="flex h-36 items-center justify-center p-8 text-center font-manrope text-sm text-[#607d8b]">
+                  No resources found matching the selected filters.
+                </div>
+              ) : (
+                resources.map((resource) => {
+                  const membership = getMembershipLabel(resource.accessLevel);
+                  const uiType =
+                    BACKEND_TO_UI_RESOURCE_TYPE[resource.resourceType] || resource.resourceType;
+                  const attachmentsCount = resource.attachments?.length ?? 0;
+
+                  return (
+                    <div
+                      key={resource.id}
+                      role="row"
+                      className="grid min-h-18 grid-cols-[minmax(240px,1.6fr)_140px_100px_150px_110px_95px_110px_130px] items-center border-b border-[#e7eceb] px-5 py-3 font-manrope text-sm leading-5.5 text-[#263238] transition-colors hover:bg-[#fafcfb] last:border-b-0"
+                    >
+                      {/* Resource title + author */}
+                      <div role="cell" className="flex items-center gap-3 pr-3">
+                        <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[#edf6f2] text-[#2f7d7e]">
+                          <FileText size={18} strokeWidth={1.8} />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="truncate font-manrope text-sm font-semibold leading-5 text-[#263238]">
+                            {resource.title}
+                          </p>
+                          <p className="truncate font-manrope text-xs leading-4.5 text-[#607d8b]">
+                            {resource.author || 'Jaicy'} ·{' '}
+                            {resource.estimatedReadTime || '5 min read'}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Category */}
+                      <div role="cell" className="truncate pr-3 text-sm text-[#263238]">
+                        {resource.category || 'General'}
+                      </div>
+
+                      {/* Type */}
+                      <div role="cell" className="whitespace-nowrap text-sm text-[#263238]">
+                        {uiType}
+                      </div>
+
+                      {/* Membership */}
+                      <div role="cell">
+                        <span
+                          className={`inline-flex rounded-full px-2.5 py-0.5 font-manrope text-xs font-semibold leading-4 whitespace-nowrap ${getMembershipBadgeClass(membership)}`}
+                        >
+                          {membership}
+                        </span>
+                      </div>
+
+                      {/* Attachments */}
+                      <div role="cell" className="flex items-center gap-1.5 text-sm text-[#607d8b]">
+                        {attachmentsCount > 0 ? (
+                          <>
+                            <Paperclip size={13} className="text-[#2f7d7e]" />
+                            <span className="font-medium text-[#263238]">
+                              {attachmentsCount} {attachmentsCount === 1 ? 'file' : 'files'}
+                            </span>
+                          </>
+                        ) : (
+                          <span className="text-[#a0aab0]">—</span>
+                        )}
+                      </div>
+
+                      {/* Status */}
+                      <div role="cell">
+                        <StatusBadge status={resource.status} />
+                      </div>
+
+                      {/* Last Updated */}
+                      <div role="cell" className="whitespace-nowrap text-xs text-[#607d8b]">
+                        {formatDate(resource.updatedAt)}
+                      </div>
+
+                      {/* Actions */}
+                      <div role="cell" className="flex justify-end">
+                        <ResourceActions resource={resource} onAction={onAction} />
+                      </div>
+                    </div>
+                  );
+                })
+              )}
             </div>
           </div>
         </div>
       </section>
-      <nav
-        aria-label="Resource table pagination"
-        className="flex w-full max-w-full justify-start overflow-x-auto pb-1 sm:justify-end 2xl:justify-end 2xl:overflow-visible 2xl:pb-0"
-      >
-        <div className="flex shrink-0 items-center gap-1">
-          <button
-            type="button"
-            aria-label="Previous page"
-            className="flex size-10 items-center justify-center rounded-lg text-[#0f172a] transition-colors hover:bg-[#e9f1ee]"
-          >
-            <ChevronLeft size={16} strokeWidth={1.7} />
-          </button>
-          {[1, 2, 3].map((page) => (
+
+      {/* Pagination */}
+      {totalPages > 1 && onPageChange && (
+        <nav
+          aria-label="Resource table pagination"
+          className="flex w-full items-center justify-between border-t border-[#e7eceb] pt-4"
+        >
+          <p className="font-manrope text-xs text-[#607d8b]">
+            Showing page <span className="font-semibold text-[#263238]">{currentPage}</span> of{' '}
+            <span className="font-semibold text-[#263238]">{totalPages}</span>
+            {meta?.total ? ` (${meta.total} total resources)` : ''}
+          </p>
+
+          <div className="flex items-center gap-1">
             <button
-              key={page}
               type="button"
-              aria-current={page === 1 ? 'page' : undefined}
-              className={`size-10 rounded-lg font-nunito text-sm font-medium ${page === 1 ? 'bg-[#2f7d7e] text-white' : 'text-[#0f172a] hover:bg-[#e9f1ee]'}`}
+              disabled={currentPage <= 1}
+              onClick={() => onPageChange(currentPage - 1)}
+              aria-label="Previous page"
+              className="flex size-9 items-center justify-center rounded-lg border border-[#e7eceb] text-[#263238] transition-colors hover:bg-[#e9f1ee] disabled:cursor-not-allowed disabled:opacity-40"
             >
-              {page}
+              <ChevronLeft size={16} strokeWidth={1.8} />
             </button>
-          ))}
-          <span
-            className="flex size-10 items-center justify-center text-[#0f172a]"
-            aria-hidden="true"
-          >
-            <Ellipsis size={16} strokeWidth={1.7} />
-          </span>
-          <button
-            type="button"
-            className="size-10 rounded-lg font-nunito text-sm font-medium text-[#0f172a] hover:bg-[#e9f1ee]"
-          >
-            10
-          </button>
-          <button
-            type="button"
-            aria-label="Next page"
-            className="flex size-10 items-center justify-center rounded-lg text-[#0f172a] transition-colors hover:bg-[#e9f1ee]"
-          >
-            <ChevronRight size={16} strokeWidth={1.7} />
-          </button>
-        </div>
-      </nav>
+
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((pg) => (
+              <button
+                key={pg}
+                type="button"
+                aria-current={pg === currentPage ? 'page' : undefined}
+                onClick={() => onPageChange(pg)}
+                className={`size-9 rounded-lg font-nunito text-xs font-semibold transition-colors ${
+                  pg === currentPage
+                    ? 'bg-[#2f7d7e] text-white'
+                    : 'border border-[#e7eceb] text-[#263238] hover:bg-[#e9f1ee]'
+                }`}
+              >
+                {pg}
+              </button>
+            ))}
+
+            <button
+              type="button"
+              disabled={currentPage >= totalPages}
+              onClick={() => onPageChange(currentPage + 1)}
+              aria-label="Next page"
+              className="flex size-9 items-center justify-center rounded-lg border border-[#e7eceb] text-[#263238] transition-colors hover:bg-[#e9f1ee] disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              <ChevronRight size={16} strokeWidth={1.8} />
+            </button>
+          </div>
+        </nav>
+      )}
     </div>
   );
 }

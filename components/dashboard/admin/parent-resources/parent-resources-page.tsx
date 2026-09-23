@@ -5,13 +5,20 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
+
 import { ArchiveResourceModal } from './archive-resource-modal';
 import { DeleteResourceModal } from './delete-resource-modal';
-import { parentResources } from './parent-resources-data';
-import { ResourceFilters } from './resource-filters';
+import { ResourceFilters, type FilterName } from './resource-filters';
 import { ResourceSummary } from './resource-summary';
 import { ResourceTable } from './resource-table';
-import type { ParentResource } from './parent-resources-types';
+import type { ParentResource, UiResourceType } from './parent-resources-types';
+import {
+  useAdminParentResources,
+  useDeleteParentResource,
+  useUpdateParentResource,
+  useResourceFormStore,
+  UI_TO_BACKEND_RESOURCE_TYPE,
+} from '@/features/parent-resources';
 
 export function ParentResourcesPage() {
   const router = useRouter();
@@ -22,27 +29,67 @@ export function ParentResourcesPage() {
     membership: 'all',
     status: 'all',
   });
+  const [page, setPage] = useState(1);
   const [archiveTarget, setArchiveTarget] = useState<ParentResource | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<ParentResource | null>(null);
 
-  const filteredResources = useMemo(() => {
-    const query = search.trim().toLowerCase();
-    return parentResources.filter(
-      (resource) =>
-        (filters.category === 'all' || resource.category === filters.category) &&
-        (filters.type === 'all' || resource.type === filters.type) &&
-        (filters.membership === 'all' || resource.membership === filters.membership) &&
-        (filters.status === 'all' || resource.status === filters.status) &&
-        (!query ||
-          `${resource.title} ${resource.author} ${resource.category}`.toLowerCase().includes(query))
-    );
-  }, [filters, search]);
+  const { populateFromResource } = useResourceFormStore();
+  const deleteMutation = useDeleteParentResource();
+  const updateMutation = useUpdateParentResource();
 
-  const updateFilter = (filter: keyof typeof filters, value: string) =>
+  const queryParams = useMemo(() => {
+    const params: Record<string, unknown> = {
+      page,
+      limit: 10,
+    };
+    if (search.trim()) params.search = search.trim();
+    if (filters.category !== 'all') params.category = filters.category;
+    if (filters.type !== 'all') {
+      params.type =
+        UI_TO_BACKEND_RESOURCE_TYPE[filters.type as UiResourceType] ?? filters.type.toUpperCase();
+    }
+    if (filters.membership !== 'all') {
+      const tierMap: Record<string, string> = {
+        'Little Steps': 'LITTLE_STEPS',
+        'Grow Together': 'GROW_TOGETHER',
+        'Personalized Pathways': 'PERSONALIZED_PATHWAYS',
+      };
+      params.accessLevel = tierMap[filters.membership] ?? filters.membership;
+    }
+    if (filters.status !== 'all') {
+      params.status = filters.status.toUpperCase();
+    }
+    return params;
+  }, [page, search, filters]);
+
+  const { data: resourcesResponse, isLoading } = useAdminParentResources(queryParams);
+
+  const resources = useMemo(() => resourcesResponse?.data ?? [], [resourcesResponse?.data]);
+  const meta = resourcesResponse?.meta;
+
+  const availableCategories = useMemo(() => {
+    return Array.from(new Set(resources.map((r) => r.category).filter(Boolean)));
+  }, [resources]);
+
+  const updateFilter = (filter: FilterName, value: string) => {
     setFilters((current) => ({ ...current, [filter]: value }));
-  const handleAction = (action: string, resource: ParentResource) => {
+    setPage(1);
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearch(value);
+    setPage(1);
+  };
+
+  const handleAction = async (action: string, resource: ParentResource) => {
     if (action === 'Preview') {
       router.push(`/dashboard/admin/parent-resources/${resource.id}`);
+      return;
+    }
+
+    if (action === 'Edit') {
+      populateFromResource(resource);
+      router.push('/dashboard/admin/parent-resources/add-resource');
       return;
     }
 
@@ -51,22 +98,56 @@ export function ParentResourcesPage() {
       return;
     }
 
+    if (action === 'Restore') {
+      try {
+        await updateMutation.mutateAsync({
+          id: resource.id,
+          input: { status: 'PUBLISHED' },
+        });
+        toast.success(`“${resource.title}” has been restored to published.`);
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'Failed to restore resource.';
+        toast.error(message);
+      }
+      return;
+    }
+
     if (action === 'Delete') {
       setDeleteTarget(resource);
       return;
     }
 
-    toast.success(`${action} is ready for “${resource.title}”.`);
+    toast.info(`${action} is ready for “${resource.title}”.`);
   };
 
-  const archiveResource = (resource: ParentResource) => {
-    setArchiveTarget(null);
-    toast.success(`“${resource.title}” has been archived.`);
+  const archiveResource = async (resource: ParentResource) => {
+    const isArchived = resource.status === 'ARCHIVED';
+    try {
+      await updateMutation.mutateAsync({
+        id: resource.id,
+        input: { status: isArchived ? 'PUBLISHED' : 'ARCHIVED' },
+      });
+      toast.success(
+        isArchived
+          ? `“${resource.title}” has been restored.`
+          : `“${resource.title}” has been archived.`
+      );
+      setArchiveTarget(null);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to archive resource.';
+      toast.error(message);
+    }
   };
 
-  const deleteResource = (resource: ParentResource) => {
-    setDeleteTarget(null);
-    toast.success(`“${resource.title}” has been deleted.`);
+  const deleteResource = async (resource: ParentResource) => {
+    try {
+      await deleteMutation.mutateAsync(resource.id);
+      toast.success(`“${resource.title}” has been deleted.`);
+      setDeleteTarget(null);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to delete resource.';
+      toast.error(message);
+    }
   };
 
   return (
@@ -98,19 +179,29 @@ export function ParentResourcesPage() {
             type={filters.type}
             membership={filters.membership}
             status={filters.status}
-            onSearchChange={setSearch}
+            availableCategories={availableCategories}
+            onSearchChange={handleSearchChange}
             onFilterChange={updateFilter}
           />
-          <ResourceTable resources={filteredResources} onAction={handleAction} />
+          <ResourceTable
+            resources={resources}
+            isLoading={isLoading}
+            meta={meta}
+            currentPage={page}
+            onPageChange={setPage}
+            onAction={handleAction}
+          />
         </div>
       </div>
       <ArchiveResourceModal
         resource={archiveTarget}
+        isPending={updateMutation.isPending}
         onClose={() => setArchiveTarget(null)}
         onConfirm={archiveResource}
       />
       <DeleteResourceModal
         resource={deleteTarget}
+        isPending={deleteMutation.isPending}
         onClose={() => setDeleteTarget(null)}
         onConfirm={deleteResource}
       />

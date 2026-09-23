@@ -1,14 +1,10 @@
-export type ResourceStatus = 'Published' | 'Draft';
-
-export type ParentResource = {
-  id: string;
-  title: string;
-  author: string;
-  readTime: string;
-  category: string;
-  type: string;
-  membership: string;
-  downloads: number;
-  status: ResourceStatus;
-  updatedAt: string;
-};
+export type {
+  ParentResource,
+  ResourceType,
+  ContentStatus,
+  MembershipTier,
+  UiResourceType,
+  UiMembershipTier,
+  ParentResourceSummary,
+  ResourceAttachment,
+} from '@/features/parent-resources';

@@ -1,12 +1,29 @@
-import { resourceMetrics } from './parent-resources-data';
+'use client';
+
+import { useAdminParentResourceSummary } from '@/features/parent-resources';
 
 export function ResourceSummary() {
+  const { data: summary, isLoading } = useAdminParentResourceSummary();
+
+  const metrics = [
+    { label: 'Total Resources', value: isLoading ? '...' : String(summary?.total ?? 0) },
+    { label: 'Published', value: isLoading ? '...' : String(summary?.published ?? 0) },
+    { label: 'Drafts', value: isLoading ? '...' : String(summary?.draft ?? 0) },
+    { label: 'Archived', value: isLoading ? '...' : String(summary?.archived ?? 0) },
+    {
+      label: 'Guides & Printables',
+      value: isLoading
+        ? '...'
+        : String((summary?.guides ?? 0) + (summary?.printables ?? 0) + (summary?.pdfs ?? 0)),
+    },
+  ];
+
   return (
     <section
       className="grid min-w-0 gap-4 sm:grid-cols-2 xl:grid-cols-5 2xl:grid-cols-5 2xl:gap-6"
       aria-label="Resource overview"
     >
-      {resourceMetrics.map((metric) => (
+      {metrics.map((metric) => (
         <article
           key={metric.label}
           className="flex min-h-30 min-w-0 items-center rounded-2xl border border-[#e8ebe8] bg-white p-4 shadow-[0_1px_1px_rgba(0,0,0,0.05)] 2xl:min-h-38.5"
