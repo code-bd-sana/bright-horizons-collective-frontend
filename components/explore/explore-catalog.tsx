@@ -20,6 +20,14 @@ import type { TherapyToy } from '@/features/therapy-toys/model/therapy-toy.types
 import { useActivities } from '@/features/activities/hooks/activities.queries';
 import type { Activity } from '@/features/activities/model/activity.types';
 import {
+  BACKEND_TO_UI_RESOURCE_TYPE,
+  parentResourceKeys,
+  toggleParentResourceFavorite,
+  useParentResourceFavorites,
+  useParentResources,
+  type ParentResource,
+} from '@/features/parent-resources';
+import {
   contentTypes,
   exploreItems,
   filterGroups,
@@ -340,6 +348,92 @@ function RealActivityCard({ activity, height }: { activity: Activity; height: nu
   );
 }
 
+function RealParentResourceCard({
+  resource,
+  height,
+  saved,
+  onSave,
+}: {
+  resource: ParentResource;
+  height: number;
+  saved: boolean;
+  onSave: () => void;
+}) {
+  const router = useRouter();
+  const imageSrc = resource.coverImageUrl || '/figma/explore/resource-parent.png';
+  const typeLabel = BACKEND_TO_UI_RESOURCE_TYPE[resource.resourceType] || resource.resourceType;
+
+  return (
+    <article
+      onClick={() => router.push(`/explore/parent-resources/${resource.id}`)}
+      className="relative cursor-pointer overflow-hidden rounded-2xl border border-[#EDEEF0] bg-white p-4 text-white shadow-[0px_2px_16px_rgba(198,202,209,0.22)] transition-transform hover:-translate-y-0.5"
+      style={{ height: height || 540 }}
+    >
+      <Image
+        src={imageSrc}
+        alt={resource.title}
+        fill
+        sizes="(min-width: 1280px) 23vw, 46vw"
+        className="object-cover"
+        unoptimized={Boolean(imageSrc.startsWith('http') || imageSrc.startsWith('/uploads'))}
+      />
+      <div className="absolute inset-x-0 bottom-0 h-[58%] bg-linear-to-t from-[#242424]/90 via-[#242424]/50 to-transparent" />
+
+      <div className="relative flex h-full flex-col justify-between">
+        <div className="flex items-start justify-between gap-3">
+          <span className="rounded-full bg-[#E3F7EC] px-2.5 py-1 font-manrope text-[10px] font-semibold leading-3.5 text-[#16643B]">
+            {typeLabel}
+          </span>
+          <button
+            type="button"
+            aria-label={saved ? `Remove ${resource.title} from saved` : `Save ${resource.title}`}
+            onClick={(event) => {
+              event.stopPropagation();
+              onSave();
+            }}
+            className="flex size-6 items-center justify-center rounded-full bg-white/90 text-[#607077] shadow-[0px_1px_4px_rgba(0,0,0,0.12)] transition-colors hover:bg-white"
+          >
+            <Bookmark className={saved ? 'size-4 fill-[#2F7D7E] text-[#2F7D7E]' : 'size-4'} />
+          </button>
+        </div>
+
+        <div className="flex flex-col items-start gap-4">
+          <div>
+            <h3 className="font-nunito text-xl font-medium leading-7 line-clamp-2">
+              {resource.title}
+            </h3>
+            <div className="mt-2 flex flex-wrap items-center gap-1.5">
+              {resource.category && (
+                <span className="rounded-full bg-[#DCEEEE] px-2.5 py-0.5 font-nunito text-xs leading-4 text-[#174A4D]">
+                  {resource.category}
+                </span>
+              )}
+              <span className="rounded-full bg-[#DCEEEE] px-2.5 py-0.5 font-nunito text-xs leading-4 text-[#174A4D]">
+                {typeLabel}
+              </span>
+              {resource.estimatedReadTime && (
+                <span className="flex items-center gap-1 px-1 font-nunito text-xs leading-4 text-white">
+                  <Clock3 className="size-3" />
+                  {resource.estimatedReadTime}
+                </span>
+              )}
+            </div>
+          </div>
+
+          <Link
+            href={`/explore/parent-resources/${resource.id}`}
+            onClick={(e) => e.stopPropagation()}
+            className="flex items-center gap-1 px-2.5 py-2 font-manrope text-base font-semibold leading-6.75 tracking-[-0.24px] text-[#F2B59F] hover:text-[#f7cbba] transition-colors"
+          >
+            Read Resource
+            <ArrowRight className="size-5" />
+          </Link>
+        </div>
+      </div>
+    </article>
+  );
+}
+
 type ExploreCatalogProps = {
   activeType: ExploreContentType;
   onActiveTypeChange: (type: ExploreContentType) => void;
@@ -381,9 +475,75 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
     { enabled: activeType === 'Activities' }
   );
 
+  const publicParentResourcesQuery = useParentResources(
+    {
+      search: activeType === 'Parent Resources' ? query || undefined : undefined,
+      status: 'PUBLISHED',
+      limit: 100,
+    },
+    { enabled: activeType === 'Parent Resources' }
+  );
+
   const favoritesQuery = useTherapyToyFavorites({
     enabled: isAuthenticated,
   });
+
+  const parentResourceFavoritesQuery = useParentResourceFavorites({
+    enabled: isAuthenticated && activeType === 'Parent Resources',
+  });
+
+  const [savedParentResourceOverrides, setSavedParentResourceOverrides] = useState<
+    Record<string, boolean>
+  >({});
+
+  const savedParentResourceIds = useMemo(() => {
+    if (!isAuthenticated) return new Set<string>();
+    const baseIds = parentResourceFavoritesQuery.data?.resourceIds ?? [];
+    const ids = new Set(baseIds.filter((id) => savedParentResourceOverrides[id] !== false));
+    for (const [id, saved] of Object.entries(savedParentResourceOverrides)) {
+      if (saved) ids.add(id);
+      else ids.delete(id);
+    }
+    return ids;
+  }, [parentResourceFavoritesQuery.data, isAuthenticated, savedParentResourceOverrides]);
+
+  const toggleParentResourceFavoriteMutation = useMutation({
+    mutationFn: toggleParentResourceFavorite,
+    onMutate: async (resourceId: string) => {
+      const willBeSaved = !savedParentResourceIds.has(resourceId);
+      setSavedParentResourceOverrides((prev) => ({ ...prev, [resourceId]: willBeSaved }));
+      return { resourceId, previousSaved: !willBeSaved };
+    },
+    onSuccess: (result) => {
+      if (result.status === 'favorited') {
+        toast.success('Added to favorites.');
+      } else {
+        toast.success('Removed from favorites.');
+      }
+    },
+    onError: (_error, resourceId, context) => {
+      if (context) {
+        setSavedParentResourceOverrides((prev) => ({
+          ...prev,
+          [resourceId]: context.previousSaved,
+        }));
+      }
+      toast.error('Failed to update favorite. Please try again.');
+    },
+    onSettled: () => {
+      void queryClient.invalidateQueries({
+        queryKey: [...parentResourceKeys.all, 'favorites'],
+      });
+    },
+  });
+
+  const handleToggleParentResourceSave = (resourceId: string) => {
+    if (!isAuthenticated) {
+      handleRequireLogin();
+      return;
+    }
+    toggleParentResourceFavoriteMutation.mutate(resourceId);
+  };
 
   const savedToyIds = useMemo(() => {
     if (!isAuthenticated) return new Set<string>();
@@ -547,6 +707,44 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
     });
   }, [activeType, filters, publicToysQuery.data]);
 
+  const realParentResources = useMemo(() => {
+    if (activeType !== 'Parent Resources') return [];
+    const items = (publicParentResourcesQuery.data?.data ?? []) as ParentResource[];
+    const normalizedQuery = query.trim().toLowerCase();
+
+    return items
+      .filter((resource) => resource.status === 'PUBLISHED')
+      .filter((resource) => {
+        const matchesQuery =
+          !normalizedQuery ||
+          [
+            resource.title,
+            resource.summary,
+            resource.category,
+            resource.resourceType,
+            resource.author,
+          ]
+            .filter(Boolean)
+            .join(' ')
+            .toLowerCase()
+            .includes(normalizedQuery);
+
+        const matchesSkill =
+          filters.skill.length === 0 ||
+          filters.skill.some((skillOpt) =>
+            resource.category?.toLowerCase().includes(skillOpt.toLowerCase())
+          );
+
+        const matchesCategory =
+          filters.category.length === 0 ||
+          filters.category.some((catOpt) =>
+            resource.category?.toLowerCase().includes(catOpt.toLowerCase())
+          );
+
+        return matchesQuery && matchesSkill && matchesCategory;
+      });
+  }, [activeType, filters, publicParentResourcesQuery.data?.data, query]);
+
   return (
     <section className="bg-[#FDFDFC] pb-20 pt-12">
       <div className="mx-auto flex max-w-480 items-center gap-9 px-20 max-xl:px-8 max-md:flex-col max-md:items-stretch max-md:gap-5 max-md:px-5">
@@ -700,6 +898,51 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
                 <p className="font-nunito text-xl font-semibold text-[#263238]">
                   No therapy toys found.
                 </p>
+              </div>
+            )
+          ) : activeType === 'Parent Resources' ? (
+            publicParentResourcesQuery.isLoading ? (
+              <div className="columns-1 gap-6 lg:columns-2 xl:columns-3">
+                {Array.from({ length: 6 }, (_, index) => (
+                  <div
+                    key={index}
+                    className="mb-6 break-inside-avoid animate-pulse rounded-2xl bg-[#edf4f1]"
+                    style={{ height: getMasonryCardHeight(index, 6) }}
+                  />
+                ))}
+              </div>
+            ) : publicParentResourcesQuery.isError ? (
+              <div className="rounded-2xl border border-[#f2c7c2] bg-[#fff8f7] p-8 text-center font-manrope text-sm text-[#b24b4b]">
+                Unable to load parent resources.
+              </div>
+            ) : realParentResources.length ? (
+              <div className="columns-1 gap-6 lg:columns-2 xl:columns-3">
+                {realParentResources.map((resource, index) => (
+                  <div key={resource.id} className="mb-6 break-inside-avoid">
+                    <RealParentResourceCard
+                      resource={resource}
+                      height={getMasonryCardHeight(index, realParentResources.length)}
+                      saved={isAuthenticated && savedParentResourceIds.has(resource.id)}
+                      onSave={() => handleToggleParentResourceSave(resource.id)}
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex min-h-80 flex-col items-center justify-center rounded-2xl border border-dashed border-[#ACCBCB] px-6 text-center">
+                <p className="font-nunito text-xl font-semibold text-[#263238]">
+                  No parent resources found.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setQuery('');
+                    setFilters(emptyFilters);
+                  }}
+                  className="mt-3 font-manrope text-sm font-semibold text-[#2F7D7E] underline"
+                >
+                  Clear search and filters
+                </button>
               </div>
             )
           ) : results.length ? (

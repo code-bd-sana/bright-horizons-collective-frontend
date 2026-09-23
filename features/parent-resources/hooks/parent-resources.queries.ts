@@ -4,6 +4,7 @@ import {
   getParentResource,
   getParentResources,
   getAdminParentResourceSummary,
+  getParentResourceFavorites,
 } from '../api/parent-resources.api';
 import { parentResourceKeys } from '../parent-resource.keys';
 
@@ -41,5 +42,13 @@ export function useAdminParentResourceSummary() {
   return useQuery({
     queryKey: parentResourceKeys.adminSummary(),
     queryFn: getAdminParentResourceSummary,
+  });
+}
+
+export function useParentResourceFavorites(options?: { enabled?: boolean }) {
+  return useQuery({
+    queryKey: [...parentResourceKeys.all, 'favorites'],
+    queryFn: getParentResourceFavorites,
+    enabled: options?.enabled ?? true,
   });
 }
