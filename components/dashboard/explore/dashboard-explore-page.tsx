@@ -522,21 +522,23 @@ export function DashboardExplorePage({ initialTab }: { initialTab: ExploreTab })
 
       {data && initialTab === 'parent-resources' ? (
         <>
-          <section className="mt-12 rounded-2xl border border-[#e8ebe8] bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.05)] sm:mt-14 sm:p-6 2xl:p-8">
-            <h2 className="mb-6 font-nunito text-xl font-medium leading-7 text-[#263238] sm:text-2xl sm:leading-8">
-              Printable Resources
-            </h2>
-            <div className="grid grid-cols-1 gap-8 2xl:grid-cols-2">
-              {data.printableItems.map((item) => (
-                <ExploreCard
-                  key={item.id}
-                  item={item}
-                  saving={savingItemId === item.id}
-                  onSavedChange={handleSavedChange}
-                />
-              ))}
-            </div>
-          </section>
+          {data.printableItems.length > 0 ? (
+            <section className="mt-12 rounded-2xl border border-[#e8ebe8] bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.05)] sm:mt-14 sm:p-6 2xl:p-8">
+              <h2 className="mb-6 font-nunito text-xl font-medium leading-7 text-[#263238] sm:text-2xl sm:leading-8">
+                Printable Resources
+              </h2>
+              <div className="grid grid-cols-1 gap-8 2xl:grid-cols-2">
+                {data.printableItems.map((item) => (
+                  <ExploreCard
+                    key={item.id}
+                    item={item}
+                    saving={savingItemId === item.id}
+                    onSavedChange={handleSavedChange}
+                  />
+                ))}
+              </div>
+            </section>
+          ) : null}
           <SavedPanel
             title="Saved Resources"
             items={data.savedItems}

@@ -154,3 +154,23 @@ export function toggleParentResourceFavorite(
     return response.data.data;
   });
 }
+
+export function getParentResourceFavorites(): Promise<{ resourceIds: string[] }> {
+  return handleApiCall(async () => {
+    try {
+      const response = await browserApi.get('/favorites');
+      const data = response.data?.data;
+      const resources = (data?.resources ?? []) as Array<{
+        resourceId?: string;
+        resource?: { id?: string };
+      }>;
+      return {
+        resourceIds: resources
+          .map((favorite) => favorite.resource?.id ?? favorite.resourceId)
+          .filter((id): id is string => Boolean(id)),
+      };
+    } catch {
+      return { resourceIds: [] };
+    }
+  });
+}

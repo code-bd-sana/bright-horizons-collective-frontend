@@ -1,8 +1,15 @@
-import { Clock3 } from 'lucide-react';
+'use client';
+
+import { ArrowLeft, Clock3, Download, FileText, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
 import { cn } from '@/lib/utils';
+import {
+  BACKEND_TO_UI_RESOURCE_TYPE,
+  useParentResource,
+  type ResourceAttachment,
+} from '@/features/parent-resources';
 
 const milestones = [
   [
@@ -37,13 +44,251 @@ function Chip({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function ParentResourceDetail({ dashboard = false }: { dashboard?: boolean }) {
+function formatFileSize(bytes?: number) {
+  if (!bytes) return '0 KB';
+  if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+type ParentResourceDetailProps = {
+  resourceId?: string;
+  dashboard?: boolean;
+};
+
+export function ParentResourceDetail({ resourceId, dashboard = false }: ParentResourceDetailProps) {
   const Root = dashboard ? 'div' : 'main';
   const exploreHref = dashboard ? '/dashboard/explore?tab=parent-resources' : '/explore';
   const activityHref = dashboard
     ? '/dashboard/explore/activities/bubble-wrap-stomp-counting'
     : '/explore/activities/bubble-wrap-stomp-counting';
 
+  const isDynamic = Boolean(resourceId && resourceId !== 'developmental-milestones');
+  const {
+    data: resource,
+    isLoading,
+    isError,
+  } = useParentResource(isDynamic ? resourceId : undefined);
+
+  if (isDynamic) {
+    if (isLoading) {
+      return (
+        <Root
+          className={cn('text-[#263238]', !dashboard && 'bg-[#FDFDFC] pt-32 pb-20 px-4 sm:px-8')}
+        >
+          <div className="mx-auto flex w-full max-w-311 min-w-0 flex-col gap-10 pb-12">
+            <div className="flex items-center gap-2 font-manrope text-sm text-[#7d8488]">
+              <Link
+                href={exploreHref}
+                className="inline-flex items-center gap-1 text-[#2f7d7e] hover:underline"
+              >
+                <ArrowLeft aria-hidden="true" size={15} strokeWidth={1.5} />
+                Parent Resources
+              </Link>
+              <span className="text-[#d8ddd9]">/</span>
+              <span>Loading resource...</span>
+            </div>
+            <div className="flex flex-col items-center justify-center gap-3 py-24 text-[#515b60]">
+              <Loader2 className="size-8 animate-spin text-[#2f7d7e]" />
+              <p className="font-manrope text-sm">Loading parent resource details...</p>
+            </div>
+          </div>
+        </Root>
+      );
+    }
+
+    if (isError || !resource || resource.status !== 'PUBLISHED') {
+      return (
+        <Root
+          className={cn('text-[#263238]', !dashboard && 'bg-[#FDFDFC] pt-32 pb-20 px-4 sm:px-8')}
+        >
+          <div className="mx-auto flex w-full max-w-311 min-w-0 flex-col gap-10 pb-12">
+            <nav
+              aria-label="Breadcrumb"
+              className="flex flex-wrap items-center gap-2 font-manrope text-sm leading-5.5 tracking-[-0.084px]"
+            >
+              <Link
+                href={exploreHref}
+                className="inline-flex items-center gap-1 text-[#2f7d7e] hover:underline"
+              >
+                <ArrowLeft aria-hidden="true" size={15} strokeWidth={1.5} />
+                Parent Resources
+              </Link>
+              <span className="text-lg leading-5 text-[#d8ddd9]">/</span>
+              <span className="text-[#263238]">Not Found</span>
+            </nav>
+            <div className="rounded-2xl border border-[#e8ebe8] bg-white p-12 text-center shadow-xs">
+              <h2 className="font-nunito text-xl font-semibold text-[#263238]">
+                Parent Resource Not Found
+              </h2>
+              <p className="mt-2 font-manrope text-sm text-[#7d8488]">
+                The parent resource you are looking for is not published or does not exist.
+              </p>
+              <Link
+                href={exploreHref}
+                className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#2f7d7e] px-5 py-2.5 font-manrope text-sm font-medium text-white transition-colors hover:bg-[#276a6b]"
+              >
+                <ArrowLeft aria-hidden="true" size={16} />
+                Back to Parent Resources
+              </Link>
+            </div>
+          </div>
+        </Root>
+      );
+    }
+
+    const coverSrc = resource.coverImageUrl || '/figma/explore/resource-parent.png';
+    const isUnoptimized = Boolean(coverSrc.startsWith('http') || coverSrc.startsWith('/uploads'));
+    const attachments = (resource.attachments as ResourceAttachment[] | null) ?? [];
+
+    return (
+      <Root className={cn('text-[#263238]', !dashboard && 'bg-[#FDFDFC]')}>
+        <div
+          className={cn(
+            'mx-auto flex w-full max-w-311 min-w-0 flex-col',
+            dashboard
+              ? 'gap-10 pb-12 sm:gap-12 2xl:gap-15'
+              : 'gap-15 px-20 pt-40 pb-20 max-xl:px-8 max-lg:pt-36 max-md:gap-10 max-md:px-5 max-md:pt-36 max-md:pb-12'
+          )}
+        >
+          <section className="flex flex-col gap-8">
+            <nav
+              aria-label="Breadcrumb"
+              className="flex flex-wrap items-center gap-1.5 font-nunito text-2xl font-medium leading-8 max-md:text-lg max-sm:text-base max-sm:leading-6"
+            >
+              <Link href={exploreHref} className="text-[#2F7D7E] hover:underline">
+                Explore
+              </Link>
+              <span className="font-manrope text-lg text-[#D8DDD9]">/</span>
+              <Link href={exploreHref} className="text-[#2F7D7E] hover:underline">
+                Parent Resources
+              </Link>
+              <span className="font-manrope text-lg text-[#D8DDD9]">/</span>
+              <span className="truncate">{resource.title}</span>
+            </nav>
+            <div className="relative h-60 overflow-hidden rounded-2xl bg-[#DCEEEE] sm:h-80 md:h-101.25">
+              <Image
+                src={coverSrc}
+                alt={resource.title}
+                fill
+                priority
+                unoptimized={isUnoptimized}
+                className="object-cover"
+                sizes="(min-width: 1280px) 1244px, 100vw"
+              />
+            </div>
+          </section>
+
+          <section className="flex flex-col gap-8">
+            <div className="border-b border-[#ADB1AE] pb-6">
+              <h1 className="font-nunito text-[40px] font-bold leading-12 tracking-[-0.4px] text-[#174A4D] max-md:text-[32px] max-md:leading-10 max-sm:text-3xl max-sm:leading-9">
+                {resource.title}
+              </h1>
+              <div className="mt-6 flex flex-col gap-4">
+                <div className="flex flex-wrap items-center gap-1.25">
+                  {resource.category && (
+                    <span className="rounded-full border border-[#DCEEEE] bg-[#E0F0E9] px-2.25 py-1.75 font-nunito text-xs font-medium leading-4 text-[#174A4D]">
+                      {resource.category}
+                    </span>
+                  )}
+                  <span className="rounded-full border border-[#DCEEEE] px-2.25 py-1.75 font-nunito text-xs font-medium leading-4 text-[#174A4D]">
+                    {BACKEND_TO_UI_RESOURCE_TYPE[resource.resourceType] || resource.resourceType}
+                  </span>
+                  {resource.estimatedReadTime && (
+                    <span className="flex items-center gap-1 px-2 py-1.5 font-manrope text-xs leading-4.5 text-[#607077]">
+                      <Clock3 className="size-3" />
+                      {resource.estimatedReadTime}
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="flex size-9 items-center justify-center rounded-full bg-[#2F7D7E] font-nunito text-sm font-bold leading-5 text-white">
+                    {(resource.author || 'J')[0]?.toUpperCase()}
+                  </span>
+                  <span className="min-w-0 font-manrope text-sm font-semibold leading-5">
+                    By {resource.author || 'Jaicy, Licensed Pediatric Occupational Therapist'}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-6">
+              <p className="font-nunito text-lg font-medium leading-6 tracking-[-0.27px] text-[#263238]">
+                {resource.summary}
+              </p>
+            </div>
+          </section>
+
+          {resource.content && (
+            <section className="flex flex-col gap-4">
+              <div className="whitespace-pre-wrap font-manrope text-base leading-7 text-[#263238]">
+                {resource.content}
+              </div>
+            </section>
+          )}
+
+          {attachments.length > 0 && (
+            <section className="rounded-2xl border border-[#D8DDD9] bg-white p-6 shadow-xs">
+              <h2 className="font-nunito text-xl font-bold leading-7 text-[#174A4D]">
+                Downloadable Attachments ({attachments.length})
+              </h2>
+              <div className="mt-4 divide-y divide-[#E7ECEB]">
+                {attachments.map((file, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center justify-between py-3 first:pt-0 last:pb-0"
+                  >
+                    <div className="flex min-w-0 items-center gap-3">
+                      <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-[rgba(47,125,126,0.08)] text-[#2f7d7e]">
+                        <FileText aria-hidden="true" size={18} strokeWidth={1.7} />
+                      </span>
+                      <div className="min-w-0">
+                        <p className="truncate font-manrope text-sm font-semibold text-[#263238]">
+                          {file.name}
+                        </p>
+                        <p className="font-manrope text-xs text-[#607d8b]">
+                          {formatFileSize(file.size)}
+                        </p>
+                      </div>
+                    </div>
+                    <a
+                      href={file.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-[#2F7D7E] px-4 py-2 font-manrope text-xs font-semibold text-white transition-colors hover:bg-[#276a6b]"
+                    >
+                      <Download aria-hidden="true" size={14} strokeWidth={1.7} />
+                      Download
+                    </a>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          <section className="flex flex-col gap-8">
+            <div className="flex items-center justify-between gap-6 rounded-2xl border border-[#D8DDD9] bg-[#DCEEEE] p-6.25 max-md:flex-col max-md:items-start">
+              <div>
+                <h2 className="font-nunito text-base font-bold leading-6 text-[#174A4D]">
+                  Want a plan built around your child?
+                </h2>
+                <p className="pt-1 font-manrope text-sm font-medium leading-5.5 tracking-[0.084px] text-[#607077]">
+                  Explore membership and get personalized activity plans from our OT team.
+                </p>
+              </div>
+              <Link
+                href="/register"
+                className="shrink-0 rounded-full bg-[#2F7D7E] px-5 py-2.5 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-white max-sm:w-full max-sm:text-center"
+              >
+                Explore Membership
+              </Link>
+            </div>
+          </section>
+        </div>
+      </Root>
+    );
+  }
+
+  // Fallback static milestone page for developmental-milestones
   return (
     <Root className={cn('text-[#263238]', !dashboard && 'bg-[#FDFDFC]')}>
       <div

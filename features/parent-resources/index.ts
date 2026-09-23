@@ -6,3 +6,4 @@ export * from './hooks/parent-resources.queries';
 export * from './hooks/parent-resources.mutations';
 export * from './hooks/use-save-resource-draft';
 export * from './store/use-resource-form-store';
+export * from './model/parent-resource.mapper';

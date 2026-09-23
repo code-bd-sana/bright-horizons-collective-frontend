@@ -120,7 +120,7 @@ function ResourceCard({
     <UniversalCard
       recipe="resource"
       state={item.highlighted ? 'highlighted' : item.saved ? 'saved' : 'default'}
-      className={className}
+      className={cn('cursor-pointer', className)}
     >
       <UniversalCardMedia recipe="resource">
         <UniversalCardArtwork
@@ -131,8 +131,11 @@ function ResourceCard({
           maskSize="255.559px 245.637px"
           frameClassName="left-1/2 top-[-58px] h-[403px] w-[294px] -translate-x-1/2"
           sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+          unoptimized={Boolean(
+            item.imageSrc?.startsWith('http') || item.imageSrc?.startsWith('/uploads')
+          )}
         />
-        <UniversalCardOverlay>
+        <UniversalCardOverlay className="pointer-events-none z-30">
           <UniversalCardBadge>{item.badge}</UniversalCardBadge>
           <UniversalCardSaveButton
             label={item.title}
@@ -141,6 +144,7 @@ function ResourceCard({
             onSavedChange={(saved) => onSavedChange?.(item, saved)}
             iconSrc={figmaExploreUiAssets.resource.bookmark}
             savedIconSrc={figmaExploreUiAssets.resource.bookmarkSaved}
+            className="pointer-events-auto"
           />
         </UniversalCardOverlay>
       </UniversalCardMedia>
@@ -157,14 +161,16 @@ function ResourceCard({
         <p className="line-clamp-2 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-(--explore-text-secondary) max-xl:text-xs max-xl:leading-4.5">
           {item.description}
         </p>
-        <Link
-          href={item.href}
-          className="inline-flex w-fit items-center gap-1.25 font-manrope text-xs font-semibold leading-4.5 tracking-[0.48px] text-(--explore-primary) outline-none focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-(--explore-primary) focus-visible:ring-offset-2"
-        >
+        <span className="inline-flex w-fit items-center gap-1.25 font-manrope text-xs font-semibold leading-4.5 tracking-[0.48px] text-(--explore-primary)">
           {item.actionLabel}
           <Image src={figmaExploreUiAssets.resource.arrow} alt="" width={14} height={14} />
-        </Link>
+        </span>
       </UniversalCardBody>
+      <Link
+        href={item.href}
+        aria-label={`View ${item.title}`}
+        className="absolute inset-0 z-20 rounded-3xl outline-none focus-visible:ring-2 focus-visible:ring-(--explore-primary) focus-visible:ring-inset"
+      />
     </UniversalCard>
   );
 }
@@ -190,8 +196,11 @@ function PrintableCard({
           maskSize="200.397px 193.146px"
           frameClassName="left-[9.67px] top-[0.14px] h-[318.783px] w-[232.762px]"
           sizes="259px"
+          unoptimized={Boolean(
+            item.imageSrc?.startsWith('http') || item.imageSrc?.startsWith('/uploads')
+          )}
         />
-        <UniversalCardOverlay className="right-0">
+        <UniversalCardOverlay className="pointer-events-none right-0 z-30">
           <UniversalCardBadge>{item.badge}</UniversalCardBadge>
           <UniversalCardSaveButton
             label={item.title}
@@ -200,6 +209,7 @@ function PrintableCard({
             onSavedChange={(saved) => onSavedChange?.(item, saved)}
             iconSrc={figmaExploreUiAssets.resource.bookmark}
             savedIconSrc={figmaExploreUiAssets.resource.bookmarkSaved}
+            className="pointer-events-auto"
           />
         </UniversalCardOverlay>
       </UniversalCardMedia>
