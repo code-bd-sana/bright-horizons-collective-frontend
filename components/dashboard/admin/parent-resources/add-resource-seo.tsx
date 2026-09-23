@@ -5,7 +5,11 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { useResourceFormStore, useSaveResourceDraft } from '@/features/parent-resources';
+import {
+  useCreateParentResource,
+  useResourceFormStore,
+  useSaveResourceDraft,
+} from '@/features/parent-resources';
 import { ResourceFormNavigation } from './resource-form-navigation';
 import { ResourceFormStepper } from './resource-form-stepper';
 
@@ -15,12 +19,18 @@ const fieldClassName =
 export function AddResourceSeo() {
   const router = useRouter();
   const {
+    title,
+    summary,
     seoTitle: storeTitle,
     seoDescription: storeDesc,
     keywords: storeKeywords,
     setSeo,
+    getCreatePayload,
+    resetForm,
   } = useResourceFormStore();
   const { saveDraft, isSavingDraft } = useSaveResourceDraft();
+  const createResourceMutation = useCreateParentResource();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [metaTitle, setMetaTitle] = useState(storeTitle || '');
   const [keywords, setKeywords] = useState(storeKeywords || 'sensory, toddler, development');
@@ -38,9 +48,42 @@ export function AddResourceSeo() {
     }
   }
 
-  function saveAndContinue() {
-    saveSeo();
-    router.push('/dashboard/admin/parent-resources/add-resource/review');
+  async function handleAddResource() {
+    if (!title?.trim()) {
+      toast.error('Please enter a resource title.');
+      router.push('/dashboard/admin/parent-resources/add-resource');
+      return;
+    }
+
+    if (!summary?.trim()) {
+      toast.error('Please enter a summary for the resource.');
+      router.push('/dashboard/admin/parent-resources/add-resource');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSeo({
+      seoTitle: metaTitle,
+      seoDescription: shortDescription,
+      keywords,
+    });
+
+    const payload = getCreatePayload();
+    payload.seoTitle = metaTitle?.trim() || undefined;
+    payload.seoDescription = shortDescription?.trim() || undefined;
+    payload.status = 'PUBLISHED';
+
+    try {
+      await createResourceMutation.mutateAsync(payload);
+      toast.success(`“${payload.title}” has been added successfully!`);
+      resetForm();
+      router.push('/dashboard/admin/parent-resources');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to add resource.';
+      toast.error(message);
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -117,13 +160,16 @@ export function AddResourceSeo() {
 
       <ResourceFormNavigation
         currentStep={5}
+        showNext={false}
+        showPrimaryAction={true}
+        primaryActionText="Add Resource"
+        isSubmitting={isSubmitting}
         isSavingDraft={isSavingDraft}
-        showPrimaryAction={false}
-        onNext={saveAndContinue}
         onPrevious={() => {
           saveSeo(false);
           router.push('/dashboard/admin/parent-resources/add-resource/membership');
         }}
+        onPrimaryAction={() => void handleAddResource()}
         onSaveDraft={async () => {
           saveSeo(false);
           await saveDraft({

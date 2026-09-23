@@ -21,11 +21,11 @@ type ResourceFormNavigationProps = {
 
 export function ResourceFormNavigation({
   currentStep,
-  showNext = currentStep < 6,
+  showNext = currentStep < 5,
   nextButtonType = 'button',
   isSubmitting = false,
   isSavingDraft = false,
-  showPrimaryAction = currentStep === 6,
+  showPrimaryAction = currentStep === 5,
   primaryActionText = 'Add Resource',
   primaryActionButtonType = 'button',
   onNext,

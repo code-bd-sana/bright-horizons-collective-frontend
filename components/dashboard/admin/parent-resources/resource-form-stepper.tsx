@@ -14,7 +14,6 @@ export const resourceFormSteps = [
     href: '/dashboard/admin/parent-resources/add-resource/membership',
   },
   { number: 5, label: 'SEO', href: '/dashboard/admin/parent-resources/add-resource/seo' },
-  { number: 6, label: 'Review', href: '/dashboard/admin/parent-resources/add-resource/review' },
 ] as const;
 
 export type ResourceFormStep = (typeof resourceFormSteps)[number]['number'];
