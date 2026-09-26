@@ -5,42 +5,57 @@ import {
   ArrowLeft,
   ArrowUpRight,
   CalendarDays,
-  MessageCircle,
+  Loader2,
+  Mail,
   PlayCircle,
   UserRound,
 } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { toast } from 'sonner';
 
-const info = [
-  ['Name', 'Amara Okonkwo'],
-  ['Email', 'amara.okonkwo@email.com'],
-  ['Address', '742 Evergreen Terrace, Springfield, IL'],
-  ['Phone', '+1 (555) 234-5678'],
-  ['Registered', 'Jan 12, 2025'],
-];
-const activities: Array<[string, string, typeof PlayCircle, string]> = [
-  [
-    'Plan assigned: Sensory Foundations — Week 1',
-    'Apr 3, 2025',
-    CalendarDays,
-    'bg-[rgba(47,125,126,0.08)] text-[#2f7d7e]',
-  ],
-  [
-    'Zara completed activity: Color Sorting Sensory Play',
-    'Apr 2, 2025',
-    PlayCircle,
-    'bg-[rgba(76,175,80,0.08)] text-[#4caf50]',
-  ],
-  [
-    'Membership renewed: Grow Together',
-    'Jan 12, 2025',
-    CalendarDays,
-    'bg-[rgba(143,185,168,0.08)] text-[#2f7d7e]',
-  ],
-  ['Family registered', 'Jan 12, 2025', UserRound, 'bg-[rgba(96,125,139,0.08)] text-[#607d8b]'],
-];
+import { DeactivateFamilyModal } from './deactivate-family-modal';
+import { useAdminFamilyDetails } from './hooks/use-admin-families';
+
+const tierBadgeStyles: Record<string, string> = {
+  'Little Steps': 'bg-[#edf6f2] text-[#2f7d7e]',
+  'Grow Together': 'bg-[#dcefe7] text-[#2f7d7e]',
+  'Personalized Pathways': 'bg-[#fce9e3] text-[#916d5f]',
+  LITTLE_STEPS: 'bg-[#edf6f2] text-[#2f7d7e]',
+  GROW_TOGETHER: 'bg-[#dcefe7] text-[#2f7d7e]',
+  PERSONALIZED_PATHWAYS: 'bg-[#fce9e3] text-[#916d5f]',
+};
+
+function formatDate(dateStr?: string | Date | null): string {
+  if (!dateStr) return 'N/A';
+  try {
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return String(dateStr);
+    return d.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  } catch {
+    return String(dateStr);
+  }
+}
+
+function getInitials(name?: string, email?: string): string {
+  if (name && name.trim()) {
+    const parts = name.trim().split(/\s+/);
+    if (parts.length >= 2) {
+      return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+    }
+    return name.slice(0, 2).toUpperCase();
+  }
+  if (email && email.trim()) {
+    return email.slice(0, 2).toUpperCase();
+  }
+  return 'FA';
+}
 
 function Card({ children, className = '' }: { children: React.ReactNode; className?: string }) {
   return (
@@ -52,94 +67,195 @@ function Card({ children, className = '' }: { children: React.ReactNode; classNa
   );
 }
 
-export function FamilyDetailsPage({ familyId: _familyId }: { familyId: string }) {
-  void _familyId;
+export function FamilyDetailsPage({ familyId }: { familyId: string }) {
   const router = useRouter();
+  const [showDeactivate, setShowDeactivate] = useState(false);
+
+  const { data, isLoading, isError, error, refetch } = useAdminFamilyDetails(familyId);
+
+  if (isLoading) {
+    return (
+      <section className="mx-auto w-full min-w-0 max-w-232.75 pb-8 text-[#263238]">
+        <button
+          type="button"
+          onClick={() => router.push('/dashboard/admin/families')}
+          className="mb-6 flex items-center gap-1.5 font-manrope text-sm font-medium text-[#607d8b] transition-colors hover:text-[#2f7d7e]"
+        >
+          <ArrowLeft aria-hidden="true" size={16} />
+          Back to Families
+        </button>
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-[#e7eceb] bg-white py-24 shadow-sm">
+          <Loader2 className="size-10 animate-spin text-[#2f7d7e]" />
+          <p className="mt-3 font-manrope text-sm font-medium text-[#607d8b]">
+            Loading family details...
+          </p>
+        </div>
+      </section>
+    );
+  }
+
+  if (isError || !data?.user) {
+    return (
+      <section className="mx-auto w-full min-w-0 max-w-232.75 pb-8 text-[#263238]">
+        <button
+          type="button"
+          onClick={() => router.push('/dashboard/admin/families')}
+          className="mb-6 flex items-center gap-1.5 font-manrope text-sm font-medium text-[#607d8b] transition-colors hover:text-[#2f7d7e]"
+        >
+          <ArrowLeft aria-hidden="true" size={16} />
+          Back to Families
+        </button>
+        <div className="rounded-2xl border border-dashed border-[#e57373] bg-[#fff5f5] p-8 text-center font-manrope">
+          <p className="text-base font-semibold text-[#c62828]">Family Not Found</p>
+          <p className="mt-1 text-sm text-[#78909c]">
+            {error instanceof Error ? error.message : 'Unable to load details for this family.'}
+          </p>
+          <div className="mt-4 flex justify-center gap-3">
+            <button
+              type="button"
+              onClick={() => refetch()}
+              className="rounded-xl border border-[#e7eceb] bg-white px-4 py-2 font-manrope text-xs font-semibold text-[#607d8b] shadow-sm hover:bg-[#f8fbfa]"
+            >
+              Try Again
+            </button>
+            <button
+              type="button"
+              onClick={() => router.push('/dashboard/admin/families')}
+              className="rounded-xl bg-[#2f7d7e] px-4 py-2 font-manrope text-xs font-semibold text-white shadow-sm hover:bg-[#266b6c]"
+            >
+              Return to Families
+            </button>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  const {
+    user,
+    children = [],
+    activeSubscription,
+    membership = 'Little Steps',
+    activityLog = [],
+  } = data;
+  const initials = getInitials(user.name, user.email);
+  const membershipBadgeStyle = tierBadgeStyles[membership] || 'bg-[#edf6f2] text-[#2f7d7e]';
+  const isActive = user.status?.toLowerCase() === 'active';
+
+  const parentInfo = [
+    ['Name', user.name],
+    ['Email', user.email],
+    ['Phone', user.phone || 'N/A'],
+    ['Relationship', user.relationship || 'Parent'],
+    ['Status', isActive ? 'Active' : 'Inactive'],
+    ['Registered', formatDate(user.createdAt)],
+  ];
+
+  const currentPlanName = activeSubscription?.plan?.name || membership || 'Little Steps';
+  const subscriptionStatus = activeSubscription?.status || (isActive ? 'Active' : 'Inactive');
+  const subscriptionStart = activeSubscription?.currentPeriodStart || user.createdAt;
+  const subscriptionEnd = activeSubscription?.currentPeriodEnd;
+
   return (
     <section className="mx-auto w-full min-w-0 max-w-232.75 pb-8 text-[#263238]">
       <button
         type="button"
         onClick={() => router.push('/dashboard/admin/families')}
-        className="mb-6 flex items-center gap-1.5 font-manrope text-sm font-medium text-[#607d8b]"
+        className="mb-6 flex items-center gap-1.5 font-manrope text-sm font-medium text-[#607d8b] transition-colors hover:text-[#2f7d7e]"
       >
         <ArrowLeft aria-hidden="true" size={16} />
         Back to Families
       </button>
+
       <div className="space-y-6">
+        {/* Header Overview Card */}
         <Card>
-          <div className="flex flex-col gap-5 xl:flex-row xl:items-start 2xl:flex-row 2xl:items-start">
-            <span className="relative size-16 shrink-0 overflow-hidden rounded-full bg-[#2f7d7e]">
-              <Image
-                src="/Home/figma-dashboard-avatar.png"
-                alt="Amara Okonkwo"
-                fill
-                sizes="64px"
-                className="object-cover object-[50%_10%]"
-              />
-            </span>
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
+            {user.profileImage ? (
+              <span className="relative size-16 shrink-0 overflow-hidden rounded-full bg-[#2f7d7e]">
+                <Image
+                  src={user.profileImage}
+                  alt={user.name}
+                  fill
+                  sizes="64px"
+                  className="object-cover"
+                />
+              </span>
+            ) : (
+              <span className="flex size-16 shrink-0 items-center justify-center rounded-full bg-[#edf6f2] font-nunito text-xl font-bold text-[#2f7d7e]">
+                {initials}
+              </span>
+            )}
+
             <div className="min-w-0 flex-1">
-              <h1 className="font-nunito text-[22px] font-bold leading-8.25">Amara Okonkwo</h1>
+              <h1 className="truncate font-nunito text-[22px] font-bold leading-8.25 text-[#263238]">
+                {user.name}
+              </h1>
               <div className="mt-2 flex flex-wrap items-center gap-2">
-                <span className="rounded-full bg-[#d5e5e5] px-2.5 py-0.5 font-manrope text-xs font-semibold text-[#2f7d7e]">
-                  Grow Together
+                <span
+                  className={`rounded-full px-2.5 py-0.5 font-manrope text-xs font-semibold ${membershipBadgeStyle}`}
+                >
+                  {membership}
                 </span>
-                <span className="rounded-full bg-[#edf6f2] px-2.5 py-0.5 font-manrope text-xs font-semibold text-[#4caf50]">
-                  Active
+                <span
+                  className={`rounded-full px-2.5 py-0.5 font-manrope text-xs font-semibold ${
+                    isActive ? 'bg-[#edf6f2] text-[#4caf50]' : 'bg-[#fef2f2] text-[#dc2626]'
+                  }`}
+                >
+                  {isActive ? 'Active' : 'Inactive'}
                 </span>
                 <span className="font-manrope text-xs font-medium text-[#607d8b]">
-                  Joined Jan 12, 2026
+                  Joined {formatDate(user.createdAt)}
                 </span>
               </div>
             </div>
-            <div className="grid w-full gap-2 sm:flex sm:w-auto sm:flex-wrap xl:w-auto xl:shrink-0 2xl:flex 2xl:w-auto 2xl:shrink-0 2xl:flex-wrap">
-              <button
-                type="button"
-                onClick={() => toast.success('Message composer is ready for Amara Okonkwo.')}
-                className="flex h-10 items-center justify-center gap-2 rounded-[14px] border border-[rgba(47,125,126,0.19)] bg-[rgba(47,125,126,0.07)] px-3 font-manrope text-sm font-semibold text-[#2f7d7e] sm:px-4 2xl:px-4"
+
+            <div className="flex w-full shrink-0 gap-2 sm:w-auto">
+              <a
+                href={`mailto:${user.email}`}
+                className="flex h-10 flex-1 items-center justify-center gap-2 rounded-[14px] border border-[rgba(47,125,126,0.19)] bg-[rgba(47,125,126,0.07)] px-4 font-manrope text-sm font-semibold text-[#2f7d7e] transition-colors hover:bg-[#edf6f2] sm:flex-initial"
               >
-                <MessageCircle aria-hidden="true" size={14} />
-                Message
-              </button>
-              <button
-                type="button"
-                onClick={() => toast.success('Weekly plan assignment is ready.')}
-                className="h-10 rounded-[14px] bg-[#2f7d7e] px-3 font-manrope text-sm font-semibold text-white sm:px-4 2xl:px-4"
-              >
-                Assign weekly plan
-              </button>
+                <Mail aria-hidden="true" size={14} />
+                Email Parent
+              </a>
             </div>
           </div>
         </Card>
+
+        {/* Parent Information Card */}
         <Card>
-          <h2 className="font-nunito text-lg font-bold leading-7">Parent Information</h2>
+          <h2 className="font-nunito text-lg font-bold leading-7 text-[#263238]">
+            Parent Information
+          </h2>
           <dl className="mt-4 grid gap-x-4 gap-y-4 sm:grid-cols-2 2xl:grid-cols-2">
-            {info.map(([label, value]) => (
-              <div key={label}>
+            {parentInfo.map(([label, value]) => (
+              <div key={label} className="rounded-[14px] bg-[#f4f8f6] p-3">
                 <dt className="font-manrope text-[11px] font-semibold uppercase tracking-[0.55px] text-[#607d8b]">
                   {label}
                 </dt>
-                <dd className="mt-1 wrap-break-word font-manrope text-sm leading-5.25">{value}</dd>
+                <dd className="mt-1 font-manrope text-sm font-semibold text-[#263238]">{value}</dd>
               </div>
             ))}
           </dl>
         </Card>
+
+        {/* Membership Card */}
         <Card>
-          <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between 2xl:flex-row 2xl:items-center 2xl:justify-between">
-            <h2 className="font-nunito text-lg font-bold leading-7">Membership</h2>
-            <button
-              type="button"
-              onClick={() => toast.success('Membership management is ready.')}
-              className="flex items-center gap-1.5 font-manrope text-sm font-semibold text-[#2f7d7e]"
+          <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <h2 className="font-nunito text-lg font-bold leading-7 text-[#263238]">Membership</h2>
+            <Link
+              href="/dashboard/admin/memberships"
+              className="flex items-center gap-1.5 font-manrope text-sm font-semibold text-[#2f7d7e] transition-colors hover:underline"
             >
-              Manage Membership <ArrowUpRight aria-hidden="true" size={13} />
-            </button>
+              Manage Memberships <ArrowUpRight aria-hidden="true" size={13} />
+            </Link>
           </div>
           <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-4">
             {[
-              ['Current Plan', 'Grow Together'],
-              ['Status', 'Active'],
-              ['Join Date', 'Jan 12, 2025'],
-              ['Renewal Date', 'Jan 12, 2026'],
+              ['Current Plan', currentPlanName],
+              ['Status', subscriptionStatus],
+              ['Join / Start Date', formatDate(subscriptionStart)],
+              ['Renewal Date', subscriptionEnd ? formatDate(subscriptionEnd) : 'N/A'],
             ].map(([label, value]) => (
               <div key={label} className="rounded-[14px] bg-[#f4f8f6] p-3">
                 <p className="font-manrope text-[11px] font-semibold uppercase tracking-[0.55px] text-[#607d8b]">
@@ -150,171 +266,156 @@ export function FamilyDetailsPage({ familyId: _familyId }: { familyId: string })
             ))}
           </div>
         </Card>
+
+        {/* Children Card */}
         <Card>
-          <h2 className="font-nunito text-lg font-bold leading-7">
-            Children <span className="text-xs font-medium text-[#607d8b]">(2)</span>
+          <h2 className="font-nunito text-lg font-bold leading-7 text-[#263238]">
+            Children <span className="text-xs font-medium text-[#607d8b]">({children.length})</span>
           </h2>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2 2xl:grid-cols-2">
-            {[
-              ['Z', 'Zara', '3 yrs · Toddler', 'Sensory Foundations — Week 1', '60% complete'],
-              ['K', 'Kofi', '1 yr · Infant', 'Language Launch — Week 1', '40% complete'],
-            ].map(([initial, name, age, plan, progress]) => (
-              <div
-                key={name}
-                className="min-w-0 rounded-[14px] border border-[#e7eceb] bg-[#f4f8f6] p-4"
-              >
-                <div className="flex items-center gap-3">
-                  <span className="flex size-8 items-center justify-center rounded-full bg-[rgba(143,185,168,0.19)] font-nunito text-xs font-bold text-[#2f7d7e]">
-                    {initial}
-                  </span>
-                  <div>
-                    <p className="font-manrope text-[13px] font-semibold">{name}</p>
-                    <p className="font-manrope text-[11px] text-[#607d8b]">{age}</p>
-                  </div>
-                </div>
-                <p className="mt-3 font-manrope text-[11px] text-[#607d8b]">Current Plan</p>
-                <p className="wrap-break-word font-manrope text-[13px] font-semibold">{plan}</p>
-                <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-[#e7eceb]">
-                  <div className="h-full rounded-full bg-[#2f7d7e]" style={{ width: progress }} />
-                </div>
-                <p className="mt-1 font-manrope text-[11px] text-[#607d8b]">{progress}</p>
-                <button
-                  type="button"
-                  className="mt-2 flex h-8 w-full items-center justify-center rounded-[10px] border border-[#cfe0e0] bg-[#e9f1ee] font-manrope text-[11px] text-[#2f7d7e]"
-                >
-                  View Profile
-                </button>
-              </div>
-            ))}
-          </div>
-        </Card>
-        <Card>
-          <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between 2xl:flex-row 2xl:items-center 2xl:justify-between">
-            <h2 className="font-nunito text-lg font-bold leading-7">Assigned Weekly Plans</h2>
-            <button type="button" className="font-manrope text-xs font-semibold text-[#2f7d7e]">
-              Assign New Plan <ArrowUpRight aria-hidden="true" size={13} className="inline" />
-            </button>
-          </div>
-          <div className="mt-4 space-y-3">
-            {[
-              [
-                'Z',
-                'Zara — Sensory Foundations — Week 1',
-                'Assigned Apr 3, 2025',
-                '60%',
-                '3/5 activities',
-              ],
-              [
-                'K',
-                'Kofi — Language Launch — Week 1',
-                'Assigned Mar 28, 2025',
-                '40%',
-                '2/5 activities',
-              ],
-            ].map(([initial, title, date, percent, count]) => (
-              <div
-                key={title}
-                className="grid min-w-0 grid-cols-[auto_minmax(0,1fr)] items-center gap-3 rounded-[14px] bg-[#f4f8f6] p-3 sm:flex 2xl:flex"
-              >
-                <span className="flex size-8 shrink-0 items-center justify-center rounded-[14px] bg-[rgba(143,185,168,0.19)] font-nunito text-xs font-bold text-[#2f7d7e]">
-                  {initial}
-                </span>
-                <div className="min-w-0 flex-1">
-                  <p className="font-manrope text-[13px] font-semibold">{title}</p>
-                  <p className="font-manrope text-[11px] text-[#607d8b]">{date}</p>
-                  <div className="mt-1.5 h-1.5 rounded-full bg-[#e7eceb]">
-                    <div className="h-full rounded-full bg-[#2f7d7e]" style={{ width: percent }} />
-                  </div>
-                </div>
-                <div className="col-start-2 text-left sm:ml-auto sm:text-right 2xl:ml-auto 2xl:text-right">
-                  <p className="font-nunito text-base font-bold text-[#2f7d7e]">{percent}</p>
-                  <p className="font-manrope text-[11px] text-[#607d8b]">{count}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Card>
-        <Card>
-          <h2 className="font-nunito text-lg font-bold leading-7">Recent Activity</h2>
-          <div className="mt-4 space-y-4">
-            {activities.map(([title, date, Icon, colors]) => {
-              const ActivityIcon = Icon as typeof PlayCircle;
-              return (
-                <div key={title as string} className="flex gap-3">
-                  <span
-                    className={`flex size-8 shrink-0 items-center justify-center rounded-[14px] ${colors as string}`}
+
+          {children.length === 0 ? (
+            <p className="mt-4 font-manrope text-sm text-[#90a4ae]">
+              No children registered for this family yet.
+            </p>
+          ) : (
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              {children.map((child) => {
+                const childAge = child.ageYears || child.age || 0;
+                const childInitial = child.name ? child.name.slice(0, 1).toUpperCase() : 'C';
+
+                return (
+                  <div
+                    key={child.id}
+                    className="min-w-0 rounded-[14px] border border-[#e7eceb] bg-[#f4f8f6] p-4"
                   >
-                    <ActivityIcon aria-hidden="true" size={14} />
-                  </span>
-                  <div>
-                    <p className="font-manrope text-[13px] text-[#263238]">{title}</p>
-                    <p className="mt-0.5 font-manrope text-[11px] text-[#607d8b]">{date}</p>
+                    <div className="flex items-center gap-3">
+                      {child.photoUrl ? (
+                        <span className="relative size-10 shrink-0 overflow-hidden rounded-full border border-[#d5e5e5]">
+                          <Image
+                            src={child.photoUrl}
+                            alt={child.name}
+                            fill
+                            sizes="40px"
+                            className="object-cover"
+                          />
+                        </span>
+                      ) : (
+                        <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[rgba(143,185,168,0.25)] font-nunito text-sm font-bold text-[#2f7d7e]">
+                          {childInitial}
+                        </span>
+                      )}
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate font-manrope text-sm font-semibold text-[#263238]">
+                          {child.name}
+                        </p>
+                        <p className="font-manrope text-xs text-[#607d8b]">
+                          {childAge > 0 ? `${childAge} yrs` : 'Age not set'}
+                          {child.gender ? ` · ${child.gender}` : ''}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="mt-3 space-y-2 border-t border-[#e7eceb] pt-3 text-xs">
+                      <div>
+                        <span className="font-manrope font-semibold text-[#607d8b]">
+                          Areas of Support:{' '}
+                        </span>
+                        <span className="font-manrope text-[#263238]">
+                          {child.areasOfSupport && child.areasOfSupport.length > 0
+                            ? child.areasOfSupport.join(', ')
+                            : 'General development'}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="font-manrope font-semibold text-[#607d8b]">
+                          Interests & Favorites:{' '}
+                        </span>
+                        <span className="font-manrope text-[#263238]">
+                          {child.interests ||
+                            (child.favorites && child.favorites.length > 0
+                              ? child.favorites.join(', ')
+                              : 'None listed')}
+                        </span>
+                      </div>
+                      {child.caregiverName && (
+                        <div>
+                          <span className="font-manrope font-semibold text-[#607d8b]">
+                            Caregiver:{' '}
+                          </span>
+                          <span className="font-manrope text-[#263238]">
+                            {child.caregiverName}
+                            {child.caregiverRelationship ? ` (${child.caregiverRelationship})` : ''}
+                          </span>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          )}
         </Card>
+
+        {/* Recent Activity Card */}
         <Card>
-          <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between 2xl:flex-row 2xl:items-center 2xl:justify-between">
-            <h2 className="font-nunito text-lg font-bold leading-7">Messages</h2>
-            <button
-              type="button"
-              onClick={() => toast.success('Conversation opened.')}
-              className="flex items-center gap-1.5 font-manrope text-sm font-semibold text-[#2f7d7e]"
-            >
-              Open Conversation
-              <ArrowUpRight aria-hidden="true" size={13} />
-            </button>
-          </div>
-          <div className="mt-4 space-y-3">
-            <div className="flex gap-3 border-b border-[#e7eceb] pb-3">
-              <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-[rgba(143,185,168,0.19)] font-nunito text-xs font-bold text-[#2f7d7e]">
-                A
-              </span>
-              <div>
-                <p className="font-manrope text-xs font-semibold">
-                  Amara Okonkwo{' '}
-                  <span className="mt-0.5 block font-normal text-[#607d8b] sm:mt-0 sm:ml-2 sm:inline 2xl:mt-0 2xl:ml-2 2xl:inline">
-                    Apr 3, 2025 · 12:01 PM
-                  </span>
-                </p>
-                <p className="mt-1 font-manrope text-[13px] text-[#607d8b]">
-                  Perfect, thank you. Quick question — should we do the activities in the order
-                  they&apos;re listed in the app?
-                </p>
-              </div>
-            </div>
-            <div className="flex gap-3">
-              <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-[rgba(47,125,126,0.13)] font-nunito text-xs font-bold text-[#2f7d7e]">
-                S
-              </span>
-              <div>
-                <p className="font-manrope text-xs font-semibold">
-                  Sarah K.{' '}
-                  <span className="mt-0.5 block font-normal text-[#607d8b] sm:mt-0 sm:ml-2 sm:inline 2xl:mt-0 2xl:ml-2 2xl:inline">
-                    Apr 3, 2025 · 12:18 PM
-                  </span>
-                </p>
-                <p className="mt-1 font-manrope text-[13px] text-[#607d8b]">
-                  Yes, the order is recommended but flexible — follow Zara&apos;s energy. If
-                  she&apos;s tired, save the more stimulating activity for after rest time.
-                </p>
-              </div>
-            </div>
+          <h2 className="font-nunito text-lg font-bold leading-7 text-[#263238]">
+            Recent Activity
+          </h2>
+          <div className="mt-4 space-y-4">
+            {activityLog.length === 0 ? (
+              <p className="font-manrope text-sm text-[#90a4ae]">No recent activity recorded.</p>
+            ) : (
+              activityLog.map((activity, idx) => {
+                const IconComponent =
+                  activity.iconType === 'PlayCircle'
+                    ? PlayCircle
+                    : activity.iconType === 'CalendarDays'
+                      ? CalendarDays
+                      : UserRound;
+
+                return (
+                  <div key={`${activity.message}-${idx}`} className="flex items-start gap-3">
+                    <span
+                      className={`flex size-8 shrink-0 items-center justify-center rounded-[14px] ${activity.colorClass}`}
+                    >
+                      <IconComponent aria-hidden="true" size={14} />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-manrope text-[13px] font-medium text-[#263238]">
+                        {activity.message}
+                      </p>
+                      <p className="mt-0.5 font-manrope text-[11px] text-[#607d8b]">
+                        {formatDate(activity.date)}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })
+            )}
           </div>
         </Card>
+
+        {/* Footer Actions */}
         <div className="flex sm:justify-end 2xl:justify-end">
           <button
             type="button"
-            onClick={() => toast.success('Family archived.')}
-            className="flex h-10 w-full items-center justify-center gap-2 rounded-[14px] border border-[rgba(184,134,11,0.25)] bg-[#fff8e1] px-4 font-manrope text-sm font-semibold text-[#b8860b] sm:w-auto 2xl:w-auto"
+            onClick={() => setShowDeactivate(true)}
+            className="flex h-10 w-full items-center justify-center gap-2 rounded-[14px] border border-[rgba(184,134,11,0.25)] bg-[#fff8e1] px-4 font-manrope text-sm font-semibold text-[#b8860b] transition-colors hover:bg-[#fef3c7] sm:w-auto 2xl:w-auto"
           >
             <Archive aria-hidden="true" size={14} />
-            Archive Family
+            Deactivate Family
           </button>
         </div>
       </div>
+
+      <DeactivateFamilyModal
+        familyName={showDeactivate ? user.name : null}
+        onClose={(open) => !open && setShowDeactivate(false)}
+        onConfirm={() => {
+          toast.success(`${user.name}'s account has been deactivated.`);
+          setShowDeactivate(false);
+        }}
+      />
     </section>
   );
 }
