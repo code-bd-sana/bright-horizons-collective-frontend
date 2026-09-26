@@ -57,7 +57,9 @@ function DetailTile({ label, value }: { label: string; value: string }) {
 }
 
 export function MemberDetailsPage({ member }: { member: Member }) {
-  const benefits = benefitsByTier[member.membershipTier];
+  const benefits =
+    benefitsByTier[member.membershipTier as keyof typeof benefitsByTier] ??
+    benefitsByTier['Little Steps'];
 
   return (
     <section className="mx-auto w-full min-w-0 max-w-3xl pb-8">
