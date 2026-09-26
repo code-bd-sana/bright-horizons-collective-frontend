@@ -7,12 +7,12 @@ export async function GET() {
   if (!authHeaders) return unauthenticatedResponse();
 
   try {
-    const response = await serverApi.get('/memberships/dashboard-stats', {
+    const response = await serverApi.get('/memberships/recent-activity', {
       headers: authHeaders,
     });
     const data = response.data?.data ?? response.data;
     return NextResponse.json(data);
   } catch (error) {
-    return safeBackendErrorResponse(error, 'Unable to fetch membership dashboard statistics.');
+    return safeBackendErrorResponse(error, 'Unable to fetch recent membership activity.');
   }
 }
