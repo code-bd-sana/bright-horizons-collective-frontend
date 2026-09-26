@@ -1,8 +1,8 @@
-import { ArrowLeft, TrendingUp, UserPlus } from 'lucide-react';
+import { ArrowLeft, UserPlus } from 'lucide-react';
 import Link from 'next/link';
 
 import { CancelMembershipModal } from './cancel-membership-modal';
-import { memberSlug, type Member } from './member-directory-data';
+import { type Member } from './member-directory-data';
 
 const benefitsByTier = {
   'Little Steps': [
@@ -93,13 +93,6 @@ export function MemberDetailsPage({ member }: { member: Member }) {
             </span>
           </div>
         </div>
-        <Link
-          href={`/dashboard/admin/memberships/upgrade-downgrade?member=${memberSlug(member)}`}
-          className="inline-flex h-10.5 w-full shrink-0 items-center justify-center gap-2 rounded-[14px] border border-[rgba(47,125,126,0.19)] bg-[rgba(47,125,126,0.07)] px-4.25 py-2.75 font-manrope text-sm font-semibold leading-5 text-[#2f7d7e] transition-colors hover:bg-[#edf6f2] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2f7d7e] sm:w-auto xl:self-center 2xl:w-auto 2xl:self-center"
-        >
-          <TrendingUp aria-hidden="true" size={14} strokeWidth={1.8} />
-          Upgrade / Downgrade
-        </Link>
       </MemberCard>
 
       <MemberCard className="mt-6 2xl:h-86">
@@ -131,7 +124,7 @@ export function MemberDetailsPage({ member }: { member: Member }) {
       <MemberCard className="mt-6 2xl:h-48.5">
         <CardTitle>Subscription Timeline</CardTitle>
         <p className="pt-1 font-manrope text-xs leading-4.5 text-[#607d8b]">
-          This family&apos;s filtered slice of the global Subscription History.
+          Membership registration and renewal milestones.
         </p>
         <div className="relative mt-4 h-19.75">
           <div className="absolute inset-x-0 top-0 pl-10">
