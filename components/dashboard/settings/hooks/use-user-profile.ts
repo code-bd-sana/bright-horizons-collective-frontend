@@ -7,6 +7,8 @@ export type UserProfile = {
   id: string;
   email: string;
   name: string;
+  firstName?: string;
+  lastName?: string;
   phone?: string | null;
   profileImage?: string | null;
   relationship?: string | null;
@@ -20,6 +22,8 @@ export type UserProfile = {
 
 export type UpdateUserProfileInput = {
   name?: string;
+  firstName?: string;
+  lastName?: string;
   phone?: string | null;
   profileImage?: string | null;
   relationship?: string | null;
