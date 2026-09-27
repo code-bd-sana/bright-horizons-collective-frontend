@@ -6,6 +6,7 @@ import {
   deleteAdminWeeklyPlan,
   duplicateAdminWeeklyPlan,
   fetchAdminWeeklyPlansSummary,
+  fetchMyAssignedPlans,
   getAdminWeeklyPlan,
   publishAdminWeeklyPlan,
   updateAdminWeeklyPlan,
@@ -19,6 +20,7 @@ export const weeklyPlanKeys = {
   adminList: () => [...weeklyPlanKeys.all, 'admin-list'] as const,
   summary: () => [...weeklyPlanKeys.all, 'summary'] as const,
   detail: (id: string) => [...weeklyPlanKeys.all, 'detail', id] as const,
+  myAssigned: () => [...weeklyPlanKeys.all, 'my-assigned'] as const,
 };
 
 export function useAdminWeeklyPlans() {
@@ -133,5 +135,12 @@ export function useAssignWeeklyPlan() {
 export function useUploadWeeklyPlanImage() {
   return useMutation({
     mutationFn: (file: File) => uploadWeeklyPlanFeaturedImage(file),
+  });
+}
+
+export function useMyWeeklyPlans() {
+  return useQuery({
+    queryKey: weeklyPlanKeys.myAssigned(),
+    queryFn: fetchMyAssignedPlans,
   });
 }

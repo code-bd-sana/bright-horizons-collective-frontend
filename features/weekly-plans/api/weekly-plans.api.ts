@@ -1,4 +1,5 @@
 import {
+  type AssignedWeeklyPlan,
   type CreateWeeklyPlanPayload,
   type WeeklyPlanAdminSummary,
 } from '../model/weekly-plan.types';
@@ -150,4 +151,13 @@ export async function uploadWeeklyPlanFeaturedImage(file: File): Promise<{ url: 
   const result = await response.json();
   const url = result?.data?.url ?? result?.url;
   return { url };
+}
+
+export async function fetchMyAssignedPlans(): Promise<AssignedWeeklyPlan[]> {
+  const response = await fetch('/api/weekly-plans');
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null);
+    throw new Error(errorData?.message ?? 'Failed to load assigned weekly plans.');
+  }
+  return response.json();
 }

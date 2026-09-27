@@ -128,3 +128,62 @@ export interface WeeklyPlanAdminSummary {
   assignments: number;
   enrolledChildren: number;
 }
+
+export interface ActivityCompletionSummary {
+  id: string;
+  activityId: string;
+  weeklyPlanId?: string | null;
+  childId?: string | null;
+  completedAt: string;
+  rating?: number | null;
+  difficulty?: string | null;
+}
+
+export interface AssignedWeeklyPlanActivityItem {
+  id: string;
+  weeklyPlanId: string;
+  activityId: string;
+  day: string;
+  activity: {
+    id: string;
+    title: string;
+    description?: string | null;
+    shortDescription?: string | null;
+    developmentCategory?: string | null;
+    estimatedDuration?: string | null;
+    featuredImageUrl?: string | null;
+    featuredImage?: string | null;
+  };
+}
+
+export interface AssignedWeeklyPlan {
+  id: string;
+  weeklyPlanId: string;
+  childId: string;
+  startDate?: string | null;
+  endDate?: string | null;
+  notes?: string | null;
+  createdAt: string;
+  child: {
+    id: string;
+    name: string;
+    parentId: string;
+    photoUrl?: string | null;
+    activityCompletions?: ActivityCompletionSummary[];
+  };
+  weeklyPlan: {
+    id: string;
+    title: string;
+    description?: string | null;
+    weekNumber?: number | null;
+    category?: string | null;
+    customCategory?: string | null;
+    featuredImage?: string | null;
+    activities: AssignedWeeklyPlanActivityItem[];
+  };
+  feedbacks?: Array<{
+    id: string;
+    rating?: number | null;
+    comment?: string | null;
+  }>;
+}
