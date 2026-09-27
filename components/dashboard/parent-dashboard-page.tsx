@@ -3,12 +3,12 @@
 import { useMemo, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Check, ChevronRight, Clock3 } from 'lucide-react';
+import { Check, /* ChevronRight, */ Clock3 } from 'lucide-react';
 
 import { useAppStore } from '@/store/use-app-store';
 import {
   useChildProfiles,
-  useChildProgress,
+  // useChildProgress,
 } from '@/features/child-profiles/hooks/child-profiles.queries';
 import type { ChildProfile } from '@/features/child-profiles/model/child-profile.types';
 import {
@@ -21,8 +21,8 @@ import {
 import { useUserProfile } from '@/components/dashboard/settings/hooks/use-user-profile';
 import { useParentResourceFavorites } from '@/features/parent-resources/hooks/parent-resources.queries';
 
-const activityMask = '/Home/figma-parent-dashboard-activity-mask.svg';
-const recommendationMask = '/Home/figma-parent-dashboard-recommendation-mask.svg';
+// const activityMask = '/Home/figma-parent-dashboard-activity-mask.svg';
+// const recommendationMask = '/Home/figma-parent-dashboard-recommendation-mask.svg';
 const yogaMask = '/Home/figma-parent-dashboard-star-mask.svg';
 const defaultYogaImage = '/Home/figma-parent-dashboard-yoga.png';
 
@@ -36,6 +36,7 @@ const DAYS_OF_WEEK = [
   { label: 'Sun', dayName: 'Sunday', dayIndex: 0 },
 ] as const;
 
+/*
 const recentActivities = [
   {
     title: 'Sensory Rice Bin Exploration',
@@ -75,6 +76,7 @@ const recommendations = [
     tone: 'bg-[#fce9e3] border-[#fce9e3]',
   },
 ];
+*/
 
 function formatDuration(duration?: string | null): string {
   if (!duration) return '20 min';
@@ -480,6 +482,7 @@ function TodayActivityCard({
   );
 }
 
+/*
 function ProgressCard({
   activeChild,
   isLoading,
@@ -596,6 +599,7 @@ function ProgressCard({
     </Card>
   );
 }
+*/
 
 function WeeklyPlanCard({
   activeChild,
@@ -758,6 +762,7 @@ function WeeklyPlanCard({
   );
 }
 
+/*
 function RecentActivityCard({ activeChild }: { activeChild: ChildProfile | null }) {
   return (
     <Card className="min-h-90 lg:h-111">
@@ -941,6 +946,7 @@ function RecommendationsCard({ activeChild }: { activeChild: ChildProfile | null
     </Card>
   );
 }
+*/
 
 export function ParentDashboardPage() {
   const { selectedChildId } = useAppStore();
@@ -985,18 +991,24 @@ export function ParentDashboardPage() {
         activitiesDoneCount={totalCompletions}
         resourcesSavedCount={savedResourcesCount}
       />
-      <div className="grid min-w-0 grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 2xl:grid-cols-3">
+      <div className="grid min-w-0 grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-2">
         <TodayActivityCard
           activeChild={activeChild}
           currentPlan={currentPlan}
           isLoading={isLoading}
         />
+        {/* Development Tracking / Emma Lin's Progress commented out
         <ProgressCard activeChild={activeChild} isLoading={isLoading} />
+        */}
         <WeeklyPlanCard activeChild={activeChild} currentPlan={currentPlan} isLoading={isLoading} />
+      </div>
+      {/* Recent activity, Messages, and Recommended For You cards commented out
+      <div className="grid min-w-0 grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 2xl:grid-cols-3">
         <RecentActivityCard activeChild={activeChild} />
         <MessagesCard />
         <RecommendationsCard activeChild={activeChild} />
       </div>
+      */}
     </div>
   );
 }
