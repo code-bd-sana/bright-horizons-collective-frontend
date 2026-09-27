@@ -151,6 +151,9 @@ export interface AssignedWeeklyPlanActivityItem {
     shortDescription?: string | null;
     developmentCategory?: string | null;
     estimatedDuration?: string | null;
+    difficultyLevel?: string | null;
+    materialsSummary?: string | null;
+    materialsNeeded?: Array<{ name: string }> | null;
     featuredImageUrl?: string | null;
     featuredImage?: string | null;
   };
