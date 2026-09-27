@@ -1,7 +1,7 @@
 import { WeeklyCalendar } from '@/components/dashboard/weekly-plans/weekly-calendar';
 import { TodayActivityCard } from '@/components/dashboard/weekly-plans/today-activity-card';
 import { WeeklyGoalStats } from '@/components/dashboard/weekly-plans/weekly-goal-stats';
-import { PastWeeklyPlans } from '@/components/dashboard/weekly-plans/past-weekly-plans';
+import { UpcomingWeeklyPlans } from '@/components/dashboard/weekly-plans/upcoming-weekly-plans';
 
 export default function WeeklyPlansPage() {
   return (
@@ -11,7 +11,7 @@ export default function WeeklyPlansPage() {
       <div className="mt-6 grid items-start gap-6 sm:mt-8 2xl:mt-10 2xl:grid-cols-[minmax(0,3fr)_minmax(340px,2fr)] min-[1920px]:grid-cols-[908px_minmax(0,597px)]">
         <div className="flex min-w-0 flex-col gap-6">
           <WeeklyCalendar />
-          <PastWeeklyPlans />
+          <UpcomingWeeklyPlans />
         </div>
         <TodayActivityCard />
       </div>
