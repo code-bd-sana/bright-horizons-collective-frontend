@@ -1,5 +1,5 @@
-import { AdminNotificationPreferencesPage } from '@/components/dashboard/admin/settings/admin-notification-preferences-page';
+import { redirect } from 'next/navigation';
 
 export default function AdminNotificationPreferencesRoute() {
-  return <AdminNotificationPreferencesPage />;
+  redirect('/dashboard/admin/settings');
 }
