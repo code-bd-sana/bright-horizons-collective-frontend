@@ -1,10 +1,10 @@
 import { Check } from 'lucide-react';
 
 const assignmentSteps = [
-  'Plan Summary',
+  'Select Plan',
   'Choose Families',
   'Choose Children',
-  'Settings',
+  'Timeframe',
   'Review',
 ];
 

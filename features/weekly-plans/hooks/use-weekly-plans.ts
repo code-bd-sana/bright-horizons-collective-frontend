@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   archiveAdminWeeklyPlan,
+  assignAdminWeeklyPlan,
   createAdminWeeklyPlan,
   deleteAdminWeeklyPlan,
   duplicateAdminWeeklyPlan,
@@ -8,6 +9,7 @@ import {
   publishAdminWeeklyPlan,
   updateAdminWeeklyPlan,
   uploadWeeklyPlanFeaturedImage,
+  type AssignWeeklyPlanPayload,
 } from '../api/weekly-plans.api';
 import { type CreateWeeklyPlanPayload } from '../model/weekly-plan.types';
 
@@ -102,6 +104,17 @@ export function useDeleteWeeklyPlan() {
 
   return useMutation({
     mutationFn: (id: string) => deleteAdminWeeklyPlan(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: weeklyPlanKeys.all });
+    },
+  });
+}
+
+export function useAssignWeeklyPlan() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload: AssignWeeklyPlanPayload) => assignAdminWeeklyPlan(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: weeklyPlanKeys.all });
     },

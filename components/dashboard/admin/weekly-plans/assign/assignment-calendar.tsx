@@ -1,112 +1,228 @@
 'use client';
 
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, CalendarDays } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import { getMondayOfDate, getSundayOfMonday } from './store/use-assign-plan-store';
 
 const weekdays = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
 
-function formatDate(date: Date) {
-  return `${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}/${date.getFullYear()}`;
+function isSameDay(d1: Date, d2: Date): boolean {
+  return (
+    d1.getFullYear() === d2.getFullYear() &&
+    d1.getMonth() === d2.getMonth() &&
+    d1.getDate() === d2.getDate()
+  );
 }
 
-export function AssignmentCalendar({ onSelect }: { onSelect: (value: string) => void }) {
-  const [month, setMonth] = useState(new Date(2026, 6, 1));
-  const isReferenceMonth = month.getFullYear() === 2026 && month.getMonth() === 6;
+function parseYMD(str?: string): Date | null {
+  if (!str) return null;
+  const parts = str.split('-').map(Number);
+  if (parts.length < 3 || isNaN(parts[0]) || isNaN(parts[1]) || isNaN(parts[2])) {
+    return null;
+  }
+  return new Date(parts[0], parts[1] - 1, parts[2]);
+}
+
+interface AssignmentCalendarProps {
+  startDate?: string; // YYYY-MM-DD
+  endDate?: string; // YYYY-MM-DD
+  onSelectWeek: (monday: Date, sunday: Date) => void;
+}
+
+export function AssignmentCalendar({ startDate, endDate, onSelectWeek }: AssignmentCalendarProps) {
+  const selectedMon = useMemo(() => parseYMD(startDate), [startDate]);
+  const selectedSun = useMemo(() => parseYMD(endDate), [endDate]);
+
+  const [currentMonth, setCurrentMonth] = useState<Date>(() => {
+    if (selectedMon) return new Date(selectedMon.getFullYear(), selectedMon.getMonth(), 1);
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), 1);
+  });
+
+  const today = useMemo(() => new Date(), []);
+
   const weeks = useMemo(() => {
-    if (month.getFullYear() === 2026 && month.getMonth() === 6) {
-      return [
-        [null, null, null, null, null, 1, 2],
-        [3, 4, 5, 6, 7, 8, 9],
-        [10, 11, 12, 13, 14, 15, 16],
-        [17, 18, 19, 20, 21, 22, 23],
-        [24, 25, 26, 27, 28, 29, 30],
-        [31, null, null, null, null, null, null],
-      ];
+    const year = currentMonth.getFullYear();
+    const month = currentMonth.getMonth();
+
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0).getDate();
+    // Monday = 0, Sunday = 6
+    const mondayOffset = (firstDay.getDay() + 6) % 7;
+
+    const cells: (Date | null)[] = [];
+    for (let i = 0; i < mondayOffset; i++) {
+      cells.push(null);
+    }
+    for (let day = 1; day <= lastDay; day++) {
+      cells.push(new Date(year, month, day));
+    }
+    while (cells.length % 7 !== 0) {
+      cells.push(null);
     }
 
-    const firstDay = new Date(month.getFullYear(), month.getMonth(), 1);
-    const lastDay = new Date(month.getFullYear(), month.getMonth() + 1, 0).getDate();
-    const mondayOffset = (firstDay.getDay() + 6) % 7;
-    const dates = Array.from({ length: mondayOffset + lastDay }, (_, index) =>
-      index < mondayOffset ? null : index - mondayOffset + 1
-    );
+    const rows: (Date | null)[][] = [];
+    for (let i = 0; i < cells.length; i += 7) {
+      rows.push(cells.slice(i, i + 7));
+    }
+    return rows;
+  }, [currentMonth]);
 
-    while (dates.length % 7 !== 0) dates.push(null);
-    return Array.from({ length: dates.length / 7 }, (_, index) =>
-      dates.slice(index * 7, index * 7 + 7)
-    );
-  }, [month]);
+  function handleDayClick(date: Date) {
+    const mon = getMondayOfDate(date);
+    const sun = getSundayOfMonday(mon);
+    onSelectWeek(mon, sun);
+  }
+
+  function handleQuickSelect(offsetWeeks: number) {
+    const baseMon = getMondayOfDate(new Date());
+    baseMon.setDate(baseMon.getDate() + offsetWeeks * 7);
+    const baseSun = getSundayOfMonday(baseMon);
+    setCurrentMonth(new Date(baseMon.getFullYear(), baseMon.getMonth(), 1));
+    onSelectWeek(baseMon, baseSun);
+  }
 
   return (
-    <section className="w-full min-w-0 max-w-88.5 rounded-3xl bg-[#f7f0ed] p-3 shadow-[0_10px_24px_rgba(38,50,56,0.12)] sm:p-4 2xl:w-88.5 2xl:p-4">
-      <div className="flex justify-center">
-        <div className="flex items-center gap-2 rounded-full bg-[rgba(0,0,0,0.05)] px-4 py-2.5">
+    <div className="w-full rounded-2xl border border-[#e7eceb] bg-[#fafcfb] p-4 shadow-sm sm:p-5">
+      {/* Month Navigation */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <CalendarDays className="size-5 text-[#2f7d7e]" />
+          <p className="font-nunito text-base font-bold text-[#263238]">
+            {currentMonth.toLocaleString('en-US', { month: 'long', year: 'numeric' })}
+          </p>
+        </div>
+        <div className="flex items-center gap-1">
           <button
             type="button"
             aria-label="Previous month"
             onClick={() =>
-              setMonth((current) => new Date(current.getFullYear(), current.getMonth() - 1, 1))
+              setCurrentMonth((prev) => new Date(prev.getFullYear(), prev.getMonth() - 1, 1))
             }
-            className="flex size-5 items-center justify-center text-black"
+            className="flex size-8 items-center justify-center rounded-lg border border-[#e7eceb] bg-white text-[#263238] transition hover:bg-[#f0f4f3]"
           >
-            <ChevronLeft aria-hidden="true" size={20} strokeWidth={1.8} />
+            <ChevronLeft size={18} strokeWidth={2} />
           </button>
-          <p className="min-w-16 text-center font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-black">
-            {month.toLocaleString('en-US', { month: 'long', year: 'numeric' })}
-          </p>
           <button
             type="button"
             aria-label="Next month"
             onClick={() =>
-              setMonth((current) => new Date(current.getFullYear(), current.getMonth() + 1, 1))
+              setCurrentMonth((prev) => new Date(prev.getFullYear(), prev.getMonth() + 1, 1))
             }
-            className="flex size-5 items-center justify-center text-black"
+            className="flex size-8 items-center justify-center rounded-lg border border-[#e7eceb] bg-white text-[#263238] transition hover:bg-[#f0f4f3]"
           >
-            <ChevronRight aria-hidden="true" size={20} strokeWidth={1.8} />
+            <ChevronRight size={18} strokeWidth={2} />
           </button>
         </div>
       </div>
 
-      <div className="mt-4">
-        <div className="flex items-center justify-between">
-          {weekdays.map((weekday) => (
-            <span
-              key={weekday}
-              className="flex h-6 w-7 items-center justify-center font-nunito text-[10px] font-bold leading-4 text-black sm:w-10 sm:text-xs 2xl:w-10 2xl:text-xs"
-            >
-              {weekday}
-            </span>
-          ))}
-        </div>
-        {weeks.map((week, weekIndex) => (
-          <div key={weekIndex} className="relative flex items-center justify-between">
-            {isReferenceMonth && week.includes(17) ? (
-              <span
-                aria-hidden="true"
-                className="absolute inset-y-0 left-4.75 right-4.75 bg-[#fae1d9]"
-              />
-            ) : null}
-            {week.map((day, dayIndex) => {
-              const rangeEnd = isReferenceMonth && (day === 17 || day === 23);
-
-              return day === null ? (
-                <span key={dayIndex} className="size-7 sm:size-10 2xl:size-10" />
-              ) : (
-                <button
-                  key={day}
-                  type="button"
-                  onClick={() =>
-                    onSelect(formatDate(new Date(month.getFullYear(), month.getMonth(), day)))
-                  }
-                  className={`relative z-10 flex size-7 items-center justify-center rounded-full font-nunito text-sm font-medium leading-5 tracking-[-0.27px] text-[#263238] sm:size-10 sm:p-2 sm:text-lg sm:leading-6 2xl:size-10 2xl:p-2 2xl:text-lg 2xl:leading-6 ${rangeEnd ? 'bg-[#f2b59f]' : ''}`}
-                >
-                  {day}
-                </button>
-              );
-            })}
-          </div>
+      {/* Weekday Labels (Mon - Sun) */}
+      <div className="mt-4 grid grid-cols-7 text-center">
+        {weekdays.map((wd) => (
+          <span
+            key={wd}
+            className="font-nunito text-xs font-bold uppercase tracking-wider text-[#607d8b]"
+          >
+            {wd}
+          </span>
         ))}
       </div>
-    </section>
+
+      {/* Calendar Grid */}
+      <div className="mt-2 space-y-1">
+        {weeks.map((week, wIndex) => {
+          // Check if this week contains any part of the selected range
+          const hasSelectedDay = week.some(
+            (d) =>
+              d &&
+              selectedMon &&
+              selectedSun &&
+              d.getTime() >= selectedMon.getTime() &&
+              d.getTime() <= selectedSun.getTime()
+          );
+
+          return (
+            <div
+              key={wIndex}
+              className={`grid grid-cols-7 rounded-xl transition-colors ${
+                hasSelectedDay ? 'bg-[#e5f2ef]/70' : 'hover:bg-black/2'
+              }`}
+            >
+              {week.map((date, dIndex) => {
+                if (!date) {
+                  return <div key={`empty-${dIndex}`} className="h-10" />;
+                }
+
+                const isMon = selectedMon && isSameDay(date, selectedMon);
+                const isSun = selectedSun && isSameDay(date, selectedSun);
+                const isInRange =
+                  selectedMon &&
+                  selectedSun &&
+                  date.getTime() >= selectedMon.getTime() &&
+                  date.getTime() <= selectedSun.getTime();
+                const isCurrentToday = isSameDay(date, today);
+
+                let cellStyle =
+                  'text-[#263238] hover:bg-[#2f7d7e]/15 hover:text-[#2f7d7e] font-medium';
+
+                if (isMon && isSun) {
+                  cellStyle = 'bg-[#2f7d7e] text-white font-bold rounded-xl shadow-sm';
+                } else if (isMon) {
+                  cellStyle = 'bg-[#2f7d7e] text-white font-bold rounded-l-xl shadow-sm';
+                } else if (isSun) {
+                  cellStyle = 'bg-[#2f7d7e] text-white font-bold rounded-r-xl shadow-sm';
+                } else if (isInRange) {
+                  cellStyle = 'bg-[#d2ebe5] text-[#1c5d5e] font-semibold rounded-none';
+                }
+
+                return (
+                  <button
+                    key={date.toISOString()}
+                    type="button"
+                    onClick={() => handleDayClick(date)}
+                    title={`Select week of Monday, ${getMondayOfDate(date).toLocaleDateString()}`}
+                    className={`relative flex h-10 w-full items-center justify-center font-nunito text-sm transition-all ${cellStyle}`}
+                  >
+                    <span>{date.getDate()}</span>
+                    {isCurrentToday && !isMon && !isSun ? (
+                      <span
+                        aria-hidden="true"
+                        className="absolute bottom-1.5 size-1 rounded-full bg-[#2f7d7e]"
+                      />
+                    ) : null}
+                  </button>
+                );
+              })}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Quick Select Presets */}
+      <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-[#e7eceb] pt-3">
+        <span className="font-manrope text-xs font-semibold text-[#607d8b]">Quick Select:</span>
+        <button
+          type="button"
+          onClick={() => handleQuickSelect(0)}
+          className="rounded-lg border border-[#d6e3e1] bg-white px-2.5 py-1 font-manrope text-xs font-medium text-[#2f7d7e] hover:bg-[#f0f6f5]"
+        >
+          This Week
+        </button>
+        <button
+          type="button"
+          onClick={() => handleQuickSelect(1)}
+          className="rounded-lg border border-[#d6e3e1] bg-white px-2.5 py-1 font-manrope text-xs font-medium text-[#2f7d7e] hover:bg-[#f0f6f5]"
+        >
+          Next Week
+        </button>
+        <button
+          type="button"
+          onClick={() => handleQuickSelect(2)}
+          className="rounded-lg border border-[#d6e3e1] bg-white px-2.5 py-1 font-manrope text-xs font-medium text-[#2f7d7e] hover:bg-[#f0f6f5]"
+        >
+          +2 Weeks
+        </button>
+      </div>
+    </div>
   );
 }

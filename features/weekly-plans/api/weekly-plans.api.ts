@@ -95,6 +95,32 @@ export async function deleteAdminWeeklyPlan(id: string) {
   return response.json();
 }
 
+export interface AssignWeeklyPlanPayload {
+  weeklyPlanId: string;
+  childIds: string[];
+  startDate?: string;
+  endDate?: string;
+  replaceExisting?: boolean;
+  notes?: string;
+}
+
+export async function assignAdminWeeklyPlan(payload: AssignWeeklyPlanPayload) {
+  const response = await fetch('/api/admin/weekly-plans/assign', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null);
+    throw new Error(errorData?.message ?? 'Failed to assign weekly plan.');
+  }
+
+  return response.json();
+}
+
 export async function uploadWeeklyPlanFeaturedImage(file: File): Promise<{ url: string }> {
   const formData = new FormData();
   formData.append('file', file);
