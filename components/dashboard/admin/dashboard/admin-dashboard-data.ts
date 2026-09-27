@@ -79,19 +79,19 @@ export const dashboardMetrics: DashboardMetric[] = [
 export const quickActions = [
   {
     label: 'Upload Activity',
-    href: '/dashboard/admin/activities-library',
+    href: '/dashboard/admin/activities-library/create',
     icon: CloudUpload,
     tone: 'teal',
   },
   {
     label: 'Create Weekly Plan',
-    href: '/dashboard/admin/weekly-plans',
+    href: '/dashboard/admin/weekly-plans/create',
     icon: CirclePlus,
     tone: 'teal',
   },
   {
     label: 'Assign Weekly Plan',
-    href: '/dashboard/admin/weekly-plans',
+    href: '/dashboard/admin/weekly-plans/assign',
     icon: ClipboardList,
     tone: 'mint',
   },
@@ -107,7 +107,12 @@ export const quickActions = [
     icon: Puzzle,
     tone: 'coral',
   },
-  { label: 'Add Family', href: '/dashboard/admin/families', icon: UserRoundPlus, tone: 'teal' },
+  {
+    label: 'View Family',
+    href: '/dashboard/admin/families',
+    icon: UsersRound,
+    tone: 'teal',
+  },
 ] as const;
 
 export const planStatuses = [
