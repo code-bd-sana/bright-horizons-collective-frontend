@@ -1,7 +1,15 @@
 import { create } from 'zustand';
-import { type SelectedActivity, type UiMembershipTier } from '../model/weekly-plan.types';
+import {
+  type BackendWeeklyPlanDetail,
+  type SelectedActivity,
+  type UiMembershipTier,
+  CATEGORY_BACKEND_TO_UI,
+} from '../model/weekly-plan.types';
 
 export interface WeeklyPlanFormState {
+  // Editing state
+  editingPlanId: string | null;
+
   // Step 1: Basic Info
   title: string;
   description: string;
@@ -24,6 +32,8 @@ export interface WeeklyPlanFormState {
   membershipTier: UiMembershipTier;
 
   // Actions
+  setEditingPlanId: (id: string | null) => void;
+  populateFromPlan: (plan: BackendWeeklyPlanDetail) => void;
   setBasicInfo: (
     info: Partial<{
       title: string;
@@ -55,7 +65,8 @@ const initialSchedule: Record<string, string[]> = {
   Friday: [],
 };
 
-export const useWeeklyPlanFormStore = create<WeeklyPlanFormState>((set, get) => ({
+export const useWeeklyPlanFormStore = create<WeeklyPlanFormState>((set) => ({
+  editingPlanId: null,
   title: '',
   description: '',
   weekNumber: '1',
@@ -70,6 +81,65 @@ export const useWeeklyPlanFormStore = create<WeeklyPlanFormState>((set, get) => 
   selectedActivities: [],
   schedule: { ...initialSchedule },
   membershipTier: 'Little Steps',
+
+  setEditingPlanId: (id) => set({ editingPlanId: id }),
+
+  populateFromPlan: (plan) => {
+    let uiCategory = 'Sensory Play';
+    let uiCustom = '';
+    if (plan.customCategory) {
+      uiCategory = 'Other';
+      uiCustom = plan.customCategory;
+    } else if (plan.category && CATEGORY_BACKEND_TO_UI[plan.category]) {
+      uiCategory = CATEGORY_BACKEND_TO_UI[plan.category];
+    }
+
+    let uiTier: UiMembershipTier = 'Little Steps';
+    if (plan.accessLevels?.includes('PERSONALIZED_PATHWAYS') && plan.accessLevels.length === 1) {
+      uiTier = 'Personalized Pathways';
+    } else if (plan.accessLevels?.includes('GROW_TOGETHER')) {
+      uiTier = 'Grow Together';
+    }
+
+    const selectedActivities: SelectedActivity[] = (plan.activities || []).map((item) => ({
+      id: item.activity.id,
+      title: item.activity.title,
+      category: item.activity.developmentCategory,
+      duration: item.activity.estimatedDuration ?? undefined,
+      age: `${item.activity.minAgeMonths}–${item.activity.maxAgeMonths} mo`,
+    }));
+
+    const schedule: Record<string, string[]> = {
+      Monday: [],
+      Tuesday: [],
+      Wednesday: [],
+      Thursday: [],
+      Friday: [],
+    };
+
+    for (const item of plan.activities || []) {
+      if (item.day && schedule[item.day]) {
+        schedule[item.day] = [item.activity.id];
+      }
+    }
+
+    set({
+      editingPlanId: plan.id,
+      title: plan.title,
+      description: plan.description ?? '',
+      weekNumber: String(plan.weekNumber ?? '1'),
+      minAgeMonths: String(plan.minAgeMonths ?? '0'),
+      maxAgeMonths: String(plan.maxAgeMonths ?? '36'),
+      category: uiCategory,
+      customCategory: uiCustom,
+      featuredImageUrl: plan.featuredImage ?? '',
+      featuredImageName: plan.featuredImage ? 'featured-image' : '',
+      featuredImageFile: null,
+      selectedActivities,
+      schedule,
+      membershipTier: uiTier,
+    });
+  },
 
   setBasicInfo: (info) =>
     set((state) => ({
@@ -140,6 +210,7 @@ export const useWeeklyPlanFormStore = create<WeeklyPlanFormState>((set, get) => 
 
   resetForm: () =>
     set({
+      editingPlanId: null,
       title: '',
       description: '',
       weekNumber: '1',

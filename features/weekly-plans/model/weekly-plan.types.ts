@@ -30,6 +30,15 @@ export const CATEGORY_UI_TO_BACKEND: Record<string, BackendDevelopmentCategory |
   Other: null,
 };
 
+export const CATEGORY_BACKEND_TO_UI: Record<string, string> = {
+  SENSORY: 'Sensory Play',
+  FINE_MOTOR: 'Fine Motor',
+  GROSS_MOTOR: 'Gross Motor',
+  COORDINATION: 'Coordination',
+  VISUAL_MOTOR: 'Visual-Motor',
+  ALL: 'All Categories',
+};
+
 export const TIER_UI_TO_BACKEND: Record<UiMembershipTier, BackendMembershipTier[]> = {
   'Little Steps': ['LITTLE_STEPS', 'GROW_TOGETHER', 'PERSONALIZED_PATHWAYS'],
   'Grow Together': ['GROW_TOGETHER', 'PERSONALIZED_PATHWAYS'],
@@ -59,4 +68,34 @@ export interface CreateWeeklyPlanPayload {
     activityId: string;
     day: string;
   }>;
+}
+
+export interface BackendWeeklyPlanDetail {
+  id: string;
+  title: string;
+  description?: string | null;
+  weekNumber?: number | null;
+  minAgeMonths?: number | null;
+  maxAgeMonths?: number | null;
+  category?: BackendDevelopmentCategory | null;
+  customCategory?: string | null;
+  featuredImage?: string | null;
+  status: BackendContentStatus;
+  accessLevels?: BackendMembershipTier[];
+  activities: Array<{
+    id: string;
+    weeklyPlanId: string;
+    activityId: string;
+    day: string;
+    activity: {
+      id: string;
+      title: string;
+      developmentCategory: string;
+      estimatedDuration?: string | null;
+      minAgeMonths: number;
+      maxAgeMonths: number;
+    };
+  }>;
+  createdAt: string;
+  updatedAt: string;
 }
