@@ -1,38 +1,32 @@
 'use client';
 
-import { ArrowLeft, TriangleAlert } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { toast } from 'sonner';
+import { useWeeklyPlanFormStore, type UiMembershipTier } from '@/features/weekly-plans';
 import { WeeklyPlanFormStepper } from './weekly-plan-form-stepper';
 
-type Tier = 'Little Steps' | 'Grow Together' | 'Personalized Pathways';
-
-const tiers: Array<{ name: Tier; description: string; color: string }> = [
-  { name: 'Little Steps', description: 'Available to all members', color: '#2f7d7e' },
-  { name: 'Grow Together', description: 'Grow Together and above', color: '#2f7d7e' },
+const tiers: Array<{ name: UiMembershipTier; description: string; color: string }> = [
+  {
+    name: 'Little Steps',
+    description: 'Available to Little Steps and higher tiers',
+    color: '#2f7d7e',
+  },
+  {
+    name: 'Grow Together',
+    description: 'Available to Grow Together and higher tiers',
+    color: '#2f7d7e',
+  },
   {
     name: 'Personalized Pathways',
-    description: 'Personalized Pathways only',
+    description: 'Exclusive to Personalized Pathways members',
     color: '#a05a3a',
   },
 ];
 
-function FlowButton({ children, className, ...props }: React.ComponentProps<'button'>) {
-  return (
-    <button
-      type="button"
-      className={`rounded-[14px] border px-4.25 py-2.75 font-manrope text-sm font-semibold leading-5 transition-colors ${className}`}
-      {...props}
-    >
-      {children}
-    </button>
-  );
-}
-
 export function WeeklyPlanMembershipPage() {
   const router = useRouter();
-  const [tier, setTier] = useState<Tier>('Little Steps');
+  const formStore = useWeeklyPlanFormStore();
+  const tier = formStore.membershipTier;
 
   return (
     <section className="mx-auto w-full min-w-0 max-w-243.25 pb-8 text-[#263238]">
@@ -40,14 +34,16 @@ export function WeeklyPlanMembershipPage() {
         <button
           type="button"
           onClick={() => router.push('/dashboard/admin/weekly-plans')}
-          className="flex items-center gap-1.5 font-manrope text-sm font-medium leading-5 text-[#607d8b]"
+          className="flex items-center gap-1.5 font-manrope text-sm font-medium leading-5 text-[#607d8b] transition-colors hover:text-[#2f7d7e]"
         >
           <ArrowLeft aria-hidden="true" size={16} strokeWidth={1.5} />
           Back to Weekly Plans
         </button>
+
         <h1 className="font-nunito text-2xl font-bold leading-9 text-[#263238]">
           Create Weekly Plans
         </h1>
+
         <section className="overflow-x-auto rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)]">
           <WeeklyPlanFormStepper currentStep={4} />
         </section>
@@ -59,13 +55,7 @@ export function WeeklyPlanMembershipPage() {
               Control which membership tier can be assigned this plan. Families on lower tiers will
               not see this plan during assignment.
             </p>
-            <div className="rounded-xl border border-[rgba(246,195,68,0.19)] bg-[#fff8e1] px-4.25 py-3.25 font-manrope text-[13px] leading-[19.5px] text-[#b8860b]">
-              <strong className="font-bold">Open item for client confirmation: </strong>
-              Personalized Pathways is documented as giving each child an individually personalized
-              plan. This form supports both bulk (Grow Together) and one-child (Personalized
-              Pathways) assignments. Confirm this is the intended workflow rather than a separate
-              authoring tool.
-            </div>
+
             <div className="grid gap-3 md:grid-cols-3 2xl:grid-cols-3">
               {tiers.map((option) => {
                 const selected = tier === option.name;
@@ -77,8 +67,12 @@ export function WeeklyPlanMembershipPage() {
                     type="button"
                     role="radio"
                     aria-checked={selected}
-                    onClick={() => setTier(option.name)}
-                    className={`flex min-h-20.75 flex-col gap-2 rounded-[14px] border-2 p-4.5 text-left transition-colors ${selected ? 'border-[#2f7d7e] bg-[#edf6f2]' : 'border-[#e7eceb] bg-white'}`}
+                    onClick={() => formStore.setMembershipTier(option.name)}
+                    className={`flex min-h-20.75 flex-col gap-2 rounded-[14px] border-2 p-4.5 text-left transition-colors ${
+                      selected
+                        ? 'border-[#2f7d7e] bg-[#edf6f2]'
+                        : 'border-[#e7eceb] bg-white hover:bg-[#f8fbfa]'
+                    }`}
                   >
                     <span className="flex items-center gap-2">
                       <span
@@ -109,51 +103,22 @@ export function WeeklyPlanMembershipPage() {
           </div>
         </section>
 
-        <section className="flex flex-col gap-4 rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:flex-row sm:items-center sm:justify-between sm:p-5 2xl:flex-row 2xl:items-center 2xl:justify-between 2xl:p-5">
-          <div className="grid grid-cols-2 gap-2 sm:flex 2xl:flex">
-            <FlowButton
-              onClick={() => router.push('/dashboard/admin/weekly-plans/create/schedule')}
-              className="border-[#e7eceb] text-[#607d8b]"
-            >
-              ← Previous
-            </FlowButton>
-            <FlowButton
-              onClick={() => router.push('/dashboard/admin/weekly-plans/create/review')}
-              className="border-[#2f7d7e] text-[#2f7d7e]"
-            >
-              Next →
-            </FlowButton>
-          </div>
-          <div className="grid gap-2 sm:flex sm:flex-wrap 2xl:flex 2xl:flex-wrap">
-            <FlowButton
-              onClick={() => toast.success('Weekly plan saved as a draft.')}
-              className="border-[#e7eceb] text-[#607d8b]"
-            >
-              Save as Draft
-            </FlowButton>
-            <FlowButton
-              onClick={() => toast.success('Plan preview is ready.')}
-              className="border-[#e7eceb] text-[#607d8b]"
-            >
-              Preview
-            </FlowButton>
-            <FlowButton
-              onClick={() => toast.success('Weekly plan changes saved.')}
-              className="border-[#2f7d7e] bg-[#2f7d7e] text-white"
-            >
-              Save Changes
-            </FlowButton>
-          </div>
+        <section className="flex items-center justify-between rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:p-5 2xl:p-5">
+          <button
+            type="button"
+            onClick={() => router.push('/dashboard/admin/weekly-plans/create/schedule')}
+            className="flex h-10.5 items-center justify-center rounded-[14px] border border-[#e7eceb] px-5 font-manrope text-sm font-semibold text-[#607d8b] transition-colors hover:bg-[#f4f8f6]"
+          >
+            ← Previous
+          </button>
+          <button
+            type="button"
+            onClick={() => router.push('/dashboard/admin/weekly-plans/create/review')}
+            className="flex h-10.5 items-center justify-center rounded-[14px] bg-[#2f7d7e] px-6 font-manrope text-sm font-semibold text-white transition-colors hover:bg-[#266b6c]"
+          >
+            Next →
+          </button>
         </section>
-        <div className="flex items-start gap-2 rounded-[14px] border border-[rgba(246,195,68,0.25)] bg-[#fff8e1] px-4.25 py-3.25 font-manrope text-[13px] leading-[19.5px] text-[#b8860b] sm:items-center 2xl:items-center">
-          <TriangleAlert
-            aria-hidden="true"
-            className="mt-0.5 shrink-0 sm:mt-0 2xl:mt-0"
-            size={15}
-            strokeWidth={1.7}
-          />
-          You have unsaved changes. Navigating away will discard them.
-        </div>
       </div>
     </section>
   );
