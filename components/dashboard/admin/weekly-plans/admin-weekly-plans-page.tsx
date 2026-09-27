@@ -7,6 +7,7 @@ import {
   getAdminWeeklyPlan,
   getPlanMembershipTier,
   useAdminWeeklyPlans,
+  useAdminWeeklyPlansSummary,
   useArchiveWeeklyPlan,
   useDeleteWeeklyPlan,
   useDuplicateWeeklyPlan,
@@ -44,6 +45,7 @@ export function AdminWeeklyPlansPage() {
   } | null>(null);
 
   const { data: rawPlans } = useAdminWeeklyPlans();
+  const { data: summary, isLoading: isLoadingSummary } = useAdminWeeklyPlansSummary();
   const duplicateMutation = useDuplicateWeeklyPlan();
   const archiveMutation = useArchiveWeeklyPlan();
   const deleteMutation = useDeleteWeeklyPlan();
@@ -198,7 +200,7 @@ export function AdminWeeklyPlansPage() {
         </div>
       </header>
       <div className="mt-8 space-y-8">
-        <WeeklyPlansSummary />
+        <WeeklyPlansSummary summary={summary} isLoading={isLoadingSummary} />
         <div className="space-y-6">
           <WeeklyPlanFilters
             search={search}

@@ -5,6 +5,7 @@ import {
   createAdminWeeklyPlan,
   deleteAdminWeeklyPlan,
   duplicateAdminWeeklyPlan,
+  fetchAdminWeeklyPlansSummary,
   getAdminWeeklyPlan,
   publishAdminWeeklyPlan,
   updateAdminWeeklyPlan,
@@ -16,6 +17,7 @@ import { type CreateWeeklyPlanPayload } from '../model/weekly-plan.types';
 export const weeklyPlanKeys = {
   all: ['weekly-plans'] as const,
   adminList: () => [...weeklyPlanKeys.all, 'admin-list'] as const,
+  summary: () => [...weeklyPlanKeys.all, 'summary'] as const,
   detail: (id: string) => [...weeklyPlanKeys.all, 'detail', id] as const,
 };
 
@@ -29,6 +31,13 @@ export function useAdminWeeklyPlans() {
       }
       return response.json();
     },
+  });
+}
+
+export function useAdminWeeklyPlansSummary() {
+  return useQuery({
+    queryKey: weeklyPlanKeys.summary(),
+    queryFn: fetchAdminWeeklyPlansSummary,
   });
 }
 

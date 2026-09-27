@@ -1,4 +1,7 @@
-import { type CreateWeeklyPlanPayload } from '../model/weekly-plan.types';
+import {
+  type CreateWeeklyPlanPayload,
+  type WeeklyPlanAdminSummary,
+} from '../model/weekly-plan.types';
 
 export async function createAdminWeeklyPlan(payload: CreateWeeklyPlanPayload) {
   const response = await fetch('/api/admin/weekly-plans', {
@@ -92,6 +95,15 @@ export async function deleteAdminWeeklyPlan(id: string) {
     throw new Error(errorData?.message ?? 'Failed to delete weekly plan.');
   }
 
+  return response.json();
+}
+
+export async function fetchAdminWeeklyPlansSummary(): Promise<WeeklyPlanAdminSummary> {
+  const response = await fetch('/api/admin/weekly-plans/summary');
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null);
+    throw new Error(errorData?.message ?? 'Failed to load weekly plans summary.');
+  }
   return response.json();
 }
 

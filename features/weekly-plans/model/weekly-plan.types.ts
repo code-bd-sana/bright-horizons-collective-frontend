@@ -119,3 +119,12 @@ export interface BackendWeeklyPlanDetail {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface WeeklyPlanAdminSummary {
+  total: number;
+  published: number;
+  draft: number;
+  archived: number;
+  assignments: number;
+  enrolledChildren: number;
+}
