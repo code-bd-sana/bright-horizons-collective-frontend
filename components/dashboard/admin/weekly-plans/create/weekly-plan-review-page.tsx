@@ -8,6 +8,7 @@ import {
   CATEGORY_UI_TO_BACKEND,
   TIER_UI_TO_BACKEND,
   useCreateWeeklyPlan,
+  useUpdateWeeklyPlan,
   useWeeklyPlanFormStore,
   type CreateWeeklyPlanPayload,
 } from '@/features/weekly-plans';
@@ -89,6 +90,7 @@ export function WeeklyPlanReviewPage() {
   const router = useRouter();
   const formStore = useWeeklyPlanFormStore();
   const createPlanMutation = useCreateWeeklyPlan();
+  const updatePlanMutation = useUpdateWeeklyPlan();
   const [submittingStatus, setSubmittingStatus] = useState<'DRAFT' | 'PUBLISHED' | null>(null);
 
   async function handleSubmit(isPublish: boolean) {
@@ -124,12 +126,24 @@ export function WeeklyPlanReviewPage() {
     setSubmittingStatus(isPublish ? 'PUBLISHED' : 'DRAFT');
 
     try {
-      await createPlanMutation.mutateAsync(payload);
-      toast.success(
-        isPublish
-          ? 'Weekly plan published successfully.'
-          : 'Weekly plan saved as draft successfully.'
-      );
+      if (formStore.editingPlanId) {
+        await updatePlanMutation.mutateAsync({
+          id: formStore.editingPlanId,
+          payload,
+        });
+        toast.success(
+          isPublish
+            ? 'Weekly plan updated and published successfully.'
+            : 'Weekly plan updated and saved as draft successfully.'
+        );
+      } else {
+        await createPlanMutation.mutateAsync(payload);
+        toast.success(
+          isPublish
+            ? 'Weekly plan published successfully.'
+            : 'Weekly plan saved as draft successfully.'
+        );
+      }
       formStore.resetForm();
       router.push('/dashboard/admin/weekly-plans');
     } catch (err: unknown) {
@@ -155,7 +169,7 @@ export function WeeklyPlanReviewPage() {
         </button>
 
         <h1 className="font-nunito text-2xl font-bold leading-9 text-[#263238]">
-          Create Weekly Plans
+          {formStore.editingPlanId ? 'Edit Weekly Plan' : 'Create Weekly Plans'}
         </h1>
 
         <section className="overflow-x-auto rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)]">
