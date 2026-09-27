@@ -8,17 +8,17 @@ import { WeeklyPlanFormStepper } from './weekly-plan-form-stepper';
 const tiers: Array<{ name: UiMembershipTier; description: string; color: string }> = [
   {
     name: 'Little Steps',
-    description: 'Available to Little Steps and higher tiers',
+    description: 'Specific to Little Steps membership plan',
     color: '#2f7d7e',
   },
   {
     name: 'Grow Together',
-    description: 'Available to Grow Together and higher tiers',
+    description: 'Specific to Grow Together membership plan',
     color: '#2f7d7e',
   },
   {
     name: 'Personalized Pathways',
-    description: 'Exclusive to Personalized Pathways members',
+    description: 'Specific to Personalized Pathways membership plan',
     color: '#a05a3a',
   },
 ];
@@ -52,8 +52,7 @@ export function WeeklyPlanMembershipPage() {
           <h2 className="font-nunito text-lg font-bold leading-7 text-[#263238]">4. Membership</h2>
           <div className="mt-5 space-y-4">
             <p className="font-manrope text-sm leading-[22.4px] text-[#607d8b]">
-              Control which membership tier can be assigned this plan. Families on lower tiers will
-              not see this plan during assignment.
+              Select the specific membership plan this weekly plan belongs to.
             </p>
 
             <div className="grid gap-3 md:grid-cols-3 2xl:grid-cols-3">

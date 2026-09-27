@@ -40,8 +40,8 @@ export const CATEGORY_BACKEND_TO_UI: Record<string, string> = {
 };
 
 export const TIER_UI_TO_BACKEND: Record<UiMembershipTier, BackendMembershipTier[]> = {
-  'Little Steps': ['LITTLE_STEPS', 'GROW_TOGETHER', 'PERSONALIZED_PATHWAYS'],
-  'Grow Together': ['GROW_TOGETHER', 'PERSONALIZED_PATHWAYS'],
+  'Little Steps': ['LITTLE_STEPS'],
+  'Grow Together': ['GROW_TOGETHER'],
   'Personalized Pathways': ['PERSONALIZED_PATHWAYS'],
 };
 
@@ -58,7 +58,11 @@ export function getPlanMembershipTier(accessLevels?: string[] | null): UiMembers
     return 'Grow Together';
   }
 
-  return 'Personalized Pathways';
+  if (accessLevels.includes('PERSONALIZED_PATHWAYS')) {
+    return 'Personalized Pathways';
+  }
+
+  return 'Little Steps';
 }
 
 export interface SelectedActivity {
