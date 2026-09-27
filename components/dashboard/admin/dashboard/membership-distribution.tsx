@@ -1,14 +1,57 @@
+'use client';
+
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
-import { membershipDistribution } from './admin-dashboard-data';
+import { useMembershipDashboardStats } from '../memberships/hooks/use-admin-memberships';
 
 export function MembershipDistribution() {
+  const { data: stats, isLoading } = useMembershipDashboardStats();
+
+  const totalMembers = stats?.totalMembers ?? 0;
+  const littleSteps = stats?.littleStepsMembers ?? 0;
+  const growTogether = stats?.growTogetherMembers ?? 0;
+  const personalized = stats?.personalizedPathwaysMembers ?? 0;
+
+  const pctLittle = totalMembers > 0 ? Number(((littleSteps / totalMembers) * 100).toFixed(1)) : 0;
+  const pctGrow = totalMembers > 0 ? Number(((growTogether / totalMembers) * 100).toFixed(1)) : 0;
+  const pctPersonalized =
+    totalMembers > 0 ? Number(((personalized / totalMembers) * 100).toFixed(1)) : 0;
+
+  // Circumference for r=38 is 2 * PI * 38 = 238.761
+  const radius = 38;
+  const circumference = 2 * Math.PI * radius;
+
+  const lenLittle = (pctLittle / 100) * circumference;
+  const lenGrow = (pctGrow / 100) * circumference;
+  const lenPersonalized = (pctPersonalized / 100) * circumference;
+
+  const items = [
+    {
+      label: 'Little Steps',
+      value: `${littleSteps.toLocaleString()} (${pctLittle}%)`,
+      progress: `${pctLittle}%`,
+      color: '#2f7d7e',
+    },
+    {
+      label: 'Grow Together',
+      value: `${growTogether.toLocaleString()} (${pctGrow}%)`,
+      progress: `${pctGrow}%`,
+      color: '#8fb9a8',
+    },
+    {
+      label: 'Personalized Pathways',
+      value: `${personalized.toLocaleString()} (${pctPersonalized}%)`,
+      progress: `${pctPersonalized}%`,
+      color: '#f5af9a',
+    },
+  ];
+
   return (
     <section
       className="min-w-0 rounded-2xl border border-[#e3e9e8] bg-white p-4 shadow-[0_4px_8px_rgba(38,50,56,0.05)] sm:p-6 2xl:min-h-110.5"
       aria-labelledby="membership-distribution-heading"
     >
-      <div className="flex flex-col items-start gap-2 2xl:flex-row 2xl:items-center 2xl:justify-between 2xl:gap-4">
+      <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
         <h2
           id="membership-distribution-heading"
           className="font-nunito text-xl font-medium leading-7 text-[#263238] sm:text-2xl sm:leading-8"
@@ -17,39 +60,98 @@ export function MembershipDistribution() {
         </h2>
         <Link
           href="/dashboard/admin/memberships"
-          className="inline-flex items-center gap-1 font-manrope text-sm leading-5.5 text-[#27898a]"
+          className="inline-flex items-center gap-1 font-manrope text-sm leading-5.5 text-[#27898a] hover:underline"
         >
           View Memberships <ArrowRight aria-hidden="true" size={16} strokeWidth={1.75} />
         </Link>
       </div>
-      <div className="mt-7 flex flex-col items-center">
-        <div
-          className="relative flex size-36 items-center justify-center rounded-full"
-          style={{
-            background:
-              'conic-gradient(#2f7d7e 0 43.7%, #fff 43.7% 45.2%, #8fb9a8 45.2% 79.5%, #fff 79.5% 81%, #f5af9a 81% 100%)',
-          }}
-        >
-          <div className="flex size-25 flex-col items-center justify-center rounded-full bg-white font-manrope text-[#27898a]">
-            <span className="text-sm leading-5">1,102</span>
-            <span className="text-xs leading-4.5">Total Members</span>
+
+      {/* Real SVG Donut Chart */}
+      <div className="mt-7 flex flex-col items-center justify-center">
+        <div className="relative flex size-36 items-center justify-center">
+          <svg viewBox="0 0 100 100" className="size-36 -rotate-90">
+            {/* Background Empty Ring */}
+            <circle cx="50" cy="50" r={radius} fill="none" stroke="#edf1f1" strokeWidth="12" />
+            {/* Segments (rendered if total > 0) */}
+            {totalMembers > 0 && (
+              <>
+                {/* Little Steps */}
+                {lenLittle > 0 && (
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r={radius}
+                    fill="none"
+                    stroke="#2f7d7e"
+                    strokeWidth="12"
+                    strokeDasharray={`${lenLittle} ${circumference}`}
+                    strokeDashoffset={0}
+                    className="transition-all duration-700 ease-out"
+                  />
+                )}
+                {/* Grow Together */}
+                {lenGrow > 0 && (
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r={radius}
+                    fill="none"
+                    stroke="#8fb9a8"
+                    strokeWidth="12"
+                    strokeDasharray={`${lenGrow} ${circumference}`}
+                    strokeDashoffset={-lenLittle}
+                    className="transition-all duration-700 ease-out"
+                  />
+                )}
+                {/* Personalized Pathways */}
+                {lenPersonalized > 0 && (
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r={radius}
+                    fill="none"
+                    stroke="#f5af9a"
+                    strokeWidth="12"
+                    strokeDasharray={`${lenPersonalized} ${circumference}`}
+                    strokeDashoffset={-(lenLittle + lenGrow)}
+                    className="transition-all duration-700 ease-out"
+                  />
+                )}
+              </>
+            )}
+          </svg>
+
+          {/* Center Cutout */}
+          <div className="absolute inset-0 m-auto flex size-24 flex-col items-center justify-center rounded-full bg-white font-manrope shadow-xs">
+            <span
+              className={`font-nunito text-base font-bold leading-5 text-[#263238] ${
+                isLoading ? 'animate-pulse' : ''
+              }`}
+            >
+              {isLoading ? '—' : totalMembers.toLocaleString()}
+            </span>
+            <span className="text-[11px] leading-4 text-[#5f8096]">Total Members</span>
           </div>
         </div>
       </div>
-      <div className="mt-7 space-y-3">
-        {membershipDistribution.map(({ label, value, progress, color }) => (
+
+      {/* Progress Bars Breakdown */}
+      <div className="mt-7 space-y-3.5">
+        {items.map(({ label, value, progress, color }) => (
           <div key={label}>
             <div className="flex items-center justify-between font-manrope text-sm leading-5.5 text-[#263238]">
-              <span className="flex items-center gap-3">
+              <span className="flex items-center gap-2.5">
                 <span className="size-2.5 rounded-full" style={{ backgroundColor: color }} />
-                {label}
+                <span>{label}</span>
               </span>
-              <span className="font-semibold">{value}</span>
+              <span className={`font-semibold ${isLoading ? 'animate-pulse' : ''}`}>
+                {isLoading ? '—' : value}
+              </span>
             </div>
-            <div className="mt-1.5 ml-5.5 h-1.5 overflow-hidden rounded-full bg-[#edf1f1]">
+            <div className="mt-1.5 ml-5 h-1.5 overflow-hidden rounded-full bg-[#edf1f1]">
               <span
-                className="block h-full rounded-full"
-                style={{ width: progress, backgroundColor: color }}
+                className="block h-full rounded-full transition-all duration-500 ease-out"
+                style={{ width: isLoading ? '0%' : progress, backgroundColor: color }}
               />
             </div>
           </div>

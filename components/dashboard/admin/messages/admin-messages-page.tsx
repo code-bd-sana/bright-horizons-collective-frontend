@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import {
   Search,
   ChevronLeft,
@@ -137,9 +138,14 @@ export function AdminMessagesPage() {
   const { data: threads = [], isLoading: isThreadsLoading } = useAdminThreads();
   const sendMessageMutation = useSendMessage();
 
+  const searchParams = useSearchParams();
+  const threadIdFromQuery = searchParams.get('threadId');
+
   const [selectedThreadId, setSelectedThreadId] = useState<string | null>(null);
-  const [conversationOpen, setConversationOpen] = useState(false);
+  const [conversationOpen, setConversationOpen] = useState(() => Boolean(threadIdFromQuery));
   const [searchQuery, setSearchQuery] = useState('');
+
+  const effectiveThreadId = selectedThreadId ?? threadIdFromQuery;
 
   const [replyText, setReplyText] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -152,12 +158,12 @@ export function AdminMessagesPage() {
 
   // Fallback to first thread when none is explicitly selected
   const activeThread = useMemo(() => {
-    if (selectedThreadId) {
-      const found = threads.find((t) => t.id === selectedThreadId);
+    if (effectiveThreadId) {
+      const found = threads.find((t) => t.id === effectiveThreadId);
       if (found) return found;
     }
     return threads[0] || null;
-  }, [threads, selectedThreadId]);
+  }, [threads, effectiveThreadId]);
 
   // Query live messages for the active thread
   const { data: activeThreadMessages = [], isLoading: isMessagesLoading } = useThreadMessages(

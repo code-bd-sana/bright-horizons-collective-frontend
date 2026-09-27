@@ -2,8 +2,6 @@ import { DashboardMetricCards } from './dashboard-metric-cards';
 import { DashboardQuickActions } from './dashboard-quick-actions';
 import { MembershipDistribution } from './membership-distribution';
 import { ParentMessages } from './parent-messages';
-import { RecentActivity } from './recent-activity';
-import { WeeklyPlanStatus } from './weekly-plan-status';
 
 export function AdminDashboardPage() {
   return (
@@ -27,10 +25,6 @@ export function AdminDashboardPage() {
       </section>
       <div className="mt-8">
         <DashboardQuickActions />
-      </div>
-      <div className="mt-8 grid grid-cols-1 gap-6 min-[1200px]:grid-cols-2">
-        <WeeklyPlanStatus />
-        <RecentActivity />
       </div>
       <div className="mt-8 grid grid-cols-1 gap-6 min-[1200px]:grid-cols-2">
         <MembershipDistribution />
