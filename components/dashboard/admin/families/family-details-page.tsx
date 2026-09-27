@@ -1,14 +1,16 @@
 'use client';
 
 import {
-  Archive,
   ArrowLeft,
   ArrowUpRight,
   CalendarDays,
   Loader2,
   Mail,
   PlayCircle,
+  Trash2,
+  UserCheck,
   UserRound,
+  UserX,
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -16,8 +18,13 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { DeactivateFamilyModal } from './deactivate-family-modal';
-import { useAdminFamilyDetails } from './hooks/use-admin-families';
+import { ChangeFamilyStatusModal } from './change-family-status-modal';
+import { DeleteFamilyModal } from './delete-family-modal';
+import {
+  useAdminFamilyDetails,
+  useDeleteFamily,
+  useUpdateFamilyStatus,
+} from './hooks/use-admin-families';
 
 const tierBadgeStyles: Record<string, string> = {
   'Little Steps': 'bg-[#edf6f2] text-[#2f7d7e]',
@@ -69,7 +76,11 @@ function Card({ children, className = '' }: { children: React.ReactNode; classNa
 
 export function FamilyDetailsPage({ familyId }: { familyId: string }) {
   const router = useRouter();
-  const [showDeactivate, setShowDeactivate] = useState(false);
+  const [showStatusModal, setShowStatusModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const updateStatusMutation = useUpdateFamilyStatus();
+  const deleteFamilyMutation = useDeleteFamily();
 
   const { data, isLoading, isError, error, refetch } = useAdminFamilyDetails(familyId);
 
@@ -396,25 +407,112 @@ export function FamilyDetailsPage({ familyId }: { familyId: string }) {
         </Card>
 
         {/* Footer Actions */}
-        <div className="flex sm:justify-end 2xl:justify-end">
+        <div className="flex flex-wrap items-center justify-end gap-3 sm:justify-end 2xl:justify-end">
           <button
             type="button"
-            onClick={() => setShowDeactivate(true)}
-            className="flex h-10 w-full items-center justify-center gap-2 rounded-[14px] border border-[rgba(184,134,11,0.25)] bg-[#fff8e1] px-4 font-manrope text-sm font-semibold text-[#b8860b] transition-colors hover:bg-[#fef3c7] sm:w-auto 2xl:w-auto"
+            onClick={() => setShowStatusModal(true)}
+            className={`flex h-10 items-center justify-center gap-2 rounded-[14px] border px-4 font-manrope text-sm font-semibold transition-colors ${
+              isActive
+                ? 'border-[rgba(184,134,11,0.25)] bg-[#fff8e1] text-[#b8860b] hover:bg-[#fef3c7]'
+                : 'border-[rgba(47,125,126,0.25)] bg-[#edf6f2] text-[#2f7d7e] hover:bg-[#dcefe7]'
+            }`}
           >
-            <Archive aria-hidden="true" size={14} />
-            Deactivate Family
+            {isActive ? (
+              <>
+                <UserX aria-hidden="true" size={15} />
+                <span>Deactivate Family</span>
+              </>
+            ) : (
+              <>
+                <UserCheck aria-hidden="true" size={15} />
+                <span>Activate Family</span>
+              </>
+            )}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setShowDeleteModal(true)}
+            className="flex h-10 items-center justify-center gap-2 rounded-[14px] border border-[#fca5a5] bg-[#fef2f2] px-4 font-manrope text-sm font-semibold text-[#dc2626] transition-colors hover:bg-[#fee2e2]"
+          >
+            <Trash2 aria-hidden="true" size={15} />
+            <span>Delete Family</span>
           </button>
         </div>
       </div>
 
-      <DeactivateFamilyModal
-        familyName={showDeactivate ? user.name : null}
-        onClose={(open) => !open && setShowDeactivate(false)}
-        onConfirm={() => {
-          toast.success(`${user.name}'s account has been deactivated.`);
-          setShowDeactivate(false);
+      <ChangeFamilyStatusModal
+        family={
+          user
+            ? {
+                id: user.id,
+                name: user.name,
+                relationship: user.relationship || 'Parent',
+                email: user.email,
+                phone: user.phone || 'N/A',
+                children: children.map((c) => c.name),
+                membership: currentPlanName,
+                status: isActive ? 'Active' : 'Inactive',
+                registrationDate: user.createdAt,
+              }
+            : null
+        }
+        isOpen={showStatusModal}
+        onClose={setShowStatusModal}
+        onConfirm={async () => {
+          if (!user) return;
+          const isCurrentlyActive = isActive;
+          const newStatus = isCurrentlyActive ? 'DEACTIVATED' : 'ACTIVE';
+
+          try {
+            await updateStatusMutation.mutateAsync({
+              id: user.id,
+              status: newStatus,
+            });
+            toast.success(
+              `${user.name}'s account has been ${isCurrentlyActive ? 'deactivated' : 'activated'}.`
+            );
+            setShowStatusModal(false);
+            refetch();
+          } catch (err: unknown) {
+            const msg = err instanceof Error ? err.message : 'Failed to update family status.';
+            toast.error(msg);
+          }
         }}
+        isPending={updateStatusMutation.isPending}
+      />
+
+      <DeleteFamilyModal
+        family={
+          user
+            ? {
+                id: user.id,
+                name: user.name,
+                relationship: user.relationship || 'Parent',
+                email: user.email,
+                phone: user.phone || 'N/A',
+                children: children.map((c) => c.name),
+                membership: currentPlanName,
+                status: isActive ? 'Active' : 'Inactive',
+                registrationDate: user.createdAt,
+              }
+            : null
+        }
+        isOpen={showDeleteModal}
+        onClose={setShowDeleteModal}
+        onConfirm={async () => {
+          if (!user) return;
+          try {
+            await deleteFamilyMutation.mutateAsync(user.id);
+            toast.success(`Family account for ${user.name} was successfully deleted.`);
+            setShowDeleteModal(false);
+            router.push('/dashboard/admin/families');
+          } catch (err: unknown) {
+            const msg = err instanceof Error ? err.message : 'Failed to delete family account.';
+            toast.error(msg);
+          }
+        }}
+        isPending={deleteFamilyMutation.isPending}
       />
     </section>
   );

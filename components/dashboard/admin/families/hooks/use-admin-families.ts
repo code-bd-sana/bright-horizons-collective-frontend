@@ -1,6 +1,6 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 export type FamilyItem = {
   id: string;
@@ -144,5 +144,53 @@ export function useAdminFamilyDetails(id: string) {
     queryFn: () => fetchFamilyDetails(id),
     enabled: Boolean(id),
     staleTime: 30 * 1000,
+  });
+}
+
+export async function updateFamilyStatusApi(
+  id: string,
+  status: 'ACTIVE' | 'DEACTIVATED'
+): Promise<{ success: boolean; message?: string }> {
+  const res = await fetch(`/api/families/${id}/status`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status }),
+  });
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.message || 'Failed to update family status');
+  }
+  return res.json();
+}
+
+export async function deleteFamilyApi(id: string): Promise<{ success: boolean; message?: string }> {
+  const res = await fetch(`/api/families/${id}`, {
+    method: 'DELETE',
+  });
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.message || 'Failed to delete family');
+  }
+  return res.json();
+}
+
+export function useUpdateFamilyStatus() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, status }: { id: string; status: 'ACTIVE' | 'DEACTIVATED' }) =>
+      updateFamilyStatusApi(id, status),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: adminFamilyKeys.all });
+    },
+  });
+}
+
+export function useDeleteFamily() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => deleteFamilyApi(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: adminFamilyKeys.all });
+    },
   });
 }

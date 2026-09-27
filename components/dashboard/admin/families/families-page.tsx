@@ -1,29 +1,33 @@
 'use client';
 
 import {
-  Archive,
   BadgeCheck,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
-  Copy,
   Eye,
   Loader2,
-  Mail,
-  Pencil,
   RefreshCw,
   Search,
-  Trash,
+  Trash2,
+  UserCheck,
+  UserX,
   Users,
   WalletCards,
 } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-import { DeactivateFamilyModal } from './deactivate-family-modal';
-import { useAdminFamilies, useAdminFamilyStats, type FamilyItem } from './hooks/use-admin-families';
+import { ChangeFamilyStatusModal } from './change-family-status-modal';
+import { DeleteFamilyModal } from './delete-family-modal';
+import {
+  useAdminFamilies,
+  useAdminFamilyStats,
+  useDeleteFamily,
+  useUpdateFamilyStatus,
+  type FamilyItem,
+} from './hooks/use-admin-families';
 
 const tierBadgeStyles: Record<string, string> = {
   'Little Steps': 'bg-[#edf6f2] text-[#2f7d7e]',
@@ -169,13 +173,16 @@ function FamilyFilterDropdown({
 const ITEMS_PER_PAGE = 10;
 
 export function FamiliesPage() {
-  const router = useRouter();
   const [query, setQuery] = useState('');
   const [membership, setMembership] = useState('all');
   const [status, setStatus] = useState('all');
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [deactivateTarget, setDeactivateTarget] = useState<FamilyItem | null>(null);
+  const [statusTarget, setStatusTarget] = useState<FamilyItem | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<FamilyItem | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+
+  const updateStatusMutation = useUpdateFamilyStatus();
+  const deleteFamilyMutation = useDeleteFamily();
 
   const { data: families = [], isLoading, isError, error, refetch } = useAdminFamilies();
 
@@ -273,12 +280,38 @@ export function FamiliesPage() {
       current.includes(id) ? current.filter((selectedId) => selectedId !== id) : [...current, id]
     );
 
-  const action = (label: string, family: FamilyItem) => {
-    if (label === 'View') {
-      router.push(`/dashboard/admin/families/${family.id}`);
-      return;
+  const handleConfirmStatusChange = async () => {
+    if (!statusTarget) return;
+    const isCurrentlyActive = (statusTarget.status || '').toLowerCase() === 'active';
+    const newStatus = isCurrentlyActive ? 'DEACTIVATED' : 'ACTIVE';
+
+    try {
+      await updateStatusMutation.mutateAsync({
+        id: statusTarget.id,
+        status: newStatus,
+      });
+      toast.success(
+        `${statusTarget.name}'s account has been ${isCurrentlyActive ? 'deactivated' : 'activated'}.`
+      );
+      setStatusTarget(null);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to update family status.';
+      toast.error(msg);
     }
-    toast.success(`${label} action for ${family.name}.`);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+
+    try {
+      await deleteFamilyMutation.mutateAsync(deleteTarget.id);
+      toast.success(`Family account for ${deleteTarget.name} has been deleted.`);
+      setSelectedIds((prev) => prev.filter((id) => id !== deleteTarget.id));
+      setDeleteTarget(null);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to delete family account.';
+      toast.error(msg);
+    }
   };
 
   return (
@@ -466,31 +499,50 @@ export function FamiliesPage() {
                     </p>
                   </div>
 
-                  {/* Action row (Note: action column will be fully done separately) */}
-                  <div className="mt-3 flex items-center justify-between border-t border-[#f4f8f6] pt-3">
-                    <div className="flex items-center gap-2">
-                      <Link
-                        href={`/dashboard/admin/families/${family.id}`}
-                        aria-label={`View ${family.name}`}
-                        className="flex size-8 items-center justify-center rounded-lg border border-[#e7eceb] text-[#607d8b] transition-colors hover:bg-[#f4f8f6] hover:text-[#2f7d7e]"
-                      >
-                        <Eye aria-hidden="true" size={14} strokeWidth={1.7} />
-                      </Link>
-                      <a
-                        href={`mailto:${family.email}`}
-                        aria-label={`Email ${family.name}`}
-                        className="flex size-8 items-center justify-center rounded-lg border border-[#e7eceb] text-[#607d8b] transition-colors hover:bg-[#f4f8f6] hover:text-[#2f7d7e]"
-                      >
-                        <Mail aria-hidden="true" size={14} strokeWidth={1.7} />
-                      </a>
-                    </div>
+                  {/* Action row */}
+                  <div className="mt-3 flex items-center justify-end gap-2 border-t border-[#f4f8f6] pt-3">
+                    {/* 1. View Details */}
+                    <Link
+                      href={`/dashboard/admin/families/${family.id}`}
+                      aria-label={`View ${family.name}`}
+                      title="View details"
+                      className="flex size-8 items-center justify-center rounded-[10px] border border-[#e8ebe8] bg-white text-[#607d8b] transition-colors hover:border-[#2f7d7e] hover:bg-[#edf6f2] hover:text-[#2f7d7e]"
+                    >
+                      <Eye aria-hidden="true" size={14} strokeWidth={1.8} />
+                    </Link>
+
+                    {/* 2. Status Change */}
                     <button
                       type="button"
-                      aria-label={`Deactivate ${family.name}`}
-                      onClick={() => setDeactivateTarget(family)}
-                      className="flex size-8 items-center justify-center rounded-lg border border-[#e7eceb] text-[#607d8b] transition-colors hover:bg-[#fef2f2] hover:text-[#dc2626]"
+                      aria-label={`${(family.status || '').toLowerCase() === 'active' ? 'Deactivate' : 'Activate'} ${family.name}`}
+                      title={
+                        (family.status || '').toLowerCase() === 'active'
+                          ? 'Deactivate account'
+                          : 'Activate account'
+                      }
+                      onClick={() => setStatusTarget(family)}
+                      className={`flex size-8 items-center justify-center rounded-[10px] border transition-colors ${
+                        (family.status || '').toLowerCase() === 'active'
+                          ? 'border-[#e8ebe8] bg-white text-[#607d8b] hover:border-[#fcd34d] hover:bg-[#fffbeb] hover:text-[#d97706]'
+                          : 'border-[#e8ebe8] bg-white text-[#607d8b] hover:border-[#a7f3d0] hover:bg-[#ecfdf5] hover:text-[#059669]'
+                      }`}
                     >
-                      <Trash aria-hidden="true" size={14} />
+                      {(family.status || '').toLowerCase() === 'active' ? (
+                        <UserX aria-hidden="true" size={14} strokeWidth={1.8} />
+                      ) : (
+                        <UserCheck aria-hidden="true" size={14} strokeWidth={1.8} />
+                      )}
+                    </button>
+
+                    {/* 3. Delete Button */}
+                    <button
+                      type="button"
+                      aria-label={`Delete ${family.name}`}
+                      title="Delete family"
+                      onClick={() => setDeleteTarget(family)}
+                      className="flex size-8 items-center justify-center rounded-[10px] border border-[#e8ebe8] bg-white text-[#607d8b] transition-colors hover:border-[#fee2e2] hover:bg-[#fef2f2] hover:text-[#dc2626]"
+                    >
+                      <Trash2 aria-hidden="true" size={14} strokeWidth={1.8} />
                     </button>
                   </div>
                 </article>
@@ -610,53 +662,48 @@ export function FamiliesPage() {
                       </td>
                       <td className="px-5">
                         <div className="flex items-center gap-1.5">
+                          {/* 1. View Details */}
                           <Link
                             href={`/dashboard/admin/families/${family.id}`}
                             aria-label={`View ${family.name}`}
                             title="View details"
-                            className="flex size-7 items-center justify-center rounded-[10px] text-[#607d8b] transition-colors hover:bg-[#f4f8f6] hover:text-[#2f7d7e]"
+                            className="flex size-7.5 items-center justify-center rounded-[10px] border border-[#e8ebe8] bg-white text-[#607d8b] transition-colors hover:border-[#2f7d7e] hover:bg-[#edf6f2] hover:text-[#2f7d7e]"
                           >
-                            <Eye aria-hidden="true" size={14} strokeWidth={1.7} />
+                            <Eye aria-hidden="true" size={14} strokeWidth={1.8} />
                           </Link>
-                          <a
-                            href={`mailto:${family.email}`}
-                            aria-label={`Email ${family.name}`}
-                            title={`Email ${family.email}`}
-                            className="flex size-7 items-center justify-center rounded-[10px] text-[#607d8b] transition-colors hover:bg-[#f4f8f6] hover:text-[#2f7d7e]"
-                          >
-                            <Mail aria-hidden="true" size={14} strokeWidth={1.7} />
-                          </a>
+
+                          {/* 2. Status Change */}
                           <button
                             type="button"
-                            aria-label={`Edit ${family.name}`}
-                            onClick={() => action('Edit', family)}
-                            className="flex size-7 items-center justify-center rounded-[10px] text-[#607d8b] transition-colors hover:bg-[#f4f8f6] hover:text-[#2f7d7e]"
+                            aria-label={`${(family.status || '').toLowerCase() === 'active' ? 'Deactivate' : 'Activate'} ${family.name}`}
+                            title={
+                              (family.status || '').toLowerCase() === 'active'
+                                ? 'Deactivate account'
+                                : 'Activate account'
+                            }
+                            onClick={() => setStatusTarget(family)}
+                            className={`flex size-7.5 items-center justify-center rounded-[10px] border transition-colors ${
+                              (family.status || '').toLowerCase() === 'active'
+                                ? 'border-[#e8ebe8] bg-white text-[#607d8b] hover:border-[#fcd34d] hover:bg-[#fffbeb] hover:text-[#d97706]'
+                                : 'border-[#e8ebe8] bg-white text-[#607d8b] hover:border-[#a7f3d0] hover:bg-[#ecfdf5] hover:text-[#059669]'
+                            }`}
                           >
-                            <Pencil aria-hidden="true" size={13} strokeWidth={1.7} />
+                            {(family.status || '').toLowerCase() === 'active' ? (
+                              <UserX aria-hidden="true" size={14} strokeWidth={1.8} />
+                            ) : (
+                              <UserCheck aria-hidden="true" size={14} strokeWidth={1.8} />
+                            )}
                           </button>
+
+                          {/* 3. Delete Button */}
                           <button
                             type="button"
-                            aria-label={`Membership for ${family.name}`}
-                            onClick={() => action('Membership', family)}
-                            className="flex size-7 items-center justify-center rounded-[10px] text-[#607d8b] transition-colors hover:bg-[#f4f8f6] hover:text-[#2f7d7e]"
+                            aria-label={`Delete ${family.name}`}
+                            title="Delete family"
+                            onClick={() => setDeleteTarget(family)}
+                            className="flex size-7.5 items-center justify-center rounded-[10px] border border-[#e8ebe8] bg-white text-[#607d8b] transition-colors hover:border-[#fee2e2] hover:bg-[#fef2f2] hover:text-[#dc2626]"
                           >
-                            <Copy aria-hidden="true" size={13} strokeWidth={1.7} />
-                          </button>
-                          <button
-                            type="button"
-                            aria-label={`Verify ${family.name}`}
-                            onClick={() => action('Verify', family)}
-                            className="flex size-7 items-center justify-center rounded-[10px] text-[#607d8b] transition-colors hover:bg-[#f4f8f6] hover:text-[#2f7d7e]"
-                          >
-                            <Archive aria-hidden="true" size={13} strokeWidth={1.7} />
-                          </button>
-                          <button
-                            type="button"
-                            aria-label={`Deactivate ${family.name}`}
-                            onClick={() => setDeactivateTarget(family)}
-                            className="flex size-7 items-center justify-center rounded-[10px] text-[#607d8b] transition-colors hover:bg-[#fef2f2] hover:text-[#dc2626]"
-                          >
-                            <Trash aria-hidden="true" size={14} />
+                            <Trash2 aria-hidden="true" size={14} strokeWidth={1.8} />
                           </button>
                         </div>
                       </td>
@@ -723,14 +770,20 @@ export function FamiliesPage() {
         </>
       )}
 
-      <DeactivateFamilyModal
-        familyName={deactivateTarget?.name ?? null}
-        onClose={(open) => !open && setDeactivateTarget(null)}
-        onConfirm={() => {
-          if (deactivateTarget)
-            toast.success(`${deactivateTarget.name}'s account has been deactivated.`);
-          setDeactivateTarget(null);
-        }}
+      <ChangeFamilyStatusModal
+        family={statusTarget}
+        isOpen={Boolean(statusTarget)}
+        onClose={(open) => !open && setStatusTarget(null)}
+        onConfirm={handleConfirmStatusChange}
+        isPending={updateStatusMutation.isPending}
+      />
+
+      <DeleteFamilyModal
+        family={deleteTarget}
+        isOpen={Boolean(deleteTarget)}
+        onClose={(open) => !open && setDeleteTarget(null)}
+        onConfirm={handleConfirmDelete}
+        isPending={deleteFamilyMutation.isPending}
       />
     </section>
   );

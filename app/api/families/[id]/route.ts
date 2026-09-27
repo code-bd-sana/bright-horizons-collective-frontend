@@ -17,3 +17,39 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
     return safeBackendErrorResponse(error, 'Unable to fetch family details.');
   }
 }
+
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const authHeaders = await readAuthHeaders();
+  if (!authHeaders) return unauthenticatedResponse();
+
+  try {
+    const { id } = await params;
+    const body = await request.json();
+    const response = await serverApi.patch(`/admin/families/${id}/status`, body, {
+      headers: authHeaders,
+    });
+    const data = response.data?.data ?? response.data;
+    return NextResponse.json(data);
+  } catch (error) {
+    return safeBackendErrorResponse(error, 'Unable to update family status.');
+  }
+}
+
+export async function DELETE(
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const authHeaders = await readAuthHeaders();
+  if (!authHeaders) return unauthenticatedResponse();
+
+  try {
+    const { id } = await params;
+    const response = await serverApi.delete(`/admin/families/${id}`, {
+      headers: authHeaders,
+    });
+    const data = response.data?.data ?? response.data;
+    return NextResponse.json(data);
+  } catch (error) {
+    return safeBackendErrorResponse(error, 'Unable to delete family.');
+  }
+}
