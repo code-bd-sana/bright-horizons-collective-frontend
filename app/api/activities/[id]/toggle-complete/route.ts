@@ -39,11 +39,10 @@ export async function POST(request: NextRequest, context: ActivityRouteContext) 
   }
 
   try {
-    const response = await serverApi.post(
-      `/activities/${activityId.data}/toggle-complete`,
-      {},
-      { headers: authHeaders }
-    );
+    const body = await request.json().catch(() => ({}));
+    const response = await serverApi.post(`/activities/${activityId.data}/toggle-complete`, body, {
+      headers: authHeaders,
+    });
     return validatedUpstreamResponse(response.data, toggleCompleteEnvelopeSchema);
   } catch (error) {
     return safeBackendErrorResponse(error, 'Unable to update activity completion status.');

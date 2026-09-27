@@ -222,13 +222,16 @@ export function TodayActivityCard() {
 
           {/* Action Button */}
           {todayData.isCompleted ? (
-            <div className="flex min-h-11 w-full items-center justify-center gap-1.5 rounded-full border border-[#bcd5cb] bg-[#e9f1ee] px-3 font-nunito text-base font-semibold leading-6 text-[#174a4d]">
+            <Link
+              href={`/dashboard/weekly-plans/completed-activity?activityId=${activity.id}${activeChild ? `&childId=${activeChild.id}` : ''}`}
+              className="flex min-h-11 w-full items-center justify-center gap-1.5 rounded-full border border-[#bcd5cb] bg-[#e9f1ee] px-3 font-nunito text-base font-semibold leading-6 text-[#174a4d] transition-opacity hover:opacity-90"
+            >
               <CheckCircle2 className="size-5 text-[#2f7d7e]" />
-              Completed Today
-            </div>
+              Completed Today · View Success
+            </Link>
           ) : (
             <Link
-              href={`/dashboard/weekly-plans/activity-detail?activityId=${activity.id}`}
+              href={`/dashboard/weekly-plans/activity-detail?activityId=${activity.id}${activeChild ? `&childId=${activeChild.id}` : ''}`}
               className="flex min-h-11 w-full items-center justify-center gap-1 rounded-full bg-[#2f7d7e] px-3 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-white shadow-[inset_0_-6px_2px_rgba(255,255,255,0.07)] transition-colors hover:bg-[#235d5d]"
             >
               Start Activity

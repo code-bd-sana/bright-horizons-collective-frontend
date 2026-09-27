@@ -1,19 +1,51 @@
-export function ActivityOverview() {
+interface ActivityOverviewProps {
+  scheduledDay?: string | null;
+  title: string;
+  description?: string | null;
+  duration?: string | null;
+  materials?: string | null;
+  developmentGoal?: string | null;
+  isOtDesigned?: boolean;
+  learningObjective?: string | null;
+  childName?: string | null;
+}
+
+export function ActivityOverview({
+  scheduledDay,
+  title,
+  description,
+  duration = '20 min',
+  materials = 'Household materials',
+  developmentGoal = 'Motor planning & balance',
+  isOtDesigned = true,
+  learningObjective,
+  childName,
+}: ActivityOverviewProps) {
+  // Format learning objective, substituting child name if helpful
+  const effectiveObjective =
+    learningObjective ||
+    `${childName || 'Your child'} will engage in purposeful movement to build motor coordination, posture, and spatial body awareness.`;
+
   return (
     <div className="flex w-full flex-col gap-8 lg:gap-12">
       <div className="flex w-full max-w-180 flex-col gap-6 lg:gap-8">
         {/* Title and Description */}
         <div className="flex w-full flex-col gap-3">
           <div className="flex flex-col gap-1">
-            <p className="font-nunito text-xs font-medium leading-4 text-[#2f7d7e]">Mon, Jul 20</p>
+            {scheduledDay && (
+              <p className="font-nunito text-xs font-medium leading-4 text-[#2f7d7e]">
+                {scheduledDay}
+              </p>
+            )}
             <h1 className="font-nunito text-2xl font-medium leading-8 tracking-[-0.16px] text-[#263238] sm:text-[32px] sm:leading-10">
-              Animal Yoga Adventure
+              {title}
             </h1>
           </div>
-          <p className="max-w-146 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-(--text-primary\/400,#515b60)">
-            Move through fun animal poses to build balance and whole-body motor planning. Perfect
-            for an energetic start to the week.
-          </p>
+          {description && (
+            <p className="max-w-146 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-(--text-primary\/400,#515b60)">
+              {description}
+            </p>
+          )}
         </div>
 
         {/* Info Grid */}
@@ -23,7 +55,7 @@ export function ActivityOverview() {
               Duration
             </p>
             <p className="font-manrope text-base leading-6 tracking-[-0.176px] text-(--text-primary\/500,#263238)">
-              20 min
+              {duration}
             </p>
           </div>
 
@@ -32,7 +64,7 @@ export function ActivityOverview() {
               Materials
             </p>
             <p className="font-manrope text-base leading-6 tracking-[-0.176px] text-(--text-primary\/500,#263238)">
-              Yoga cards & open space
+              {materials}
             </p>
           </div>
 
@@ -41,7 +73,7 @@ export function ActivityOverview() {
               Development Goal
             </p>
             <p className="font-manrope text-base leading-6 tracking-[-0.176px] text-(--text-primary\/500,#263238)">
-              Motor planning & balance
+              {developmentGoal}
             </p>
           </div>
 
@@ -50,7 +82,7 @@ export function ActivityOverview() {
               OT Designed
             </p>
             <p className="font-manrope text-base leading-6 tracking-[-0.176px] text-(--text-primary\/500,#263238)">
-              Therapist-approved
+              {isOtDesigned ? 'Therapist-approved' : 'OT Designed'}
             </p>
           </div>
         </div>
@@ -62,8 +94,7 @@ export function ActivityOverview() {
           Learning Objective
         </h2>
         <p className="font-manrope text-sm leading-5.5 tracking-[-0.084px] text-(--text-primary\/400,#515b60)">
-          Emma will move through at least 5 animal-themed yoga poses, holding each for 3–5 seconds,
-          building postural control and spatial body awareness.
+          {effectiveObjective}
         </p>
       </div>
     </div>

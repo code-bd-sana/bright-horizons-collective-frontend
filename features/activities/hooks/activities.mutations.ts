@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   createActivity,
   deleteActivity,
+  submitActivityCompletionFeedback,
   toggleActivityComplete,
   toggleActivityFavorite,
   updateActivity,
@@ -81,9 +82,18 @@ export function useToggleActivityFavorite() {
 export function useToggleActivityComplete() {
   const queryClient = useQueryClient();
 
-  return useMutation<{ isCompleted: boolean; status: string }, Error, string>({
-    mutationFn: (id: string) => toggleActivityComplete(id),
-    onSuccess: (data, id) => {
+  return useMutation<
+    { isCompleted: boolean; status: string },
+    Error,
+    string | { id: string; childId?: string }
+  >({
+    mutationFn: (param) => {
+      const id = typeof param === 'string' ? param : param.id;
+      const childId = typeof param === 'string' ? undefined : param.childId;
+      return toggleActivityComplete(id, childId);
+    },
+    onSuccess: (data, param) => {
+      const id = typeof param === 'string' ? param : param.id;
       queryClient.setQueryData(activityKeys.detail(id), (old: Activity | undefined) => {
         if (!old) return old;
         return {
@@ -95,6 +105,27 @@ export function useToggleActivityComplete() {
       void queryClient.invalidateQueries({ queryKey: ['activities', 'public', 'dashboard'] });
       void queryClient.invalidateQueries({ queryKey: ['activities', 'completed'] });
       void queryClient.invalidateQueries({ queryKey: ['child-progress'] });
+      void queryClient.invalidateQueries({ queryKey: ['weekly-plans'] });
+    },
+  });
+}
+
+export function useSubmitActivityCompletionFeedback() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      childId,
+      input,
+    }: {
+      childId: string;
+      input: Parameters<typeof submitActivityCompletionFeedback>[1];
+    }) => submitActivityCompletionFeedback(childId, input),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: activityKeys.all });
+      void queryClient.invalidateQueries({ queryKey: ['child-progress'] });
+      void queryClient.invalidateQueries({ queryKey: ['weekly-plans'] });
+      void queryClient.invalidateQueries({ queryKey: ['child-profiles'] });
     },
   });
 }

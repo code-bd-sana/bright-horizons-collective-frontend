@@ -417,13 +417,20 @@ export function WeeklyCalendar({ title = 'Weekly Calendar' }: WeeklyCalendarProp
                     </div>
 
                     {/* Action Button */}
-                    {item.isRestDay || item.status === 'completed' ? (
+                    {item.isRestDay ? (
                       <div className={actionClassName}>{actionContent}</div>
+                    ) : item.status === 'completed' ? (
+                      <Link
+                        href={`/dashboard/weekly-plans/completed-activity?activityId=${item.activityId}${activeChild ? `&childId=${activeChild.id}` : ''}`}
+                        className={actionClassName}
+                      >
+                        {actionContent}
+                      </Link>
                     ) : (
                       <Link
                         href={
                           item.activityId
-                            ? `/dashboard/weekly-plans/activity-detail?activityId=${item.activityId}`
+                            ? `/dashboard/weekly-plans/activity-detail?activityId=${item.activityId}${activeChild ? `&childId=${activeChild.id}` : ''}`
                             : '/dashboard/weekly-plans/activity-detail'
                         }
                         className={actionClassName}

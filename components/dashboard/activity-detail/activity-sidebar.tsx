@@ -1,11 +1,102 @@
-import Image from 'next/image';
-import Link from 'next/link';
+'use client';
 
-export function ActivitySidebar() {
+import { useState } from 'react';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { Check, Bookmark, Loader2 } from 'lucide-react';
+import {
+  useToggleActivityComplete,
+  useToggleActivityFavorite,
+} from '@/features/activities/hooks/activities.mutations';
+
+interface ActivitySidebarProps {
+  activityId: string;
+  isCompleted?: boolean;
+  isFavorited?: boolean;
+  childId?: string | null;
+  childName?: string | null;
+  parentTips?: string | null;
+  safetyNotes?: string | null;
+  developmentGoal?: string | null;
+}
+
+const DEFAULT_TIPS = [
+  "Follow your child's lead — if they turn a pose into their own version, go with it. Spontaneous movement is just as valuable.",
+  'Narrate what you see: "Wow, you\'re holding so steady!" Specific praise builds body awareness.',
+  'If your child gets silly, lean into it — laughter while moving is excellent for self-regulation and social bonding.',
+  'Try it alongside your child rather than instructing. Side-by-side play reduces performance pressure.',
+];
+
+const DEFAULT_SAFETY_NOTES = [
+  'Ensure the floor surface is non-slip. Place a mat or carpet under their feet for poses that require standing balance.',
+  'Avoid inverting the head or sudden jerky movements until balance and neck strength are assessed by your care team.',
+  'Watch for signs of overexertion: flushed cheeks, rapid breathing, or irritability. Offer a water break.',
+];
+
+export function ActivitySidebar({
+  activityId,
+  isCompleted = false,
+  isFavorited = false,
+  childId,
+  childName,
+  parentTips,
+  safetyNotes,
+  developmentGoal,
+}: ActivitySidebarProps) {
+  const router = useRouter();
+  const [isCompleting, setIsCompleting] = useState(false);
+
+  const toggleCompleteMutation = useToggleActivityComplete();
+  const toggleFavoriteMutation = useToggleActivityFavorite();
+
   const imgVector2 = '/Home/figma-activity-detail-arrow-right.svg';
-  const imgVector3 = '/Home/figma-activity-detail-bookmark.svg';
   const imgFrame19 = '/Home/figma-activity-detail-warning.svg';
   const imgIcon = '/Home/figma-activity-detail-goal.svg';
+
+  const name = childName || 'your child';
+
+  // Format parent tips
+  const tipsList: string[] = parentTips
+    ? parentTips
+        .split('\n')
+        .map((t) => t.trim().replace(/^[-*•\d.]\s*/, ''))
+        .filter(Boolean)
+    : DEFAULT_TIPS.map((t) => t.replace(/\b(your child|Emma)\b/gi, name));
+
+  // Format safety notes
+  const safetyList: string[] = safetyNotes
+    ? safetyNotes
+        .split('\n')
+        .map((s) => s.trim().replace(/^[-*•\d.]\s*/, ''))
+        .filter(Boolean)
+    : DEFAULT_SAFETY_NOTES.map((s) => s.replace(/\b(your child|Emma)\b/gi, name));
+
+  const handleComplete = async () => {
+    try {
+      setIsCompleting(true);
+      if (!isCompleted) {
+        await toggleCompleteMutation.mutateAsync({
+          id: activityId,
+          childId: childId ?? undefined,
+        });
+      }
+      const queryParams = new URLSearchParams();
+      queryParams.set('activityId', activityId);
+      if (childId) queryParams.set('childId', childId);
+      router.push(`/dashboard/weekly-plans/completed-activity?${queryParams.toString()}`);
+    } catch {
+      const queryParams = new URLSearchParams();
+      queryParams.set('activityId', activityId);
+      if (childId) queryParams.set('childId', childId);
+      router.push(`/dashboard/weekly-plans/completed-activity?${queryParams.toString()}`);
+    } finally {
+      setIsCompleting(false);
+    }
+  };
+
+  const handleToggleFavorite = () => {
+    toggleFavoriteMutation.mutate(activityId);
+  };
 
   return (
     <div className="grid w-full grid-cols-1 gap-6 md:grid-cols-2 min-[1600px]:flex min-[1600px]:max-w-71.75 min-[1600px]:flex-col">
@@ -14,21 +105,45 @@ export function ActivitySidebar() {
         <p className="font-['Nunito'] font-medium text-[12px] leading-4 text-(--text-primary\/300,#7d8488) uppercase">
           Ready to begin?
         </p>
-        <div className="flex flex-col gap-6 w-full">
-          <Link
-            href="/dashboard/weekly-plans/completed-activity"
-            className="bg-[#2f7d7e] rounded-full px-3 py-2 flex items-center justify-center gap-1 w-full overflow-hidden relative shadow-[inset_0px_-6px_2px_0px_rgba(255,255,255,0.07)]"
+        <div className="flex flex-col gap-4 w-full">
+          <button
+            type="button"
+            onClick={handleComplete}
+            disabled={isCompleting}
+            className="bg-[#2f7d7e] rounded-full px-3 py-2 flex items-center justify-center gap-1.5 w-full overflow-hidden relative shadow-[inset_0px_-6px_2px_0px_rgba(255,255,255,0.07)] transition-opacity hover:opacity-90 disabled:opacity-70 cursor-pointer"
           >
+            {isCompleting ? (
+              <Loader2 className="size-4 animate-spin text-white" />
+            ) : isCompleted ? (
+              <Check className="size-4 text-white" strokeWidth={2.5} />
+            ) : null}
             <span className="font-['Nunito'] font-medium text-sm leading-5 text-white tracking-[-0.084px]">
-              Complete Activity
+              {isCompleting
+                ? 'Completing...'
+                : isCompleted
+                  ? 'Completed · View Success'
+                  : 'Complete Activity'}
             </span>
-            <Image src={imgVector2} alt="Arrow Right" width={16} height={16} />
-          </Link>
+            {!isCompleting && !isCompleted && (
+              <Image src={imgVector2} alt="Arrow Right" width={16} height={16} />
+            )}
+          </button>
 
-          <button className="border border-(--border\/500,#d8ddd9) rounded-full px-3 py-2 flex items-center justify-center gap-1 w-full overflow-hidden relative">
-            <Image src={imgVector3} alt="Bookmark" width={16} height={16} />
-            <span className="font-['Nunito'] font-medium text-sm leading-5 text-(--text-primary\/400,#515b60) tracking-[-0.084px]">
-              Save for Later
+          <button
+            type="button"
+            onClick={handleToggleFavorite}
+            disabled={toggleFavoriteMutation.isPending}
+            className={`border rounded-full px-3 py-2 flex items-center justify-center gap-1.5 w-full overflow-hidden relative transition-colors cursor-pointer ${
+              isFavorited
+                ? 'border-[#2f7d7e] bg-[#eef7f6] text-[#2f7d7e]'
+                : 'border-(--border\/500,#d8ddd9) bg-white text-(--text-primary\/400,#515b60) hover:bg-[#f7faf8]'
+            }`}
+          >
+            <Bookmark
+              className={`size-4 ${isFavorited ? 'fill-[#2f7d7e] text-[#2f7d7e]' : 'text-[#515b60]'}`}
+            />
+            <span className="font-['Nunito'] font-medium text-sm leading-5 tracking-[-0.084px]">
+              {isFavorited ? 'Saved to Favorites' : 'Save for Later'}
             </span>
           </button>
         </div>
@@ -41,12 +156,7 @@ export function ActivitySidebar() {
         </h2>
 
         <div className="flex flex-col gap-5 w-full">
-          {[
-            "Follow Emma's lead — if she turns a pose into her own version, go with it. Spontaneous movement is just as valuable.",
-            'Narrate what you see: "Wow, you\'re holding the tree pose so steady!" Specific praise builds body awareness.',
-            'If Emma gets silly, lean into it — laughter while moving is excellent for self-regulation and social bonding.',
-            'Try it alongside Emma rather than instructing. Side-by-side play reduces performance pressure.',
-          ].map((tip, idx) => (
+          {tipsList.map((tip, idx) => (
             <div key={idx} className="flex items-start gap-3 w-full">
               <div className="bg-(--primary\/100,#d5e5e5) rounded-[15px] w-6 h-6 shrink-0 flex items-center justify-center">
                 <span className="font-['Nunito'] font-medium text-[14px] leading-5 text-[#2f7d7e] tracking-[-0.084px]">
@@ -67,11 +177,7 @@ export function ActivitySidebar() {
           Safety Notes
         </h2>
         <div className="flex flex-col gap-5 w-full">
-          {[
-            "Ensure the floor surface is non-slip. Place a yoga mat under Emma's feet for poses that require standing balance.",
-            'Avoid inverting the head (no headstands) until balance and neck strength are assessed by your OT.',
-            'Watch for signs of overexertion: flushed cheeks, rapid breathing, or irritability. Offer a water break.',
-          ].map((note, idx) => (
+          {safetyList.map((note, idx) => (
             <div key={idx} className="flex items-start gap-3 w-full">
               <Image src={imgFrame19} alt="Warning" width={24} height={24} className="shrink-0" />
               <p className="flex-1 font-['Manrope'] font-normal text-[14px] leading-5.5 text-[#263238] tracking-[-0.084px]">
@@ -91,7 +197,7 @@ export function ActivitySidebar() {
           </h2>
         </div>
         <p className="font-['Manrope'] font-normal text-[14px] leading-5.5 text-[#263238] tracking-[-0.084px]">
-          Improve whole-body motor planning, balance, and body awareness
+          {developmentGoal || 'Improve whole-body motor planning, balance, and body awareness'}
         </p>
       </div>
     </div>

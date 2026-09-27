@@ -1,9 +1,21 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import Image from 'next/image';
 
-const steps = [
+interface StepItem {
+  num: number;
+  title: string;
+  description: string;
+  isOpen: boolean;
+}
+
+interface StepByStepInstructionsProps {
+  instructions?: Array<string | { title?: string; description?: string }> | null;
+  childName?: string | null;
+}
+
+const DEFAULT_STEPS: StepItem[] = [
   {
     num: 1,
     title: 'Set up the space',
@@ -22,48 +34,75 @@ const steps = [
     num: 3,
     title: 'Flip a card & name the animal',
     description:
-      'Let Emma flip the first card and name the animal together. Talk about how that animal moves — does it slither, hop, prowl?',
+      'Let your child flip the first card and name the animal together. Talk about how that animal moves — does it slither, hop, prowl?',
     isOpen: true,
   },
   {
     num: 4,
     title: 'Model the pose first',
     description:
-      'Demonstrate the yoga pose yourself before asking Emma to try. Exaggerate the movement and make the animal sound — this reduces hesitation and makes it playful.',
+      'Demonstrate the yoga pose yourself before asking your child to try. Exaggerate the movement and make the animal sound — this reduces hesitation and makes it playful.',
     isOpen: true,
   },
   {
     num: 5,
     title: 'Hold & count together',
     description:
-      'Hold each pose for a count of 1–5 out loud together. If Emma loses balance, encourage her to try again. Falling is part of learning!',
+      'Hold each pose for a count of 1–5 out loud together. If your child loses balance, encourage trying again. Falling is part of learning!',
     isOpen: true,
   },
   {
     num: 6,
     title: 'Move through all cards',
     description:
-      'Flip and complete each card in sequence. Encourage Emma to pick a favourite pose to repeat at the end.',
+      'Flip and complete each card in sequence. Encourage your child to pick a favourite pose to repeat at the end.',
     isOpen: true,
   },
   {
     num: 7,
     title: "Cool-down: Child's pose",
-    description: '',
+    description: 'Slow down breathing and rest calmly on the floor together.',
     isOpen: false,
   },
 ];
 
-export function StepByStepInstructions() {
+export function StepByStepInstructions({ instructions, childName }: StepByStepInstructionsProps) {
   const imgVector = '/Home/figma-activity-detail-chevron-down.svg';
-  const [stepsState, setStepsState] = useState(steps);
+
+  const stepsList: StepItem[] = useMemo(() => {
+    if (!instructions || !Array.isArray(instructions) || instructions.length === 0) {
+      return DEFAULT_STEPS.map((s) => ({
+        ...s,
+        description: childName
+          ? s.description.replace(/\b(your child|Emma)\b/gi, childName)
+          : s.description,
+      }));
+    }
+
+    return instructions.map((item, idx) => {
+      if (typeof item === 'string') {
+        return {
+          num: idx + 1,
+          title: item,
+          description: '',
+          isOpen: true,
+        };
+      }
+      return {
+        num: idx + 1,
+        title: item.title || `Step ${idx + 1}`,
+        description: item.description || '',
+        isOpen: true,
+      };
+    });
+  }, [instructions, childName]);
+
+  const [collapsedIndices, setCollapsedIndices] = useState<number[]>([]);
 
   const toggleStep = (index: number) => {
-    setStepsState((prevSteps) => {
-      const newSteps = [...prevSteps];
-      newSteps[index] = { ...newSteps[index], isOpen: !newSteps[index].isOpen };
-      return newSteps;
-    });
+    setCollapsedIndices((prev) =>
+      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
+    );
   };
 
   return (
@@ -74,44 +113,47 @@ export function StepByStepInstructions() {
             Step-by-Step Instructions
           </h2>
           <p className="font-nunito text-xs font-medium leading-4 whitespace-nowrap text-[#2f7d7e] sm:w-31">
-            7 steps · tap to expand
+            {stepsList.length} steps · tap to expand
           </p>
         </div>
 
         <div className="flex w-full flex-col gap-5">
-          {stepsState.map((step, idx) => (
-            <button
-              type="button"
-              key={idx}
-              onClick={() => toggleStep(idx)}
-              className={`border bg-(--bg\/-white,white) ${step.isOpen ? 'border-[#dceeee] shadow-[0_1px_1.5px_rgba(0,0,0,0.1),0_1px_1px_rgba(0,0,0,0.1)]' : 'border-(--border\/300,#e8ebe8)'} flex w-full flex-col gap-2.5 rounded-2xl p-4 text-left transition-all duration-200 sm:p-5`}
-            >
-              <div className="flex w-full items-center justify-between gap-2">
-                <div className="flex min-w-0 items-center gap-3">
-                  <div className="flex size-6 shrink-0 items-center justify-center rounded-[15px] bg-[#dceeee]">
-                    <p className="font-nunito text-sm font-medium leading-5 tracking-[-0.084px] text-[#174a4d]">
-                      {step.num}
+          {stepsList.map((step, idx) => {
+            const isOpen = !collapsedIndices.includes(idx);
+            return (
+              <button
+                type="button"
+                key={idx}
+                onClick={() => toggleStep(idx)}
+                className={`border bg-(--bg\/-white,white) ${isOpen ? 'border-[#dceeee] shadow-[0_1px_1.5px_rgba(0,0,0,0.1),0_1px_1px_rgba(0,0,0,0.1)]' : 'border-(--border\/300,#e8ebe8)'} flex w-full flex-col gap-2.5 rounded-2xl p-4 text-left transition-all duration-200 sm:p-5`}
+              >
+                <div className="flex w-full items-center justify-between gap-2">
+                  <div className="flex min-w-0 items-center gap-3">
+                    <div className="flex size-6 shrink-0 items-center justify-center rounded-[15px] bg-[#dceeee]">
+                      <p className="font-nunito text-sm font-medium leading-5 tracking-[-0.084px] text-[#174a4d]">
+                        {step.num}
+                      </p>
+                    </div>
+                    <p className="min-w-0 font-nunito text-base font-medium leading-6 tracking-[-0.27px] text-[#263238] sm:text-lg">
+                      {step.title}
                     </p>
                   </div>
-                  <p className="min-w-0 font-nunito text-base font-medium leading-6 tracking-[-0.27px] text-[#263238] sm:text-lg">
-                    {step.title}
-                  </p>
-                </div>
-                <div
-                  className={`flex items-center justify-center shrink-0 transition-transform duration-200 ${step.isOpen ? 'rotate-180' : ''}`}
-                >
-                  <div className="flex size-6 items-center justify-center rounded-md p-0.5">
-                    <Image src={imgVector} alt="Chevron" width={16} height={16} />
+                  <div
+                    className={`flex items-center justify-center shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+                  >
+                    <div className="flex size-6 items-center justify-center rounded-md p-0.5">
+                      <Image src={imgVector} alt="Chevron" width={16} height={16} />
+                    </div>
                   </div>
                 </div>
-              </div>
-              {step.isOpen && step.description && (
-                <p className="w-full font-manrope text-sm leading-5.5 tracking-[-0.084px] text-(--text-primary\/400,#515b60)">
-                  {step.description}
-                </p>
-              )}
-            </button>
-          ))}
+                {isOpen && step.description && (
+                  <p className="w-full font-manrope text-sm leading-5.5 tracking-[-0.084px] text-(--text-primary\/400,#515b60)">
+                    {step.description}
+                  </p>
+                )}
+              </button>
+            );
+          })}
         </div>
       </div>
     </div>

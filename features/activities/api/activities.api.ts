@@ -152,13 +152,36 @@ export function toggleActivityFavorite(id: string): Promise<{ status: string; ty
 }
 
 export function toggleActivityComplete(
-  id: string
+  id: string,
+  childId?: string
 ): Promise<{ isCompleted: boolean; status: string }> {
   const activityId = parseInput(activityIdSchema, id);
 
   return handleApiCall(async () => {
-    const response = await browserApi.post(`/activities/${activityId}/toggle-complete`);
+    const response = await browserApi.post(`/activities/${activityId}/toggle-complete`, {
+      childId,
+    });
     return response.data.data;
+  });
+}
+
+export type ActivityFeedbackInput = {
+  activityId: string;
+  weeklyPlanId?: string;
+  difficulty?: string;
+  rating?: number;
+  reflections?: string[];
+  parentNotes?: string;
+  artworkUrl?: string;
+};
+
+export function submitActivityCompletionFeedback(
+  childId: string,
+  input: ActivityFeedbackInput
+): Promise<Record<string, unknown>> {
+  return handleApiCall(async () => {
+    const response = await browserApi.post(`/child-progress/${childId}/complete-activity`, input);
+    return response.data;
   });
 }
 
