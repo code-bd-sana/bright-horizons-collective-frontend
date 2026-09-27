@@ -109,3 +109,23 @@ export function uploadChildAvatar(file: File): Promise<{ url: string }> {
     return envelope.data;
   });
 }
+
+export type ChildDevelopmentProgress = {
+  fineMotorProgress: number;
+  grossMotorProgress: number;
+  sensoryProgress: number;
+  coordinationProgress: number;
+  visualMotorProgress: number;
+  therapistNotes?: string | null;
+  reportMonth?: string | null;
+};
+
+export function getChildProgress(id: string): Promise<ChildDevelopmentProgress> {
+  const childId = parseInput(childIdSchema, id);
+
+  return handleApiCall(async () => {
+    const response = await browserApi.get(`/child-progress/${childId}/progress`);
+    const data = response.data?.data ?? response.data;
+    return data as ChildDevelopmentProgress;
+  });
+}
