@@ -38,6 +38,7 @@ export type ActivityExploreItem = ExploreItemBase & {
   duration: string;
   tags: string[];
   highlighted?: boolean;
+  isCompleted?: boolean;
 };
 
 export type ParentResourceExploreItem = ExploreItemBase & {

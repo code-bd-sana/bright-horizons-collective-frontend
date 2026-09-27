@@ -129,3 +129,22 @@ export function getChildProgress(id: string): Promise<ChildDevelopmentProgress> 
     return data as ChildDevelopmentProgress;
   });
 }
+
+export type ChildCompletedActivitiesResponse = {
+  completedActivityIds: string[];
+  completions: Array<{
+    id: string;
+    activityId: string;
+    completedAt: string;
+  }>;
+};
+
+export function getChildCompletedActivities(id: string): Promise<ChildCompletedActivitiesResponse> {
+  const childId = parseInput(childIdSchema, id);
+
+  return handleApiCall(async () => {
+    const response = await browserApi.get(`/child-progress/${childId}/completed-activities`);
+    const data = response.data?.data ?? response.data;
+    return data as ChildCompletedActivitiesResponse;
+  });
+}

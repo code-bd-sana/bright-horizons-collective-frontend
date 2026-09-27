@@ -28,15 +28,17 @@ function invalidIdResponse() {
   return NextResponse.json({ message: 'Invalid activity ID.' }, { status: 400 });
 }
 
-export async function GET(_request: NextRequest, context: ActivityRouteContext) {
+export async function GET(request: NextRequest, context: ActivityRouteContext) {
   const id = await readActivityId(context);
   if (!id.success) return invalidIdResponse();
 
   const authHeaders = await readAuthHeaders();
+  const childId = request.nextUrl.searchParams.get('childId');
 
   try {
     const response = await serverApi.get(`/activities/${id.data}`, {
       headers: authHeaders ?? {},
+      params: childId ? { childId } : undefined,
     });
     return validatedUpstreamResponse(response.data, backendActivityEnvelopeSchema);
   } catch (error) {

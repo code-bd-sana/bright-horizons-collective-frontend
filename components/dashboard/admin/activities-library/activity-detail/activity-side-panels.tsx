@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ArrowRight, Bookmark, Check, Loader2, ShieldCheck, TrendingUp } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { toast } from 'sonner';
@@ -10,16 +10,33 @@ import {
 } from '@/features/activities/hooks/activities.mutations';
 import type { Activity } from '@/features/activities/model/activity.types';
 import { useSession } from '@/services/api/auth/auth.queries';
+import { useAppStore } from '@/store/use-app-store';
+import {
+  useChildProfiles,
+  useChildCompletedActivities,
+} from '@/features/child-profiles/hooks/child-profiles.queries';
 
 export function ActivitySidePanels({ activity }: { activity: Activity }) {
   const { data: session } = useSession();
   const router = useRouter();
   const pathname = usePathname();
 
+  const { selectedChildId } = useAppStore();
+  const { data: children = [] } = useChildProfiles();
+  const activeChild = useMemo(() => {
+    return children.find((c) => c.id === selectedChildId) || children[0] || null;
+  }, [children, selectedChildId]);
+
+  const { data: completedData } = useChildCompletedActivities(activeChild?.id);
+  const isCompletedForChild = useMemo(() => {
+    if (!completedData?.completedActivityIds) return Boolean(activity.isCompleted);
+    return completedData.completedActivityIds.includes(activity.id);
+  }, [completedData, activity.id, activity.isCompleted]);
+
   const [favoritedOverride, setFavoritedOverride] = useState<boolean | null>(null);
   const [completedOverride, setCompletedOverride] = useState<boolean | null>(null);
 
-  const isCompleted = completedOverride ?? Boolean(activity.isCompleted);
+  const isCompleted = completedOverride ?? isCompletedForChild;
   const isFavorited = favoritedOverride ?? Boolean(activity.isFavorited);
 
   const toggleFavoriteMutation = useToggleActivityFavorite();
@@ -69,16 +86,23 @@ export function ActivitySidePanels({ activity }: { activity: Activity }) {
     if (isCompleted) return;
 
     setCompletedOverride(true);
-    toggleCompleteMutation.mutate(activity.id, {
-      onSuccess: () => {
-        setCompletedOverride(true);
-        toast.success('Activity marked as completed');
-      },
-      onError: () => {
-        setCompletedOverride(null);
-        toast.error('Failed to complete activity');
-      },
-    });
+    toggleCompleteMutation.mutate(
+      { id: activity.id, childId: activeChild?.id },
+      {
+        onSuccess: () => {
+          setCompletedOverride(true);
+          toast.success(
+            activeChild?.name
+              ? `Activity marked as completed for ${activeChild.name}`
+              : 'Activity marked as completed'
+          );
+        },
+        onError: () => {
+          setCompletedOverride(null);
+          toast.error('Failed to complete activity');
+        },
+      }
+    );
   };
 
   const parentTipsList = activity.parentTips
@@ -118,7 +142,15 @@ export function ActivitySidePanels({ activity }: { activity: Activity }) {
           ) : isCompleted ? (
             <Check aria-hidden="true" size={16} strokeWidth={2.5} />
           ) : null}
-          <span>{isCompleted ? 'Activity Completed' : 'Complete Activity'}</span>
+          <span>
+            {isCompleted
+              ? activeChild?.name
+                ? `Completed for ${activeChild.name}`
+                : 'Activity Completed'
+              : activeChild?.name
+                ? `Complete for ${activeChild.name}`
+                : 'Complete Activity'}
+          </span>
           {!isCompleted && !toggleCompleteMutation.isPending && (
             <ArrowRight aria-hidden="true" size={15} />
           )}

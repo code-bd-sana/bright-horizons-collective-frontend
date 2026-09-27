@@ -1,7 +1,12 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { getChildProfile, getChildProfiles, getChildProgress } from '../api/child-profiles.api';
+import {
+  getChildCompletedActivities,
+  getChildProfile,
+  getChildProfiles,
+  getChildProgress,
+} from '../api/child-profiles.api';
 import { childProfileKeys } from '../child-profile.keys';
 
 export function useChildProfiles() {
@@ -23,6 +28,14 @@ export function useChildProgress(id: string | undefined | null) {
   return useQuery({
     queryKey: ['child-progress', id],
     queryFn: () => getChildProgress(id!),
+    enabled: Boolean(id),
+  });
+}
+
+export function useChildCompletedActivities(id: string | undefined | null) {
+  return useQuery({
+    queryKey: ['child-progress', id, 'completed-activities'],
+    queryFn: () => getChildCompletedActivities(id!),
     enabled: Boolean(id),
   });
 }

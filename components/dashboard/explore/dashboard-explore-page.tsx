@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Check, ChevronDown } from 'lucide-react';
-import { FormEvent, useEffect, useRef, useState } from 'react';
+import { FormEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 import { ExploreCard } from '@/components/dashboard/explore/explore-card';
@@ -14,12 +14,19 @@ import { useExploreCatalog } from '@/features/explore/hooks/use-explore-catalog'
 import { figmaExploreUiAssets } from '@/features/explore/data/figma-explore-assets';
 import {
   emptyExploreFilters,
+  type ActivityExploreItem,
   type ExploreCardItem,
   type ExploreFilterKey,
   type ExploreFilters,
   type ExploreItem,
   type ExploreTab,
 } from '@/features/explore/model/explore-types';
+import { useAppStore } from '@/store/use-app-store';
+import {
+  useChildProfiles,
+  useChildCompletedActivities,
+} from '@/features/child-profiles/hooks/child-profiles.queries';
+import { useToggleActivityComplete } from '@/features/activities/hooks/activities.mutations';
 import { cn } from '@/lib/utils';
 
 const tabLabels: Record<ExploreTab, string> = {
@@ -182,13 +189,19 @@ function CardsGrid({
   items,
   columns = 4,
   savingItemId,
+  completingItemId,
+  childName,
   onSavedChange,
+  onToggleComplete,
   onOpenTherapyToy,
 }: {
   items: ExploreItem[];
   columns?: 3 | 4;
   savingItemId: string | null;
+  completingItemId?: string | null;
+  childName?: string;
   onSavedChange: (item: ExploreCardItem, saved: boolean) => void;
+  onToggleComplete?: (item: ActivityExploreItem) => void;
   onOpenTherapyToy?: (
     item: import('@/features/explore/model/explore-types').TherapyToyExploreItem
   ) => void;
@@ -217,7 +230,10 @@ function CardsGrid({
           item={item}
           height={item.kind === 'therapy-toy' ? 540 : undefined}
           saving={savingItemId === item.id}
+          completing={completingItemId === item.id}
+          childName={childName}
           onSavedChange={onSavedChange}
+          onToggleComplete={onToggleComplete}
           onOpenTherapyToy={onOpenTherapyToy}
         />
       ))}
@@ -231,7 +247,10 @@ function SavedPanel({
   columns,
   className,
   savingItemId,
+  completingItemId,
+  childName,
   onSavedChange,
+  onToggleComplete,
   onOpenTherapyToy,
 }: {
   title: string;
@@ -239,7 +258,10 @@ function SavedPanel({
   columns: 3 | 4;
   className?: string;
   savingItemId: string | null;
+  completingItemId?: string | null;
+  childName?: string;
   onSavedChange: (item: ExploreCardItem, saved: boolean) => void;
+  onToggleComplete?: (item: ActivityExploreItem) => void;
   onOpenTherapyToy?: (
     item: import('@/features/explore/model/explore-types').TherapyToyExploreItem
   ) => void;
@@ -259,7 +281,10 @@ function SavedPanel({
           items={items}
           columns={columns}
           savingItemId={savingItemId}
+          completingItemId={completingItemId}
+          childName={childName}
           onSavedChange={onSavedChange}
+          onToggleComplete={onToggleComplete}
           onOpenTherapyToy={onOpenTherapyToy}
         />
       ) : (
@@ -375,6 +400,79 @@ export function DashboardExplorePage({ initialTab }: { initialTab: ExploreTab })
     difficulty: [],
   }));
   const { data, isLoading, setSaved, savingItemId } = useExploreCatalog(initialTab, filters);
+
+  const { selectedChildId } = useAppStore();
+  const { data: children = [] } = useChildProfiles();
+  const activeChild = useMemo(() => {
+    return children.find((c) => c.id === selectedChildId) || children[0] || null;
+  }, [children, selectedChildId]);
+
+  const { data: completedData } = useChildCompletedActivities(activeChild?.id);
+  const completedActivityIds = useMemo(
+    () => new Set(completedData?.completedActivityIds ?? []),
+    [completedData]
+  );
+
+  const toggleCompleteMutation = useToggleActivityComplete();
+
+  const handleToggleComplete = (item: ActivityExploreItem) => {
+    if (!activeChild) {
+      toast.error('Please select a child profile first.');
+      return;
+    }
+
+    const willComplete = !completedActivityIds.has(item.id);
+    toggleCompleteMutation.mutate(
+      { id: item.id, childId: activeChild.id },
+      {
+        onSuccess: () => {
+          toast.success(
+            willComplete
+              ? `Marked "${item.title}" as completed for ${activeChild.name}`
+              : `Marked "${item.title}" as incomplete for ${activeChild.name}`
+          );
+        },
+        onError: () => {
+          toast.error('Failed to update completion status');
+        },
+      }
+    );
+  };
+
+  const enrichedItems = useMemo(() => {
+    if (!data?.items) return [];
+    if (initialTab !== 'activities') return data.items;
+    return data.items.map((item) => {
+      if (item.kind === 'activity') {
+        return {
+          ...item,
+          isCompleted: completedActivityIds.has(item.id),
+        };
+      }
+      return item;
+    });
+  }, [data, initialTab, completedActivityIds]);
+
+  const enrichedSavedItems = useMemo(() => {
+    if (!data?.savedItems) return [];
+    if (initialTab !== 'activities') return data.savedItems;
+    return data.savedItems.map((item) => {
+      if (item.kind === 'activity') {
+        return {
+          ...item,
+          isCompleted: completedActivityIds.has(item.id),
+        };
+      }
+      return item;
+    });
+  }, [data, initialTab, completedActivityIds]);
+
+  const completingItemId =
+    typeof toggleCompleteMutation.variables === 'object'
+      ? toggleCompleteMutation.variables?.id
+      : typeof toggleCompleteMutation.variables === 'string'
+        ? toggleCompleteMutation.variables
+        : null;
 
   const handleFilterToggle = (key: ExploreFilterKey, value: string) => {
     setFilters((current) => ({
@@ -502,9 +600,12 @@ export function DashboardExplorePage({ initialTab }: { initialTab: ExploreTab })
           />
         ) : (
           <CardsGrid
-            items={data.items}
+            items={enrichedItems}
             savingItemId={savingItemId}
+            completingItemId={completingItemId}
+            childName={activeChild?.name}
             onSavedChange={handleSavedChange}
+            onToggleComplete={initialTab === 'activities' ? handleToggleComplete : undefined}
           />
         )}
       </div>
@@ -512,11 +613,14 @@ export function DashboardExplorePage({ initialTab }: { initialTab: ExploreTab })
       {data && initialTab === 'activities' ? (
         <SavedPanel
           title="Saved Activities"
-          items={data.savedItems}
+          items={enrichedSavedItems}
           columns={4}
           className="mt-12 sm:mt-20"
           savingItemId={savingItemId}
+          completingItemId={completingItemId}
+          childName={activeChild?.name}
           onSavedChange={handleSavedChange}
+          onToggleComplete={handleToggleComplete}
         />
       ) : null}
 

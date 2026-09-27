@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, Bookmark } from 'lucide-react';
+import { ArrowRight, Bookmark, Check, Loader2 } from 'lucide-react';
 
 import {
   UniversalCard,
@@ -28,7 +28,10 @@ type ExploreCardProps = {
   className?: string;
   height?: number;
   saving?: boolean;
+  completing?: boolean;
+  childName?: string;
   onSavedChange?: (item: ExploreCardItem, saved: boolean) => void;
+  onToggleComplete?: (item: ActivityExploreItem) => void;
   onOpenTherapyToy?: (item: TherapyToyExploreItem) => void;
 };
 
@@ -38,7 +41,10 @@ function ActivityCard({
   item,
   className,
   saving,
+  completing,
+  childName,
   onSavedChange,
+  onToggleComplete,
 }: RecipeCardProps<ActivityExploreItem>) {
   return (
     <UniversalCard
@@ -62,16 +68,63 @@ function ActivityCard({
       </UniversalCardMedia>
 
       <UniversalCardOverlay className="pointer-events-none z-30">
-        <UniversalCardBadge tone="activity">{item.badge}</UniversalCardBadge>
-        <UniversalCardSaveButton
-          label={item.title}
-          saved={item.saved}
-          disabled={saving}
-          onSavedChange={(saved) => onSavedChange?.(item, saved)}
-          iconSrc={figmaExploreUiAssets.activity.bookmark}
-          savedIconSrc={figmaExploreUiAssets.activity.bookmarkSaved}
-          className="pointer-events-auto"
-        />
+        <div className="flex items-center gap-1.5">
+          <UniversalCardBadge tone="activity">{item.badge}</UniversalCardBadge>
+          {item.isCompleted && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-[#2f7d7e] px-2 py-0.5 font-nunito text-[11px] font-semibold text-white shadow-xs">
+              <Check className="size-3 stroke-[2.5]" />
+              Completed
+            </span>
+          )}
+        </div>
+        <div className="flex items-center gap-1.5 pointer-events-auto">
+          {onToggleComplete && (
+            <button
+              type="button"
+              aria-label={
+                item.isCompleted
+                  ? `Mark "${item.title}" as incomplete${childName ? ` for ${childName}` : ''}`
+                  : `Mark "${item.title}" as completed${childName ? ` for ${childName}` : ''}`
+              }
+              title={
+                item.isCompleted
+                  ? `Completed for ${childName || 'child'} (click to undo)`
+                  : `Mark as completed for ${childName || 'child'}`
+              }
+              disabled={completing}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onToggleComplete(item);
+              }}
+              className={cn(
+                'group relative flex size-8 items-center justify-center rounded-full transition-all duration-150 active:scale-95 cursor-pointer shadow-xs',
+                item.isCompleted
+                  ? 'bg-[#2f7d7e] text-white hover:bg-[#276a6b]'
+                  : 'border border-[#d8ddd9] bg-white/95 text-[#7d8488] hover:border-[#2f7d7e] hover:text-[#2f7d7e] hover:bg-white'
+              )}
+            >
+              {completing ? (
+                <Loader2 className="size-3.5 animate-spin text-current" />
+              ) : (
+                <Check
+                  className={cn(
+                    'size-3.5 stroke-[2.5]',
+                    item.isCompleted ? 'text-white' : 'text-current'
+                  )}
+                />
+              )}
+            </button>
+          )}
+          <UniversalCardSaveButton
+            label={item.title}
+            saved={item.saved}
+            disabled={saving}
+            onSavedChange={(saved) => onSavedChange?.(item, saved)}
+            iconSrc={figmaExploreUiAssets.activity.bookmark}
+            savedIconSrc={figmaExploreUiAssets.activity.bookmarkSaved}
+          />
+        </div>
       </UniversalCardOverlay>
 
       <UniversalCardBody recipe="activity">
