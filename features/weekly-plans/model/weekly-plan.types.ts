@@ -45,6 +45,22 @@ export const TIER_UI_TO_BACKEND: Record<UiMembershipTier, BackendMembershipTier[
   'Personalized Pathways': ['PERSONALIZED_PATHWAYS'],
 };
 
+export function getPlanMembershipTier(accessLevels?: string[] | null): UiMembershipTier {
+  if (!accessLevels || accessLevels.length === 0) {
+    return 'Little Steps';
+  }
+
+  if (accessLevels.includes('LITTLE_STEPS')) {
+    return 'Little Steps';
+  }
+
+  if (accessLevels.includes('GROW_TOGETHER')) {
+    return 'Grow Together';
+  }
+
+  return 'Personalized Pathways';
+}
+
 export interface SelectedActivity {
   id: string;
   title: string;

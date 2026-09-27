@@ -4,6 +4,7 @@ import {
   type SelectedActivity,
   type UiMembershipTier,
   CATEGORY_BACKEND_TO_UI,
+  getPlanMembershipTier,
 } from '../model/weekly-plan.types';
 
 export interface WeeklyPlanFormState {
@@ -94,12 +95,7 @@ export const useWeeklyPlanFormStore = create<WeeklyPlanFormState>((set) => ({
       uiCategory = CATEGORY_BACKEND_TO_UI[plan.category];
     }
 
-    let uiTier: UiMembershipTier = 'Little Steps';
-    if (plan.accessLevels?.includes('PERSONALIZED_PATHWAYS') && plan.accessLevels.length === 1) {
-      uiTier = 'Personalized Pathways';
-    } else if (plan.accessLevels?.includes('GROW_TOGETHER')) {
-      uiTier = 'Grow Together';
-    }
+    const uiTier = getPlanMembershipTier(plan.accessLevels);
 
     const selectedActivities: SelectedActivity[] = (plan.activities || []).map((item) => ({
       id: item.activity.id,

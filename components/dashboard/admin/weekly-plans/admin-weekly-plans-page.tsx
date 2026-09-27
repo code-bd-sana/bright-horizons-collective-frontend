@@ -5,6 +5,7 @@ import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import {
   getAdminWeeklyPlan,
+  getPlanMembershipTier,
   useAdminWeeklyPlans,
   useArchiveWeeklyPlan,
   useDeleteWeeklyPlan,
@@ -52,11 +53,7 @@ export function AdminWeeklyPlansPage() {
     if (!Array.isArray(rawPlans)) return [];
 
     return (rawPlans as BackendWeeklyPlanItem[]).map((p) => {
-      const planMembership: PlanMembership = p.accessLevels?.includes('PERSONALIZED_PATHWAYS')
-        ? 'Personalized Pathways'
-        : p.accessLevels?.includes('GROW_TOGETHER')
-          ? 'Grow Together'
-          : 'Little Steps';
+      const planMembership: PlanMembership = getPlanMembershipTier(p.accessLevels);
 
       const planStatus: PlanStatus =
         p.status === 'PUBLISHED' ? 'Published' : p.status === 'DRAFT' ? 'Draft' : 'Archived';

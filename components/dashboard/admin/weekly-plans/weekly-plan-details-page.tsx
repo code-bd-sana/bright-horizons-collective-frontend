@@ -15,6 +15,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import {
   CATEGORY_BACKEND_TO_UI,
+  getPlanMembershipTier,
   useAdminWeeklyPlan,
   usePublishWeeklyPlan,
   useWeeklyPlanFormStore,
@@ -70,11 +71,7 @@ function PlanHeader({ plan }: { plan: BackendWeeklyPlanDetail }) {
         ? 'bg-[#fff8e1] text-[#b8860b]'
         : 'bg-[#fce9e3] text-[#916d5f]';
 
-  const tier = plan.accessLevels?.includes('PERSONALIZED_PATHWAYS')
-    ? 'Personalized Pathways'
-    : plan.accessLevels?.includes('GROW_TOGETHER')
-      ? 'Grow Together'
-      : 'Little Steps';
+  const tier = getPlanMembershipTier(plan.accessLevels);
 
   const category =
     plan.customCategory ||
