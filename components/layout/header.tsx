@@ -4,12 +4,12 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { Bell, Menu, MessageCircle, User } from 'lucide-react';
+import { /* Bell, */ Menu, /* MessageCircle, */ User } from 'lucide-react';
 import type { AuthRole } from '@/services/api/auth/auth.types';
 import { getRoleConfig } from '@/lib/role-config';
 import { useAppStore } from '@/store/use-app-store';
 import { useChildProfiles } from '@/features/child-profiles/hooks/child-profiles.queries';
-import { useUnreadMessagesCount } from '@/features/messages/hooks/messages.queries';
+// import { useUnreadMessagesCount } from '@/features/messages/hooks/messages.queries';
 import { SidebarPlanWidget } from '@/components/layout/sidebar-plan-widget';
 import { useUserProfile } from '@/components/dashboard/settings/hooks/use-user-profile';
 import type { ChildProfile } from '@/features/child-profiles/model/child-profile.types';
@@ -244,7 +244,7 @@ export function Header({ role = 'parent' }: { role?: AuthRole }) {
   const [profilesOpen, setProfilesOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
   const [allRead, setAllRead] = useState(false);
-  const unreadMessagesCount = useUnreadMessagesCount();
+  // const unreadMessagesCount = useUnreadMessagesCount();
 
   const { data: children = [], isLoading: isChildrenLoading } = useChildProfiles();
 
@@ -365,6 +365,7 @@ export function Header({ role = 'parent' }: { role?: AuthRole }) {
       )}
 
       <div className="relative col-start-3 flex shrink-0 items-center gap-2 sm:gap-3">
+        {/* Commented out message and bell icons
         <button
           ref={messagesButtonRef}
           type="button"
@@ -403,6 +404,7 @@ export function Header({ role = 'parent' }: { role?: AuthRole }) {
             <span className="absolute right-0.5 top-0.5 size-1.5 rounded-full bg-[#d4484a]" />
           </span>
         </button>
+        */}
         {roleConfig.header.showChildProfile &&
           (isChildrenLoading ? (
             <div className="hidden h-10 w-28 animate-pulse rounded-lg bg-[#d2e3dc]/50 lg:block" />
