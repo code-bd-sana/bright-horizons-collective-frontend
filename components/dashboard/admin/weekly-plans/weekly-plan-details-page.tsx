@@ -1,9 +1,27 @@
 'use client';
 
-import { ArrowLeft, ArrowRight, ClipboardList, Clock3, Edit3, Tag, UsersRound } from 'lucide-react';
+import {
+  ArrowLeft,
+  Calendar,
+  ClipboardList,
+  Edit3,
+  Loader2,
+  RotateCcw,
+  Tag,
+  UsersRound,
+} from 'lucide-react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { adminWeeklyPlans, type AdminWeeklyPlan } from './weekly-plans-data';
+import {
+  CATEGORY_BACKEND_TO_UI,
+  useAdminWeeklyPlan,
+  usePublishWeeklyPlan,
+  useWeeklyPlanFormStore,
+  type BackendWeeklyPlanDetail,
+} from '@/features/weekly-plans';
+
+const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'] as const;
 
 type DetailStatProps = {
   icon?: typeof UsersRound;
@@ -11,14 +29,6 @@ type DetailStatProps = {
   value: string;
   emphasized?: boolean;
 };
-
-const schedule = [
-  ['Monday', 'Color Sorting Sensory Play'],
-  ['Tuesday', 'Sensory Bin: Kinetic Sand'],
-  ['Wednesday', 'Color Sorting Sensory Play'],
-  ['Thursday', 'Animal Sound Story'],
-  ['Friday', 'Sensory Bin: Kinetic Sand'],
-];
 
 function DetailCard({ children }: { children: React.ReactNode }) {
   return (
@@ -36,7 +46,9 @@ function DetailStat({ icon: Icon, label, value, emphasized = false }: DetailStat
         {label}
       </p>
       <p
-        className={`mt-1 font-manrope text-sm font-semibold leading-5.25 ${emphasized ? 'text-[#2f7d7e]' : 'text-[#263238]'}`}
+        className={`mt-1 font-manrope text-sm font-semibold leading-5.25 ${
+          emphasized ? 'text-[#2f7d7e]' : 'text-[#263238]'
+        }`}
       >
         {value}
       </p>
@@ -44,60 +56,102 @@ function DetailStat({ icon: Icon, label, value, emphasized = false }: DetailStat
   );
 }
 
-function PlanHeader({ plan }: { plan: AdminWeeklyPlan }) {
+function PlanHeader({ plan }: { plan: BackendWeeklyPlanDetail }) {
   const router = useRouter();
-  const planTitle = plan.title.replace(/ — Week \d+$/, '');
+  const formStore = useWeeklyPlanFormStore();
+  const publishMutation = usePublishWeeklyPlan();
+
+  const status =
+    plan.status === 'PUBLISHED' ? 'Published' : plan.status === 'DRAFT' ? 'Draft' : 'Archived';
   const statusClass =
-    plan.status === 'Published'
+    status === 'Published'
       ? 'bg-[#edf6f2] text-[#4caf50]'
-      : plan.status === 'Draft'
+      : status === 'Draft'
         ? 'bg-[#fff8e1] text-[#b8860b]'
         : 'bg-[#fce9e3] text-[#916d5f]';
+
+  const tier = plan.accessLevels?.includes('PERSONALIZED_PATHWAYS')
+    ? 'Personalized Pathways'
+    : plan.accessLevels?.includes('GROW_TOGETHER')
+      ? 'Grow Together'
+      : 'Little Steps';
+
+  const category =
+    plan.customCategory ||
+    (plan.category ? (CATEGORY_BACKEND_TO_UI[plan.category] ?? plan.category) : 'Sensory Play');
+
+  const handleEdit = () => {
+    formStore.populateFromPlan(plan);
+    router.push('/dashboard/admin/weekly-plans/create');
+  };
+
+  const handlePublish = async () => {
+    try {
+      await publishMutation.mutateAsync(plan.id);
+      toast.success(`“${plan.title}” has been published.`);
+    } catch {
+      toast.error('Failed to publish weekly plan.');
+    }
+  };
 
   return (
     <>
       <button
         type="button"
         onClick={() => router.push('/dashboard/admin/weekly-plans')}
-        className="flex items-center gap-1.5 font-manrope text-sm font-medium leading-5 text-[#607d8b]"
+        className="flex items-center gap-1.5 font-manrope text-sm font-medium leading-5 text-[#607d8b] transition-colors hover:text-[#2f7d7e]"
       >
         <ArrowLeft aria-hidden="true" size={16} strokeWidth={1.5} />
         Back to Weekly Plans
       </button>
+
       <DetailCard>
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <h1 className="font-nunito text-2xl font-bold leading-9 text-[#263238]">{planTitle}</h1>
+            <h1 className="font-nunito text-2xl font-bold leading-9 text-[#263238]">
+              {plan.title}
+            </h1>
             <div className="mt-3 flex flex-wrap gap-2">
               <span
                 className={`rounded-full px-2.5 py-0.5 font-manrope text-xs font-semibold leading-4 ${statusClass}`}
               >
-                {plan.status}
+                {status}
               </span>
               <span className="rounded-full bg-[#edf6f2] px-2.5 py-0.5 font-manrope text-xs font-semibold leading-4 text-[#2f7d7e]">
-                {plan.membership}
+                {tier}
               </span>
               <span className="rounded-full bg-[rgba(47,125,126,0.06)] px-2.5 py-0.5 font-manrope text-xs font-semibold leading-4 text-[#2f7d7e]">
-                Sensory Play
+                {category}
               </span>
               <span className="rounded-full bg-[#eef2f2] px-2.5 py-0.5 font-manrope text-xs font-semibold leading-4 text-[#607d8b]">
-                {plan.week}
+                Week {plan.weekNumber ?? 1}
               </span>
             </div>
           </div>
-          <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:shrink-0 2xl:flex 2xl:w-auto 2xl:shrink-0">
+          <div className="flex items-center gap-2 sm:shrink-0 2xl:shrink-0">
+            {plan.status === 'ARCHIVED' && (
+              <button
+                type="button"
+                onClick={handlePublish}
+                disabled={publishMutation.isPending}
+                className="flex h-10 items-center justify-center gap-2 rounded-[14px] bg-[#2f7d7e] px-4 font-manrope text-sm font-semibold text-white transition-colors hover:bg-[#266b6c] disabled:opacity-50"
+              >
+                {publishMutation.isPending ? (
+                  <Loader2 aria-hidden="true" size={15} className="animate-spin" />
+                ) : (
+                  <RotateCcw aria-hidden="true" size={15} strokeWidth={1.6} />
+                )}
+                Publish Plan
+              </button>
+            )}
             <button
               type="button"
-              onClick={() => toast.success('Plan assignment is ready.')}
-              className="flex h-10 items-center justify-center gap-2 rounded-[14px] border border-[rgba(47,125,126,0.19)] bg-[rgba(47,125,126,0.08)] px-3 font-manrope text-sm font-semibold text-[#2f7d7e] sm:px-4 2xl:px-4"
-            >
-              <ClipboardList aria-hidden="true" size={15} strokeWidth={1.6} />
-              Assign
-            </button>
-            <button
-              type="button"
-              onClick={() => toast.success('Plan editor is ready.')}
-              className="flex h-10 items-center justify-center gap-2 rounded-[14px] bg-[#2f7d7e] px-3 font-manrope text-sm font-semibold text-white sm:px-4 2xl:px-4"
+              onClick={handleEdit}
+              className={`flex h-10 items-center justify-center gap-2 rounded-[14px] px-4 font-manrope text-sm font-semibold transition-colors ${
+                plan.status === 'ARCHIVED'
+                  ? 'border border-[#cfe0e0] bg-[#e9f1ee] text-[#2f7d7e] hover:bg-[#dcefe7]'
+                  : 'bg-[#2f7d7e] text-white hover:bg-[#266b6c]'
+              }`}
             >
               <Edit3 aria-hidden="true" size={15} strokeWidth={1.6} />
               Edit Plan
@@ -109,87 +163,149 @@ function PlanHeader({ plan }: { plan: AdminWeeklyPlan }) {
   );
 }
 
-function OverviewCard({ plan }: { plan: AdminWeeklyPlan }) {
+function OverviewCard({ plan }: { plan: BackendWeeklyPlanDetail }) {
+  const category =
+    plan.customCategory ||
+    (plan.category ? (CATEGORY_BACKEND_TO_UI[plan.category] ?? plan.category) : 'Sensory Play');
+  const ageRange =
+    plan.minAgeMonths !== undefined && plan.maxAgeMonths !== undefined
+      ? `${plan.minAgeMonths}–${plan.maxAgeMonths} mo`
+      : 'All ages';
+
   return (
     <DetailCard>
       <h2 className="font-nunito text-lg font-bold leading-7 text-[#263238]">Overview</h2>
       <p className="mt-4 font-manrope text-[15px] leading-[25.5px] text-[#607d8b]">
-        A structured week of sensory-play activities building early color and texture recognition
-        for infants and young toddlers.
+        {plan.description ||
+          'A structured weekly plan of developmental activities designed to build motor, sensory, and cognitive skills.'}
       </p>
-      <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-4">
-        <DetailStat icon={UsersRound} label="Age Group" value={plan.age} />
-        <DetailStat icon={Tag} label="Category" value="Sensory Play" />
+      <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-3">
+        <DetailStat icon={UsersRound} label="Age Range" value={ageRange} />
+        <DetailStat icon={Tag} label="Category" value={category} />
         <DetailStat
           icon={ClipboardList}
           label="Activities"
-          value={`${plan.activities} activities`}
+          value={`${plan.activities?.length ?? 0} activities`}
         />
-        <DetailStat icon={Clock3} label="Est. Duration" value="~100 min/week" />
       </div>
     </DetailCard>
   );
 }
 
-function WeeklyScheduleCard() {
+function WeeklyScheduleCard({ plan }: { plan: BackendWeeklyPlanDetail }) {
+  const activitiesByDay: Record<string, BackendWeeklyPlanDetail['activities']> = {};
+  for (const day of DAYS) {
+    activitiesByDay[day] = [];
+  }
+  for (const act of plan.activities ?? []) {
+    if (act.day && activitiesByDay[act.day]) {
+      activitiesByDay[act.day].push(act);
+    }
+  }
+
   return (
     <DetailCard>
       <h2 className="font-nunito text-lg font-bold leading-7 text-[#263238]">Weekly Schedule</h2>
       <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-5 2xl:grid-cols-5">
-        {schedule.map(([day, activity]) => (
-          <div
-            key={day}
-            className="min-h-16.5 rounded-[14px] border border-[#e7eceb] bg-[#f4f8f6] p-3"
-          >
-            <p className="font-nunito text-[13px] font-bold leading-[19.5px] text-[#2f7d7e]">
-              {day}
-            </p>
-            <div className="mt-2 flex items-start gap-2">
-              <span className="mt-1.25 size-1.5 shrink-0 rounded-full bg-[#2f7d7e]" />
-              <p className="font-manrope text-xs leading-[15.6px] text-[#263238]">{activity}</p>
+        {DAYS.map((day) => {
+          const items = activitiesByDay[day] ?? [];
+
+          return (
+            <div
+              key={day}
+              className="min-h-24 rounded-[14px] border border-[#e7eceb] bg-[#f4f8f6] p-3"
+            >
+              <p className="font-nunito text-[13px] font-bold leading-[19.5px] text-[#2f7d7e]">
+                {day}
+              </p>
+              {items.length === 0 ? (
+                <p className="mt-2 font-manrope text-xs italic text-[#9aa8ae]">Rest day</p>
+              ) : (
+                <div className="mt-2 space-y-1.5">
+                  {items.map((item) => (
+                    <div key={item.id} className="flex items-start gap-1.5">
+                      <span className="mt-1 size-1.5 shrink-0 rounded-full bg-[#2f7d7e]" />
+                      <Link
+                        href={`/dashboard/admin/activities-library/${item.activity.id}`}
+                        className="font-manrope text-xs font-medium leading-4 text-[#263238] transition-colors hover:text-[#2f7d7e]"
+                      >
+                        {item.activity.title}
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </DetailCard>
   );
 }
 
-function AssignmentInformationCard({ plan }: { plan: AdminWeeklyPlan }) {
+function AssignmentInformationCard({ plan }: { plan: BackendWeeklyPlanDetail }) {
+  const updatedDate = plan.updatedAt
+    ? new Date(plan.updatedAt).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      })
+    : 'Recently';
+
+  const createdDate = plan.createdAt
+    ? new Date(plan.createdAt).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      })
+    : 'Recently';
+
   return (
     <DetailCard>
-      <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between 2xl:flex-row 2xl:items-center 2xl:justify-between">
-        <h2 className="font-nunito text-lg font-bold leading-7 text-[#263238]">
-          Assignment Information
-        </h2>
-        <button
-          type="button"
-          onClick={() => toast.success('Assignment history is ready.')}
-          className="flex shrink-0 items-center gap-1 font-manrope text-sm font-semibold leading-5 text-[#2f7d7e]"
-        >
-          View History
-          <ArrowRight aria-hidden="true" size={14} strokeWidth={1.6} />
-        </button>
-      </div>
-      <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-4">
-        <DetailStat label="Families Assigned" value={plan.assigned} emphasized />
-        <DetailStat label="Children Assigned" value="38 children" emphasized />
-        <DetailStat label="Created By" value="Sarah K." />
-        <DetailStat label="Last Updated" value="Apr 3, 2025" />
+      <h2 className="font-nunito text-lg font-bold leading-7 text-[#263238]">Plan Information</h2>
+      <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-3">
+        <DetailStat icon={Calendar} label="Created Date" value={createdDate} />
+        <DetailStat icon={Calendar} label="Last Updated" value={updatedDate} emphasized />
+        <DetailStat icon={ClipboardList} label="Status" value={plan.status} />
       </div>
     </DetailCard>
   );
 }
 
 export function WeeklyPlanDetailsPage({ planId }: { planId: string }) {
-  const plan = adminWeeklyPlans.find((item) => item.id === Number(planId)) ?? adminWeeklyPlans[0];
+  const router = useRouter();
+  const { data: plan, isLoading, error } = useAdminWeeklyPlan(planId);
+
+  if (isLoading) {
+    return (
+      <section className="mx-auto flex min-h-96 w-full max-w-224.75 flex-col items-center justify-center py-20 text-[#607d8b]">
+        <Loader2 className="size-8 animate-spin text-[#2f7d7e]" />
+        <p className="mt-3 font-manrope text-sm font-medium">Loading weekly plan details...</p>
+      </section>
+    );
+  }
+
+  if (error || !plan) {
+    return (
+      <section className="mx-auto w-full max-w-224.75 py-12 text-center text-[#263238]">
+        <p className="font-nunito text-xl font-bold">Weekly plan not found.</p>
+        <button
+          type="button"
+          onClick={() => router.push('/dashboard/admin/weekly-plans')}
+          className="mt-4 rounded-[14px] bg-[#2f7d7e] px-5 py-2.5 font-manrope text-sm font-semibold text-white"
+        >
+          Back to Weekly Plans
+        </button>
+      </section>
+    );
+  }
 
   return (
     <section className="mx-auto w-full min-w-0 max-w-224.75 pb-8 text-[#263238]">
       <div className="space-y-6">
         <PlanHeader plan={plan} />
         <OverviewCard plan={plan} />
-        <WeeklyScheduleCard />
+        <WeeklyScheduleCard plan={plan} />
         <AssignmentInformationCard plan={plan} />
       </div>
     </section>

@@ -3,7 +3,15 @@ import { Plus, UserPlus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
-import { useAdminWeeklyPlans } from '@/features/weekly-plans';
+import {
+  getAdminWeeklyPlan,
+  useAdminWeeklyPlans,
+  useArchiveWeeklyPlan,
+  useDeleteWeeklyPlan,
+  useDuplicateWeeklyPlan,
+  usePublishWeeklyPlan,
+  useWeeklyPlanFormStore,
+} from '@/features/weekly-plans';
 import { type AdminWeeklyPlan, type PlanMembership, type PlanStatus } from './weekly-plans-data';
 import { WeeklyPlanConfirmationModal } from './weekly-plan-confirmation-modal';
 import { WeeklyPlanFilters } from './weekly-plan-filters';
@@ -24,6 +32,7 @@ interface BackendWeeklyPlanItem {
 
 export function AdminWeeklyPlansPage() {
   const router = useRouter();
+  const formStore = useWeeklyPlanFormStore();
   const [search, setSearch] = useState('');
   const [membership, setMembership] = useState('all');
   const [age, setAge] = useState('all');
@@ -34,6 +43,10 @@ export function AdminWeeklyPlansPage() {
   } | null>(null);
 
   const { data: rawPlans } = useAdminWeeklyPlans();
+  const duplicateMutation = useDuplicateWeeklyPlan();
+  const archiveMutation = useArchiveWeeklyPlan();
+  const deleteMutation = useDeleteWeeklyPlan();
+  const publishMutation = usePublishWeeklyPlan();
 
   const allPlans: AdminWeeklyPlan[] = useMemo(() => {
     if (!Array.isArray(rawPlans)) return [];
@@ -86,6 +99,77 @@ export function AdminWeeklyPlansPage() {
     [age, allPlans, membership, search, status]
   );
 
+  const handleAction = async (action: string, plan: AdminWeeklyPlan) => {
+    const planIdStr = String(plan.id);
+
+    if (action === 'View') {
+      router.push(`/dashboard/admin/weekly-plans/${planIdStr}`);
+      return;
+    }
+
+    if (action === 'Edit') {
+      try {
+        const fullPlan = await getAdminWeeklyPlan(planIdStr);
+        formStore.populateFromPlan(fullPlan);
+        router.push('/dashboard/admin/weekly-plans/create');
+      } catch {
+        toast.error('Failed to load plan details for editing.');
+      }
+      return;
+    }
+
+    if (action === 'Copy') {
+      try {
+        await duplicateMutation.mutateAsync(planIdStr);
+        toast.success(`“${plan.title}” copied successfully as a new draft.`);
+      } catch {
+        toast.error('Failed to copy weekly plan.');
+      }
+      return;
+    }
+
+    if (action === 'Publish') {
+      try {
+        await publishMutation.mutateAsync(planIdStr);
+        toast.success(`“${plan.title}” has been published.`);
+      } catch {
+        toast.error('Failed to publish weekly plan.');
+      }
+      return;
+    }
+
+    if (action === 'Archive' || action === 'Delete') {
+      setConfirmation({ action: action.toLowerCase() as 'archive' | 'delete', plan });
+      return;
+    }
+
+    toast.success(`${action} is ready for “${plan.title}”.`);
+  };
+
+  const handleConfirmModal = async () => {
+    if (!confirmation) return;
+    const planIdStr = String(confirmation.plan.id);
+
+    try {
+      if (confirmation.action === 'archive') {
+        await archiveMutation.mutateAsync(planIdStr);
+        toast.success(`“${confirmation.plan.title}” has been archived.`);
+      } else {
+        await deleteMutation.mutateAsync(planIdStr);
+        toast.success(`“${confirmation.plan.title}” has been deleted.`);
+      }
+    } catch {
+      toast.error(`Failed to ${confirmation.action} weekly plan.`);
+    } finally {
+      setConfirmation(null);
+    }
+  };
+
+  const handleCreateNew = () => {
+    formStore.resetForm();
+    router.push('/dashboard/admin/weekly-plans/create');
+  };
+
   return (
     <section className="mx-auto w-full min-w-0 max-w-383.5 pb-8 text-[#263238]">
       <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -108,7 +192,7 @@ export function AdminWeeklyPlansPage() {
           </button>
           <button
             type="button"
-            onClick={() => router.push('/dashboard/admin/weekly-plans/create')}
+            onClick={handleCreateNew}
             className="flex h-10 min-w-0 items-center justify-center gap-2 rounded-[14px] bg-[#2f7d7e] px-3 font-manrope text-sm font-semibold text-white sm:px-4 2xl:px-4"
           >
             <Plus size={15} />
@@ -131,22 +215,7 @@ export function AdminWeeklyPlansPage() {
               if (filter === 'status') setStatus(value);
             }}
           />
-          <WeeklyPlansTable
-            plans={plans}
-            onAction={(action, plan) => {
-              if (action === 'View') {
-                router.push(`/dashboard/admin/weekly-plans/${plan.id}`);
-                return;
-              }
-
-              if (action === 'Archive' || action === 'Delete') {
-                setConfirmation({ action: action.toLowerCase() as 'archive' | 'delete', plan });
-                return;
-              }
-
-              toast.success(`${action} is ready for “${plan.title}”.`);
-            }}
-          />
+          <WeeklyPlansTable plans={plans} onAction={handleAction} />
         </div>
       </div>
       <WeeklyPlanConfirmationModal
@@ -155,13 +224,7 @@ export function AdminWeeklyPlansPage() {
         onClose={(open) => {
           if (!open) setConfirmation(null);
         }}
-        onConfirm={() => {
-          if (!confirmation) return;
-          toast.success(
-            `“${confirmation.plan.title}” has been ${confirmation.action === 'archive' ? 'archived' : 'deleted'}.`
-          );
-          setConfirmation(null);
-        }}
+        onConfirm={handleConfirmModal}
       />
     </section>
   );

@@ -1,5 +1,15 @@
 'use client';
-import { Archive, ChevronLeft, ChevronRight, ClipboardList, Copy, Eye, Trash2 } from 'lucide-react';
+import {
+  Archive,
+  ChevronLeft,
+  ChevronRight,
+  ClipboardList,
+  Copy,
+  Eye,
+  Pencil,
+  RotateCcw,
+  Trash2,
+} from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -95,8 +105,9 @@ export function WeeklyPlansTable({
               <div className="grid grid-cols-4 gap-2 sm:flex">
                 {[
                   [Eye, 'View'],
+                  [Pencil, 'Edit'],
                   [Copy, 'Copy'],
-                  [Archive, 'Archive'],
+                  plan.status === 'Archived' ? [RotateCcw, 'Publish'] : [Archive, 'Archive'],
                   [Trash2, 'Delete'],
                 ].map(([Icon, label]) => {
                   const ActionIcon = Icon as typeof Eye;
@@ -105,6 +116,7 @@ export function WeeklyPlansTable({
                       key={label as string}
                       type="button"
                       aria-label={`${label} ${plan.title}`}
+                      title={`${label} ${plan.title}`}
                       onClick={() => onAction(label as string, plan)}
                       className="flex h-9 items-center justify-center gap-1.5 rounded-xl border border-[#e7eceb] px-2 font-manrope text-xs font-medium text-[#607d8b] hover:bg-[#e9f1ee]"
                     >
@@ -209,8 +221,9 @@ export function WeeklyPlansTable({
                   <div className="flex gap-1">
                     {[
                       [Eye, 'View'],
+                      [Pencil, 'Edit'],
                       [Copy, 'Copy'],
-                      [Archive, 'Archive'],
+                      plan.status === 'Archived' ? [RotateCcw, 'Publish'] : [Archive, 'Archive'],
                       [Trash2, 'Delete'],
                     ].map(([Icon, label]) => {
                       const ActionIcon = Icon as typeof Eye;
@@ -219,6 +232,7 @@ export function WeeklyPlansTable({
                           key={label as string}
                           type="button"
                           aria-label={`${label} ${plan.title}`}
+                          title={`${label} ${plan.title}`}
                           onClick={() => onAction(label as string, plan)}
                           className="flex size-7 items-center justify-center rounded-[10px] text-[#607d8b] hover:bg-[#e9f1ee]"
                         >

@@ -118,7 +118,7 @@ export function WeeklyPlanBasicInfoPage() {
         </button>
 
         <h1 className="font-nunito text-2xl font-bold leading-9 text-[#263238]">
-          Create Weekly Plans
+          {formStore.editingPlanId ? 'Edit Weekly Plan' : 'Create Weekly Plans'}
         </h1>
 
         <section className="overflow-x-auto rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)]">
@@ -126,6 +126,7 @@ export function WeeklyPlanBasicInfoPage() {
         </section>
 
         <DynamicForm
+          key={formStore.editingPlanId || 'new'}
           defaultValues={{
             title: formStore.title || '',
             description: formStore.description || '',
