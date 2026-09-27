@@ -3,11 +3,24 @@ import { Plus, UserPlus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
-import { adminWeeklyPlans, type AdminWeeklyPlan, type PlanStatus } from './weekly-plans-data';
+import { useAdminWeeklyPlans } from '@/features/weekly-plans';
+import { type AdminWeeklyPlan, type PlanMembership, type PlanStatus } from './weekly-plans-data';
 import { WeeklyPlanConfirmationModal } from './weekly-plan-confirmation-modal';
 import { WeeklyPlanFilters } from './weekly-plan-filters';
 import { WeeklyPlansSummary } from './weekly-plans-summary';
 import { WeeklyPlansTable } from './weekly-plans-table';
+
+interface BackendWeeklyPlanItem {
+  id: string;
+  title: string;
+  weekNumber?: number | null;
+  minAgeMonths?: number | null;
+  maxAgeMonths?: number | null;
+  status: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED';
+  accessLevels?: string[];
+  _count?: { activities: number; assignments: number };
+  updatedAt: string;
+}
 
 export function AdminWeeklyPlansPage() {
   const router = useRouter();
@@ -19,17 +32,60 @@ export function AdminWeeklyPlansPage() {
     action: 'archive' | 'delete';
     plan: AdminWeeklyPlan;
   } | null>(null);
+
+  const { data: rawPlans } = useAdminWeeklyPlans();
+
+  const allPlans: AdminWeeklyPlan[] = useMemo(() => {
+    if (!Array.isArray(rawPlans)) return [];
+
+    return (rawPlans as BackendWeeklyPlanItem[]).map((p) => {
+      const planMembership: PlanMembership = p.accessLevels?.includes('PERSONALIZED_PATHWAYS')
+        ? 'Personalized Pathways'
+        : p.accessLevels?.includes('GROW_TOGETHER')
+          ? 'Grow Together'
+          : 'Little Steps';
+
+      const planStatus: PlanStatus =
+        p.status === 'PUBLISHED' ? 'Published' : p.status === 'DRAFT' ? 'Draft' : 'Archived';
+
+      const ageText =
+        p.minAgeMonths !== undefined &&
+        p.minAgeMonths !== null &&
+        p.maxAgeMonths !== undefined &&
+        p.maxAgeMonths !== null
+          ? `${p.minAgeMonths}–${p.maxAgeMonths} mo`
+          : 'All ages';
+
+      return {
+        id: p.id,
+        title: p.title,
+        week: `Week ${p.weekNumber ?? 1}`,
+        age: ageText,
+        activities: p._count?.activities ?? 0,
+        membership: planMembership,
+        assigned: `${p._count?.assignments ?? 0} families`,
+        status: planStatus,
+        updated: new Date(p.updatedAt).toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
+        }),
+      };
+    });
+  }, [rawPlans]);
+
   const plans = useMemo(
     () =>
-      adminWeeklyPlans.filter(
+      allPlans.filter(
         (plan) =>
           (membership === 'all' || plan.membership === membership) &&
           (age === 'all' || plan.age === age) &&
           (status === 'all' || plan.status === (status as PlanStatus)) &&
           (!search || `${plan.title} ${plan.week}`.toLowerCase().includes(search.toLowerCase()))
       ),
-    [age, membership, search, status]
+    [age, allPlans, membership, search, status]
   );
+
   return (
     <section className="mx-auto w-full min-w-0 max-w-383.5 pb-8 text-[#263238]">
       <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -38,7 +94,7 @@ export function AdminWeeklyPlansPage() {
             Weekly Plans
           </h1>
           <p className="mt-0.5 font-manrope text-sm leading-5.5 text-[#6c7787]">
-            12 active plans · 4 therapists assigned this week
+            {allPlans.length} {allPlans.length === 1 ? 'total plan' : 'total plans'} in the system
           </p>
         </div>
         <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto 2xl:flex 2xl:w-auto">

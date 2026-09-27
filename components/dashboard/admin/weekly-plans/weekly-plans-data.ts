@@ -1,7 +1,7 @@
 export type PlanStatus = 'Published' | 'Draft' | 'Archived';
 export type PlanMembership = 'Little Steps' | 'Grow Together' | 'Personalized Pathways';
 export type AdminWeeklyPlan = {
-  id: number;
+  id: string | number;
   title: string;
   week: string;
   age: string;
