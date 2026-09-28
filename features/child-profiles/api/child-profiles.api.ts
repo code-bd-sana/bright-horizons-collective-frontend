@@ -159,6 +159,7 @@ export type ChildRecentActivity = {
   rating?: number | null;
   parentNotes?: string | null;
   artworkUrl?: string | null;
+  reflections?: string[] | string | null;
   activity?: {
     id: string;
     title: string;
