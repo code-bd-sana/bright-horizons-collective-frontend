@@ -1,13 +1,18 @@
-import type { Metadata } from 'next';
+import { redirect } from 'next/navigation';
 
-import { PaymentPage } from '@/components/payment/payment-page';
-import { constructMetadata } from '@/lib/metadata';
+export default async function PaymentRoute({
+  searchParams,
+}: {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const params = await searchParams;
+  const queryString = params
+    ? new URLSearchParams(
+        Object.entries(params).flatMap(([k, v]) =>
+          Array.isArray(v) ? v.map((item) => [k, item]) : v ? [[k, v]] : []
+        )
+      ).toString()
+    : '';
 
-export const metadata: Metadata = constructMetadata({
-  title: 'Payment | Bright Horizons Collective',
-  description: 'Complete your Bright Horizons Collective membership payment securely.',
-});
-
-export default function PaymentRoute() {
-  return <PaymentPage />;
+  redirect(queryString ? `/membership?${queryString}` : '/membership');
 }

@@ -352,7 +352,7 @@ export function CompleteProfilePage() {
         </div>
         <div className="flex flex-col gap-4 min-[900px]:flex-row min-[900px]:gap-4">
           <Link
-            href="/payment"
+            href="/membership"
             className="flex h-14 w-full items-center justify-center gap-2 rounded-[32px] border border-[#D4D6D7] bg-white px-4 py-2 font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-[#14094B] min-[900px]:w-80"
           >
             <Image
