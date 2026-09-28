@@ -42,7 +42,7 @@ function PaymentSuccessContent() {
 
     let isMounted = true;
 
-    async function verifySession() {
+    async function verifySession(retryCount = 0) {
       try {
         const response = await fetch(`/api/payments/session-status/${sessionId}`);
         if (!response.ok) {
@@ -54,6 +54,7 @@ function PaymentSuccessContent() {
             ? (raw as Record<string, unknown>).data
             : raw;
         const data = unwrapped as {
+          status?: string;
           subscription?: SubscriptionData;
           plan?: SubscriptionData['plan'] & { monthlyPrice?: number };
         } | null;
@@ -61,6 +62,8 @@ function PaymentSuccessContent() {
         if (isMounted && data) {
           if (data.subscription) {
             setSubscription(data.subscription);
+            setLoading(false);
+            return;
           } else if (data.plan) {
             setSubscription({
               id: sessionId || '',
@@ -69,12 +72,24 @@ function PaymentSuccessContent() {
               currentPeriodEnd: new Date(Date.now() + 30 * 86400000).toISOString(),
               plan: data.plan,
             });
+            setLoading(false);
+            return;
           }
+        }
+
+        // If status is still pending and retries remain, poll again
+        if (isMounted && retryCount < 3) {
+          setTimeout(() => {
+            if (isMounted) {
+              verifySession(retryCount + 1);
+            }
+          }, 1500);
+          return;
         }
       } catch (err) {
         console.error('Failed to verify session status:', err);
       } finally {
-        if (isMounted) {
+        if (isMounted && retryCount >= 3) {
           setLoading(false);
         }
       }
