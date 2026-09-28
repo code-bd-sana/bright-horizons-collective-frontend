@@ -1,10 +1,60 @@
+'use client';
+
 import { CheckCircle2, Loader, Trophy } from 'lucide-react';
 
-export function Highlights() {
+type HighlightsProps = {
+  currentWeekCompleted: number;
+  totalWeekActivities: number;
+  currentWeekPercent: number;
+  milestonesCount: number;
+  isLoading?: boolean;
+};
+
+export function Highlights({
+  currentWeekCompleted,
+  totalWeekActivities,
+  currentWeekPercent,
+  milestonesCount,
+  isLoading = false,
+}: HighlightsProps) {
+  if (isLoading) {
+    return (
+      <div className="flex min-w-0 flex-col gap-6 rounded-2xl border border-[#E8EBE8] bg-white p-4 sm:p-6 2xl:p-8 animate-pulse">
+        <div className="h-7 w-44 rounded bg-[#E9F1EE]" />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          {Array.from({ length: 3 }).map((_, idx) => (
+            <div
+              key={idx}
+              className="flex min-w-0 flex-row items-center gap-3 rounded-2xl bg-[#F4F6F6] p-3 2xl:p-4"
+            >
+              <div className="size-10 rounded-lg bg-[#E9F1EE]" />
+              <div className="flex flex-col gap-1.5">
+                <div className="h-6 w-20 rounded bg-[#E9F1EE]" />
+                <div className="h-3 w-32 rounded bg-[#E9F1EE]" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   const items = [
-    { value: '2 of 5', label: 'Activities completed', icon: CheckCircle2 },
-    { value: '40%', label: 'Current Week Progress', icon: Loader },
-    { value: '0 new', label: 'Milestones unlocked', icon: Trophy },
+    {
+      value: `${currentWeekCompleted} of ${totalWeekActivities}`,
+      label: 'Activities completed',
+      icon: CheckCircle2,
+    },
+    {
+      value: `${currentWeekPercent}%`,
+      label: 'Current Week Progress',
+      icon: Loader,
+    },
+    {
+      value: `${milestonesCount} unlocked`,
+      label: 'Milestones achieved',
+      icon: Trophy,
+    },
   ];
 
   return (

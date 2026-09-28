@@ -1,10 +1,55 @@
+'use client';
+
 import { Flame, CheckCircle2, CalendarCheckIcon } from 'lucide-react';
 
-export function StatCards() {
+type StatCardsProps = {
+  activitiesCompleted: number;
+  weeklyPlanCompletionPercent: number;
+  streak: number;
+  isLoading?: boolean;
+};
+
+export function StatCards({
+  activitiesCompleted,
+  weeklyPlanCompletionPercent,
+  streak,
+  isLoading = false,
+}: StatCardsProps) {
+  if (isLoading) {
+    return (
+      <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-3 2xl:gap-6 animate-pulse">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div
+            key={i}
+            className="flex min-w-0 flex-col gap-3 rounded-2xl border border-[#E8EBE8] bg-[#FAFAFA] p-4"
+          >
+            <div className="size-8 rounded-lg bg-[#E9F1EE]" />
+            <div className="flex flex-col gap-1.5">
+              <div className="h-7 w-16 rounded bg-[#E9F1EE]" />
+              <div className="h-3 w-32 rounded bg-[#E9F1EE]" />
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   const stats = [
-    { value: '23', label: 'Activities completed', icon: CheckCircle2 },
-    { value: '40%', label: 'Weekly plan completion', icon: CalendarCheckIcon },
-    { value: '8', label: 'Current activity streak', icon: Flame },
+    {
+      value: String(activitiesCompleted),
+      label: 'Activities completed',
+      icon: CheckCircle2,
+    },
+    {
+      value: `${weeklyPlanCompletionPercent}%`,
+      label: 'Weekly plan completion',
+      icon: CalendarCheckIcon,
+    },
+    {
+      value: String(streak),
+      label: 'Current activity streak',
+      icon: Flame,
+    },
   ];
 
   return (

@@ -1,7 +1,14 @@
+'use client';
+
 import Image from 'next/image';
+import Link from 'next/link';
 import { Bookmark, Clock, ArrowUpRight } from 'lucide-react';
 
-export function NextSteps() {
+type NextStepsProps = {
+  childName?: string;
+};
+
+export function NextSteps({ childName = 'your child' }: NextStepsProps) {
   const cards = [
     {
       id: 1,
@@ -11,35 +18,39 @@ export function NextSteps() {
       badgeColor: 'text-[#174A4D]',
       image: '/images/figma/next-steps-card1-shape.png',
       imageBg: 'bg-[#A5C7B9]',
-      imageHeight: 'h-71.5',
-      material: 'Blocks',
+      imageHeight: 'h-64 sm:h-71.5',
+      material: 'Blocks & Counters',
       time: '20 min',
-      tags: ['🏠 Indoor', '18–36 mo', 'Fine Motor'],
+      tags: ['Indoor', '18–36 mo', 'Fine Motor'],
+      href: '/dashboard/explore?tab=activities',
     },
     {
       id: 2,
       type: 'article',
-      title: 'Parent Education',
+      title: 'Parent Education & Guidance',
       badge: 'OT Favorite',
       badgeColor: 'text-[#174A4D]',
       image: '/images/figma/next-steps-card2-shape.png',
       imageBg: 'bg-[#E0E7FF]',
-      imageHeight: 'h-68.5',
+      imageHeight: 'h-64 sm:h-68.5',
       readTime: '5 min Read',
-      description: 'OT-written articles on development, play, and everyday strategies',
+      description:
+        'OT-written articles on sensory regulation, daily routines, and playtime strategies.',
+      href: '/dashboard/explore?tab=parent-resources',
     },
     {
       id: 3,
-      type: 'activity',
-      title: 'Stacking & Sorting Challenge',
-      badge: 'Easy',
+      type: 'toy',
+      title: 'Sensory Rice Bin Exploration',
+      badge: 'Therapist Verified',
       badgeColor: 'text-[#174A4D]',
-      image: '/images/figma/next-steps-card1-shape.png',
-      imageBg: 'bg-[#A5C7B9]',
-      imageHeight: 'h-71.5',
-      material: 'Blocks',
-      time: '20 min',
-      tags: ['🏠 Indoor', '18–36 mo', 'Fine Motor'],
+      image: '/images/figma/next-steps-image-1.png',
+      imageBg: 'bg-[#F0FDFA]',
+      imageHeight: 'h-64 sm:h-71.5',
+      material: 'Dry Rice & Scoops',
+      time: '15 min',
+      tags: ['Sensory Play', 'Tactile Bin', 'Calming'],
+      href: '/dashboard/explore?tab=therapy-toys',
     },
   ];
 
@@ -50,7 +61,7 @@ export function NextSteps() {
           Recommended Next Steps
         </h2>
         <p className="font-nunito text-sm font-medium leading-5 tracking-[-0.006em] text-[#7D8488]">
-          Suggested therapeutic exercises &amp; home resources for Emma
+          Suggested therapeutic exercises &amp; home resources for {childName}
         </p>
       </div>
 
@@ -70,70 +81,83 @@ export function NextSteps() {
                 sizes="(max-width: 639px) calc(100vw - 64px), (max-width: 1535px) 50vw, 33vw"
                 className="object-contain object-center p-5"
               />
-              <div className="absolute left-4 top-4 rounded-full bg-white px-2.5 py-0.75 2xl:left-8">
-                <span className={`font-nunito text-xs font-medium leading-4 ${card.badgeColor}`}>
+              <div className="absolute left-4 top-4 rounded-full bg-white px-2.5 py-0.75 2xl:left-6">
+                <span className={`font-nunito text-xs font-semibold leading-4 ${card.badgeColor}`}>
                   {card.badge}
                 </span>
               </div>
               <button
                 type="button"
                 aria-label={`Bookmark ${card.title}`}
-                className="absolute right-4 top-4 flex size-8 items-center justify-center rounded-full bg-white/90 shadow-[0px_1px_4px_rgba(0,0,0,0.12)] transition-colors hover:bg-white 2xl:right-8 2xl:size-6"
+                className="absolute right-4 top-4 flex size-8 items-center justify-center rounded-full bg-white/90 shadow-[0px_1px_4px_rgba(0,0,0,0.12)] transition-colors hover:bg-white 2xl:right-6 2xl:size-7"
               >
-                <Bookmark className="size-3 text-[#263238]" />
+                <Bookmark className="size-3.5 text-[#263238]" />
               </button>
             </div>
 
-            {card.type === 'activity' ? (
-              <div className="flex flex-col gap-4 p-4 pb-8">
-                <h3 className="font-nunito text-xl font-medium leading-7 text-[#263238] 2xl:text-2xl 2xl:leading-8">
-                  {card.title}
-                </h3>
-                <div className="flex flex-col gap-2">
-                  <div className="flex flex-wrap items-center gap-1.25">
-                    <span className="rounded-full border border-[#DCEEEE] bg-transparent px-2 py-1.5 font-nunito text-xs font-medium leading-4">
-                      <span className="text-[#263238]">Material:</span>{' '}
-                      <span className="text-[#7D8488]">{card.material}</span>
-                    </span>
-                    <div className="flex items-center gap-1 px-2 py-1.5">
-                      <Clock className="size-3 text-[#607077]" />
-                      <span className="font-manrope text-xs font-normal leading-4.5 text-[#607077]">
-                        {card.time}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex flex-wrap gap-1.25">
-                    {card.tags?.map((tag, idx) => (
-                      <span
-                        key={idx}
-                        className="rounded-full border border-[#ACCBCB] bg-white px-2 py-1.5 font-nunito text-xs font-medium leading-4 text-[#2F7D7E]"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="flex flex-col gap-3 p-4 pb-8">
-                <div className="flex flex-wrap items-center justify-between gap-2">
+            {card.type !== 'article' ? (
+              <div className="flex flex-1 flex-col justify-between gap-4 p-4 pb-6 sm:p-5">
+                <div className="flex flex-col gap-3">
                   <h3 className="font-nunito text-xl font-medium leading-7 text-[#263238]">
                     {card.title}
                   </h3>
-                  <span className="font-manrope text-sm font-normal leading-5.5 text-[#7D8488]">
-                    {card.readTime}
-                  </span>
+                  <div className="flex flex-col gap-2">
+                    <div className="flex flex-wrap items-center gap-1.25">
+                      <span className="rounded-full border border-[#DCEEEE] bg-transparent px-2 py-1 font-nunito text-xs font-medium leading-4">
+                        <span className="text-[#263238]">Material:</span>{' '}
+                        <span className="text-[#7D8488]">{card.material}</span>
+                      </span>
+                      <div className="flex items-center gap-1 px-2 py-1">
+                        <Clock className="size-3 text-[#607077]" />
+                        <span className="font-manrope text-xs font-normal leading-4 text-[#607077]">
+                          {card.time}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap gap-1.25">
+                      {card.tags?.map((tag, idx) => (
+                        <span
+                          key={idx}
+                          className="rounded-full border border-[#ACCBCB] bg-white px-2.5 py-1 font-nunito text-xs font-medium leading-4 text-[#2F7D7E]"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-                <p className="font-manrope text-sm font-normal leading-5.5 text-[#7D8488]">
-                  {card.description}
-                </p>
-                <button
-                  type="button"
-                  className="mt-1 flex w-fit items-center gap-1.25 font-manrope text-xs font-semibold leading-4.5 tracking-[0.04em] text-[#2F7D7E] transition-opacity hover:opacity-80"
+
+                <Link
+                  href={card.href}
+                  className="mt-1 flex w-fit items-center gap-1 font-manrope text-xs font-semibold leading-4 tracking-[0.04em] text-[#2F7D7E] hover:underline"
                 >
-                  Explore
+                  Explore Activity
                   <ArrowUpRight className="size-3.5 text-[#2F7D7E]" />
-                </button>
+                </Link>
+              </div>
+            ) : (
+              <div className="flex flex-1 flex-col justify-between gap-3 p-4 pb-6 sm:p-5">
+                <div className="flex flex-col gap-2">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <h3 className="font-nunito text-xl font-medium leading-7 text-[#263238]">
+                      {card.title}
+                    </h3>
+                    <span className="font-manrope text-xs font-normal text-[#7D8488]">
+                      {card.readTime}
+                    </span>
+                  </div>
+                  <p className="font-manrope text-sm font-normal leading-5.5 text-[#7D8488]">
+                    {card.description}
+                  </p>
+                </div>
+
+                <Link
+                  href={card.href}
+                  className="mt-1 flex w-fit items-center gap-1 font-manrope text-xs font-semibold leading-4 tracking-[0.04em] text-[#2F7D7E] hover:underline"
+                >
+                  Explore Resource
+                  <ArrowUpRight className="size-3.5 text-[#2F7D7E]" />
+                </Link>
               </div>
             )}
           </div>
