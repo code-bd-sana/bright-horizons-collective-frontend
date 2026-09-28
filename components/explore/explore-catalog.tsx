@@ -148,8 +148,8 @@ function ResourceCard({
             <Link
               href={
                 item.type === 'Activities'
-                  ? '/explore/activities/bubble-wrap-stomp-counting'
-                  : '/explore/parent-resources/developmental-milestones'
+                  ? `/explore/activities/${item.id}`
+                  : `/explore/parent-resources/${item.id}`
               }
               className="flex items-center gap-1 px-2.5 py-2 font-manrope text-base font-semibold leading-6.75 tracking-[-0.24px] text-[#F2B59F]"
             >

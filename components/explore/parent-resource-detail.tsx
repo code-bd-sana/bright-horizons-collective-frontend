@@ -703,10 +703,8 @@ export function ParentResourceDetail({ resourceId, dashboard = false }: ParentRe
     );
   }
 
-  // Fallback static milestone page for developmental-milestones
-  const activityHref = dashboard
-    ? '/dashboard/explore/activities/bubble-wrap-stomp-counting'
-    : '/explore/activities/bubble-wrap-stomp-counting';
+  // Fallback activity link
+  const activityHref = dashboard ? '/dashboard/explore?tab=activities' : '/explore?tab=activities';
 
   return (
     <Root className={cn('text-[#263238]', !dashboard && 'bg-[#FDFDFC]')}>

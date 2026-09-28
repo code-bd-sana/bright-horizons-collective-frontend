@@ -1,5 +1,5 @@
-import { ActivityDetail } from '@/components/explore/activity-detail';
+import { redirect } from 'next/navigation';
 
 export default function DashboardBubbleWrapStompCountingPage() {
-  return <ActivityDetail dashboard />;
+  redirect('/dashboard/explore?tab=activities');
 }

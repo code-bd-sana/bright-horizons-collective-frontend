@@ -1,5 +1,5 @@
-import { ParentResourceDetail } from '@/components/explore/parent-resource-detail';
+import { redirect } from 'next/navigation';
 
 export default function DevelopmentalMilestonesPage() {
-  return <ParentResourceDetail />;
+  redirect('/explore?tab=parent-resources');
 }

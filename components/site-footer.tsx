@@ -3,14 +3,14 @@ import Link from 'next/link';
 import type { CSSProperties } from 'react';
 
 const productLinks = [
-  ['Activity library', '/explore'],
-  ['Activities', '/explore'],
-  ['Toy Spotlight', '/explore'],
+  ['Activity Library', '/explore?tab=activities'],
+  ['Parent Resources', '/explore?tab=parent-resources'],
+  ['Toy Spotlight', '/explore?tab=therapy-toys'],
   ['Membership', '/membership'],
 ];
 
 const companyLinks = [
-  ['Contact', '/#contact'],
+  ['Contact', '/contact'],
   ['Privacy Policy', '/privacy-policy'],
   ['Terms & Membership Agreement', '/terms-and-membership-agreement'],
   ['Affiliate Disclosure', '/affiliate-disclosure'],
@@ -360,7 +360,7 @@ function CompactFooterDecoration() {
     <>
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -left-[520px] -top-[190px] h-[930px] w-[1390px] opacity-70"
+        className="pointer-events-none absolute -left-130 -top-47.5 h-232.5 w-347.5 opacity-70"
       >
         <Image
           src="/Home/figma-home-1183-12076-img-image136.png"
@@ -372,7 +372,7 @@ function CompactFooterDecoration() {
       </div>
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -left-10 bottom-[-34px] size-52 rotate-[-12deg] opacity-80 mix-blend-multiply sm:left-8 sm:size-64"
+        className="pointer-events-none absolute -left-10 -bottom-8.5 size-52 -rotate-12 opacity-80 mix-blend-multiply sm:left-8 sm:size-64"
       >
         <Image
           src="/Home/figma-home-1183-12076-img-image3.png"
@@ -384,7 +384,7 @@ function CompactFooterDecoration() {
       </div>
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -right-8 bottom-[-22px] h-36 w-36 overflow-hidden opacity-75 sm:right-8 sm:h-44 sm:w-44"
+        className="pointer-events-none absolute -right-8 -bottom-5.5 h-36 w-36 overflow-hidden opacity-75 sm:right-8 sm:h-44 sm:w-44"
       >
         <Image
           src="/Home/figma-home-1183-12076-img-image29.png"
