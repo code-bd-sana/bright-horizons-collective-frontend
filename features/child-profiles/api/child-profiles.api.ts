@@ -148,3 +148,42 @@ export function getChildCompletedActivities(id: string): Promise<ChildCompletedA
     return data as ChildCompletedActivitiesResponse;
   });
 }
+
+export type ChildRecentActivity = {
+  id: string;
+  activityId: string;
+  childId?: string | null;
+  weeklyPlanId?: string | null;
+  completedAt: string;
+  difficulty?: string | null;
+  rating?: number | null;
+  parentNotes?: string | null;
+  artworkUrl?: string | null;
+  activity?: {
+    id: string;
+    title: string;
+    description?: string | null;
+    shortDescription?: string | null;
+    developmentCategory?: string | null;
+    developmentGoal?: string | null;
+    estimatedDuration?: string | null;
+    featuredImageUrl?: string | null;
+    materialsSummary?: string | null;
+    difficultyLevel?: string | null;
+  } | null;
+};
+
+export function getChildRecentActivities(
+  childId: string,
+  limit = 5
+): Promise<ChildRecentActivity[]> {
+  const id = parseInput(childIdSchema, childId);
+
+  return handleApiCall(async () => {
+    const response = await browserApi.get(`/child-progress/${id}/recent-activities`, {
+      params: { limit },
+    });
+    const data = response.data?.data ?? response.data;
+    return (Array.isArray(data) ? data : []) as ChildRecentActivity[];
+  });
+}

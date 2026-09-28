@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { AlertTriangle, Loader2, PenLine, Trash2, User } from 'lucide-react';
+import { AlertTriangle, ChevronDown, Loader2, PenLine, Trash2, User } from 'lucide-react';
 import { FormEvent, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -13,7 +13,7 @@ import {
   useUpdateChildProfile,
   useUploadChildAvatar,
 } from '@/features/child-profiles/hooks/child-profiles.mutations';
-import { FieldLabel, SelectField, TextField, ToggleChips } from '@/components/ui/form-fields';
+import { FieldLabel, SelectField, TextField } from '@/components/ui/form-fields';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { useAppStore } from '@/store/use-app-store';
 import type { ChildProfile } from '@/features/child-profiles/model/child-profile.types';
@@ -30,8 +30,14 @@ function Card({ title, children }: { title: string; children: React.ReactNode })
 }
 
 const GENDER_OPTIONS = ['Girl', 'Boy', 'Non-binary', 'Prefer not to say'];
-const YEAR_OPTIONS = Array.from({ length: 18 }, (_, i) => String(i));
-const MONTH_OPTIONS = Array.from({ length: 12 }, (_, i) => String(i));
+const YEAR_OPTIONS = Array.from({ length: 18 }, (_, i) => ({
+  label: `${i} yr`,
+  value: String(i),
+}));
+const MONTH_OPTIONS = Array.from({ length: 12 }, (_, i) => ({
+  label: `${i} mo`,
+  value: String(i),
+}));
 
 const RELATIONSHIP_OPTIONS = [
   'Father',
@@ -43,8 +49,8 @@ const RELATIONSHIP_OPTIONS = [
 ];
 
 const SUPPORT_OPTIONS = [
-  'Fine Motor',
   'Gross Motor',
+  'Fine Motor',
   'Language',
   'Social-Emotional',
   'Sensory',
@@ -58,7 +64,7 @@ const FAVORITES_OPTIONS = [
   'Music',
   'Dinosaurs',
   'Art',
-  'Vehicles',
+  'Vehicle',
   'Space',
   'Books',
   'Sports',
@@ -78,6 +84,72 @@ const ACTIVITY_TYPE_OPTIONS = [
   'Pretend Play',
   'Science Experiments',
 ];
+
+function PillChips({
+  label,
+  helper,
+  options,
+  value = [],
+  onChange,
+  singleSelect = false,
+  disabled = false,
+}: {
+  label: string;
+  helper?: string;
+  options: string[];
+  value?: string[];
+  onChange: (selected: string[]) => void;
+  singleSelect?: boolean;
+  disabled?: boolean;
+}) {
+  const currentSet = new Set(value);
+
+  const toggle = (option: string) => {
+    if (disabled) return;
+    if (singleSelect) {
+      onChange(currentSet.has(option) ? [] : [option]);
+    } else {
+      const next = new Set(currentSet);
+      if (next.has(option)) next.delete(option);
+      else next.add(option);
+      onChange(Array.from(next));
+    }
+  };
+
+  return (
+    <fieldset className="flex flex-col gap-3">
+      <legend className="font-manrope text-lg font-medium leading-6.75 tracking-[-0.27px] text-[#263238]">
+        {label}
+      </legend>
+      <div className="flex flex-wrap gap-2.5 sm:gap-4">
+        {options.map((option) => {
+          const isSelected = currentSet.has(option);
+          return (
+            <button
+              key={option}
+              type="button"
+              disabled={disabled}
+              aria-pressed={isSelected}
+              onClick={() => toggle(option)}
+              className={`rounded-full border px-4 py-2 font-nunito text-base font-medium leading-6 tracking-[-0.176px] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2f7d7e] ${
+                isSelected
+                  ? 'border-[#2f7d7e] bg-[#2f7d7e] text-white shadow-xs'
+                  : 'border-[#d4d6d7] bg-white text-[#515b60] hover:border-[#2f7d7e]'
+              } ${disabled ? 'opacity-60 cursor-not-allowed' : ''}`}
+            >
+              {option}
+            </button>
+          );
+        })}
+      </div>
+      {helper ? (
+        <p className="font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#7d8488]">
+          {helper}
+        </p>
+      ) : null}
+    </fieldset>
+  );
+}
 
 function PersonalInformationForm({ child, refetch }: { child: ChildProfile; refetch: () => void }) {
   const router = useRouter();
@@ -184,6 +256,7 @@ function PersonalInformationForm({ child, refetch }: { child: ChildProfile; refe
 
       refetch();
       toast.success('Child profile updated successfully!');
+      router.push(`/dashboard/child-profiles/${child.id}`);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Failed to update child profile.';
       toast.error(msg);
@@ -305,26 +378,44 @@ function PersonalInformationForm({ child, refetch }: { child: ChildProfile; refe
           <div className="flex flex-col gap-1.5">
             <FieldLabel>Age</FieldLabel>
             <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
-              <SelectField
-                id="age-years"
-                label=""
-                placeholder="Select Year"
-                options={YEAR_OPTIONS}
-                value={ageYears}
-                onChange={(e) => setAgeYears(e.target.value)}
-                hideLabel={true}
-                disabled={isSaving}
-              />
-              <SelectField
-                id="age-months"
-                label=""
-                placeholder="Select Month"
-                options={MONTH_OPTIONS}
-                value={ageMonths}
-                onChange={(e) => setAgeMonths(e.target.value)}
-                hideLabel={true}
-                disabled={isSaving}
-              />
+              <div className="flex flex-col">
+                <span className="flex h-11 items-center justify-between rounded-full border border-[#D8DDD9] bg-white px-3.5 shadow-[0_1px_2px_rgba(16,24,40,0.05)] focus-within:border-[#2F7D7E]">
+                  <select
+                    id="age-years"
+                    aria-label="Age in years"
+                    value={ageYears}
+                    onChange={(e) => setAgeYears(e.target.value)}
+                    disabled={isSaving}
+                    className="min-w-0 flex-1 appearance-none bg-transparent font-manrope text-base leading-6 tracking-[-0.176px] text-[#263238] outline-none"
+                  >
+                    {YEAR_OPTIONS.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="h-5 w-5 text-[#263238] pointer-events-none" />
+                </span>
+              </div>
+              <div className="flex flex-col">
+                <span className="flex h-11 items-center justify-between rounded-full border border-[#D8DDD9] bg-white px-3.5 shadow-[0_1px_2px_rgba(16,24,40,0.05)] focus-within:border-[#2F7D7E]">
+                  <select
+                    id="age-months"
+                    aria-label="Age in months"
+                    value={ageMonths}
+                    onChange={(e) => setAgeMonths(e.target.value)}
+                    disabled={isSaving}
+                    className="min-w-0 flex-1 appearance-none bg-transparent font-manrope text-base leading-6 tracking-[-0.176px] text-[#263238] outline-none"
+                  >
+                    {MONTH_OPTIONS.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="h-5 w-5 text-[#263238] pointer-events-none" />
+                </span>
+              </div>
             </div>
           </div>
         </Card>
@@ -333,16 +424,15 @@ function PersonalInformationForm({ child, refetch }: { child: ChildProfile; refe
           <TextField
             id="caregiver-name"
             label="Name"
-            placeholder="First name or nickname"
+            placeholder="Caregiver's full name"
             value={caregiverName}
             onChange={(e) => setCaregiverName(e.target.value)}
             optional
             disabled={isSaving}
           />
 
-          <ToggleChips
+          <PillChips
             label="Relationship to the child"
-            helper=""
             options={RELATIONSHIP_OPTIONS}
             value={caregiverRelationship ? [caregiverRelationship] : []}
             onChange={(selected) => setCaregiverRelationship(selected[0] || '')}
@@ -361,21 +451,29 @@ function PersonalInformationForm({ child, refetch }: { child: ChildProfile; refe
               optional
               disabled={isSaving}
             />
-            <TextField
-              id="caregiver-phone"
-              label="Phone"
-              placeholder="+1 (555) 000-0000"
-              type="tel"
-              value={caregiverPhone}
-              onChange={(e) => setCaregiverPhone(e.target.value)}
-              optional
-              disabled={isSaving}
-            />
+            <div className="flex flex-col gap-1.5">
+              <FieldLabel optional>Phone</FieldLabel>
+              <span className="flex min-h-11 items-stretch rounded-full border border-[#d8ddd9] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.05)] focus-within:border-[#2f7d7e]">
+                <span className="flex items-center px-4 border-r border-[#d8ddd9] font-manrope text-sm font-semibold text-[#515b60] bg-gray-50/60 rounded-l-full">
+                  US
+                </span>
+                <input
+                  id="caregiver-phone"
+                  aria-label="Caregiver phone number"
+                  placeholder="+1 (555) 000-0000"
+                  type="tel"
+                  value={caregiverPhone}
+                  onChange={(e) => setCaregiverPhone(e.target.value)}
+                  disabled={isSaving}
+                  className="min-w-0 flex-1 bg-transparent py-2.5 pl-3 pr-4 font-manrope text-base leading-6 tracking-[-0.176px] text-[#263238] placeholder:text-[#a8adaf] outline-none"
+                />
+              </span>
+            </div>
           </div>
         </Card>
 
         <Card title="Development & Focus">
-          <ToggleChips
+          <PillChips
             label="Areas of Support"
             helper="Select the developmental areas you'd like to focus on right now."
             options={SUPPORT_OPTIONS}
@@ -398,7 +496,7 @@ function PersonalInformationForm({ child, refetch }: { child: ChildProfile; refe
         </Card>
 
         <Card title="Interests & Preferences">
-          <ToggleChips
+          <PillChips
             label="What they love"
             helper="Pick a few favorites to spark weekly ideas"
             options={FAVORITES_OPTIONS}
@@ -407,7 +505,7 @@ function PersonalInformationForm({ child, refetch }: { child: ChildProfile; refe
             disabled={isSaving}
           />
 
-          <ToggleChips
+          <PillChips
             label="Preferred Activity Types"
             helper="Choose the styles of play they enjoy most"
             options={ACTIVITY_TYPE_OPTIONS}

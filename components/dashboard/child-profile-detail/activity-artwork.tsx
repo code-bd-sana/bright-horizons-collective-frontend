@@ -29,6 +29,9 @@ export function ActivityArtwork({ src, alt, focalPoint = '50% 58%' }: ActivityAr
           sizes="235px"
           className="object-cover"
           style={{ objectPosition: focalPoint }}
+          unoptimized={
+            src.startsWith('http') || src.startsWith('/uploads') || src.startsWith('data:')
+          }
         />
       </div>
     </div>
