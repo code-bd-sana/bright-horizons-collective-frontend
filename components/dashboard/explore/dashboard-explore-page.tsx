@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Check, ChevronDown } from 'lucide-react';
 import { FormEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
@@ -12,14 +13,13 @@ import { TherapyToyModal } from '@/components/explore/therapy-toy-modal';
 import type { TherapyToyModalToy } from '@/components/explore/therapy-toy-modal';
 import { useExploreCatalog } from '@/features/explore/hooks/use-explore-catalog';
 import { figmaExploreUiAssets } from '@/features/explore/data/figma-explore-assets';
-import {
-  emptyExploreFilters,
-  type ActivityExploreItem,
-  type ExploreCardItem,
-  type ExploreFilterKey,
-  type ExploreFilters,
-  type ExploreItem,
-  type ExploreTab,
+import type {
+  ActivityExploreItem,
+  ExploreCardItem,
+  ExploreFilterKey,
+  ExploreFilters,
+  ExploreItem,
+  ExploreTab,
 } from '@/features/explore/model/explore-types';
 import { useAppStore } from '@/store/use-app-store';
 import {
@@ -390,15 +390,24 @@ function TherapyToyColumns({
 }
 
 export function DashboardExplorePage({ initialTab }: { initialTab: ExploreTab }) {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+
   const [selectedToy, setSelectedToy] = useState<TherapyToyModalToy | null>(null);
-  const [filters, setFilters] = useState<ExploreFilters>(() => ({
-    ...emptyExploreFilters,
-    age: [],
-    developmentalSkill: [],
-    category: [],
-    collection: [],
-    difficulty: [],
-  }));
+  const [filters, setFilters] = useState<ExploreFilters>(() => {
+    const getParamValues = (name: string): string[] => {
+      const val = searchParams?.get(name);
+      return val ? val.split(',').filter(Boolean) : [];
+    };
+    return {
+      age: getParamValues('age'),
+      developmentalSkill: getParamValues('skill'),
+      category: getParamValues('category'),
+      collection: getParamValues('collection'),
+      difficulty: getParamValues('difficulty'),
+    };
+  });
   const { data, isLoading, setSaved, savingItemId } = useExploreCatalog(initialTab, filters);
 
   const { selectedChildId } = useAppStore();
@@ -475,12 +484,27 @@ export function DashboardExplorePage({ initialTab }: { initialTab: ExploreTab })
         : null;
 
   const handleFilterToggle = (key: ExploreFilterKey, value: string) => {
-    setFilters((current) => ({
-      ...current,
-      [key]: current[key].includes(value)
+    setFilters((current) => {
+      const updatedValues = current[key].includes(value)
         ? current[key].filter((option) => option !== value)
-        : [...current[key], value],
-    }));
+        : [...current[key], value];
+      const next = {
+        ...current,
+        [key]: updatedValues,
+      };
+
+      const params = new URLSearchParams(searchParams?.toString() ?? '');
+      const paramKey = key === 'developmentalSkill' ? 'skill' : key;
+      if (updatedValues.length > 0) {
+        params.set(paramKey, updatedValues.join(','));
+      } else {
+        params.delete(paramKey);
+      }
+      params.set('tab', initialTab);
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+
+      return next;
+    });
   };
 
   const handleSavedChange = (item: ExploreCardItem, saved: boolean) => {

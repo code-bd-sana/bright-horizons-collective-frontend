@@ -6,10 +6,10 @@ import './globals.css';
 
 export default function GlobalError({
   error,
-  retry,
+  reset,
 }: {
   error: Error & { digest?: string };
-  retry: () => void;
+  reset: () => void;
 }) {
   useEffect(() => {
     console.error('[global-application-error]', {
@@ -26,7 +26,7 @@ export default function GlobalError({
           code="500"
           title="Something went wrong"
           description="We couldn’t load Bright Horizons right now. Try again, or return home and continue from there."
-          primaryAction={{ label: 'Try again', onClick: retry }}
+          primaryAction={{ label: 'Try again', onClick: reset }}
           secondaryAction={{ href: '/', label: 'Return home' }}
         />
       </body>

@@ -5,10 +5,10 @@ import { StatusPage } from '@/components/errors/status-page';
 
 export default function ErrorPage({
   error,
-  retry,
+  reset,
 }: {
   error: Error & { digest?: string };
-  retry: () => void;
+  reset: () => void;
 }) {
   useEffect(() => {
     console.error('[application-error]', {
@@ -22,7 +22,7 @@ export default function ErrorPage({
       code="500"
       title="Something didn’t load correctly"
       description="A temporary problem interrupted this page. Try again, or return home if the problem continues."
-      primaryAction={{ label: 'Try again', onClick: retry }}
+      primaryAction={{ label: 'Try again', onClick: reset }}
       secondaryAction={{ href: '/', label: 'Return home' }}
     />
   );

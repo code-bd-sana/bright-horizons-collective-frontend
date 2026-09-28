@@ -3,7 +3,7 @@
 import { ArrowRight, Bookmark, ChevronDown, Clock3, Search } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -445,8 +445,23 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
   const { data: session } = useSession();
   const isAuthenticated = Boolean(session?.user);
 
-  const [query, setQuery] = useState('');
-  const [filters, setFilters] = useState<SelectedFilters>(emptyFilters);
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+
+  const [query, setQuery] = useState(() => searchParams?.get('search') ?? '');
+  const [filters, setFilters] = useState<SelectedFilters>(() => {
+    const getParamValues = (name: string): string[] => {
+      const val = searchParams?.get(name);
+      return val ? val.split(',').filter(Boolean) : [];
+    };
+    return {
+      age: getParamValues('age'),
+      skill: getParamValues('skill'),
+      category: getParamValues('category'),
+      collection: getParamValues('collection'),
+      difficulty: getParamValues('difficulty'),
+    };
+  });
   const [selectedToy, setSelectedToy] = useState<TherapyToyModalToy | null>(null);
   const [savedOverrides, setSavedOverrides] = useState<Record<string, boolean>>({});
 
@@ -629,12 +644,25 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
   }, [activeType, filters, query]);
 
   const toggleFilter = (key: FilterKey, option: string) => {
-    setFilters((current) => ({
-      ...current,
-      [key]: current[key].includes(option)
+    setFilters((current) => {
+      const nextValues = current[key].includes(option)
         ? current[key].filter((value) => value !== option)
-        : [...current[key], option],
-    }));
+        : [...current[key], option];
+      const next = {
+        ...current,
+        [key]: nextValues,
+      };
+
+      const params = new URLSearchParams(searchParams?.toString() ?? '');
+      if (nextValues.length > 0) {
+        params.set(key, nextValues.join(','));
+      } else {
+        params.delete(key);
+      }
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+
+      return next;
+    });
   };
 
   const realActivities = useMemo(() => {
@@ -765,7 +793,17 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
           <Search className="size-6 shrink-0 text-[#9AA3A6]" strokeWidth={1.5} />
           <input
             value={query}
-            onChange={(event) => setQuery(event.target.value)}
+            onChange={(event) => {
+              const val = event.target.value;
+              setQuery(val);
+              const params = new URLSearchParams(searchParams?.toString() ?? '');
+              if (val.trim()) {
+                params.set('search', val.trim());
+              } else {
+                params.delete('search');
+              }
+              router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+            }}
             placeholder="Search activities, speech, sensory play, routines, milestones, toys..."
             className="min-w-0 flex-1 w-full bg-transparent font-nunito text-sm outline-none placeholder:text-[#7D8488] text-ellipsis"
           />

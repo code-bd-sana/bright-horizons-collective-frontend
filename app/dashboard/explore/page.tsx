@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { DashboardExplorePage } from '@/components/dashboard/explore/dashboard-explore-page';
 import { isExploreTab } from '@/features/explore/model/explore-types';
 
@@ -10,5 +11,9 @@ export default async function ExplorePage({
   const requestedTab = Array.isArray(params.tab) ? params.tab[0] : params.tab;
   const initialTab = isExploreTab(requestedTab) ? requestedTab : 'activities';
 
-  return <DashboardExplorePage initialTab={initialTab} />;
+  return (
+    <Suspense fallback={null}>
+      <DashboardExplorePage initialTab={initialTab} />
+    </Suspense>
+  );
 }
