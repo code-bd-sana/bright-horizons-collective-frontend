@@ -3,8 +3,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { AlertTriangle, ChevronDown, Loader2, PenLine, Trash2, User } from 'lucide-react';
+import { AlertTriangle, Camera, Loader2, Trash2, User } from 'lucide-react';
 import { FormEvent, useRef, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 import { useActiveChild } from '@/features/child-profiles/context/child-profile-detail-context';
@@ -13,7 +14,7 @@ import {
   useUpdateChildProfile,
   useUploadChildAvatar,
 } from '@/features/child-profiles/hooks/child-profiles.mutations';
-import { FieldLabel, SelectField, TextField } from '@/components/ui/form-fields';
+import { AddChildSelect } from '@/components/dashboard/child-profiles/add-child-select';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { useAppStore } from '@/store/use-app-store';
 import type { ChildProfile } from '@/features/child-profiles/model/child-profile.types';
@@ -29,15 +30,22 @@ function Card({ title, children }: { title: string; children: React.ReactNode })
   );
 }
 
-const GENDER_OPTIONS = ['Girl', 'Boy', 'Non-binary', 'Prefer not to say'];
-const YEAR_OPTIONS = Array.from({ length: 18 }, (_, i) => ({
-  label: `${i} yr`,
-  value: String(i),
+const GENDER_OPTIONS = ['Girl', 'Boy', 'Non-binary', 'Prefer not to say'].map((value) => ({
+  label: value,
+  value,
 }));
-const MONTH_OPTIONS = Array.from({ length: 12 }, (_, i) => ({
-  label: `${i} mo`,
-  value: String(i),
+
+const YEAR_OPTIONS = Array.from({ length: 18 }, (_, value) => ({
+  label: `${value} yr`,
+  value: String(value),
 }));
+
+const MONTH_OPTIONS = Array.from({ length: 12 }, (_, value) => ({
+  label: `${value} mo`,
+  value: String(value),
+}));
+
+const COUNTRY_OPTIONS = [{ label: 'US', value: 'US' }];
 
 const RELATIONSHIP_OPTIONS = [
   'Father',
@@ -84,6 +92,9 @@ const ACTIVITY_TYPE_OPTIONS = [
   'Pretend Play',
   'Science Experiments',
 ];
+
+const inputClassName =
+  'h-11 w-full rounded-full border border-[#d8ddd9] bg-white px-4 py-2.5 font-manrope text-base leading-6 tracking-[-0.176px] text-[#263238] placeholder:text-[#a8adaf] shadow-[0_1px_2px_rgba(16,24,40,0.05)] outline-none focus:border-[#2f7d7e] disabled:opacity-60';
 
 function PillChips({
   label,
@@ -153,6 +164,7 @@ function PillChips({
 
 function PersonalInformationForm({ child, refetch }: { child: ChildProfile; refetch: () => void }) {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { selectedChildId, setSelectedChildId } = useAppStore();
 
   const updateMutation = useUpdateChildProfile();
@@ -234,6 +246,11 @@ function PersonalInformationForm({ child, refetch }: { child: ChildProfile; refe
       return;
     }
 
+    if (caregiverEmail.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(caregiverEmail.trim())) {
+      toast.error('Please enter a valid caregiver email address.');
+      return;
+    }
+
     try {
       await updateMutation.mutateAsync({
         id: child.id,
@@ -254,6 +271,7 @@ function PersonalInformationForm({ child, refetch }: { child: ChildProfile; refe
         },
       });
 
+      void queryClient.invalidateQueries({ queryKey: ['child-profiles'] });
       refetch();
       toast.success('Child profile updated successfully!');
       router.push(`/dashboard/child-profiles/${child.id}`);
@@ -271,6 +289,10 @@ function PersonalInformationForm({ child, refetch }: { child: ChildProfile; refe
         setSelectedChildId(null);
       }
 
+      void queryClient.invalidateQueries({ queryKey: ['child-profiles'] });
+      void queryClient.invalidateQueries({ queryKey: ['weekly-plans'] });
+      void queryClient.invalidateQueries({ queryKey: ['child-progress'] });
+
       setIsDeleteModalOpen(false);
       toast.success(`${child.name}'s profile has been removed.`);
       router.replace('/dashboard/child-profiles');
@@ -286,6 +308,16 @@ function PersonalInformationForm({ child, refetch }: { child: ChildProfile; refe
 
   return (
     <div className="mx-auto mt-8 flex w-full min-w-0 max-w-179.5 flex-col gap-8 pb-12 sm:mt-10 sm:gap-10 2xl:mt-14 2xl:gap-14">
+      {/* Header */}
+      <div className="flex flex-col gap-2">
+        <h1 className="font-nunito text-2xl font-medium leading-8 tracking-[-0.005em] text-[#263238] sm:text-3xl sm:leading-10 2xl:text-[32px]">
+          Personal Information
+        </h1>
+        <p className="font-manrope text-sm font-normal leading-5.5 tracking-[-0.006em] text-[#7D8488]">
+          Update {child.name}&apos;s profile details, caregiver information, and play preferences.
+        </p>
+      </div>
+
       <form onSubmit={handleSaveChanges} className="flex flex-col gap-6 sm:gap-8">
         <Card title="Basic Information">
           {/* Avatar & Photo Actions */}
@@ -331,7 +363,7 @@ function PersonalInformationForm({ child, refetch }: { child: ChildProfile; refe
                 {isUploadingPhoto ? (
                   <Loader2 className="h-3.5 w-3.5 animate-spin text-[#7D8488]" />
                 ) : (
-                  <PenLine className="h-3.5 w-3.5 text-[#7D8488]" />
+                  <Camera className="h-3.5 w-3.5 text-[#7D8488]" />
                 )}
                 <span className="font-manrope text-sm font-semibold leading-5 text-[#7D8488]">
                   {photoUrl ? 'Change photo' : 'Upload photo'}
@@ -352,84 +384,79 @@ function PersonalInformationForm({ child, refetch }: { child: ChildProfile; refe
             </div>
           </div>
 
-          <TextField
-            id="nickname"
-            label="Nickname"
-            placeholder="What do you call them?"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            disabled={isSaving}
-          />
-
-          <SelectField
-            id="gender"
-            label={
-              <span className="font-manrope text-lg font-medium leading-6.75 tracking-[-0.015em] text-[#263238]">
-                Gender <span className="font-medium text-[#7D8488]">(Optional)</span>
-              </span>
-            }
-            placeholder="e.g. Girl, Boy, Non-binary, Prefer not to say..."
-            options={GENDER_OPTIONS}
-            value={gender}
-            onChange={(e) => setGender(e.target.value)}
-            disabled={isSaving}
-          />
+          <label className="flex flex-col gap-1.5">
+            <span className="font-manrope text-lg font-medium leading-6.75 tracking-[-0.27px] text-[#263238]">
+              Nickname
+            </span>
+            <input
+              id="nickname"
+              placeholder="What do you call them?"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              disabled={isSaving}
+              className={inputClassName}
+            />
+          </label>
 
           <div className="flex flex-col gap-1.5">
-            <FieldLabel>Age</FieldLabel>
+            <span className="font-manrope text-lg font-medium leading-6.75 tracking-[-0.27px] text-[#263238]">
+              Gender <span className="font-normal text-[#7d8488]">(Optional)</span>
+            </span>
+            <AddChildSelect
+              ariaLabel="Gender"
+              name="gender"
+              options={GENDER_OPTIONS}
+              placeholder="Select gender"
+              value={gender}
+              onValueChange={setGender}
+            />
+          </div>
+
+          <fieldset className="flex flex-col gap-1.5">
+            <legend className="font-manrope text-lg font-medium leading-6.75 tracking-[-0.27px] text-[#263238]">
+              Age
+            </legend>
             <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
-              <div className="flex flex-col">
-                <span className="flex h-11 items-center justify-between rounded-full border border-[#D8DDD9] bg-white px-3.5 shadow-[0_1px_2px_rgba(16,24,40,0.05)] focus-within:border-[#2F7D7E]">
-                  <select
-                    id="age-years"
-                    aria-label="Age in years"
-                    value={ageYears}
-                    onChange={(e) => setAgeYears(e.target.value)}
-                    disabled={isSaving}
-                    className="min-w-0 flex-1 appearance-none bg-transparent font-manrope text-base leading-6 tracking-[-0.176px] text-[#263238] outline-none"
-                  >
-                    {YEAR_OPTIONS.map((opt) => (
-                      <option key={opt.value} value={opt.value}>
-                        {opt.label}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown className="h-5 w-5 text-[#263238] pointer-events-none" />
-                </span>
+              <div>
+                <span className="sr-only">Years</span>
+                <AddChildSelect
+                  ariaLabel="Age in years"
+                  name="ageYears"
+                  options={YEAR_OPTIONS}
+                  placeholder="Select Year"
+                  value={ageYears}
+                  onValueChange={setAgeYears}
+                />
               </div>
-              <div className="flex flex-col">
-                <span className="flex h-11 items-center justify-between rounded-full border border-[#D8DDD9] bg-white px-3.5 shadow-[0_1px_2px_rgba(16,24,40,0.05)] focus-within:border-[#2F7D7E]">
-                  <select
-                    id="age-months"
-                    aria-label="Age in months"
-                    value={ageMonths}
-                    onChange={(e) => setAgeMonths(e.target.value)}
-                    disabled={isSaving}
-                    className="min-w-0 flex-1 appearance-none bg-transparent font-manrope text-base leading-6 tracking-[-0.176px] text-[#263238] outline-none"
-                  >
-                    {MONTH_OPTIONS.map((opt) => (
-                      <option key={opt.value} value={opt.value}>
-                        {opt.label}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown className="h-5 w-5 text-[#263238] pointer-events-none" />
-                </span>
+              <div>
+                <span className="sr-only">Months</span>
+                <AddChildSelect
+                  ariaLabel="Age in months"
+                  name="ageMonths"
+                  options={MONTH_OPTIONS}
+                  placeholder="Select Month"
+                  value={ageMonths}
+                  onValueChange={setAgeMonths}
+                />
               </div>
             </div>
-          </div>
+          </fieldset>
         </Card>
 
         <Card title="Caregiver Information">
-          <TextField
-            id="caregiver-name"
-            label="Name"
-            placeholder="Caregiver's full name"
-            value={caregiverName}
-            onChange={(e) => setCaregiverName(e.target.value)}
-            optional
-            disabled={isSaving}
-          />
+          <label className="flex flex-col gap-1.5">
+            <span className="font-manrope text-lg font-medium leading-6.75 tracking-[-0.27px] text-[#263238]">
+              Name <span className="font-normal text-[#7d8488]">(Optional)</span>
+            </span>
+            <input
+              id="caregiver-name"
+              placeholder="Caregiver's full name"
+              value={caregiverName}
+              onChange={(e) => setCaregiverName(e.target.value)}
+              disabled={isSaving}
+              className={inputClassName}
+            />
+          </label>
 
           <PillChips
             label="Relationship to the child"
@@ -441,22 +468,34 @@ function PersonalInformationForm({ child, refetch }: { child: ChildProfile; refe
           />
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-2.5">
-            <TextField
-              id="caregiver-email"
-              label="Email"
-              placeholder="caregiver@example.com"
-              type="email"
-              value={caregiverEmail}
-              onChange={(e) => setCaregiverEmail(e.target.value)}
-              optional
-              disabled={isSaving}
-            />
+            <label className="flex flex-col gap-1.5">
+              <span className="font-manrope text-lg font-medium leading-6.75 tracking-[-0.27px] text-[#263238]">
+                Email <span className="font-normal text-[#7d8488]">(Optional)</span>
+              </span>
+              <input
+                id="caregiver-email"
+                placeholder="caregiver@example.com"
+                type="email"
+                value={caregiverEmail}
+                onChange={(e) => setCaregiverEmail(e.target.value)}
+                disabled={isSaving}
+                className={inputClassName}
+              />
+            </label>
             <div className="flex flex-col gap-1.5">
-              <FieldLabel optional>Phone</FieldLabel>
-              <span className="flex min-h-11 items-stretch rounded-full border border-[#d8ddd9] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.05)] focus-within:border-[#2f7d7e]">
-                <span className="flex items-center px-4 border-r border-[#d8ddd9] font-manrope text-sm font-semibold text-[#515b60] bg-gray-50/60 rounded-l-full">
-                  US
-                </span>
+              <span className="font-manrope text-lg font-medium leading-6.75 tracking-[-0.27px] text-[#263238]">
+                Phone <span className="font-normal text-[#7d8488]">(Optional)</span>
+              </span>
+              <span className="flex min-h-11 items-stretch rounded-[14px] border border-[#d8ddd9] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.05)] focus-within:border-[#2f7d7e]">
+                <AddChildSelect
+                  ariaLabel="Country code"
+                  name="country"
+                  options={COUNTRY_OPTIONS}
+                  placeholder="Country"
+                  triggerClassName="w-19 shrink-0 rounded-r-none border-0 border-r border-[#d8ddd9] bg-transparent px-3 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 data-popup-open:bg-[#d5e5e5]"
+                  value="US"
+                  onValueChange={() => {}}
+                />
                 <input
                   id="caregiver-phone"
                   aria-label="Caregiver phone number"
@@ -483,7 +522,9 @@ function PersonalInformationForm({ child, refetch }: { child: ChildProfile; refe
           />
 
           <label htmlFor="goals" className="flex flex-col gap-1.5">
-            <FieldLabel optional>Specific Goals or Notes</FieldLabel>
+            <span className="font-manrope text-lg font-medium leading-6.75 tracking-[-0.27px] text-[#263238]">
+              Specific Goals or Notes <span className="font-normal text-[#7d8488]">(Optional)</span>
+            </span>
             <textarea
               id="goals"
               placeholder="e.g. Working on pincer grasp, needs help with transitioning between activities..."
