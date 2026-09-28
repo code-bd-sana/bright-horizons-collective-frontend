@@ -47,11 +47,12 @@ const getTabs = (id: string) => [
     icon: '/Home/figma-child-detail-tab-history.svg',
     path: `/dashboard/child-profiles/${id}/activity-history`,
   },
-  {
-    label: 'Reports',
-    icon: '/Home/figma-child-detail-tab-reports.svg',
-    path: `/dashboard/child-profiles/${id}/reports`,
-  },
+  // Hidden for now, to be worked on later
+  // {
+  //   label: 'Reports',
+  //   icon: '/Home/figma-child-detail-tab-reports.svg',
+  //   path: `/dashboard/child-profiles/${id}/reports`,
+  // },
 ];
 
 export function ProfileHeader({ child: propChild }: { child?: ChildProfile }) {
