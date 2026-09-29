@@ -3,13 +3,10 @@
 import { useMemo, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Check, /* ChevronRight, */ Clock3 } from 'lucide-react';
+import { Check, Clock3 } from 'lucide-react';
 
 import { useAppStore } from '@/store/use-app-store';
-import {
-  useChildProfiles,
-  // useChildProgress,
-} from '@/features/child-profiles/hooks/child-profiles.queries';
+import { useChildProfiles } from '@/features/child-profiles/hooks/child-profiles.queries';
 import type { ChildProfile } from '@/features/child-profiles/model/child-profile.types';
 import {
   findCurrentWeeklyPlan,
@@ -21,8 +18,6 @@ import {
 import { useUserProfile } from '@/components/dashboard/settings/hooks/use-user-profile';
 import { useParentResourceFavorites } from '@/features/parent-resources/hooks/parent-resources.queries';
 
-// const activityMask = '/Home/figma-parent-dashboard-activity-mask.svg';
-// const recommendationMask = '/Home/figma-parent-dashboard-recommendation-mask.svg';
 const yogaMask = '/Home/figma-parent-dashboard-star-mask.svg';
 const defaultYogaImage = '/Home/figma-parent-dashboard-yoga.png';
 
@@ -35,48 +30,6 @@ const DAYS_OF_WEEK = [
   { label: 'Sat', dayName: 'Saturday', dayIndex: 6 },
   { label: 'Sun', dayName: 'Sunday', dayIndex: 0 },
 ] as const;
-
-/*
-const recentActivities = [
-  {
-    title: 'Sensory Rice Bin Exploration',
-    detail: 'Sensory Processing · 20 min',
-    image: '/Home/figma-parent-dashboard-rice-bin.png',
-  },
-  {
-    title: 'Finger Painting with Pudding',
-    detail: 'Fine Motor · 15 min',
-    image: '/Home/figma-parent-dashboard-finger-painting.png',
-  },
-  {
-    title: 'Water Pouring Station',
-    detail: 'Coordination · 20 min',
-    image: '/Home/figma-parent-dashboard-water-pouring.png',
-  },
-  {
-    title: 'Sensory Rice Bin Exploration',
-    detail: 'Sensory Processing · 20 min',
-    image: '/Home/figma-parent-dashboard-rice-bin.png',
-  },
-];
-
-const recommendations = [
-  {
-    type: 'Activity',
-    title: 'Lacing Cards Challenge',
-    description: 'Build pincer grip and patience through guided lacing.',
-    image: '/Home/figma-parent-dashboard-lacing-cards.png',
-    tone: 'bg-[#e0f0e9] border-[#dceeee]',
-  },
-  {
-    type: 'Article',
-    title: 'Why Sensory Play Matters',
-    description: 'Evidence-based guide to sensory integration for toddlers.',
-    image: '/Home/figma-parent-dashboard-sensory-play.png',
-    tone: 'bg-[#fce9e3] border-[#fce9e3]',
-  },
-];
-*/
 
 function formatDuration(duration?: string | null): string {
   if (!duration) return '20 min';
@@ -482,125 +435,6 @@ function TodayActivityCard({
   );
 }
 
-/*
-function ProgressCard({
-  activeChild,
-  isLoading,
-}: {
-  activeChild: ChildProfile | null;
-  isLoading: boolean;
-}) {
-  const { data: progressData } = useChildProgress(activeChild?.id);
-
-  const fineMotor = progressData?.fineMotorProgress || 0;
-  const coordination = progressData?.coordinationProgress || 0;
-  const sensory = progressData?.sensoryProgress || 0;
-  const selfRegulation = progressData?.visualMotorProgress || progressData?.grossMotorProgress || 0;
-
-  const items = [
-    { label: 'Fine Motor', value: `${fineMotor > 0 ? fineMotor : 68}%`, color: '#2f7d7e' },
-    {
-      label: 'Bilateral Coordination',
-      value: `${coordination > 0 ? coordination : 54}%`,
-      color: '#6babb0',
-    },
-    { label: 'Sensory Processing', value: `${sensory > 0 ? sensory : 72}%`, color: '#8fb9a8' },
-    {
-      label: 'Self-Regulation',
-      value: `${selfRegulation > 0 ? selfRegulation : 45}%`,
-      color: '#f2b59f',
-    },
-  ];
-
-  if (isLoading) {
-    return (
-      <Card className="flex min-h-120 flex-col lg:h-154.25 animate-pulse">
-        <div className="h-6 w-36 rounded bg-[#e9f1ee]" />
-        <div className="h-8 w-44 rounded bg-[#e9f1ee]" />
-        <div className="mx-auto my-6 size-38 rounded-full bg-[#e9f1ee]" />
-        <div className="space-y-3">
-          <div className="h-4 w-full rounded bg-[#e9f1ee]" />
-          <div className="h-4 w-full rounded bg-[#e9f1ee]" />
-          <div className="h-4 w-full rounded bg-[#e9f1ee]" />
-        </div>
-      </Card>
-    );
-  }
-
-  return (
-    <Card className="flex min-h-120 flex-col lg:h-154.25">
-      <p className="font-nunito text-xs font-medium leading-4 text-[#2f7d7e]">
-        Development Tracking
-      </p>
-      <h2 className="mt-1 font-nunito text-2xl font-medium leading-8 text-[#263238]">
-        {activeChild ? `${activeChild.name}'s Progress` : "Child's Progress"}
-      </h2>
-
-      <div className="relative mx-auto mt-6 size-38" aria-label="Development progress chart">
-        <Image
-          src="/Home/figma-parent-dashboard-progress-top-right.svg"
-          alt=""
-          width={88}
-          height={76}
-          className="absolute left-16 top-0"
-        />
-        <Image
-          src="/Home/figma-parent-dashboard-progress-top-left.svg"
-          alt=""
-          width={66}
-          height={76}
-          className="absolute left-0 top-0.5"
-        />
-        <Image
-          src="/Home/figma-parent-dashboard-progress-bottom-left.svg"
-          alt=""
-          width={100}
-          height={73}
-          className="absolute left-0 top-19.75"
-        />
-        <Image
-          src="/Home/figma-parent-dashboard-progress-bottom-right.svg"
-          alt=""
-          width={58}
-          height={68}
-          className="absolute left-23.5 top-19.75"
-        />
-      </div>
-
-      <div className="mt-6 space-y-2">
-        {items.map((item) => (
-          <div
-            key={item.label}
-            className="flex items-center justify-between font-nunito text-xs font-medium leading-4 text-[#263238]"
-          >
-            <span className="flex items-center gap-2">
-              <span className="size-2.5 rounded-full" style={{ backgroundColor: item.color }} />
-              {item.label}
-            </span>
-            <span className="font-bold" style={{ color: item.color }}>
-              {item.value}
-            </span>
-          </div>
-        ))}
-      </div>
-
-      <div className="mt-6">
-        <ArrowLink
-          href={
-            activeChild
-              ? `/dashboard/child-profiles/${activeChild.id}/development-progress`
-              : '/dashboard/child-profiles'
-          }
-          full
-        >
-          View Progress Report
-        </ArrowLink>
-      </div>
-    </Card>
-  );
-}
-*/
-
 function WeeklyPlanCard({
   activeChild,
   currentPlan,
@@ -762,192 +596,6 @@ function WeeklyPlanCard({
   );
 }
 
-/*
-function RecentActivityCard({ activeChild }: { activeChild: ChildProfile | null }) {
-  return (
-    <Card className="min-h-90 lg:h-111">
-      <div className="flex items-center justify-between gap-3">
-        <h2 className="min-w-0 font-nunito text-2xl font-medium leading-8 text-[#263238]">
-          Recent activity
-        </h2>
-        <Link
-          href={
-            activeChild
-              ? `/dashboard/child-profiles/${activeChild.id}/activity-history`
-              : '/dashboard/child-profiles'
-          }
-          className="inline-flex items-center font-nunito text-base font-medium leading-6 tracking-[-0.176px] text-[#2f7d7e]"
-        >
-          View all <ChevronRight aria-hidden="true" className="size-4 stroke-[1.5]" />
-        </Link>
-      </div>
-      <div className="mt-6 space-y-5">
-        {recentActivities.map((activity, index) => (
-          <article
-            key={`${activity.title}-${index}`}
-            className="flex items-start justify-between gap-4"
-          >
-            <div className="flex min-w-0 items-center gap-2">
-              <span
-                className="relative size-13.5 shrink-0"
-                style={{
-                  WebkitMaskImage: `url(${activityMask})`,
-                  maskImage: `url(${activityMask})`,
-                  WebkitMaskPosition: 'center',
-                  maskPosition: 'center',
-                  WebkitMaskRepeat: 'no-repeat',
-                  maskRepeat: 'no-repeat',
-                  WebkitMaskSize: '100% 100%',
-                  maskSize: '100% 100%',
-                }}
-              >
-                <Image src={activity.image} alt="" fill sizes="54px" className="object-cover" />
-              </span>
-              <span className="min-w-0">
-                <span className="block truncate font-nunito text-lg font-medium leading-6 tracking-[-0.27px] text-[#263238]">
-                  {activity.title}
-                </span>
-                <span className="mt-2 block font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#515b60]">
-                  {activity.detail}
-                </span>
-              </span>
-            </div>
-            <span className="flex shrink-0 items-center gap-1 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#2f7d7e]">
-              <Check aria-hidden="true" className="size-4 stroke-2" /> Done
-            </span>
-          </article>
-        ))}
-      </div>
-    </Card>
-  );
-}
-
-function MessagesCard() {
-  const messages = [
-    {
-      initials: 'OT',
-      name: 'OT Support Team',
-      message:
-        "Great job this week! Emma's progress on the lacing activities has been wonderful...",
-      time: '9:14 am',
-      tone: 'bg-[#dceeee] text-[#2f7d7e]',
-    },
-    {
-      initials: 'BH',
-      name: 'Bright Horizons',
-      message:
-        "Your weekly plan for July 20–26 is ready. Click to explore this week's activities...",
-      time: 'Yesterday',
-      tone: 'bg-[#fce9e3] text-[#b16262]',
-    },
-  ];
-
-  return (
-    <Card className="flex min-h-90 flex-col min-[1750px]:h-111">
-      <div className="flex items-center justify-between gap-3">
-        <h2 className="min-w-0 font-nunito text-2xl font-medium leading-8 text-[#263238]">
-          Messages
-        </h2>
-        <span className="rounded-full bg-[#2f7d7e] px-3 py-1 font-nunito text-xs font-medium leading-4 text-white">
-          2 New
-        </span>
-      </div>
-      <div className="mt-6 space-y-5">
-        {messages.map((message) => (
-          <article key={message.name} className="flex items-start justify-between gap-4">
-            <div className="flex min-w-0 gap-2">
-              <span
-                className={`grid size-13.5 shrink-0 place-items-center rounded-full font-nunito text-lg font-medium ${message.tone}`}
-              >
-                {message.initials}
-              </span>
-              <span className="min-w-0">
-                <span className="block font-nunito text-lg font-medium leading-6 tracking-[-0.27px] text-[#263238]">
-                  {message.name}
-                </span>
-                <span className="mt-2 block font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#515b60]">
-                  {message.message}
-                </span>
-              </span>
-            </div>
-            <span className="shrink-0 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#7d8488]">
-              {message.time}
-            </span>
-          </article>
-        ))}
-      </div>
-      <div className="mt-auto max-[1749px]:mt-6">
-        <ArrowLink href="/dashboard/messages" full>
-          Open Inbox
-        </ArrowLink>
-      </div>
-    </Card>
-  );
-}
-
-function RecommendationsCard({ activeChild }: { activeChild: ChildProfile | null }) {
-  return (
-    <Card className="min-h-90 min-[1750px]:h-111">
-      <p className="font-nunito text-xs font-medium leading-4 text-[#2f7d7e]">
-        Personalised For {activeChild?.name ?? 'You'}
-      </p>
-      <h2 className="mt-1 font-nunito text-2xl font-medium leading-8 text-[#263238]">
-        Recommended For You
-      </h2>
-      <div className="mt-6 space-y-6">
-        {recommendations.map((item) => (
-          <article key={item.title} className="relative flex min-w-0 items-start pr-6">
-            <div className="flex min-w-0 w-full gap-3 sm:gap-4">
-              <span
-                className="relative mt-1 size-29.75 shrink-0"
-                style={{
-                  WebkitMaskImage: `url(${recommendationMask})`,
-                  maskImage: `url(${recommendationMask})`,
-                  WebkitMaskPosition: 'center',
-                  maskPosition: 'center',
-                  WebkitMaskRepeat: 'no-repeat',
-                  maskRepeat: 'no-repeat',
-                  WebkitMaskSize: '100% 100%',
-                  maskSize: '100% 100%',
-                }}
-              >
-                <Image src={item.image} alt="" fill sizes="119px" className="object-cover" />
-              </span>
-              <span className="min-w-0">
-                <span
-                  className={`inline-flex rounded-full border px-2.25 py-1.25 font-nunito text-xs font-medium leading-4 text-[#263238] ${item.tone}`}
-                >
-                  {item.type}
-                </span>
-                <span className="mt-2 block font-nunito text-lg font-medium leading-6 tracking-[-0.27px] text-[#263238]">
-                  {item.title}
-                </span>
-                <span className="mt-2 block font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#515b60]">
-                  {item.description}
-                </span>
-                <Link
-                  href="/explore"
-                  className="mt-2 inline-block font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#2f7d7e]"
-                >
-                  Quick View
-                </Link>
-              </span>
-            </div>
-            <Image
-              src="/Home/figma-parent-dashboard-bookmark.svg"
-              alt="Save recommendation"
-              width={16}
-              height={16}
-              className="absolute right-0 top-1 shrink-0"
-            />
-          </article>
-        ))}
-      </div>
-    </Card>
-  );
-}
-*/
-
 export function ParentDashboardPage() {
   const { selectedChildId } = useAppStore();
   const { data: children = [], isLoading: isChildrenLoading } = useChildProfiles();
@@ -997,18 +645,8 @@ export function ParentDashboardPage() {
           currentPlan={currentPlan}
           isLoading={isLoading}
         />
-        {/* Development Tracking / Emma Lin's Progress commented out
-        <ProgressCard activeChild={activeChild} isLoading={isLoading} />
-        */}
         <WeeklyPlanCard activeChild={activeChild} currentPlan={currentPlan} isLoading={isLoading} />
       </div>
-      {/* Recent activity, Messages, and Recommended For You cards commented out
-      <div className="grid min-w-0 grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 2xl:grid-cols-3">
-        <RecentActivityCard activeChild={activeChild} />
-        <MessagesCard />
-        <RecommendationsCard activeChild={activeChild} />
-      </div>
-      */}
     </div>
   );
 }
