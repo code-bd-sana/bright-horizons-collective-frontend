@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { AUTH_TOKEN_COOKIE } from '@/lib/auth/token';
+import { isAllowedOrigin } from '@/lib/api/origin';
 
 export async function POST(request: NextRequest) {
-  const origin = request.headers.get('origin');
-  if (origin && origin !== request.nextUrl.origin) {
+  if (!isAllowedOrigin(request)) {
     return NextResponse.json({ message: 'Invalid request origin.' }, { status: 403 });
   }
 

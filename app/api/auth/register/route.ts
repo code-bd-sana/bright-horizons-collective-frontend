@@ -4,6 +4,7 @@ import { AUTH_TOKEN_COOKIE, tokenMaxAge } from '@/lib/auth/token';
 import { mapAuthUser } from '@/services/api/auth/auth.mapper';
 import { backendAuthResponseSchema, registerRequestSchema } from '@/services/api/auth/auth.schemas';
 import { serverApi } from '@/services/api/client/server-client';
+import { isAllowedOrigin } from '@/lib/api/origin';
 
 function backendErrorMessage(error: unknown) {
   if (!axios.isAxiosError(error)) return null;
@@ -14,8 +15,7 @@ function backendErrorMessage(error: unknown) {
 }
 
 export async function POST(request: NextRequest) {
-  const origin = request.headers.get('origin');
-  if (origin && origin !== request.nextUrl.origin) {
+  if (!isAllowedOrigin(request)) {
     return NextResponse.json({ message: 'Invalid request origin.' }, { status: 403 });
   }
 

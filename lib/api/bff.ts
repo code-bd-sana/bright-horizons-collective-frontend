@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import type { ZodType } from 'zod';
 
 import { AUTH_TOKEN_COOKIE } from '@/lib/auth/token';
+import { isAllowedOrigin } from '@/lib/api/origin';
 
 type BackendErrorPayload = {
   message?: string | string[];
@@ -12,9 +13,7 @@ type BackendErrorPayload = {
 const SAFE_UPSTREAM_STATUSES = new Set([400, 401, 403, 404, 409, 413, 415, 422, 429]);
 
 export function validateSameOrigin(request: NextRequest) {
-  const origin = request.headers.get('origin');
-
-  if (!origin || origin !== request.nextUrl.origin) {
+  if (!isAllowedOrigin(request, true)) {
     return NextResponse.json({ message: 'Invalid request origin.' }, { status: 403 });
   }
 

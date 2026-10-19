@@ -1,13 +1,13 @@
 import axios from 'axios';
 import { NextRequest, NextResponse } from 'next/server';
+import { isAllowedOrigin } from '@/lib/api/origin';
 
 type BackendErrorPayload = {
   message?: string | string[];
 };
 
 export function validateJsonRequest(request: NextRequest) {
-  const origin = request.headers.get('origin');
-  if (origin && origin !== request.nextUrl.origin) {
+  if (!isAllowedOrigin(request)) {
     return NextResponse.json({ message: 'Invalid request origin.' }, { status: 403 });
   }
 
