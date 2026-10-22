@@ -2,212 +2,138 @@ import Image from 'next/image';
 
 const ASSET_ROOT = '/Membership/';
 
-type TestimonialCardProps = {
-  variant: 'compact' | 'wide';
-  portrait: 'a' | 'b';
+type Testimonial = {
+  quote: string;
+  name: string;
+  role: string;
+  location: string;
+  badge: string;
+  portrait: string;
 };
 
-const responsiveTestimonials: TestimonialCardProps[] = [
-  { variant: 'compact', portrait: 'a' },
-  { variant: 'wide', portrait: 'b' },
-  { variant: 'compact', portrait: 'a' },
-  { variant: 'wide', portrait: 'b' },
-  { variant: 'compact', portrait: 'a' },
-  { variant: 'wide', portrait: 'b' },
-  { variant: 'compact', portrait: 'a' },
+const testimonials: Testimonial[] = [
+  {
+    quote:
+      '"I used to spend hours googling activities, never sure if I was helping or guessing. Now I open our weekly plan and know exactly what to do. It has transformed our home routine."',
+    name: 'Sarah Karim',
+    role: 'Parent of 2-year-old',
+    location: 'Portland, OR',
+    badge: 'Sensory & Motor Plan',
+    portrait: `${ASSET_ROOT}testimonial-portrait-a.png`,
+  },
+  {
+    quote:
+      '"The milestone tracking and customized weekly plans take away all the overwhelm. My son genuinely looks forward to activity time every single afternoon."',
+    name: 'Marcus Chen',
+    role: 'Parent of 4-year-old',
+    location: 'Austin, TX',
+    badge: 'Fine Motor Skills',
+    portrait: `${ASSET_ROOT}testimonial-portrait-b.png`,
+  },
+  {
+    quote:
+      '"The therapy toy recommendations alone have saved us hundreds of dollars on toys we would have bought and discarded. Everything has purpose and clear developmental benefits."',
+    name: 'Elena Rodriguez',
+    role: 'Parent of 3-year-old',
+    location: 'Denver, CO',
+    badge: 'Therapy Toys & Play',
+    portrait: '/Home/figma-home-1183-11549-img-image128.png',
+  },
+  {
+    quote:
+      '"Direct messaging with a licensed pediatric occupational therapist gives our family so much confidence. Whenever we have questions, we receive thoughtful, practical answers."',
+    name: 'David & Maya Miller',
+    role: 'Parents of 5-year-old',
+    location: 'Seattle, WA',
+    badge: 'Premium OT Support',
+    portrait: `${ASSET_ROOT}testimonial-portrait-a.png`,
+  },
+  {
+    quote:
+      '"As a working mom, I don\'t have time to invent therapy games from scratch. These 15-minute daily exercises fit seamlessly into our schedule with zero stress."',
+    name: 'Priya Patel',
+    role: 'Parent of 2-year-old',
+    location: 'Chicago, IL',
+    badge: 'Daily Routines',
+    portrait: '/Home/figma-home-1183-11549-img-image129.png',
+  },
+  {
+    quote:
+      '"Our daughter\'s grip strength and handwriting readiness improved noticeably in just two months. The guidance is compassionate, practical, and truly effective."',
+    name: 'Jessica Taylor',
+    role: 'Parent of 4-year-old',
+    location: 'Atlanta, GA',
+    badge: 'Handwriting Readiness',
+    portrait: '/Home/figma-home-1183-11549-img-image130.png',
+  },
 ];
 
-function Portrait({ portrait }: Pick<TestimonialCardProps, 'portrait'>) {
+function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
   return (
-    <div className="relative h-31 w-31 shrink-0">
-      <Image
-        src={`${ASSET_ROOT}testimonial-star.svg`}
-        alt=""
-        width={124}
-        height={124}
-        aria-hidden="true"
-        className="absolute top-0 left-0 size-31"
-      />
-      <div
-        className="absolute top-1.75 left-4 h-34.5 w-23 overflow-hidden"
-        style={{
-          maskImage: `url(${ASSET_ROOT}testimonial-mask.svg)`,
-          WebkitMaskImage: `url(${ASSET_ROOT}testimonial-mask.svg)`,
-          maskPosition: '-11px -4px',
-          maskRepeat: 'no-repeat',
-          maskSize: '114px 110px',
-        }}
-      >
-        <Image
-          src={`${ASSET_ROOT}testimonial-portrait-${portrait}.png`}
-          alt=""
-          fill
-          sizes="92px"
-          aria-hidden="true"
-          className="object-cover"
-        />
-      </div>
-    </div>
-  );
-}
+    <article className="group relative flex flex-col justify-between rounded-2xl border border-[#DCE8E5] bg-white p-6 sm:p-7 shadow-[0_2px_12px_rgba(23,74,77,0.04)] transition-all duration-300 hover:-translate-y-1 hover:border-[#B2D6CF] hover:shadow-[0_12px_28px_rgba(23,74,77,0.08)]">
+      <div>
+        <div className="flex items-center justify-between gap-3">
+          <Image
+            src={`${ASSET_ROOT}testimonial-rating.svg`}
+            alt="5 out of 5 stars"
+            width={84}
+            height={14}
+            className="h-3.5 w-auto"
+          />
+          <span className="rounded-full bg-[#EBF5F3] px-2.5 py-0.5 font-manrope text-xs font-semibold text-[#174A4D]">
+            {testimonial.badge}
+          </span>
+        </div>
 
-function Profile({ portrait }: Pick<TestimonialCardProps, 'portrait'>) {
-  return (
-    <div className="flex flex-col items-center justify-center gap-5 min-[440px]:flex-row min-[440px]:items-start min-[440px]:gap-6">
-      <Portrait portrait={portrait} />
-      <div className="flex w-34 flex-col items-center gap-4 text-center">
-        <div className="flex w-full flex-col items-center gap-2">
-          <p className="w-full font-nunito text-xl font-semibold leading-7 text-[#263238]">
-            Sarah Karim
+        <blockquote className="mt-4 font-nunito text-[15px] sm:text-base leading-relaxed text-[#3D4D54]">
+          {testimonial.quote}
+        </blockquote>
+      </div>
+
+      <div className="mt-6 flex items-center gap-3.5 border-t border-[#F0F5F3] pt-4">
+        <div className="relative size-11 shrink-0 overflow-hidden rounded-full border-2 border-[#DCE8E5] bg-[#F4F9F8]">
+          <Image
+            src={testimonial.portrait}
+            alt={testimonial.name}
+            fill
+            sizes="44px"
+            className="object-cover"
+          />
+        </div>
+        <div className="flex flex-col">
+          <p className="font-nunito text-sm sm:text-base font-bold text-[#174A4D] leading-tight">
+            {testimonial.name}
           </p>
-          <div className="flex w-full flex-col items-center gap-1 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#7D8488]">
-            <p>Child age 2</p>
-            <div className="flex h-11 flex-col items-center">
-              <p>Member since 2024</p>
-              <p>Portland, OR</p>
-            </div>
-          </div>
+          <p className="font-manrope text-xs text-[#7D8488] leading-normal mt-0.5">
+            {testimonial.role} · {testimonial.location}
+          </p>
         </div>
-        <Image
-          src={`${ASSET_ROOT}testimonial-rating.svg`}
-          alt="5 out of 5 stars"
-          width={96}
-          height={16}
-          className="h-4 w-24"
-        />
       </div>
-    </div>
-  );
-}
-
-function Sticker({ position }: { position: 'left' | 'right' }) {
-  const crop =
-    position === 'left'
-      ? 'h-[161px] w-[161px] -left-[17px] -top-[19px]'
-      : 'h-[147px] w-[147px] -left-[11px] -top-[62px]';
-
-  return (
-    <div
-      aria-hidden="true"
-      className={`absolute overflow-hidden ${
-        position === 'left'
-          ? 'top-4.25 left-5.75 h-10.75 w-11 rotate-[-10.54deg]'
-          : 'top-3 right-6 h-11 w-10.75 rotate-[19.65deg]'
-      }`}
-    >
-      <Image
-        src={`${ASSET_ROOT}testimonial-sticker.png`}
-        alt=""
-        width={161}
-        height={161}
-        className={`absolute max-w-none ${crop}`}
-      />
-    </div>
-  );
-}
-
-function TestimonialCard({ variant, portrait }: TestimonialCardProps) {
-  const isWide = variant === 'wide';
-  const quote = isWide
-    ? '"I finally know what to do at home."'
-    : '"My daughter loves her weekly activities."';
-
-  return (
-    <article
-      className={`relative overflow-hidden rounded-[16px] border border-[#ACCBCC] bg-white p-6 shadow-[4px_5px_0_#ACCBCC] sm:p-8 ${
-        isWide ? 'min-h-107.5 sm:h-82.5 min-[1920px]:h-81.5' : 'min-h-107.5 sm:h-82.5'
-      }`}
-    >
-      {isWide ? (
-        <>
-          <div className="flex h-full flex-col items-center justify-center gap-6 min-[1920px]:hidden">
-            <Profile portrait={portrait} />
-            <blockquote className="w-full max-w-85.75 font-lora text-[28px] font-medium italic leading-9 tracking-[-0.16px] text-[#263238] text-center sm:text-[32px] sm:leading-10">
-              {quote}
-            </blockquote>
-          </div>
-          <div className="hidden h-full items-center justify-center gap-20 min-[1920px]:flex">
-            <div className="flex w-31.25 shrink-0 flex-col items-center min-[1920px]:items-end">
-              <Portrait portrait={portrait} />
-              <div className="flex w-31.25 flex-col items-center gap-4 text-center">
-                <div className="flex w-full flex-col items-center gap-2">
-                  <p className="w-full font-nunito text-xl font-semibold leading-7 text-[#263238]">
-                    Sarah Karim
-                  </p>
-                  <div className="flex w-full flex-col items-center gap-1 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#7D8488]">
-                    <p>Child age 2</p>
-                    <div className="flex h-11 flex-col items-center">
-                      <p>Member since 2024</p>
-                      <p>Portland, OR</p>
-                    </div>
-                  </div>
-                </div>
-                <Image
-                  src={`${ASSET_ROOT}testimonial-rating.svg`}
-                  alt="5 out of 5 stars"
-                  width={96}
-                  height={16}
-                  className="h-4 w-24"
-                />
-              </div>
-            </div>
-            <blockquote className="w-full max-w-85.75 font-lora text-[28px] font-medium italic leading-9 tracking-[-0.16px] text-[#263238] text-center sm:text-[32px] sm:leading-10">
-              {quote}
-            </blockquote>
-          </div>
-        </>
-      ) : (
-        <div className="flex h-full flex-col items-center justify-center gap-6 sm:gap-12">
-          <Profile portrait={portrait} />
-          <blockquote className="w-full font-lora text-[28px] font-medium italic leading-9 tracking-[-0.16px] text-[#263238] text-center sm:text-[32px] sm:leading-10">
-            {quote}
-          </blockquote>
-        </div>
-      )}
-      <Sticker position={isWide ? 'right' : 'left'} />
     </article>
   );
 }
 
 export function MembershipTestimonials() {
   return (
-    <section className="bg-[#FDFDFC] px-5 py-20 sm:px-8 md:py-40 min-[1800px]:px-20">
-      <div className="mx-auto flex w-full max-w-[1760px] flex-col items-center gap-20">
-        <header className="flex w-full max-w-175.25 flex-col items-center gap-4 text-center">
-          <span className="rounded-[12px] border border-[#E8EBE8] bg-white px-2 py-1.5 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#263238]">
+    <section className="bg-[#FDFDFC] px-5 py-16 sm:px-8 sm:py-24 md:py-28">
+      <div className="mx-auto flex w-full max-w-7xl flex-col items-center gap-12 sm:gap-16">
+        <header className="flex w-full max-w-xl flex-col items-center gap-3 text-center">
+          <span className="rounded-full border border-[#DCE8E5] bg-[#F4F9F8] px-3 py-1 font-manrope text-xs font-semibold uppercase tracking-wider text-[#174A4D]">
             Testimonials
           </span>
-          <h2 className="font-nunito text-[32px] font-medium leading-10 tracking-[-0.4px] text-[#263238] md:text-[40px] md:leading-12">
-            Families love Bright Horizons Collective
+          <h2 className="font-nunito text-2xl font-bold tracking-tight text-[#174A4D] sm:text-3xl md:text-4xl">
+            Families Love Bright Horizons Collective
           </h2>
+          <p className="font-manrope text-sm sm:text-base text-[#607077]">
+            Real feedback from parents empowering their children&apos;s developmental journey with
+            confidence.
+          </p>
         </header>
 
-        <div className="w-full min-[1920px]:hidden">
-          <div className="grid w-full grid-cols-1 gap-12 md:grid-cols-2">
-            {responsiveTestimonials.map((testimonial, index) => (
-              <TestimonialCard
-                key={`${testimonial.variant}-${testimonial.portrait}-${index}`}
-                variant={testimonial.variant}
-                portrait={testimonial.portrait}
-              />
-            ))}
-          </div>
-        </div>
-
-        <div className="hidden w-full min-[1920px]:grid min-[1920px]:grid-cols-[397px_728px_535px] min-[1920px]:gap-12">
-          <div className="flex flex-col gap-12">
-            <TestimonialCard variant="compact" portrait="a" />
-            <TestimonialCard variant="compact" portrait="a" />
-          </div>
-          <div className="flex flex-col gap-12">
-            <TestimonialCard variant="wide" portrait="b" />
-            <TestimonialCard variant="wide" portrait="b" />
-            <TestimonialCard variant="wide" portrait="b" />
-          </div>
-          <div className="flex flex-col gap-12">
-            <TestimonialCard variant="compact" portrait="a" />
-            <TestimonialCard variant="compact" portrait="a" />
-          </div>
+        <div className="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 sm:gap-6 lg:gap-8">
+          {testimonials.map((testimonial, index) => (
+            <TestimonialCard key={`${testimonial.name}-${index}`} testimonial={testimonial} />
+          ))}
         </div>
       </div>
     </section>
