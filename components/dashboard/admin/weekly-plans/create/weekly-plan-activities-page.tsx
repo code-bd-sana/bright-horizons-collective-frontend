@@ -7,6 +7,7 @@ import {
   Hand,
   ImageIcon,
   Loader2,
+  Plus,
   Search,
   X,
   Zap,
@@ -108,13 +109,25 @@ export function WeeklyPlanActivitiesPage() {
         </section>
 
         <section className="rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)] sm:p-6 2xl:p-6">
-          <h2 className="font-nunito text-lg font-bold leading-7 text-[#263238]">2. Activities</h2>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="font-nunito text-lg font-bold leading-7 text-[#263238]">
+                2. Activities
+              </h2>
+              <p className="mt-0.5 font-manrope text-sm leading-5.25 text-[#607d8b]">
+                Search and select activities from the library to include in this plan.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => router.push('/dashboard/admin/activities-library/create')}
+              className="inline-flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-[12px] bg-[#2f7d7e] px-4 font-manrope text-sm font-semibold text-white shadow-xs transition-colors hover:bg-[#266b6c]"
+            >
+              <Plus aria-hidden="true" size={16} strokeWidth={2.2} />
+              <span>Create Activity</span>
+            </button>
+          </div>
           <div className="mt-5 space-y-4">
-            <p className="font-manrope text-sm leading-5.25 text-[#607d8b]">
-              Search and select activities from the library to include in this plan. Selected
-              activities will be organised into the weekly schedule in the next step.
-            </p>
-
             {selectedActivities.length > 0 ? (
               <div className="flex flex-wrap items-center gap-1.5 rounded-[14px] border border-[rgba(47,125,126,0.13)] bg-[#edf6f2] p-3">
                 <span className="font-manrope text-xs font-semibold leading-4.5 text-[#2f7d7e]">
@@ -206,6 +219,14 @@ export function WeeklyPlanActivitiesPage() {
                   <p className="font-manrope text-sm">
                     No activities found matching your criteria.
                   </p>
+                  <button
+                    type="button"
+                    onClick={() => router.push('/dashboard/admin/activities-library/create')}
+                    className="mt-3 inline-flex items-center gap-1.5 font-manrope text-sm font-semibold text-[#2f7d7e] hover:underline"
+                  >
+                    <Plus aria-hidden="true" size={15} strokeWidth={2.2} />
+                    <span>Create a new activity in library</span>
+                  </button>
                 </div>
               ) : (
                 visibleActivities.map((activity, index) => {
