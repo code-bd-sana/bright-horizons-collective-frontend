@@ -159,9 +159,11 @@ export function AboutStorySection() {
         </div>
       </div>
 
-      <div className="mx-auto flex max-w-182.75 flex-col gap-12 px-5 py-16 sm:px-8 sm:py-20 md:px-12 md:py-24 lg:grid lg:max-w-300 lg:grid-cols-2 lg:items-center lg:gap-12 lg:px-16 lg:py-28 xl:gap-20 xl:px-20 min-[1600px]:hidden">
-        <ResponsiveStoryPhoto />
-        <StoryContent />
+      <div className="min-[1600px]:hidden">
+        <div className="mx-auto flex max-w-182.75 flex-col gap-12 px-5 py-16 sm:px-8 sm:py-20 md:px-12 md:py-24 lg:grid lg:max-w-300 lg:grid-cols-2 lg:items-center lg:gap-12 lg:px-16 lg:py-28 xl:gap-20 xl:px-20">
+          <ResponsiveStoryPhoto />
+          <StoryContent />
+        </div>
       </div>
     </section>
   );
