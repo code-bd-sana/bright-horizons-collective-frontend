@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import { ArrowLeft, Loader2, Lock } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo } from 'react';
@@ -12,6 +12,7 @@ import { ActivityMaterials } from '@/components/dashboard/admin/activities-libra
 import { ActivityModifications } from '@/components/dashboard/admin/activities-library/activity-detail/activity-modifications';
 import { ActivitySidePanels } from '@/components/dashboard/admin/activities-library/activity-detail/activity-side-panels';
 import { formatAgeRange } from '@/features/activities/model/activity.mapper';
+import { useSession } from '@/services/api/auth/auth.queries';
 import { cn } from '@/lib/utils';
 
 type ActivityDetailProps = {
@@ -22,6 +23,10 @@ type ActivityDetailProps = {
 export function ActivityDetail({ activityId, dashboard = false }: ActivityDetailProps) {
   const Root = dashboard ? 'div' : 'main';
   const exploreHref = dashboard ? '/dashboard/explore?tab=activities' : '/explore';
+
+  const { data: session } = useSession();
+  const isAuthenticated = Boolean(session?.user);
+  const isGated = !dashboard && !isAuthenticated;
 
   const allActivitiesQuery = useActivities({ status: 'PUBLISHED', limit: 50 });
   const rawActivities = allActivitiesQuery.data?.data;
@@ -141,13 +146,86 @@ export function ActivityDetail({ activityId, dashboard = false }: ActivityDetail
 
         <ActivityDetailHero activity={activity} hideStatus />
 
-        <div className="mt-6 grid grid-cols-1 gap-6 2xl:grid-cols-[minmax(0,1fr)_286px]">
-          <div className="min-w-0 space-y-6">
-            <ActivityMaterials activity={activity} />
-            <ActivityInstructions activity={activity} />
-            <ActivityModifications activity={activity} />
+        <div className="relative mt-6">
+          <div
+            className={cn(
+              'grid grid-cols-1 gap-6 2xl:grid-cols-[minmax(0,1fr)_286px]',
+              isGated &&
+                'max-h-110 sm:max-h-125 overflow-hidden select-none pointer-events-none filter blur-[6px] opacity-40 transition-all'
+            )}
+            aria-hidden={isGated}
+          >
+            <div className="min-w-0 space-y-6">
+              <ActivityMaterials activity={activity} />
+              <ActivityInstructions activity={activity} />
+              <ActivityModifications activity={activity} />
+            </div>
+            <ActivitySidePanels activity={activity} />
           </div>
-          <ActivitySidePanels activity={activity} />
+
+          {isGated && (
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-linear-to-t from-white via-white/85 to-transparent px-4 pb-8 pt-8 sm:px-6">
+              <div className="w-full max-w-lg rounded-2xl border border-[#DCE8E5] bg-white p-6 sm:p-8 text-center shadow-[0_16px_40px_rgba(23,74,77,0.12)]">
+                <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-[#EBF5F3] text-[#174A4D] shadow-inner">
+                  <Lock aria-hidden="true" className="size-6 text-[#174A4D]" strokeWidth={2.2} />
+                </div>
+
+                <h3 className="mt-4 font-nunito text-xl sm:text-2xl font-bold tracking-tight text-[#174A4D]">
+                  Unlock Full Activity Details
+                </h3>
+
+                <p className="mt-2 font-manrope text-sm leading-relaxed text-[#515B60]">
+                  Sign in or create a free account to access complete step-by-step instructions,
+                  preparation guides, OT modifications, and milestone tracking.
+                </p>
+
+                <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-center">
+                  <Link
+                    href={`/login?redirect=${encodeURIComponent(`/explore/activities/${activity.id}`)}`}
+                    className="inline-flex h-11 items-center justify-center rounded-xl bg-[#2F7D7E] px-6 font-nunito text-sm font-semibold text-white shadow-xs transition-colors hover:bg-[#266B6C]"
+                  >
+                    Log In to Access
+                  </Link>
+
+                  <Link
+                    href={`/register?redirect=${encodeURIComponent(`/explore/activities/${activity.id}`)}`}
+                    className="inline-flex h-11 items-center justify-center rounded-xl border border-[#DCE8E5] bg-white px-6 font-nunito text-sm font-semibold text-[#174A4D] transition-colors hover:bg-[#F4F9F8]"
+                  >
+                    Create Free Account
+                  </Link>
+                </div>
+
+                <div className="mt-6 border-t border-[#F0F5F3] pt-4">
+                  <div className="grid grid-cols-2 gap-2 text-left font-manrope text-xs text-[#607077]">
+                    <span className="flex items-center gap-1.5">
+                      <span className="flex size-4 items-center justify-center rounded-full bg-[#EBF5F3] text-[#2F7D7E] text-[10px] font-bold">
+                        ✓
+                      </span>
+                      Step-by-step instructions
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <span className="flex size-4 items-center justify-center rounded-full bg-[#EBF5F3] text-[#2F7D7E] text-[10px] font-bold">
+                        ✓
+                      </span>
+                      Complete materials list
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <span className="flex size-4 items-center justify-center rounded-full bg-[#EBF5F3] text-[#2F7D7E] text-[10px] font-bold">
+                        ✓
+                      </span>
+                      Therapist modifications
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <span className="flex size-4 items-center justify-center rounded-full bg-[#EBF5F3] text-[#2F7D7E] text-[10px] font-bold">
+                        ✓
+                      </span>
+                      Child progress tracking
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {relatedActivities.length > 0 && (
