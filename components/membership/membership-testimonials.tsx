@@ -182,24 +182,16 @@ export function MembershipTestimonials() {
           </h2>
         </header>
 
-        <div className="grid w-full grid-cols-1 gap-12 md:hidden">
-          {responsiveTestimonials.map((testimonial, index) => (
-            <TestimonialCard
-              key={`${testimonial.variant}-${testimonial.portrait}-${index}`}
-              variant={testimonial.variant}
-              portrait={testimonial.portrait}
-            />
-          ))}
-        </div>
-
-        <div className="hidden w-full grid-cols-2 gap-12 md:grid min-[1920px]:hidden">
-          {responsiveTestimonials.map((testimonial, index) => (
-            <TestimonialCard
-              key={`${testimonial.variant}-${testimonial.portrait}-${index}`}
-              variant={testimonial.variant}
-              portrait={testimonial.portrait}
-            />
-          ))}
+        <div className="w-full min-[1920px]:hidden">
+          <div className="grid w-full grid-cols-1 gap-12 md:grid-cols-2">
+            {responsiveTestimonials.map((testimonial, index) => (
+              <TestimonialCard
+                key={`${testimonial.variant}-${testimonial.portrait}-${index}`}
+                variant={testimonial.variant}
+                portrait={testimonial.portrait}
+              />
+            ))}
+          </div>
         </div>
 
         <div className="hidden w-full min-[1920px]:grid min-[1920px]:grid-cols-[397px_728px_535px] min-[1920px]:gap-12">
