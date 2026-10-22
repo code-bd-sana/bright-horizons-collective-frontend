@@ -36,9 +36,9 @@ const lora = Lora({
 });
 
 export const metadata: Metadata = constructMetadata({
-  title: 'Jaicys Frontend | Modern Web Application',
+  title: 'Bright Horizons Collective | Pediatric OT & Family Support',
   description:
-    'A state-of-the-art Next.js frontend application with premium aesthetics and high performance.',
+    'Empowering families with pediatric occupational therapy resources, customized weekly developmental plans, and expert guidance.',
 });
 
 export default function RootLayout({
