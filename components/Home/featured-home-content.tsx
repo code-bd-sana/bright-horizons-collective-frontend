@@ -1,5 +1,8 @@
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRef, useState } from 'react';
 
 const assetBase = '/Home/figma-home-1183-11287-img';
 
@@ -190,149 +193,166 @@ function FeaturedActivities() {
   );
 }
 
-function ToyGallery() {
-  const trainMask = {
-    maskClip: 'no-clip',
-    maskComposite: 'intersect',
-    maskImage: `url('${assetBase}-image136.svg')`,
-    maskMode: 'alpha',
-    maskPosition: '34.996px 18.996px',
-    maskRepeat: 'no-repeat',
-    maskSize: '430.008px 430.009px',
-    WebkitMaskImage: `url('${assetBase}-image136.svg')`,
-    WebkitMaskPosition: '34.996px 18.996px',
-    WebkitMaskRepeat: 'no-repeat',
-    WebkitMaskSize: '430.008px 430.009px',
+const toySpotlightImages = [
+  {
+    src: '/Home/figma-home-1183-11287-grimms-rainbow-arc-stacker.png',
+    alt: "Grimm's Rainbow Arc Stacker nested together on wood table",
+    caption: '12-Piece Rainbow Arc Stacker',
+  },
+  {
+    src: '/Home/figma-home-1183-11287-rainbow-stacker-close-up.png',
+    alt: 'Creative balancing bridge and wave sculpture made of rainbow arches',
+    caption: 'Balancing Sculpture & Bridge',
+  },
+  {
+    src: '/Home/figma-home-1183-11287-child-playing-rainbow-stacker.png',
+    alt: 'Toddler playing and stacking wooden rainbow arches on cozy play rug',
+    caption: 'Toddler Stacking & Open-Ended Play',
+  },
+] as const;
+
+const toyShapeMask = {
+  maskClip: 'no-clip',
+  maskComposite: 'intersect',
+  maskImage: `url('${assetBase}-image136.svg')`,
+  maskMode: 'alpha',
+  maskPosition: '34.996px 18.996px',
+  maskRepeat: 'no-repeat',
+  maskSize: '430.008px 430.009px',
+  WebkitMaskImage: `url('${assetBase}-image136.svg')`,
+  WebkitMaskPosition: '34.996px 18.996px',
+  WebkitMaskRepeat: 'no-repeat',
+  WebkitMaskSize: '430.008px 430.009px',
+};
+
+function ToyCarousel() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const touchStartX = useRef<number | null>(null);
+
+  const handlePrev = () => {
+    setCurrentIndex((prev) => (prev - 1 + toySpotlightImages.length) % toySpotlightImages.length);
+  };
+
+  const handleNext = () => {
+    setCurrentIndex((prev) => (prev + 1) % toySpotlightImages.length);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const touchEndX = e.changedTouches[0].clientX;
+    const diff = touchStartX.current - touchEndX;
+    if (diff > 40) {
+      handleNext();
+    } else if (diff < -40) {
+      handlePrev();
+    }
+    touchStartX.current = null;
   };
 
   return (
-    <div className="relative h-[642px] w-[576px] shrink-0 overflow-hidden rounded-[inherit] bg-[#DCEEEE]">
-      <div className="absolute inset-0 flex overflow-hidden rounded-[inherit]">
-        <div className="relative h-[642px] w-[576px] shrink-0 blur-[11.5px]">
-          <Image
-            src="/Home/figma-home-1183-11287-grimms-rainbow-arc-stacker.png"
-            alt=""
-            fill
-            sizes="576px"
-            className="object-cover"
-          />
-        </div>
-        <div className="relative h-[642px] w-[576px] shrink-0">
-          <Image
-            src="/Home/figma-home-1183-11287-rainbow-stacker-close-up.png"
-            alt=""
-            fill
-            sizes="576px"
-            className="object-cover"
-          />
-        </div>
-        <div className="relative h-[642px] w-[576px] shrink-0">
-          <Image
-            src="/Home/figma-home-1183-11287-child-playing-rainbow-stacker.png"
-            alt=""
-            fill
-            sizes="576px"
-            className="object-cover"
-          />
-        </div>
+    <div
+      className="group relative size-full overflow-hidden select-none bg-[#DCEEEE]"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
+      {/* Slides Track */}
+      <div
+        className="flex h-full w-full transition-transform duration-500 ease-out"
+        style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+      >
+        {toySpotlightImages.map((image, index) => (
+          <div key={image.src} className="relative h-[642px] w-[576px] shrink-0 overflow-hidden">
+            {/* Blurred ambient background layer */}
+            <div className="absolute inset-0 overflow-hidden blur-[11.5px]">
+              <Image
+                src={image.src}
+                alt=""
+                fill
+                sizes="576px"
+                className="scale-105 object-cover"
+                priority={index === 0}
+              />
+            </div>
+
+            {/* Shaped foreground picture */}
+            <div
+              className="absolute left-[38px] top-[49.89px] h-[468px] w-[473px]"
+              style={toyShapeMask}
+            >
+              <Image
+                src={image.src}
+                alt={image.alt}
+                fill
+                sizes="473px"
+                className="object-cover"
+                priority={index === 0}
+              />
+            </div>
+          </div>
+        ))}
       </div>
 
-      <div className="absolute left-[38px] top-[49.89px] h-[468px] w-[473px]" style={trainMask}>
-        <Image
-          src={`${assetBase}-image137.png`}
-          alt="Wooden rainbow arc stacker arranged in a train play scene"
-          fill
-          sizes="473px"
-          className="object-cover"
-        />
-      </div>
-
+      {/* Prev button */}
       <button
         type="button"
+        onClick={handlePrev}
         aria-label="Previous toy image"
-        className="absolute left-3 top-[265.31px] flex size-[38px] items-center justify-center rounded-[19px] bg-white/88 shadow-[0_2px_10px_rgba(0,0,0,0.14)]"
+        className="absolute left-3 top-[265.31px] z-10 flex size-[38px] items-center justify-center rounded-[19px] bg-white/88 shadow-[0_2px_10px_rgba(0,0,0,0.14)] backdrop-blur-xs transition hover:bg-white hover:scale-105 active:scale-95 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#2F7D7E]"
       >
         <AssetIcon name="icon" size={18} />
       </button>
+
+      {/* Next button */}
       <button
         type="button"
+        onClick={handleNext}
         aria-label="Next toy image"
-        className="absolute left-[526px] top-[265.31px] flex size-[38px] items-center justify-center rounded-[19px] bg-white/88 shadow-[0_2px_10px_rgba(0,0,0,0.14)]"
+        className="absolute left-[526px] top-[265.31px] z-10 flex size-[38px] items-center justify-center rounded-[19px] bg-white/88 shadow-[0_2px_10px_rgba(0,0,0,0.14)] backdrop-blur-xs transition hover:bg-white hover:scale-105 active:scale-95 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#2F7D7E]"
       >
         <AssetIcon name="icon1" size={18} />
       </button>
-      <span className="absolute left-[251px] top-[557px] rounded-full bg-[#174A4D]/62 px-[13px] py-1 font-nunito text-xs font-medium leading-4 text-white">
-        3 photos
-      </span>
+
+      {/* Counter & Indicator dots */}
+      <div className="absolute left-1/2 -translate-x-1/2 top-[557px] z-10 flex items-center gap-2 rounded-full bg-[#174A4D]/62 backdrop-blur-xs px-[13px] py-1 font-nunito text-xs font-medium leading-4 text-white shadow-sm">
+        <span>
+          {currentIndex + 1} / {toySpotlightImages.length} photos
+        </span>
+        <div className="flex items-center gap-1">
+          {toySpotlightImages.map((_, idx) => (
+            <button
+              key={idx}
+              type="button"
+              onClick={() => setCurrentIndex(idx)}
+              aria-label={`Go to photo ${idx + 1}`}
+              className={`h-1.5 rounded-full transition-all cursor-pointer ${
+                currentIndex === idx ? 'w-3.5 bg-white' : 'w-1.5 bg-white/50 hover:bg-white/80'
+              }`}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ToyGallery() {
+  return (
+    <div className="relative h-[642px] w-[576px] shrink-0 overflow-hidden rounded-[inherit] bg-[#DCEEEE]">
+      <ToyCarousel />
     </div>
   );
 }
 
 function ResponsiveToyGallery() {
-  const trainMask = {
-    maskClip: 'no-clip',
-    maskComposite: 'intersect',
-    maskImage: `url('${assetBase}-image136.svg')`,
-    maskMode: 'alpha',
-    maskPosition: '34.996px 18.996px',
-    maskRepeat: 'no-repeat',
-    maskSize: '430.008px 430.009px',
-    WebkitMaskImage: `url('${assetBase}-image136.svg')`,
-    WebkitMaskPosition: '34.996px 18.996px',
-    WebkitMaskRepeat: 'no-repeat',
-    WebkitMaskSize: '430.008px 430.009px',
-  };
-
   return (
     <div className="relative mx-auto h-[372px] w-[334px] max-[360px]:h-[321px] max-[360px]:w-[288px] sm:h-[642px] sm:w-[576px] lg:h-[535px] lg:w-[480px] xl:h-[642px] xl:w-[576px]">
       <div className="absolute left-0 top-0 h-[642px] w-[576px] origin-top-left scale-[0.58] max-[360px]:scale-50 sm:scale-100 lg:scale-[0.833] xl:scale-100">
         <div className="relative h-[642px] w-[576px] overflow-hidden rounded-[24px] bg-[#DCEEEE]">
-          <div className="absolute inset-0 flex overflow-hidden rounded-[inherit]">
-            <div className="relative h-[642px] w-[576px] shrink-0 blur-[11.5px]">
-              <Image
-                src="/Home/figma-home-1183-11287-grimms-rainbow-arc-stacker.png"
-                alt=""
-                fill
-                sizes="576px"
-                className="object-cover"
-              />
-            </div>
-            <div className="relative h-[642px] w-[576px] shrink-0">
-              <Image
-                src="/Home/figma-home-1183-11287-rainbow-stacker-close-up.png"
-                alt=""
-                fill
-                sizes="576px"
-                className="object-cover"
-              />
-            </div>
-          </div>
-          <div className="absolute left-[38px] top-[49.89px] h-[468px] w-[473px]" style={trainMask}>
-            <Image
-              src={`${assetBase}-image137.png`}
-              alt="Wooden rainbow arc stacker arranged in a train play scene"
-              fill
-              sizes="473px"
-              className="object-cover"
-            />
-          </div>
-          <button
-            type="button"
-            aria-label="Previous toy image"
-            className="absolute left-3 top-[265.31px] flex size-[38px] items-center justify-center rounded-[19px] bg-white/88 shadow-[0_2px_10px_rgba(0,0,0,0.14)]"
-          >
-            <AssetIcon name="icon" size={18} />
-          </button>
-          <button
-            type="button"
-            aria-label="Next toy image"
-            className="absolute left-[526px] top-[265.31px] flex size-[38px] items-center justify-center rounded-[19px] bg-white/88 shadow-[0_2px_10px_rgba(0,0,0,0.14)]"
-          >
-            <AssetIcon name="icon1" size={18} />
-          </button>
-          <span className="absolute left-[251px] top-[557px] rounded-full bg-[#174A4D]/62 px-[13px] py-1 font-nunito text-xs font-medium leading-4 text-white">
-            3 photos
-          </span>
+          <ToyCarousel />
         </div>
       </div>
     </div>
