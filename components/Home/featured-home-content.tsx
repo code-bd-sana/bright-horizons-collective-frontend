@@ -367,87 +367,178 @@ function BorderPill({ children }: { children: React.ReactNode }) {
   );
 }
 
+const featuredFreebieData = {
+  emoji: '🎁',
+  label: 'Featured Freebie',
+  value: 'FREE',
+  valueClassName: 'bg-[#F6E6D4] text-[#C2917F]',
+  title: '10 Creative Rainbow Stacker Play Prompts',
+  description:
+    'Download our printable prompt cards with 10 OT-designed balancing, color-sorting, and fine-motor games for toddlers and preschoolers.',
+  meta: '📄 2-Page Printable PDF • Instant Download',
+  actionText: 'Get Freebie',
+  actionHref: '/explore',
+};
+
+const featuredResourceData = {
+  emoji: '📄',
+  label: 'Featured Resource',
+  value: '$8',
+  valueClassName: 'bg-[#DCEEEE] text-[#174A4D]',
+  title: 'Complete Toddler Spatial & Fine Motor Handbook',
+  description:
+    'A comprehensive 28-page guide written by pediatric occupational therapists covering open-ended play milestones, bilateral coordination, and sensory integration.',
+  meta: '⭐ 4.9/5 • 28 Pages • Ages 1–4',
+  actionText: 'View Resource ($8)',
+  actionHref: '/explore',
+};
+
 function ExpandableRow({
   emoji,
   label,
   value,
   valueClassName,
+  title,
+  description,
+  meta,
+  actionText,
+  actionHref,
+  isOpen,
+  onToggle,
 }: {
   emoji: string;
   label: string;
   value: string;
   valueClassName: string;
+  title: string;
+  description: string;
+  meta: string;
+  actionText: string;
+  actionHref: string;
+  isOpen: boolean;
+  onToggle: () => void;
 }) {
   return (
-    <div className="flex h-[54px] items-center justify-between py-[13px]">
-      <div className="flex items-center gap-2">
-        <span className="font-manrope text-base font-medium leading-4 text-[#263238]">{emoji}</span>
-        <span className="font-nunito text-xl font-medium leading-7 text-[#263238]">{label}</span>
+    <div className="w-full">
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={isOpen}
+        className="group flex w-full items-center justify-between py-2 text-left transition hover:opacity-85 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2F7D7E] rounded-lg"
+      >
+        <div className="flex items-center gap-2">
+          <span className="font-manrope text-base font-medium leading-4 text-[#263238]">
+            {emoji}
+          </span>
+          <span className="font-nunito text-base sm:text-lg font-medium leading-6 text-[#263238] group-hover:text-[#174A4D] transition-colors">
+            {label}
+          </span>
+          <span
+            className={`rounded-full px-2.5 py-0.5 font-nunito text-xs font-semibold leading-4 ${valueClassName}`}
+          >
+            {value}
+          </span>
+        </div>
         <span
-          className={`rounded-full px-2.25 py-[2px] font-nunito text-xs font-medium leading-4 ${valueClassName}`}
+          className={`inline-flex size-6 items-center justify-center rounded-full transition-all duration-300 ${
+            isOpen ? 'rotate-270 bg-[#174A4D]/10 text-[#174A4D]' : 'rotate-90 text-[#2F7D7E]'
+          }`}
         >
-          {value}
+          <AssetIcon name="icon3" size={14} />
         </span>
+      </button>
+
+      <div
+        className={`grid transition-all duration-300 ease-in-out ${
+          isOpen
+            ? 'grid-rows-[1fr] opacity-100 pb-2 pt-1'
+            : 'grid-rows-[0fr] opacity-0 pointer-events-none'
+        }`}
+      >
+        <div className="overflow-hidden">
+          <div className="rounded-xl border border-[#DCEEEE] bg-[#F4F9F9] p-3 text-left">
+            <h4 className="font-nunito text-sm font-semibold text-[#174A4D]">{title}</h4>
+            <p className="mt-1 font-manrope text-xs leading-4.5 text-[#515B60]">{description}</p>
+            <div className="mt-2.5 flex items-center justify-between border-t border-[#E2EDED] pt-2">
+              <span className="font-manrope text-[11px] font-medium text-[#7D8488]">{meta}</span>
+              <Link
+                href={actionHref}
+                className="inline-flex items-center gap-1 rounded-full bg-[#174A4D] px-3 py-1 font-nunito text-xs font-semibold text-white shadow-xs hover:bg-[#2F7D7E] transition-colors"
+              >
+                <span>{actionText}</span>
+                <AssetIcon name="icon2" size={11} />
+              </Link>
+            </div>
+          </div>
+        </div>
       </div>
-      <AssetIcon name="icon3" size={16} className="rotate-90" />
     </div>
   );
 }
 
 function ToyDetails() {
+  const [openAccordion, setOpenAccordion] = useState<'freebie' | 'resource' | null>('freebie');
+
+  const toggleAccordion = (key: 'freebie' | 'resource') => {
+    setOpenAccordion((prev) => (prev === key ? null : key));
+  };
+
   return (
-    <div className="h-[642px] w-[576px] shrink-0 px-9 py-10">
-      <div className="relative h-12">
-        <span className="absolute left-0 top-0 rounded-full border border-[#D8DDD9] bg-[#F6E6D4] px-[15px] py-[6px] font-nunito text-xs font-medium leading-4 text-[#174A4D]">
-          ✦ OT Recommended
-        </span>
-      </div>
-      <h3 className="w-[504px] pb-4 font-nunito text-[32px] font-medium leading-10 tracking-[-0.16px] text-[#174A4D]">
-        Grimm&apos;s Rainbow Arc Stacker
-      </h3>
-      <p className="w-[504px] pb-4 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#515B60]">
-        The Rainbow Arc Stacker builds spatial reasoning and colour recognition through open-ended
-        play. Children naturally discover balance, sequencing, and cause-and-effect while creating
-        freely. OT-recommended from 12 months up.
-      </p>
-      <p className="w-[504px] pb-2 font-manrope text-xs font-medium leading-4.5 tracking-[0.48px] text-[#7D8488]">
-        Why we love it:
-      </p>
-      <p className="w-[504px] pb-4 font-lora text-sm italic leading-5.5 tracking-[-0.084px] text-[#2F7D7E]">
-        &quot;Encourages spatial reasoning, color sequencing, and open-ended creativity - all
-        through the joy of self-directed play.&quot;
-      </p>
-      <div className="flex gap-1.25 pb-6">
-        <BorderPill>Ages 12 mo+</BorderPill>
-        <BorderPill>Open-ended</BorderPill>
-      </div>
-      <div className="h-[117.688px] w-[504px] pb-6">
-        <Link
-          href="/explore"
-          className="flex h-12 w-fit items-center gap-[7px] rounded-full border border-[#ACCBcb] bg-linear-to-b from-[#2F7D7E]/60 to-[#2F7D7E] px-[29px] py-[13px] font-nunito text-sm font-semibold leading-5 tracking-[-0.084px] text-white shadow-[0_4px_16px_rgba(8,55,55,0.09)]"
-        >
-          Shop Now
-          <AssetIcon name="icon2" size={14} />
-        </Link>
-        <p className="flex max-w-80 gap-1.25 pt-[9px] font-manrope text-xs leading-4.5 text-[#607077]">
-          <span className="text-[12.8px] leading-[19.84px] text-[#ADB1AE]">ⓘ</span>
-          This is an affiliate link — we may earn a small commission at no extra cost to you.
+    <div className="flex h-160.5 w-xl shrink-0 flex-col justify-between overflow-hidden px-8 py-7">
+      <div>
+        <div className="flex items-center">
+          <span className="rounded-full border border-[#D8DDD9] bg-[#F6E6D4] px-3.5 py-1 font-nunito text-xs font-medium leading-4 text-[#174A4D]">
+            ✦ OT Recommended
+          </span>
+        </div>
+        <h3 className="mt-2.5 font-nunito text-[28px] font-medium leading-8 text-[#174A4D]">
+          Grimm&apos;s Rainbow Arc Stacker
+        </h3>
+        <p className="mt-2 font-manrope text-sm leading-5 tracking-[-0.084px] text-[#515B60]">
+          The Rainbow Arc Stacker builds spatial reasoning and colour recognition through open-ended
+          play. Children naturally discover balance, sequencing, and cause-and-effect while creating
+          freely. OT-recommended from 12 months up.
         </p>
+        <p className="mt-2 font-manrope text-xs font-medium leading-4 tracking-[0.48px] text-[#7D8488]">
+          Why we love it:
+        </p>
+        <p className="mt-1 font-lora text-xs sm:text-sm italic leading-5 tracking-[-0.084px] text-[#2F7D7E]">
+          &quot;Encourages spatial reasoning, color sequencing, and open-ended creativity - all
+          through the joy of self-directed play.&quot;
+        </p>
+        <div className="mt-2.5 flex gap-1.5">
+          <BorderPill>Ages 12 mo+</BorderPill>
+          <BorderPill>Open-ended</BorderPill>
+        </div>
+        <div className="mt-3.5">
+          <Link
+            href="/explore"
+            className="flex h-10 w-fit items-center gap-1.5 rounded-full border border-[#ACCBcb] bg-linear-to-b from-[#2F7D7E]/60 to-[#2F7D7E] px-6 py-2 font-nunito text-sm font-semibold text-white shadow-[0_4px_16px_rgba(8,55,55,0.09)]"
+          >
+            Shop Now
+            <AssetIcon name="icon2" size={14} />
+          </Link>
+          <p className="mt-1.5 flex max-w-80 gap-1 font-manrope text-[11px] leading-4 text-[#607077]">
+            <span className="text-xs text-[#ADB1AE]">ⓘ</span>
+            This is an affiliate link — we may earn a small commission at no extra cost to you.
+          </p>
+        </div>
       </div>
-      <div className="h-[5px] w-[504px] border-t border-[#D8DDD9]" />
-      <ExpandableRow
-        emoji="🎁"
-        label="Featured Freebie"
-        value="FREE"
-        valueClassName="bg-[#F6E6D4] text-[#C2917F]"
-      />
-      <div className="h-[5px] w-[504px] border-t border-[#D8DDD9]" />
-      <ExpandableRow
-        emoji="📄"
-        label="Featured Resource"
-        value="$8"
-        valueClassName="bg-[#DCEEEE] text-[#7D8488]"
-      />
+
+      <div className="pt-2">
+        <div className="border-t border-[#D8DDD9]" />
+        <ExpandableRow
+          {...featuredFreebieData}
+          isOpen={openAccordion === 'freebie'}
+          onToggle={() => toggleAccordion('freebie')}
+        />
+        <div className="border-t border-[#D8DDD9]" />
+        <ExpandableRow
+          {...featuredResourceData}
+          isOpen={openAccordion === 'resource'}
+          onToggle={() => toggleAccordion('resource')}
+        />
+      </div>
     </div>
   );
 }
@@ -529,6 +620,12 @@ function DesktopFeaturedHomeContent() {
 }
 
 function ResponsiveFeaturedHomeContent() {
+  const [openAccordion, setOpenAccordion] = useState<'freebie' | 'resource' | null>('freebie');
+
+  const toggleAccordion = (key: 'freebie' | 'resource') => {
+    setOpenAccordion((prev) => (prev === key ? null : key));
+  };
+
   return (
     <div className="min-[1600px]:hidden">
       <div className="relative overflow-hidden px-4 pb-16 pt-16 sm:px-8 sm:pb-24 sm:pt-24 lg:pt-32">
@@ -650,17 +747,15 @@ function ResponsiveFeaturedHomeContent() {
               </div>
               <div className="my-4 border-t border-[#D8DDD9]" />
               <ExpandableRow
-                emoji="🎁"
-                label="Featured Freebie"
-                value="FREE"
-                valueClassName="bg-[#F6E6D4] text-[#C2917F]"
+                {...featuredFreebieData}
+                isOpen={openAccordion === 'freebie'}
+                onToggle={() => toggleAccordion('freebie')}
               />
-              <div className="my-1 border-t border-[#D8DDD9]" />
+              <div className="my-2 border-t border-[#D8DDD9]" />
               <ExpandableRow
-                emoji="📄"
-                label="Featured Resource"
-                value="$8"
-                valueClassName="bg-[#DCEEEE] text-[#7D8488]"
+                {...featuredResourceData}
+                isOpen={openAccordion === 'resource'}
+                onToggle={() => toggleAccordion('resource')}
               />
             </div>
           </div>
