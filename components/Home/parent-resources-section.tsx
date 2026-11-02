@@ -1,3 +1,4 @@
+import { ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -59,8 +60,8 @@ const resources: Resource[] = [
 
 function ResourceCard({ resource }: { resource: Resource }) {
   return (
-    <article className="relative flex h-full min-h-[420px] sm:min-h-[460px] w-full max-w-[422px] flex-col overflow-hidden rounded-3xl border border-[#E9F1EE] bg-white">
-      <div className="relative aspect-[422/290] w-full overflow-hidden rounded-3xl bg-[#E0E7FF] shrink-0">
+    <article className="relative flex h-full min-h-105 sm:min-h-115 w-full max-w-105.5 flex-col overflow-hidden rounded-3xl border border-[#E9F1EE] bg-white">
+      <div className="relative aspect-422/290 w-full overflow-hidden rounded-3xl bg-[#E0E7FF] shrink-0">
         <div
           className={`absolute left-1/2 -translate-x-1/2 min-[1600px]:translate-x-0 ${resource.imageDesktopPosition} ${resource.imageClassName}`}
           style={{
@@ -102,16 +103,12 @@ function ResourceCard({ resource }: { resource: Resource }) {
 
         <Link
           href="/explore"
-          className="flex w-fit items-center gap-1 font-manrope text-xs leading-4.5 font-semibold tracking-[0.48px] text-[#2F7D7E] hover:underline pt-2"
+          className="group/link mt-2 inline-flex items-center gap-2 rounded-full border border-[#C5DEDD] bg-[#F4F9F9] pl-3.5 pr-1.5 py-1 font-nunito text-xs sm:text-sm font-semibold text-[#174A4D] shadow-2xs transition-all duration-200 hover:border-[#2F7D7E] hover:bg-white hover:shadow-xs w-fit"
         >
-          Explore
-          <Image
-            src={`${assetBase}-vector.svg`}
-            alt=""
-            width={14}
-            height={14}
-            className="size-3.5"
-          />
+          <span>Explore</span>
+          <span className="flex size-6 items-center justify-center rounded-full bg-[#174A4D] text-white transition-all duration-300 group-hover/link:bg-[#2F7D7E] group-hover/link:translate-x-0.5">
+            <ArrowRight className="size-3.5 stroke-[2.2]" />
+          </span>
         </Link>
       </div>
     </article>
@@ -124,7 +121,7 @@ function ResourcesHeading() {
       <span className="rounded-xl border border-[#FAE1D9] bg-[#FCE9E3] px-2 py-1.5 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#614840]">
         For parents
       </span>
-      <h2 className="mt-4 w-full max-w-[573px] font-nunito text-[clamp(28px,5vw,48px)] leading-[1.16] font-semibold tracking-[-0.48px] text-[#263238]">
+      <h2 className="mt-4 w-full max-w-143.25 font-nunito text-[clamp(28px,5vw,48px)] leading-[1.16] font-semibold tracking-[-0.48px] text-[#263238]">
         Resources for parents
       </h2>
     </header>
@@ -135,10 +132,10 @@ function SeeAllLink() {
   return (
     <Link
       href="/explore"
-      className="inline-flex min-w-20 items-center justify-center gap-1 rounded-full bg-[#263238] px-4 py-2.5 font-nunito text-base leading-6 font-medium tracking-[-0.176px] text-white hover:bg-[#174A4D] transition-colors"
+      className="group inline-flex min-w-20 items-center justify-center gap-1.5 rounded-full bg-[#263238] px-5 py-2.5 font-nunito text-base leading-6 font-medium tracking-[-0.176px] text-white hover:bg-[#174A4D] transition-colors shadow-xs"
     >
-      See all
-      <Image src={`${assetBase}-vector1.svg`} alt="" width={16} height={16} className="size-4" />
+      <span>See all</span>
+      <ArrowRight className="size-4 stroke-2 transition-transform duration-200 group-hover:translate-x-0.5" />
     </Link>
   );
 }
@@ -146,7 +143,7 @@ function SeeAllLink() {
 export function ParentResourcesSection() {
   return (
     <section className="bg-[#FDFDFC]">
-      <div className="relative mx-auto hidden h-[886px] max-w-[1920px] min-[1600px]:block">
+      <div className="relative mx-auto hidden h-221.5 max-w-[1920px] min-[1600px]:block">
         <div className="absolute left-1/2 top-40 w-[1760px] -translate-x-1/2">
           <ResourcesHeading />
           <div className="mt-20 flex gap-6">
