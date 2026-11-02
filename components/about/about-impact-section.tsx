@@ -68,7 +68,7 @@ export function AboutImpactSection() {
       <div className="bg-[#EBF5FF] px-5 py-16 sm:px-8 sm:py-20 md:px-12 lg:px-16 xl:h-[654px] xl:px-16 xl:py-20">
         <div className="mx-auto flex max-w-[1202px] flex-col gap-10 rounded-3xl bg-[#FFF9F5] p-6 shadow-[0_20px_12.5px_rgba(0,0,0,0.1),0_8px_5px_rgba(0,0,0,0.1)] sm:p-10 md:gap-12 md:p-12 xl:gap-12 xl:p-14">
           <header className="flex flex-col items-center gap-4 text-center">
-            <span className="rounded-xl border border-[#D4D6D7] bg-[#FFFDF8] px-2 py-1.5 font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#515B60]">
+            <span className="rounded-xl border border-[#D4D6D7] bg-[#FFFDF8] px-2 py-1.5 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#515B60]">
               Our Impact
             </span>
             <h2

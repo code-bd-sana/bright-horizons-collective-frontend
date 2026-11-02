@@ -72,7 +72,7 @@ function FigmaIcon({
 function ActivityArtwork({ variant = 'featured' }: { variant?: 'featured' | 'star' | 'target' }) {
   if (variant === 'target') {
     return (
-      <span className="flex h-[60px] w-[56px] shrink-0 items-center justify-center rounded-[10px] bg-[#D2E3DC] font-manrope text-[22px] leading-[22px] text-[#263238]">
+      <span className="flex h-[60px] w-[56px] shrink-0 items-center justify-center rounded-[10px] bg-[#D2E3DC] font-manrope text-[22px] leading-5.5 text-[#263238]">
         🎯
       </span>
     );
@@ -112,7 +112,7 @@ function ActivityArtwork({ variant = 'featured' }: { variant?: 'featured' | 'sta
 
 function DurationBadge() {
   return (
-    <span className="flex items-center gap-1 rounded-full border border-[#DCEEEE] px-[9px] py-[7px] font-manrope text-xs leading-[18px] text-[#607077]">
+    <span className="flex items-center gap-1 rounded-full border border-[#DCEEEE] px-2.25 px-1.75 font-manrope text-xs leading-4.5 text-[#607077]">
       <FigmaIcon name="img-icon2" size={12} />
       20 min
     </span>
@@ -121,7 +121,7 @@ function DurationBadge() {
 
 function DifficultyBadge() {
   return (
-    <span className="rounded-full border border-[#DCEEEE] bg-[#E9F1EE] px-[9px] py-[7px] font-nunito text-xs font-medium leading-4 text-[#8FB9A8]">
+    <span className="rounded-full border border-[#DCEEEE] bg-[#E9F1EE] px-2.25 px-1.75 font-nunito text-xs font-medium leading-4 text-[#8FB9A8]">
       Easy
     </span>
   );
@@ -151,7 +151,7 @@ function UpcomingActivity({
             <h4 className="font-nunito text-base font-bold leading-5 tracking-[-0.24px] text-[#174A4D]">
               {title}
             </h4>
-            <p className="max-w-[281px] font-manrope text-xs leading-[18px] text-[#A8ADAF]">
+            <p className="max-w-[281px] font-manrope text-xs leading-4.5 text-[#A8ADAF]">
               {description}
             </p>
           </div>
@@ -187,7 +187,7 @@ function ExpandedActivity() {
               <h3 className="font-nunito text-base font-bold leading-5 tracking-[-0.24px] text-[#174A4D]">
                 Animal Yoga Adventure
               </h3>
-              <p className="max-w-[281px] font-manrope text-xs leading-[18px] text-[#A8ADAF]">
+              <p className="max-w-[281px] font-manrope text-xs leading-4.5 text-[#A8ADAF]">
                 Move through fun animal poses to build balance and whole-body motor planning.
               </p>
             </div>
@@ -211,7 +211,7 @@ function ExpandedActivity() {
             {activityBenefits.map((benefit) => (
               <li
                 key={benefit}
-                className="flex items-start gap-[10px] font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#263238]"
+                className="flex items-start gap-[10px] font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#263238]"
               >
                 <span className="mt-0.5 flex size-[18px] shrink-0 items-center justify-center rounded-full bg-[#DCEEEE]">
                   <FigmaIcon name="img-icon4" size={11} />
@@ -226,7 +226,7 @@ function ExpandedActivity() {
           <h4 className="font-nunito text-sm font-semibold leading-5 tracking-[-0.084px] text-[#2F7D7E]">
             Modifications preview:
           </h4>
-          <div className="mt-4 space-y-2 font-manrope text-xs leading-[18px] text-[#263238]">
+          <div className="mt-4 space-y-2 font-manrope text-xs leading-4.5 text-[#263238]">
             <p>
               <span className="font-medium text-[#2F7D7E]">Easier: </span>Reduce to 2 poses and
               demonstrate each one slowly
@@ -256,11 +256,11 @@ function FeedbackPanel({ className = '' }: { className?: string }) {
     <aside
       className={`flex flex-col gap-6 sm:gap-8 rounded-3xl border border-[#E8EBE8] bg-white p-5 sm:p-8 shadow-sm ${className}`}
     >
-      <div className="flex flex-wrap justify-center gap-[5px]">
+      <div className="flex flex-wrap justify-center gap-1.25">
         {feedback.map(([emoji, label], index) => (
           <span
             key={label}
-            className={`flex items-center gap-1 rounded-full border px-[9px] py-[7px] font-nunito text-xs font-medium leading-4 text-[#263238] ${index === 0 ? 'border-[#FCE9E3] bg-[#F7D3C5]' : 'border-[#D4D6D7] bg-white'}`}
+            className={`flex items-center gap-1 rounded-full border px-2.25 px-1.75 font-nunito text-xs font-medium leading-4 text-[#263238] ${index === 0 ? 'border-[#FCE9E3] bg-[#F7D3C5]' : 'border-[#D4D6D7] bg-white'}`}
           >
             <span className="font-manrope text-[14.4px] font-semibold leading-[14.4px]">
               {emoji}
@@ -269,7 +269,7 @@ function FeedbackPanel({ className = '' }: { className?: string }) {
           </span>
         ))}
       </div>
-      <div className="h-[82px] w-full rounded-xl border border-[#D8DDD9] bg-white px-[15px] py-[11px] font-manrope text-xs leading-[18px] text-[#263238]/50">
+      <div className="h-[82px] w-full rounded-xl border border-[#D8DDD9] bg-white px-[15px] py-[11px] font-manrope text-xs leading-4.5 text-[#263238]/50">
         Add a note about this activity...
       </div>
     </aside>

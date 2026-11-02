@@ -5,7 +5,7 @@ const assetBase = '/Home/figma-home-1183-11743-img';
 function FounderHeading() {
   return (
     <header className="flex flex-col items-center gap-3 sm:gap-4 text-center px-4">
-      <span className="rounded-xl border border-[#FAE1D9] bg-[#FFFDF8] px-2 py-1.5 font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#614840]">
+      <span className="rounded-xl border border-[#FAE1D9] bg-[#FFFDF8] px-2 py-1.5 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#614840]">
         Who we are
       </span>
       <h2 className="font-nunito text-[clamp(28px,5vw,48px)] leading-[1.16] font-semibold tracking-[-0.48px] text-[#263238]">
@@ -32,7 +32,7 @@ function Credentials() {
           key={cred}
           className="flex items-center justify-center p-3 sm:p-4 border-r border-b border-[#F5C4B2] text-center"
         >
-          <p className="font-manrope text-xs sm:text-sm leading-[20px] sm:leading-[22px] tracking-[-0.084px] text-[#493630]">
+          <p className="font-manrope text-xs sm:text-sm leading-5 sm:leading-5.5 tracking-[-0.084px] text-[#493630]">
             {cred}
           </p>
         </div>
@@ -45,7 +45,7 @@ function FounderCopy() {
   return (
     <div className="flex w-full max-w-[719px] flex-col items-start gap-6">
       <div className="flex w-full flex-col gap-5 sm:gap-6">
-        <div className="w-full font-manrope text-sm sm:text-base lg:text-lg leading-relaxed lg:leading-[27px] tracking-[-0.27px] text-[#263238] space-y-4">
+        <div className="w-full font-manrope text-sm sm:text-base lg:text-lg leading-relaxed lg:leading-6.75 tracking-[-0.27px] text-[#263238] space-y-4">
           <p className="font-medium text-lg sm:text-xl text-[#174A4D]">Hi, I&apos;m Jaicy.</p>
           <p>
             I&apos;m a licensed pediatric occupational therapist passionate about helping children

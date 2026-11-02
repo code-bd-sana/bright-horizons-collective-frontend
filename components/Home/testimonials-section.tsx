@@ -38,7 +38,7 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
     <article className="w-full max-w-[571px] overflow-hidden rounded-3xl border border-[#E9F1EE] bg-white p-5 sm:p-8">
       <div className="flex flex-col gap-6 sm:gap-10">
         <div className="flex items-center justify-between">
-          <span className="font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#7D8488]">
+          <span className="font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#7D8488]">
             {testimonial.number}
           </span>
           <div className="rounded-xl border border-[#E8EBE8] bg-white px-2 py-1.5">
@@ -50,7 +50,7 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
                 height={16}
                 className="size-4"
               />
-              <span className="font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#263238]">
+              <span className="font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#263238]">
                 4.9
               </span>
             </div>
@@ -77,10 +77,10 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
               <p className="font-nunito text-lg sm:text-xl leading-7 font-medium text-[#263238]">
                 Sarah Karim
               </p>
-              <p className="font-manrope text-xs sm:text-sm leading-[20px] sm:leading-[22px] tracking-[-0.084px] text-[#7D8488]">
+              <p className="font-manrope text-xs sm:text-sm leading-5 sm:leading-5.5 tracking-[-0.084px] text-[#7D8488]">
                 {testimonial.age}
               </p>
-              <p className="flex flex-wrap items-center gap-1.5 sm:gap-2 font-manrope text-xs sm:text-sm leading-[20px] sm:leading-[22px] tracking-[-0.084px] text-[#7D8488]">
+              <p className="flex flex-wrap items-center gap-1.5 sm:gap-2 font-manrope text-xs sm:text-sm leading-5 sm:leading-5.5 tracking-[-0.084px] text-[#7D8488]">
                 <span>Member since 2024</span>
                 <span>·</span>
                 <span>Portland, OR</span>
@@ -102,7 +102,7 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
 function TestimonialsHeading() {
   return (
     <header className="flex flex-col items-center gap-3 sm:gap-4 text-center px-4">
-      <span className="rounded-xl border border-[#FAE1D9] bg-white px-2 py-1.5 font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#614840]">
+      <span className="rounded-xl border border-[#FAE1D9] bg-white px-2 py-1.5 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#614840]">
         Member love
       </span>
       <h2 className="font-nunito text-[clamp(28px,5vw,48px)] leading-[1.16] font-semibold tracking-[-0.48px] text-[#263238]">

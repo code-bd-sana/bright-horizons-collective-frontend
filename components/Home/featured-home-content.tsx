@@ -106,7 +106,7 @@ function ActivityPill({
 }) {
   return (
     <span
-      className={`shrink-0 rounded-full border border-[#ACCBcb] bg-white px-[9px] py-[7px] font-nunito text-xs font-medium leading-4 text-[#2F7D7E] ${className}`}
+      className={`shrink-0 rounded-full border border-[#ACCBcb] bg-white px-2.25 px-1.75 font-nunito text-xs font-medium leading-4 text-[#2F7D7E] ${className}`}
     >
       {children}
     </span>
@@ -141,17 +141,17 @@ function ActivityCard({ activity }: { activity: (typeof activityCards)[number] }
           {activity.title}
         </h3>
         <div className="flex flex-col items-start gap-2">
-          <div className="flex items-center gap-[5px]">
-            <span className="rounded-full border border-[#DCEEEE] px-[9px] py-[7px] font-nunito text-xs font-medium leading-4 text-[#174A4D]">
+          <div className="flex items-center gap-1.25">
+            <span className="rounded-full border border-[#DCEEEE] px-2.25 px-1.75 font-nunito text-xs font-medium leading-4 text-[#174A4D]">
               <span className="text-[#263238]">Material:</span>{' '}
               <span className="text-[#7D8488]">{activity.material}</span>
             </span>
-            <span className="flex items-center gap-1 px-2 py-1.5 font-manrope text-xs leading-[18px] text-[#607077]">
+            <span className="flex items-center gap-1 px-2 py-1.5 font-manrope text-xs leading-4.5 text-[#607077]">
               <AssetIcon name="icon4" size={12} />
               {activity.duration}
             </span>
           </div>
-          <div className="flex items-start gap-[5px]">
+          <div className="flex items-start gap-1.25">
             <ActivityPill>{activity.location}</ActivityPill>
             <ActivityPill>{activity.age}</ActivityPill>
             <ActivityPill>{activity.skill}</ActivityPill>
@@ -166,7 +166,7 @@ function FeaturedActivities() {
   return (
     <div className="absolute left-1/2 top-[124px] z-10 w-[1760px] -translate-x-1/2">
       <header className="relative h-[106px] w-full">
-        <span className="absolute left-[826px] top-0 rounded-xl border border-[#FAE1D9] bg-[#FCE9E3] px-2 py-1.5 font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#614840]">
+        <span className="absolute left-[826px] top-0 rounded-xl border border-[#FAE1D9] bg-[#FCE9E3] px-2 py-1.5 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#614840]">
           For your family
         </span>
         <h2 className="absolute left-[593.5px] top-[50px] w-[573px] text-center font-nunito text-5xl font-semibold leading-14 tracking-[-0.48px] text-[#263238]">
@@ -361,7 +361,7 @@ function ResponsiveToyGallery() {
 
 function BorderPill({ children }: { children: React.ReactNode }) {
   return (
-    <span className="rounded-full border border-[#ACCBcb] bg-white px-[9px] py-[7px] font-nunito text-xs font-medium leading-4 text-[#2F7D7E]">
+    <span className="rounded-full border border-[#ACCBcb] bg-white px-2.25 px-1.75 font-nunito text-xs font-medium leading-4 text-[#2F7D7E]">
       {children}
     </span>
   );
@@ -384,7 +384,7 @@ function ExpandableRow({
         <span className="font-manrope text-base font-medium leading-4 text-[#263238]">{emoji}</span>
         <span className="font-nunito text-xl font-medium leading-7 text-[#263238]">{label}</span>
         <span
-          className={`rounded-full px-[9px] py-[2px] font-nunito text-xs font-medium leading-4 ${valueClassName}`}
+          className={`rounded-full px-2.25 py-[2px] font-nunito text-xs font-medium leading-4 ${valueClassName}`}
         >
           {value}
         </span>
@@ -405,19 +405,19 @@ function ToyDetails() {
       <h3 className="w-[504px] pb-4 font-nunito text-[32px] font-medium leading-10 tracking-[-0.16px] text-[#174A4D]">
         Grimm&apos;s Rainbow Arc Stacker
       </h3>
-      <p className="w-[504px] pb-4 font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#515B60]">
+      <p className="w-[504px] pb-4 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#515B60]">
         The Rainbow Arc Stacker builds spatial reasoning and colour recognition through open-ended
         play. Children naturally discover balance, sequencing, and cause-and-effect while creating
         freely. OT-recommended from 12 months up.
       </p>
-      <p className="w-[504px] pb-2 font-manrope text-xs font-medium leading-[18px] tracking-[0.48px] text-[#7D8488]">
+      <p className="w-[504px] pb-2 font-manrope text-xs font-medium leading-4.5 tracking-[0.48px] text-[#7D8488]">
         Why we love it:
       </p>
-      <p className="w-[504px] pb-4 font-lora text-sm italic leading-[22px] tracking-[-0.084px] text-[#2F7D7E]">
+      <p className="w-[504px] pb-4 font-lora text-sm italic leading-5.5 tracking-[-0.084px] text-[#2F7D7E]">
         &quot;Encourages spatial reasoning, color sequencing, and open-ended creativity - all
         through the joy of self-directed play.&quot;
       </p>
-      <div className="flex gap-[5px] pb-6">
+      <div className="flex gap-1.25 pb-6">
         <BorderPill>Ages 12 mo+</BorderPill>
         <BorderPill>Open-ended</BorderPill>
       </div>
@@ -429,7 +429,7 @@ function ToyDetails() {
           Shop Now
           <AssetIcon name="icon2" size={14} />
         </Link>
-        <p className="flex max-w-80 gap-[5px] pt-[9px] font-manrope text-xs leading-[18px] text-[#607077]">
+        <p className="flex max-w-80 gap-1.25 pt-[9px] font-manrope text-xs leading-4.5 text-[#607077]">
           <span className="text-[12.8px] leading-[19.84px] text-[#ADB1AE]">ⓘ</span>
           This is an affiliate link — we may earn a small commission at no extra cost to you.
         </p>
@@ -458,7 +458,7 @@ function ToySpotlight() {
       <div className="relative z-10 mx-auto w-[1462px]">
         <header className="flex h-[170px] items-end justify-between">
           <div className="flex h-[170px] w-[573px] flex-col items-start gap-4">
-            <span className="rounded-xl border border-[#D4D6D7] bg-[#FFFDF8] px-2 py-1.5 font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#515B60]">
+            <span className="rounded-xl border border-[#D4D6D7] bg-[#FFFDF8] px-2 py-1.5 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#515B60]">
               OT-recommended
             </span>
             <h2 className="font-nunito text-5xl font-semibold leading-14 tracking-[-0.48px] text-[#263238]">
@@ -534,7 +534,7 @@ function ResponsiveFeaturedHomeContent() {
       <div className="relative overflow-hidden px-4 pb-16 pt-16 sm:px-8 sm:pb-24 sm:pt-24 lg:pt-32">
         <div className="mx-auto max-w-290">
           <div className="text-center">
-            <span className="inline-flex rounded-xl border border-[#FAE1D9] bg-[#FCE9E3] px-2 py-1.5 font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#614840]">
+            <span className="inline-flex rounded-xl border border-[#FAE1D9] bg-[#FCE9E3] px-2 py-1.5 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#614840]">
               For your family
             </span>
             <h2 className="mt-4 font-nunito text-[clamp(28px,5vw,48px)] font-semibold leading-[1.16] tracking-[-0.48px] text-[#263238]">
@@ -570,17 +570,17 @@ function ResponsiveFeaturedHomeContent() {
                   <h3 className="font-nunito text-xl sm:text-2xl font-medium leading-7 sm:leading-8 text-[#263238]">
                     {activity.title}
                   </h3>
-                  <div className="mt-3 flex flex-wrap items-center gap-[5px]">
-                    <span className="rounded-full border border-[#DCEEEE] px-[9px] py-[7px] font-nunito text-xs font-medium leading-4 text-[#174A4D]">
+                  <div className="mt-3 flex flex-wrap items-center gap-1.25">
+                    <span className="rounded-full border border-[#DCEEEE] px-2.25 px-1.75 font-nunito text-xs font-medium leading-4 text-[#174A4D]">
                       <span className="text-[#263238]">Material:</span>{' '}
                       <span className="text-[#7D8488]">{activity.material}</span>
                     </span>
-                    <span className="flex items-center gap-1 px-2 py-1.5 font-manrope text-xs leading-[18px] text-[#607077]">
+                    <span className="flex items-center gap-1 px-2 py-1.5 font-manrope text-xs leading-4.5 text-[#607077]">
                       <AssetIcon name="icon4" size={12} />
                       {activity.duration}
                     </span>
                   </div>
-                  <div className="mt-2 flex flex-wrap gap-[5px]">
+                  <div className="mt-2 flex flex-wrap gap-1.25">
                     <ActivityPill>{activity.location}</ActivityPill>
                     <ActivityPill>{activity.age}</ActivityPill>
                     <ActivityPill>{activity.skill}</ActivityPill>
@@ -602,7 +602,7 @@ function ResponsiveFeaturedHomeContent() {
 
       <div className="bg-[#F0F9FF] px-4 py-16 sm:px-8 sm:py-24 lg:py-32">
         <div className="mx-auto max-w-290">
-          <span className="inline-flex rounded-xl border border-[#D4D6D7] bg-[#FFFDF8] px-2 py-1.5 font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#515B60]">
+          <span className="inline-flex rounded-xl border border-[#D4D6D7] bg-[#FFFDF8] px-2 py-1.5 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#515B60]">
             OT-recommended
           </span>
           <h2 className="mt-4 font-nunito text-[clamp(28px,5vw,48px)] font-semibold leading-[1.16] tracking-[-0.48px] text-[#263238]">
@@ -622,16 +622,16 @@ function ResponsiveFeaturedHomeContent() {
               <h3 className="mt-4 sm:mt-6 font-nunito text-[clamp(24px,3.5vw,32px)] font-medium leading-tight text-[#174A4D]">
                 Grimm&apos;s Rainbow Arc Stacker
               </h3>
-              <p className="mt-3 sm:mt-4 font-manrope text-xs sm:text-sm leading-[20px] sm:leading-[22px] tracking-[-0.084px] text-[#515B60]">
+              <p className="mt-3 sm:mt-4 font-manrope text-xs sm:text-sm leading-5 sm:leading-5.5 tracking-[-0.084px] text-[#515B60]">
                 The Rainbow Arc Stacker builds spatial reasoning and colour recognition through
                 open-ended play. Children naturally discover balance, sequencing, and
                 cause-and-effect while creating freely. OT-recommended from 12 months up.
               </p>
-              <p className="mt-3 sm:mt-4 font-lora text-xs sm:text-sm italic leading-[20px] sm:leading-[22px] text-[#2F7D7E]">
+              <p className="mt-3 sm:mt-4 font-lora text-xs sm:text-sm italic leading-5 sm:leading-5.5 text-[#2F7D7E]">
                 &quot;Encourages spatial reasoning, color sequencing, and open-ended creativity -
                 all through the joy of self-directed play.&quot;
               </p>
-              <div className="mt-4 sm:mt-6 flex gap-[5px]">
+              <div className="mt-4 sm:mt-6 flex gap-1.25">
                 <BorderPill>Ages 12 mo+</BorderPill>
                 <BorderPill>Open-ended</BorderPill>
               </div>
@@ -642,7 +642,7 @@ function ResponsiveFeaturedHomeContent() {
                 >
                   Shop Now <AssetIcon name="icon2" size={14} />
                 </Link>
-                <p className="mt-2 flex max-w-80 gap-[5px] font-manrope text-xs leading-[18px] text-[#607077]">
+                <p className="mt-2 flex max-w-80 gap-1.25 font-manrope text-xs leading-4.5 text-[#607077]">
                   <span className="text-[12.8px] leading-[19.84px] text-[#ADB1AE]">ⓘ</span>
                   This is an affiliate link — we may earn a small commission at no extra cost to
                   you.

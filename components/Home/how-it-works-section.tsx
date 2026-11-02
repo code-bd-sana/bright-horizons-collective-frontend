@@ -85,7 +85,7 @@ const steps: Step[] = [
 function HowItWorksHeading() {
   return (
     <header className="flex flex-col items-center gap-3 sm:gap-4 text-center px-4">
-      <span className="rounded-xl border border-[#FAE1D9] bg-[#FCE9E3] px-2 py-1.5 font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#614840]">
+      <span className="rounded-xl border border-[#FAE1D9] bg-[#FCE9E3] px-2 py-1.5 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#614840]">
         How It Works
       </span>
       <h2 className="font-nunito text-[clamp(28px,5vw,48px)] leading-[1.16] font-semibold tracking-[-0.48px] text-[#263238]">
@@ -117,7 +117,7 @@ function WorkflowStep({ step }: { step: Step }) {
         >
           {step.title}
         </h3>
-        <p className="font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#475467]">
+        <p className="font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#475467]">
           {step.description}
         </p>
       </div>
@@ -139,7 +139,7 @@ function ResponsiveWorkflowStep({ step }: { step: Step }) {
           {step.title}
         </h3>
       </div>
-      <p className="mt-3 font-manrope text-xs sm:text-sm leading-[20px] sm:leading-[22px] text-[#475467]">
+      <p className="mt-3 font-manrope text-xs sm:text-sm leading-5 sm:leading-5.5 text-[#475467]">
         {step.description}
       </p>
     </article>

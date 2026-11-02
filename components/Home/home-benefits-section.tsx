@@ -86,7 +86,7 @@ function BenefitCaption({
         <h3 className="whitespace-nowrap font-nunito text-xl font-medium leading-7 text-[#263238]">
           {title}
         </h3>
-        <p className="font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#515B60]">
+        <p className="font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#515B60]">
           {description}
         </p>
       </div>
@@ -98,7 +98,7 @@ function BenefitsHeading() {
   return (
     <header className="flex w-full items-start justify-between">
       <div className="flex flex-col items-start gap-4">
-        <span className="rounded-xl border border-[#FAE1D9] bg-[#FCE9E3] px-2 py-1.5 font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#614840]">
+        <span className="rounded-xl border border-[#FAE1D9] bg-[#FCE9E3] px-2 py-1.5 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#614840]">
           Feature
         </span>
         <h2 className="whitespace-nowrap font-nunito text-5xl font-semibold leading-14 tracking-[-0.48px] text-[#263238]">
@@ -326,7 +326,7 @@ function ResponsiveHomeBenefits() {
       <div className="mx-auto max-w-290">
         <div className="max-w-3xl lg:flex lg:max-w-none lg:items-start lg:justify-between lg:gap-12">
           <div>
-            <span className="inline-flex rounded-xl border border-[#FAE1D9] bg-[#FCE9E3] px-2 py-1.5 font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#614840]">
+            <span className="inline-flex rounded-xl border border-[#FAE1D9] bg-[#FCE9E3] px-2 py-1.5 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#614840]">
               Feature
             </span>
             <h2 className="mt-4 font-nunito text-[clamp(28px,5vw,48px)] font-semibold leading-[1.16] tracking-[-0.48px] text-[#263238]">

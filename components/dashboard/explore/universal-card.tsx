@@ -7,7 +7,7 @@ import * as React from 'react';
 import { cn } from '@/lib/utils';
 
 const universalCardVariants = cva(
-  'group/universal-card relative overflow-hidden rounded-3xl border bg-[var(--explore-surface)] text-[var(--explore-text-primary)]',
+  'group/universal-card relative overflow-hidden rounded-3xl border bg-[var(--explore-surface)] text-(--explore-text-primary)',
   {
     variants: {
       recipe: {

@@ -36,7 +36,7 @@ function SearchAndHopeCard() {
         <h3 className="font-nunito text-xl sm:text-2xl leading-7 sm:leading-8 font-medium text-[#263238]">
           The search-and-hope approach
         </h3>
-        <p className="w-full font-manrope text-xs sm:text-sm leading-[20px] sm:leading-[22px] tracking-[-0.084px] text-[#515B60]">
+        <p className="w-full font-manrope text-xs sm:text-sm leading-5 sm:leading-5.5 tracking-[-0.084px] text-[#515B60]">
           Endless Pinterest boards and free printables that weren&apos;t made for your child.
           Activities that look great in theory but don&apos;t quite land. You&apos;re left wondering
           if you&apos;re doing enough.
@@ -49,7 +49,7 @@ function SearchAndHopeCard() {
             <span className="w-[11px] pt-px font-manrope text-sm leading-[21px] font-bold text-[#A8ADAF]">
               ✕
             </span>
-            <span className="font-manrope text-xs sm:text-sm leading-[20px] sm:leading-[22px] tracking-[-0.084px] text-[#515B60]">
+            <span className="font-manrope text-xs sm:text-sm leading-5 sm:leading-5.5 tracking-[-0.084px] text-[#515B60]">
               {item}
             </span>
           </li>
@@ -68,7 +68,7 @@ function BrightHorizonsCard() {
           <h3 className="w-full font-nunito text-xl sm:text-2xl leading-7 sm:leading-8 font-medium text-[#174A4D]">
             One OT. One plan. Built for your child.
           </h3>
-          <p className="w-full font-manrope text-xs sm:text-sm leading-[20px] sm:leading-[22px] tracking-[-0.084px] text-[#263238]">
+          <p className="w-full font-manrope text-xs sm:text-sm leading-5 sm:leading-5.5 tracking-[-0.084px] text-[#263238]">
             Every Monday you get a new weekly plan — morning, afternoon, and evening activities
             selected by a licensed pediatric OT who knows your child&apos;s profile. No searching.
             No guessing. Just doing.
@@ -87,7 +87,7 @@ function BrightHorizonsCard() {
                   className="size-[11px]"
                 />
               </span>
-              <span className="font-manrope text-xs sm:text-sm leading-[20px] sm:leading-[22px] tracking-[-0.084px] text-[#174A4D]">
+              <span className="font-manrope text-xs sm:text-sm leading-5 sm:leading-5.5 tracking-[-0.084px] text-[#174A4D]">
                 {item}
               </span>
             </li>

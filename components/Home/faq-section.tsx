@@ -111,7 +111,7 @@ function DesktopFaq() {
               aria-hidden="true"
               className="pointer-events-none absolute -left-2 -top-[49px]"
             />
-            <p className="absolute left-0 top-[22px] w-full font-nunito text-[18px] font-semibold leading-[27px] text-[#614840]">
+            <p className="absolute left-0 top-[22px] w-full font-nunito text-[18px] font-semibold leading-6.75 text-[#614840]">
               Still have questions?
             </p>
             <Link
@@ -162,7 +162,7 @@ function CompactFaq() {
                 aria-hidden="true"
                 className="pointer-events-none absolute -left-2 -top-[49px]"
               />
-              <p className="absolute left-0 top-[22px] w-full font-nunito text-[18px] font-semibold leading-[27px] text-[#614840]">
+              <p className="absolute left-0 top-[22px] w-full font-nunito text-[18px] font-semibold leading-6.75 text-[#614840]">
                 Still have questions?
               </p>
               <Link

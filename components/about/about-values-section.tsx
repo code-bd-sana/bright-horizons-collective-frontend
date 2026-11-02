@@ -130,16 +130,16 @@ export function AboutValuesSection() {
   return (
     <section
       aria-labelledby="about-values-heading"
-      className="bg-[#FFF9F5] px-5 py-16 sm:px-8 sm:py-20 md:px-12 md:py-24 lg:px-16 lg:py-28 xl:px-20 xl:py-30 2xl:h-[654px] 2xl:px-16 2xl:py-[120px]"
+      className="bg-[#FFF9F5] px-5 py-16 sm:px-8 sm:py-20 md:px-12 md:py-24 lg:px-16 lg:py-28 xl:px-20 xl:py-30 2xl:h-163.5 2xl:px-16 2xl:py-[120px]"
     >
-      <div className="mx-auto flex max-w-[1202px] flex-col items-center gap-10 sm:gap-12 2xl:w-[1202px] 2xl:max-w-none 2xl:gap-12">
+      <div className="mx-auto flex max-w-[1202px] flex-col items-center gap-10 sm:gap-12 2xl:w-300.5 2xl:max-w-none 2xl:gap-12">
         <header className="flex flex-col items-center gap-4 text-center">
-          <span className="rounded-xl border border-[#D4D6D7] bg-[#FFFDF8] px-2 py-1.5 font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#515B60]">
+          <span className="rounded-xl border border-[#D4D6D7] bg-[#FFFDF8] px-2 py-1.5 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#515B60]">
             Our Values
           </span>
           <h2
             id="about-values-heading"
-            className="font-nunito text-[32px] font-semibold leading-[38px] tracking-[-0.48px] text-[#263238] sm:text-4xl sm:leading-11 xl:text-[44px] xl:leading-[52px] 2xl:w-[573px] 2xl:text-[48px] 2xl:leading-14"
+            className="font-nunito text-[32px] font-semibold leading-9.5 tracking-[-0.48px] text-[#263238] sm:text-4xl sm:leading-11 xl:text-[44px] xl:leading-[52px] 2xl:w-[573px] 2xl:text-[48px] 2xl:leading-14"
           >
             What We Believe In
           </h2>

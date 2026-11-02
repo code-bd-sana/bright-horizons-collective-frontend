@@ -106,16 +106,16 @@ function ActivityCard({
       <UniversalCardBody recipe="activity">
         {body ?? (
           <>
-            <h3 className="font-nunito text-2xl font-medium leading-8 text-[var(--explore-text-primary)]">
+            <h3 className="font-nunito text-2xl font-medium leading-8 text-(--explore-text-primary)">
               {title}
             </h3>
             <div className="flex flex-col items-start gap-2">
-              <div className="flex items-center gap-[5px]">
-                <span className="inline-flex h-[30px] items-center rounded-full border border-[var(--explore-primary-light)] px-[9px] py-[7px] font-nunito text-xs font-medium leading-4 whitespace-nowrap">
-                  <span className="text-[var(--explore-text-primary)]">Material:</span>
-                  <span className="ml-1 text-[var(--explore-text-secondary)]">{material}</span>
+              <div className="flex items-center gap-1.25">
+                <span className="inline-flex h-7.5 items-center rounded-full border border-(--explore-primary-light) px-2.25 font-nunito text-xs font-medium leading-4 whitespace-nowrap">
+                  <span className="text-(--explore-text-primary)">Material:</span>
+                  <span className="ml-1 text-(--explore-text-secondary)">{material}</span>
                 </span>
-                <span className="inline-flex h-[30px] items-center gap-1 px-2 py-1.5 font-manrope text-xs leading-[18px] whitespace-nowrap text-[#607077]">
+                <span className="inline-flex h-7.5 items-center gap-1 px-2 py-1.5 font-manrope text-xs leading-4.5 whitespace-nowrap text-[#607077]">
                   <Image
                     src={`${ASSET_ROOT}/duration.svg`}
                     alt=""
@@ -126,11 +126,11 @@ function ActivityCard({
                   {duration}
                 </span>
               </div>
-              <div className="flex flex-wrap items-start gap-[5px]">
+              <div className="flex flex-wrap items-start gap-1.25">
                 {tags.map((tag, index) => (
                   <span
                     key={`${typeof tag === 'string' ? tag : 'tag'}-${index}`}
-                    className="inline-flex h-[30px] items-center rounded-full border border-[#accbcb] bg-white px-[9px] py-[7px] font-nunito text-xs font-medium leading-4 whitespace-nowrap text-[var(--explore-primary)]"
+                    className="inline-flex h-7.5 items-center rounded-full border border-[#accbcb] bg-white px-2.25 font-nunito text-xs font-medium leading-4 whitespace-nowrap text-(--explore-primary)"
                   >
                     {tag}
                   </span>
@@ -215,19 +215,19 @@ function ResourceCard({
         {body ?? (
           <>
             <div className="flex w-full items-start justify-between gap-4">
-              <h3 className="min-w-0 flex-1 font-nunito text-xl font-medium leading-7 text-[var(--explore-text-primary)]">
+              <h3 className="min-w-0 flex-1 font-nunito text-xl font-medium leading-7 text-(--explore-text-primary)">
                 {title}
               </h3>
-              <span className="shrink-0 font-manrope text-sm leading-[22px] tracking-[-0.084px] whitespace-nowrap text-[var(--explore-text-secondary)]">
+              <span className="shrink-0 font-manrope text-sm leading-5.5 tracking-[-0.084px] whitespace-nowrap text-(--explore-text-secondary)">
                 {readTime}
               </span>
             </div>
-            <p className="font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[var(--explore-text-secondary)]">
+            <p className="font-manrope text-sm leading-5.5 tracking-[-0.084px] text-(--explore-text-secondary)">
               {description}
             </p>
             <Link
               href={href}
-              className="inline-flex w-fit items-center gap-[5px] font-manrope text-xs font-semibold leading-[18px] tracking-[0.48px] text-[var(--explore-primary)] outline-none focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-[var(--explore-primary)] focus-visible:ring-offset-2"
+              className="inline-flex w-fit items-center gap-1.25 font-manrope text-xs font-semibold leading-4.5 tracking-[0.48px] text-(--explore-primary) outline-none focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-[var(--explore-primary)] focus-visible:ring-offset-2"
             >
               {actionLabel}
               <Image
@@ -314,15 +314,15 @@ function PrintableResourceCard({
       <UniversalCardBody recipe="printable">
         {body ?? (
           <>
-            <h3 className="font-nunito text-xl font-medium leading-7 text-[var(--explore-text-primary)]">
+            <h3 className="font-nunito text-xl font-medium leading-7 text-(--explore-text-primary)">
               {title}
             </h3>
-            <p className="font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[var(--explore-text-secondary)]">
+            <p className="font-manrope text-sm leading-5.5 tracking-[-0.084px] text-(--explore-text-secondary)">
               {description}
             </p>
             <Link
               href={href}
-              className="inline-flex w-fit items-center gap-[5px] font-manrope text-xs font-semibold leading-[18px] tracking-[0.48px] text-[var(--explore-primary)] outline-none focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-[var(--explore-primary)] focus-visible:ring-offset-2"
+              className="inline-flex w-fit items-center gap-1.25 font-manrope text-xs font-semibold leading-4.5 tracking-[0.48px] text-(--explore-primary) outline-none focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-[var(--explore-primary)] focus-visible:ring-offset-2"
             >
               <Image
                 src={`${ASSET_ROOT}/download.svg`}

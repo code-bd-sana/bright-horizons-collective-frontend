@@ -74,13 +74,13 @@ function PlanCard() {
   return (
     <div className="absolute left-[calc(50%-702.98px)] top-[550.66px] z-30 flex h-[217px] w-[298.058px] items-center justify-center">
       <div className="h-[179px] w-[275px] rotate-[-8.34deg] rounded-2xl border-2 border-white/10 bg-[#F9F3ED] px-[22px] py-[18px] shadow-[0px_8px_18px_rgba(23,74,77,0.15)]">
-        <p className="font-manrope text-xs font-semibold uppercase leading-[18px] tracking-[0.48px] text-[#263238]">
+        <p className="font-manrope text-xs font-semibold uppercase leading-4.5 tracking-[0.48px] text-[#263238]">
           This week&apos;s plan
         </p>
         {planItems.map((item, index) => (
           <div
             key={item}
-            className={`flex w-[170px] items-center gap-2 ${index % 2 === 0 ? 'h-[30px] pt-2.5' : 'h-[27px] pt-[7px]'}`}
+            className={`flex w-[170px] items-center gap-2 ${index % 2 === 0 ? 'h-7.5 pt-2.5' : 'h-[27px] pt-[7px]'}`}
           >
             <span
               className={`flex size-[17px] shrink-0 items-center justify-center rounded-[8.5px] border-2 ${index < 3 ? 'border-[#2F7D7E] bg-[#2F7D7E]' : 'border-[#D5E5E5]'}`}
@@ -109,7 +109,7 @@ function TrustMarks() {
               <Image src={heroAssets.badgeCheck} alt="" width={16} height={16} />
             </span>
           </span>
-          <span className="whitespace-nowrap font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#493630]">
+          <span className="whitespace-nowrap font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#493630]">
             {label}
           </span>
         </div>
@@ -151,7 +151,7 @@ function DesktopHero({
 
         <div className="absolute left-[calc(50%-0.5px)] top-[148px] z-20 flex -translate-x-1/2 flex-col items-center gap-8 text-center">
           <div className="flex w-[965px] flex-col items-center gap-4">
-            <div className="flex w-[178px] items-center gap-2.5 rounded-xl border border-[#E8EBE8] bg-white px-2 py-1.5 font-manrope text-sm leading-[22px] tracking-[-0.084px] shadow-sm">
+            <div className="flex w-[178px] items-center gap-2.5 rounded-xl border border-[#E8EBE8] bg-white px-2 py-1.5 font-manrope text-sm leading-5.5 tracking-[-0.084px] shadow-sm">
               <span className="flex items-center gap-1">
                 <Image src={heroAssets.ratingStar} alt="" width={16} height={16} />
                 {rating}
@@ -255,7 +255,7 @@ function CompactHero({
     <div className="relative flex min-h-0 flex-col items-center overflow-hidden px-4 pb-10 pt-24 sm:px-6 sm:pt-32 sm:pb-14 md:pt-36 text-center lg:hidden">
       <div className="relative z-20 flex w-full max-w-[677px] flex-col items-center gap-6 sm:gap-8">
         <div className="flex w-full flex-col items-center gap-3 sm:gap-4">
-          <div className="flex items-center gap-2 sm:gap-2.5 rounded-xl border border-[#E8EBE8] bg-white px-2.5 py-1.5 font-manrope text-xs sm:text-sm leading-[22px] tracking-[-0.084px] shadow-xs">
+          <div className="flex items-center gap-2 sm:gap-2.5 rounded-xl border border-[#E8EBE8] bg-white px-2.5 py-1.5 font-manrope text-xs sm:text-sm leading-5.5 tracking-[-0.084px] shadow-xs">
             <span className="flex items-center gap-1 font-medium">
               <Image src={heroAssets.ratingStar} alt="" width={16} height={16} />
               {rating}
@@ -298,7 +298,7 @@ function CompactHero({
                 <Image src={heroAssets.badgeCheck} alt="" width={14} height={14} />
               </span>
             </span>
-            <span className="font-manrope text-xs sm:text-sm leading-tight sm:leading-[22px] tracking-[-0.084px] text-[#493630]">
+            <span className="font-manrope text-xs sm:text-sm leading-tight sm:leading-5.5 tracking-[-0.084px] text-[#493630]">
               {label}
             </span>
           </div>

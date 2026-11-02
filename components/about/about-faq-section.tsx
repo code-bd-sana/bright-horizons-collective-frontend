@@ -49,8 +49,8 @@ function FaqToggle({ open }: { open: boolean }) {
         height={open ? 1.5 : 18}
         className={
           open
-            ? 'absolute left-[3px] top-[11.25px] h-[1.5px] w-[18px]'
-            : 'absolute left-[3px] top-[3px] size-[18px]'
+            ? 'absolute left-0.75 top-[11.25px] h-[1.5px] w-4.5'
+            : 'absolute left-0.75 top-0.75 size-4.5'
         }
       />
     </span>
@@ -61,7 +61,7 @@ function AboutFaqList() {
   const [openIndex, setOpenIndex] = useState(0);
 
   return (
-    <div className="flex w-full flex-col gap-4 min-[1600px]:h-[462px] min-[1600px]:w-[868px]">
+    <div className="flex w-full flex-col gap-4 min-[1600px]:h-115.5 min-[1600px]:w-217">
       {aboutFaqs.map((faq, index) => {
         const open = openIndex === index;
         const answerId = `about-faq-answer-${index}`;
@@ -71,8 +71,8 @@ function AboutFaqList() {
             key={faq.question}
             className={
               open
-                ? 'flex flex-col gap-2.5 rounded-[15px] border border-[#E9F1EE] bg-white p-5 shadow-[0_2px_2px_rgba(198,202,209,0.10),0_2px_8px_rgba(198,202,209,0.22)] min-[1600px]:h-[122px]'
-                : 'flex min-h-[69px] items-center rounded-[15px] border border-[#D2E3DC] bg-white p-5 min-[1600px]:h-[69px]'
+                ? 'flex flex-col gap-2.5 rounded-[15px] border border-[#E9F1EE] bg-white p-5 shadow-[0_2px_2px_rgba(198,202,209,0.10),0_2px_8px_rgba(198,202,209,0.22)] min-[1600px]:h-30.5'
+                : 'flex min-h-17.25 items-center rounded-[15px] border border-[#D2E3DC] bg-white p-5 min-[1600px]:h-17.25'
             }
           >
             <button
@@ -102,16 +102,16 @@ function AboutFaqList() {
 
 function ContactCard() {
   return (
-    <aside className="relative flex h-[152px] w-[273px] flex-col items-center gap-4 rounded-2xl bg-[#F6E6D4] p-8 text-center shadow-[0_1px_1.5px_rgba(0,0,0,0.1),0_1px_1px_rgba(0,0,0,0.1)]">
+    <aside className="relative flex h-38 w-68.25 flex-col items-center gap-4 rounded-2xl bg-[#F6E6D4] p-8 text-center shadow-[0_1px_1.5px_rgba(0,0,0,0.1),0_1px_1px_rgba(0,0,0,0.1)]">
       <Image
         src={faqAssets.flower}
         alt=""
         width={73}
         height={81}
         aria-hidden="true"
-        className="pointer-events-none absolute -left-2 -top-[49px]"
+        className="pointer-events-none absolute -left-2 -top-12.25"
       />
-      <p className="whitespace-nowrap font-nunito text-lg leading-[27px] text-[#263238]">
+      <p className="whitespace-nowrap font-nunito text-lg leading-6.75 text-[#263238]">
         Have more questions?
       </p>
       <Link
@@ -137,16 +137,16 @@ export function AboutFaqSection() {
   return (
     <section
       aria-labelledby="about-faq-heading"
-      className="bg-[#FDFDFC] px-5 py-16 sm:px-8 sm:py-20 md:px-12 md:py-24 lg:px-16 min-[1600px]:h-[622px] min-[1600px]:px-20 min-[1600px]:py-20"
+      className="bg-[#FDFDFC] px-5 py-16 sm:px-8 sm:py-20 md:px-12 md:py-24 lg:px-16 min-[1600px]:h-155.5 min-[1600px]:px-20 min-[1600px]:py-20"
     >
-      <div className="mx-auto grid max-w-[1760px] grid-cols-1 gap-10 sm:gap-12 min-[1600px]:h-[462px] min-[1600px]:grid-cols-[719px_868px] min-[1600px]:grid-rows-[100px_152px] min-[1600px]:content-between min-[1600px]:justify-between min-[1600px]:gap-0">
+      <div className="mx-auto grid max-w-[1760px] grid-cols-1 gap-10 sm:gap-12 min-[1600px]:h-115.5 min-[1600px]:grid-cols-[719px_868px] min-[1600px]:grid-rows-[100px_152px] min-[1600px]:content-between min-[1600px]:justify-between min-[1600px]:gap-0">
         <header className="flex flex-col items-start gap-4 min-[1600px]:col-start-1 min-[1600px]:row-start-1">
-          <span className="rounded-xl border border-[#D4D6D7] bg-[#FFFDF8] px-2 py-1.5 font-manrope text-sm leading-[22px] tracking-[-0.084px] text-[#515B60]">
+          <span className="rounded-xl border border-[#D4D6D7] bg-[#FFFDF8] px-2 py-1.5 font-manrope text-sm leading-5.5 tracking-[-0.084px] text-[#515B60]">
             FAQ
           </span>
           <h2
             id="about-faq-heading"
-            className="font-nunito text-[32px] font-semibold leading-[38px] tracking-[-0.4px] text-[#263238] sm:text-4xl sm:leading-11 min-[1600px]:text-[40px] min-[1600px]:leading-12"
+            className="font-nunito text-[32px] font-semibold leading-9.5 tracking-[-0.4px] text-[#263238] sm:text-4xl sm:leading-11 min-[1600px]:text-[40px] min-[1600px]:leading-12"
           >
             Things parents always ask us
           </h2>
