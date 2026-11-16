@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Check, ChevronDown } from 'lucide-react';
+import { ArrowUpDown, Check, ChevronDown } from 'lucide-react';
 import { FormEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -19,6 +19,7 @@ import type {
   ExploreFilterKey,
   ExploreFilters,
   ExploreItem,
+  ExploreSortOrder,
   ExploreTab,
 } from '@/features/explore/model/explore-types';
 import { useAppStore } from '@/store/use-app-store';
@@ -90,7 +91,7 @@ function ExploreFilterDropdown({
   const label = filterLabels[filterKey];
 
   return (
-    <div ref={dropdownRef} className={cn('relative min-w-0', isOpen && 'z-30')}>
+    <div ref={dropdownRef} className={cn('relative min-w-0', isOpen ? 'z-50' : 'z-10')}>
       <button
         type="button"
         aria-expanded={isOpen}
@@ -118,7 +119,7 @@ function ExploreFilterDropdown({
           role="listbox"
           aria-label={label}
           aria-multiselectable="true"
-          className="absolute left-0 top-[calc(100%+8px)] z-30 w-full min-w-40 rounded-2xl border border-[#e8ebe8] bg-white p-3 shadow-[0_10px_28px_rgba(38,50,56,0.14)]"
+          className="absolute left-0 top-[calc(100%+8px)] z-50 w-full min-w-40 rounded-2xl border border-[#e8ebe8] bg-white p-3 shadow-[0_10px_28px_rgba(38,50,56,0.14)]"
         >
           <div className="flex flex-col gap-1">
             {filterOptions[filterKey].map((option) => {
@@ -155,31 +156,154 @@ function ExploreFilterDropdown({
   );
 }
 
+function ExploreSortDropdown({
+  value,
+  isOpen,
+  onOpenChange,
+  onChange,
+}: {
+  value: ExploreSortOrder;
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+  onChange: (order: ExploreSortOrder) => void;
+}) {
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handlePointerDown = (event: MouseEvent) => {
+      if (!dropdownRef.current?.contains(event.target as Node)) onOpenChange(false);
+    };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onOpenChange(false);
+    };
+
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onOpenChange]);
+
+  const sortOptions: { label: string; sublabel: string; value: ExploreSortOrder }[] = [
+    { label: 'New to Old', sublabel: 'Newest first', value: 'new-to-old' },
+    { label: 'Old to New', sublabel: 'Oldest first', value: 'old-to-new' },
+  ];
+
+  return (
+    <div ref={dropdownRef} className={cn('relative min-w-0', isOpen ? 'z-50' : 'z-10')}>
+      <button
+        type="button"
+        aria-expanded={isOpen}
+        aria-haspopup="listbox"
+        onClick={() => onOpenChange(!isOpen)}
+        className={cn(
+          'flex h-9.5 w-full items-center justify-between gap-2 rounded-[14px] border px-2.5 font-manrope text-[13px] leading-5 outline-none transition-colors focus-visible:ring-2 focus-visible:ring-[#2f7d7e] focus-visible:ring-offset-2',
+          isOpen || value === 'old-to-new'
+            ? 'border-[#accbcb] bg-[#e9f1ee] text-[#174a4d] font-medium'
+            : 'border-[#e7eceb] bg-[#f4f8f6] text-[#607d8b] hover:border-[#accbcb]'
+        )}
+      >
+        <span className="flex items-center gap-1.5 truncate">
+          <ArrowUpDown aria-hidden="true" className="size-3.5 shrink-0 opacity-70" />
+          <span>Sort: {value === 'old-to-new' ? 'Old to New' : 'New to Old'}</span>
+        </span>
+        <ChevronDown
+          aria-hidden="true"
+          className={cn('size-4 shrink-0 transition-transform', isOpen && 'rotate-180')}
+        />
+      </button>
+
+      {isOpen ? (
+        <div
+          role="listbox"
+          aria-label="Sort by time"
+          className="absolute right-0 sm:left-0 top-[calc(100%+8px)] z-50 w-full min-w-48 rounded-2xl border border-[#e8ebe8] bg-white p-3 shadow-[0_10px_28px_rgba(38,50,56,0.14)]"
+        >
+          <div className="mb-2 px-1 font-manrope text-[11px] font-semibold uppercase tracking-wider text-[#7d8488]">
+            Sort by Time
+          </div>
+          <div className="flex flex-col gap-1">
+            {sortOptions.map((option) => {
+              const selected = value === option.value;
+
+              return (
+                <button
+                  key={option.value}
+                  type="button"
+                  role="option"
+                  aria-selected={selected}
+                  onClick={() => {
+                    onChange(option.value);
+                    onOpenChange(false);
+                  }}
+                  className={cn(
+                    'flex min-h-9 w-full items-center justify-between gap-2 rounded-xl px-2.5 py-2 text-left font-manrope text-xs leading-4 text-[#515b60] outline-none transition-colors hover:bg-[#f4f8f6] focus-visible:ring-2 focus-visible:ring-[#2f7d7e]',
+                    selected && 'bg-[#e9f1ee] text-[#174a4d] font-medium'
+                  )}
+                >
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={cn(
+                        'grid size-4 shrink-0 place-items-center rounded border',
+                        selected ? 'border-[#2f7d7e] bg-[#2f7d7e]' : 'border-[#cbd5d1] bg-white'
+                      )}
+                    >
+                      {selected ? <Check aria-hidden="true" className="size-3 text-white" /> : null}
+                    </span>
+                    <span>{option.label}</span>
+                  </div>
+                  <span className="text-[11px] text-[#7d8488]">{option.sublabel}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 function ExploreFiltersBar({
   filters,
   onToggle,
+  sortOrder,
+  onSortChange,
 }: {
   filters: ExploreFilters;
   onToggle: (key: ExploreFilterKey, value: string) => void;
+  sortOrder: ExploreSortOrder;
+  onSortChange: (order: ExploreSortOrder) => void;
 }) {
-  const [openFilter, setOpenFilter] = useState<ExploreFilterKey | null>(null);
+  const [openDropdown, setOpenDropdown] = useState<ExploreFilterKey | 'sort' | null>(null);
 
   return (
     <section
-      aria-label="Explore filters"
-      className="rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)]"
+      aria-label="Explore filters and sorting"
+      className={cn(
+        'relative rounded-2xl border border-[#e7eceb] bg-white p-4 shadow-[0_4px_6px_rgba(0,0,0,0.06)] transition-all',
+        openDropdown ? 'z-50' : 'z-20'
+      )}
     >
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-6">
         {filterOrder.map((key) => (
           <ExploreFilterDropdown
             key={key}
             filterKey={key}
             values={filters[key]}
-            isOpen={openFilter === key}
-            onOpenChange={(open) => setOpenFilter(open ? key : null)}
+            isOpen={openDropdown === key}
+            onOpenChange={(open) => setOpenDropdown(open ? key : null)}
             onToggle={(value) => onToggle(key, value)}
           />
         ))}
+        <ExploreSortDropdown
+          value={sortOrder}
+          isOpen={openDropdown === 'sort'}
+          onOpenChange={(open) => setOpenDropdown(open ? 'sort' : null)}
+          onChange={onSortChange}
+        />
       </div>
     </section>
   );
@@ -408,7 +532,15 @@ export function DashboardExplorePage({ initialTab }: { initialTab: ExploreTab })
       difficulty: getParamValues('difficulty'),
     };
   });
-  const { data, isLoading, setSaved, savingItemId } = useExploreCatalog(initialTab, filters);
+  const [sortOrder, setSortOrder] = useState<ExploreSortOrder>(() => {
+    const sort = searchParams?.get('sort');
+    return sort === 'old-to-new' || sort === 'oldest' ? 'old-to-new' : 'new-to-old';
+  });
+  const { data, isLoading, setSaved, savingItemId } = useExploreCatalog(
+    initialTab,
+    filters,
+    sortOrder
+  );
 
   const { selectedChildId } = useAppStore();
   const { data: children = [] } = useChildProfiles();
@@ -500,11 +632,28 @@ export function DashboardExplorePage({ initialTab }: { initialTab: ExploreTab })
       } else {
         params.delete(paramKey);
       }
+      if (sortOrder === 'old-to-new') {
+        params.set('sort', sortOrder);
+      } else {
+        params.delete('sort');
+      }
       params.set('tab', initialTab);
       router.replace(`${pathname}?${params.toString()}`, { scroll: false });
 
       return next;
     });
+  };
+
+  const handleSortChange = (newOrder: ExploreSortOrder) => {
+    setSortOrder(newOrder);
+    const params = new URLSearchParams(searchParams?.toString() ?? '');
+    if (newOrder === 'old-to-new') {
+      params.set('sort', newOrder);
+    } else {
+      params.delete('sort');
+    }
+    params.set('tab', initialTab);
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
   const handleSavedChange = (item: ExploreCardItem, saved: boolean) => {
@@ -568,10 +717,14 @@ export function DashboardExplorePage({ initialTab }: { initialTab: ExploreTab })
       >
         {tabOrder.map((tab) => {
           const active = tab === initialTab;
+          const href =
+            sortOrder === 'old-to-new'
+              ? `/dashboard/explore?tab=${tab}&sort=old-to-new`
+              : `/dashboard/explore?tab=${tab}`;
           return (
             <Link
               key={tab}
-              href={`/dashboard/explore?tab=${tab}`}
+              href={href}
               aria-current={active ? 'page' : undefined}
               className={cn(
                 'flex min-h-12 items-center justify-center rounded-full px-2 text-center font-nunito text-xs font-medium leading-4 tracking-[-0.084px] outline-none transition-colors focus-visible:ring-2 focus-visible:ring-[#2f7d7e] focus-visible:ring-offset-2 sm:px-4 sm:text-sm sm:leading-5',
@@ -584,11 +737,16 @@ export function DashboardExplorePage({ initialTab }: { initialTab: ExploreTab })
         })}
       </nav>
 
-      <div className="mt-8 sm:mt-11">
-        <ExploreFiltersBar filters={filters} onToggle={handleFilterToggle} />
+      <div className="relative z-30 mt-8 sm:mt-11">
+        <ExploreFiltersBar
+          filters={filters}
+          onToggle={handleFilterToggle}
+          sortOrder={sortOrder}
+          onSortChange={handleSortChange}
+        />
       </div>
 
-      <div className="mt-10 sm:mt-14">
+      <div className="relative z-10 mt-10 sm:mt-14">
         {isLoading || !data ? (
           <div
             className={cn(

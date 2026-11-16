@@ -97,6 +97,7 @@ export function mapActivityToExploreItem(activity: Activity, saved = false): Act
     material,
     duration: activity.estimatedDuration || '15–20 min',
     tags,
+    createdAt: activity.createdAt,
     filters: {
       age: ageFilters,
       developmentalSkill: skillFilters,

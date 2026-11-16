@@ -3,11 +3,13 @@
 import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import type {
-  ExploreFilters,
-  ExplorePagePayload,
-  ExploreTab,
-  SaveExploreItemRequest,
+import {
+  sortExploreItems,
+  type ExploreFilters,
+  type ExplorePagePayload,
+  type ExploreSortOrder,
+  type ExploreTab,
+  type SaveExploreItemRequest,
 } from '@/features/explore/model/explore-types';
 import {
   getActivities,
@@ -33,7 +35,11 @@ type SaveMutationContext = {
   previousOverride?: boolean;
 };
 
-export function useExploreCatalog(tab: ExploreTab, filters: ExploreFilters) {
+export function useExploreCatalog(
+  tab: ExploreTab,
+  filters: ExploreFilters,
+  sortOrder: ExploreSortOrder = 'new-to-old'
+) {
   const queryClient = useQueryClient();
   const [savedOverrides, setSavedOverrides] = useState<Record<string, boolean>>({});
 
@@ -97,11 +103,11 @@ export function useExploreCatalog(tab: ExploreTab, filters: ExploreFilters) {
 
     return {
       tab,
-      items,
+      items: sortExploreItems(items, sortOrder),
       printableItems: [],
-      savedItems,
+      savedItems: sortExploreItems(savedItems, sortOrder),
     };
-  }, [activitiesQuery.data, activityFavoritesQuery.data, filters, savedOverrides, tab]);
+  }, [activitiesQuery.data, activityFavoritesQuery.data, filters, savedOverrides, sortOrder, tab]);
 
   const therapyToyData = useMemo<ExplorePagePayload | undefined>(() => {
     if (tab !== 'therapy-toys' || !therapyToysQuery.data) return undefined;
@@ -124,8 +130,20 @@ export function useExploreCatalog(tab: ExploreTab, filters: ExploreFilters) {
     );
     const savedItems = allMapped.filter((item) => item.saved);
 
-    return { tab, items, printableItems: [], savedItems };
-  }, [filters, savedOverrides, tab, therapyToyFavoritesQuery.data, therapyToysQuery.data]);
+    return {
+      tab,
+      items: sortExploreItems(items, sortOrder),
+      printableItems: [],
+      savedItems: sortExploreItems(savedItems, sortOrder),
+    };
+  }, [
+    filters,
+    savedOverrides,
+    sortOrder,
+    tab,
+    therapyToyFavoritesQuery.data,
+    therapyToysQuery.data,
+  ]);
 
   const parentResourceData = useMemo<ExplorePagePayload | undefined>(() => {
     if (tab !== 'parent-resources' || !parentResourcesQuery.data) return undefined;
@@ -169,11 +187,18 @@ export function useExploreCatalog(tab: ExploreTab, filters: ExploreFilters) {
 
     return {
       tab,
-      items,
-      printableItems,
-      savedItems,
+      items: sortExploreItems(items, sortOrder),
+      printableItems: sortExploreItems(printableItems, sortOrder),
+      savedItems: sortExploreItems(savedItems, sortOrder),
     };
-  }, [filters, parentResourceFavoritesQuery.data, parentResourcesQuery.data, savedOverrides, tab]);
+  }, [
+    filters,
+    parentResourceFavoritesQuery.data,
+    parentResourcesQuery.data,
+    savedOverrides,
+    sortOrder,
+    tab,
+  ]);
 
   const saveMutation = useMutation<
     { status: string; type: string },

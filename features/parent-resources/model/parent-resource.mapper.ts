@@ -51,6 +51,7 @@ export function mapParentResourceToExploreItem(
     description: resource.summary,
     readTime: resource.estimatedReadTime || '5 min read',
     actionLabel: 'Read More',
+    createdAt: resource.createdAt,
     filters: {
       age: ['0–12 mo', '12–24 mo', '2–3 yr', '3–5 yr', '5–7 yr'],
       developmentalSkill: skills,
@@ -81,6 +82,7 @@ export function mapParentResourceToPrintableItem(
     saved,
     description: resource.summary,
     downloadLabel: 'Download PDF',
+    createdAt: resource.createdAt,
     filters: {
       age: ['0–12 mo', '12–24 mo', '2–3 yr', '3–5 yr', '5–7 yr'],
       developmentalSkill: getMatchingSkills(resource.category),

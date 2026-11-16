@@ -13,6 +13,8 @@ export const exploreFilterKeys = [
 export type ExploreFilterKey = (typeof exploreFilterKeys)[number];
 export type ExploreFilters = Record<ExploreFilterKey, string[]>;
 
+export type ExploreSortOrder = 'new-to-old' | 'old-to-new';
+
 export const emptyExploreFilters: ExploreFilters = {
   age: [],
   developmentalSkill: [],
@@ -29,6 +31,7 @@ type ExploreItemBase = {
   badge: string;
   href: string;
   saved: boolean;
+  createdAt?: string;
   filters: Partial<Record<ExploreFilterKey, string[]>>;
 };
 
@@ -89,4 +92,26 @@ export type SaveExploreItemRequest = {
 
 export function isExploreTab(value: string | undefined): value is ExploreTab {
   return exploreTabs.includes(value as ExploreTab);
+}
+
+export function sortExploreItems<T extends { createdAt?: string; id: string }>(
+  items: T[],
+  sortOrder: ExploreSortOrder
+): T[] {
+  return [...items].sort((a, b) => {
+    const parseTime = (dateStr?: string) => {
+      if (!dateStr) return 0;
+      const t = new Date(dateStr).getTime();
+      return Number.isNaN(t) ? 0 : t;
+    };
+
+    const timeA = parseTime(a.createdAt);
+    const timeB = parseTime(b.createdAt);
+
+    if (timeA !== timeB) {
+      return sortOrder === 'new-to-old' ? timeB - timeA : timeA - timeB;
+    }
+
+    return sortOrder === 'new-to-old' ? b.id.localeCompare(a.id) : a.id.localeCompare(b.id);
+  });
 }

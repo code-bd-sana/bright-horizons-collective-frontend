@@ -62,6 +62,7 @@ export function mapTherapyToyToExploreItem(toy: TherapyToy, saved = false): Ther
     description: toy.description,
     price: toy.price,
     affiliateLink: toy.affiliateLink,
+    createdAt: toy.createdAt,
     filters: {
       age: [],
       developmentalSkill: [toy.developmentArea],
