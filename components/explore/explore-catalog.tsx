@@ -1,10 +1,18 @@
 'use client';
 
-import { ArrowRight, Bookmark, ChevronDown, Clock3, Search } from 'lucide-react';
+import {
+  ArrowRight,
+  ArrowUpDown,
+  Bookmark,
+  Check,
+  ChevronDown,
+  Clock3,
+  Search,
+} from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
@@ -27,6 +35,7 @@ import {
   useParentResources,
   type ParentResource,
 } from '@/features/parent-resources';
+import { sortExploreItems, type ExploreSortOrder } from '@/features/explore/model/explore-types';
 import {
   contentTypes,
   exploreItems,
@@ -434,6 +443,122 @@ function RealParentResourceCard({
   );
 }
 
+function ExploreSortDropdown({
+  value,
+  isOpen,
+  onOpenChange,
+  onChange,
+}: {
+  value: ExploreSortOrder;
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+  onChange: (order: ExploreSortOrder) => void;
+}) {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const close = (event: MouseEvent) => {
+      if (!containerRef.current?.contains(event.target as Node)) onOpenChange(false);
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onOpenChange(false);
+    };
+    document.addEventListener('mousedown', close);
+    document.addEventListener('keydown', closeOnEscape);
+    return () => {
+      document.removeEventListener('mousedown', close);
+      document.removeEventListener('keydown', closeOnEscape);
+    };
+  }, [isOpen, onOpenChange]);
+
+  const sortOptions = [
+    { label: 'New to Old', sublabel: 'Newest first', value: 'new-to-old' as const },
+    { label: 'Old to New', sublabel: 'Oldest first', value: 'old-to-new' as const },
+  ];
+
+  return (
+    <div
+      ref={containerRef}
+      className={`relative w-full md:w-48 shrink-0 ${isOpen ? 'z-50' : 'z-20'}`}
+    >
+      <button
+        type="button"
+        aria-expanded={isOpen}
+        aria-haspopup="listbox"
+        onClick={() => onOpenChange(!isOpen)}
+        className={`flex h-12 w-full min-w-0 items-center justify-between gap-2 rounded-2xl border px-4 font-nunito text-sm font-medium transition-colors ${
+          isOpen
+            ? 'border-[#2F7D7E] bg-[#E9F1EE] text-[#174A4D]'
+            : value === 'old-to-new'
+              ? 'border-[#2F7D7E] bg-[#E9F1EE] text-[#174A4D]'
+              : 'border-[#E8EBE8] bg-white text-[#263238] shadow-[0px_1px_2px_rgba(0,0,0,0.05)] hover:border-[#ACCBCB]'
+        }`}
+      >
+        <span className="flex min-w-0 items-center gap-2 truncate">
+          <ArrowUpDown
+            aria-hidden="true"
+            className="size-4 shrink-0 text-[#2F7D7E]"
+            strokeWidth={1.7}
+          />
+          <span className="truncate">
+            Sort: {value === 'old-to-new' ? 'Old to New' : 'New to Old'}
+          </span>
+        </span>
+        <ChevronDown
+          aria-hidden="true"
+          className={`size-4 shrink-0 text-[#2F7D7E] transition-transform ${isOpen ? 'rotate-180' : ''}`}
+          strokeWidth={1.8}
+        />
+      </button>
+
+      {isOpen && (
+        <div
+          role="listbox"
+          aria-label="Sort options"
+          className="absolute right-0 top-[calc(100%+8px)] z-50 w-full min-w-52 rounded-2xl border border-[#E8EBE8] bg-white p-3 shadow-[0_10px_28px_rgba(38,50,56,0.14)]"
+        >
+          <div className="mb-2 px-1 font-manrope text-[11px] font-semibold uppercase tracking-wider text-[#7D8488]">
+            Sort by Time
+          </div>
+          <div className="flex flex-col gap-1">
+            {sortOptions.map((option) => {
+              const selected = option.value === value;
+              return (
+                <button
+                  key={option.value}
+                  type="button"
+                  role="option"
+                  aria-selected={selected}
+                  onClick={() => {
+                    onChange(option.value);
+                    onOpenChange(false);
+                  }}
+                  className={`flex min-h-9 w-full items-center justify-between gap-2 rounded-xl px-2.5 py-2 text-left font-nunito text-sm font-medium leading-5 transition-colors ${
+                    selected ? 'bg-[#E9F1EE] text-[#174A4D]' : 'text-[#263238] hover:bg-[#F4F8F6]'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`grid size-4 shrink-0 place-items-center rounded border ${
+                        selected ? 'border-[#2F7D7E] bg-[#2F7D7E]' : 'border-[#CBD5D1] bg-white'
+                      }`}
+                    >
+                      {selected ? <Check aria-hidden="true" className="size-3 text-white" /> : null}
+                    </span>
+                    <span>{option.label}</span>
+                  </div>
+                  <span className="font-manrope text-xs text-[#7D8488]">{option.sublabel}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 type ExploreCatalogProps = {
   activeType: ExploreContentType;
   onActiveTypeChange: (type: ExploreContentType) => void;
@@ -465,6 +590,33 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
   const [selectedToy, setSelectedToy] = useState<TherapyToyModalToy | null>(null);
   const [savedOverrides, setSavedOverrides] = useState<Record<string, boolean>>({});
 
+  const [sortOrder, setSortOrder] = useState<ExploreSortOrder>(() => {
+    const sort = searchParams?.get('sort');
+    return sort === 'old-to-new' || sort === 'oldest' ? 'old-to-new' : 'new-to-old';
+  });
+  const [isSortOpen, setIsSortOpen] = useState(false);
+
+  const handleSortOrderChange = (newOrder: ExploreSortOrder) => {
+    setSortOrder(newOrder);
+    const params = new URLSearchParams(searchParams?.toString() ?? '');
+    if (newOrder === 'old-to-new') {
+      params.set('sort', newOrder);
+    } else {
+      params.delete('sort');
+    }
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
+  const handleClearAll = () => {
+    setQuery('');
+    setFilters(emptyFilters);
+    setSortOrder('new-to-old');
+    const params = new URLSearchParams();
+    const tabParam = searchParams?.get('tab');
+    if (tabParam) params.set('tab', tabParam);
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
   const [savedResourceIds, setSavedResourceIds] = useState<string[]>(() => {
     if (typeof window === 'undefined') return [];
     try {
@@ -478,6 +630,8 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
   const publicToysQuery = useTherapyToys({
     search: activeType === 'Therapy Toys' ? query || undefined : undefined,
     category: activeType === 'Therapy Toys' ? filters.category[0] : undefined,
+    sortBy: 'createdAt',
+    sortOrder: sortOrder === 'old-to-new' ? 'asc' : 'desc',
     limit: 100,
   });
 
@@ -628,7 +782,7 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
   const results = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
 
-    return exploreItems.filter((item) => {
+    const filtered = exploreItems.filter((item) => {
       if (item.type !== activeType) return false;
       const matchesQuery =
         !normalizedQuery ||
@@ -641,7 +795,9 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
       );
       return matchesQuery && matchesFilters;
     });
-  }, [activeType, filters, query]);
+
+    return sortExploreItems(filtered, sortOrder);
+  }, [activeType, filters, query, sortOrder]);
 
   const toggleFilter = (key: FilterKey, option: string) => {
     setFilters((current) => {
@@ -670,7 +826,7 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
     const items = publicActivitiesQuery.data?.data ?? [];
     const normalizedQuery = query.trim().toLowerCase();
 
-    return items
+    const filtered = items
       .filter((activity) => activity.status === 'PUBLISHED')
       .filter((activity) => {
         const matchesQuery =
@@ -721,11 +877,13 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
 
         return matchesQuery && matchesAge && matchesSkill && matchesDifficulty;
       });
-  }, [activeType, filters, publicActivitiesQuery.data?.data, query]);
+
+    return sortExploreItems(filtered, sortOrder);
+  }, [activeType, filters, publicActivitiesQuery.data?.data, query, sortOrder]);
 
   const realToys = useMemo(() => {
     if (activeType !== 'Therapy Toys') return [];
-    return (publicToysQuery.data?.items ?? []).filter((toy) => {
+    const filtered = (publicToysQuery.data?.items ?? []).filter((toy) => {
       const values = [toy.developmentArea, `${toy.minAgeMonths}–${toy.maxAgeMonths} mo`];
       return filterGroups.every(
         ({ key }) =>
@@ -733,14 +891,16 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
           filters[key].some((value) => values.includes(value) || value === toy.developmentArea)
       );
     });
-  }, [activeType, filters, publicToysQuery.data]);
+
+    return sortExploreItems(filtered, sortOrder);
+  }, [activeType, filters, publicToysQuery.data, sortOrder]);
 
   const realParentResources = useMemo(() => {
     if (activeType !== 'Parent Resources') return [];
     const items = (publicParentResourcesQuery.data?.data ?? []) as ParentResource[];
     const normalizedQuery = query.trim().toLowerCase();
 
-    return items
+    const filtered = items
       .filter((resource) => resource.status === 'PUBLISHED')
       .filter((resource) => {
         const matchesQuery =
@@ -771,11 +931,13 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
 
         return matchesQuery && matchesSkill && matchesCategory;
       });
-  }, [activeType, filters, publicParentResourcesQuery.data?.data, query]);
+
+    return sortExploreItems(filtered, sortOrder);
+  }, [activeType, filters, publicParentResourcesQuery.data?.data, query, sortOrder]);
 
   return (
     <section className="bg-[#FDFDFC] pb-20 pt-12">
-      <div className="mx-auto flex max-w-480 items-center gap-9 px-20 max-xl:px-8 max-md:flex-col max-md:items-stretch max-md:gap-5 max-md:px-5">
+      <div className="relative z-30 mx-auto flex max-w-480 items-center gap-4 sm:gap-6 px-20 max-xl:px-8 max-md:flex-col max-md:items-stretch max-md:gap-4 max-md:px-5">
         <div className="grid w-full grid-cols-3 gap-1.75 md:flex md:w-auto md:shrink-0">
           {contentTypes.map((type) => (
             <button
@@ -789,28 +951,36 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
           ))}
         </div>
         <span className="h-12 w-px shrink-0 bg-[#E8EBE8] max-md:hidden" />
-        <label className="flex h-12 w-full shrink-0 items-center gap-1.75 rounded-2xl border border-[#FCE9E3] bg-[#FBF6F4] px-5.25 text-[#7D8488] md:flex-1">
-          <Search className="size-6 shrink-0 text-[#9AA3A6]" strokeWidth={1.5} />
-          <input
-            value={query}
-            onChange={(event) => {
-              const val = event.target.value;
-              setQuery(val);
-              const params = new URLSearchParams(searchParams?.toString() ?? '');
-              if (val.trim()) {
-                params.set('search', val.trim());
-              } else {
-                params.delete('search');
-              }
-              router.replace(`${pathname}?${params.toString()}`, { scroll: false });
-            }}
-            placeholder="Search activities, speech, sensory play, routines, milestones, toys..."
-            className="min-w-0 flex-1 w-full bg-transparent font-nunito text-sm outline-none placeholder:text-[#7D8488] text-ellipsis"
+        <div className="flex flex-1 items-center gap-3 w-full max-md:flex-col">
+          <label className="flex h-12 w-full flex-1 items-center gap-1.75 rounded-2xl border border-[#FCE9E3] bg-[#FBF6F4] px-5.25 text-[#7D8488]">
+            <Search className="size-6 shrink-0 text-[#9AA3A6]" strokeWidth={1.5} />
+            <input
+              value={query}
+              onChange={(event) => {
+                const val = event.target.value;
+                setQuery(val);
+                const params = new URLSearchParams(searchParams?.toString() ?? '');
+                if (val.trim()) {
+                  params.set('search', val.trim());
+                } else {
+                  params.delete('search');
+                }
+                router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+              }}
+              placeholder="Search activities, speech, sensory play, routines, milestones, toys..."
+              className="min-w-0 flex-1 w-full bg-transparent font-nunito text-sm outline-none placeholder:text-[#7D8488] text-ellipsis"
+            />
+          </label>
+          <ExploreSortDropdown
+            value={sortOrder}
+            isOpen={isSortOpen}
+            onOpenChange={setIsSortOpen}
+            onChange={handleSortOrderChange}
           />
-        </label>
+        </div>
       </div>
 
-      <div className="mx-auto mt-12 flex max-w-480 items-start gap-6 px-20 max-xl:px-8 max-md:flex-col max-md:px-5">
+      <div className="relative z-10 mx-auto mt-12 flex max-w-480 items-start gap-6 px-20 max-xl:px-8 max-md:flex-col max-md:px-5">
         <div className="w-101.5 shrink-0 max-xl:w-80 max-md:w-full">
           <aside className="w-90.25 rounded-3xl border border-[#E8EBE8] bg-white p-6 shadow-[0px_1px_1px_rgba(0,0,0,0.05)] max-xl:w-full">
             <div className="flex flex-col gap-10 max-md:gap-6">
@@ -892,10 +1062,7 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
                 </p>
                 <button
                   type="button"
-                  onClick={() => {
-                    setQuery('');
-                    setFilters(emptyFilters);
-                  }}
+                  onClick={handleClearAll}
                   className="mt-3 font-manrope text-sm font-semibold text-[#2F7D7E] underline"
                 >
                   Clear search and filters
@@ -936,6 +1103,13 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
                 <p className="font-nunito text-xl font-semibold text-[#263238]">
                   No therapy toys found.
                 </p>
+                <button
+                  type="button"
+                  onClick={handleClearAll}
+                  className="mt-3 font-manrope text-sm font-semibold text-[#2F7D7E] underline"
+                >
+                  Clear search and filters
+                </button>
               </div>
             )
           ) : activeType === 'Parent Resources' ? (
@@ -973,10 +1147,7 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
                 </p>
                 <button
                   type="button"
-                  onClick={() => {
-                    setQuery('');
-                    setFilters(emptyFilters);
-                  }}
+                  onClick={handleClearAll}
                   className="mt-3 font-manrope text-sm font-semibold text-[#2F7D7E] underline"
                 >
                   Clear search and filters
@@ -1018,10 +1189,7 @@ export function ExploreCatalog({ activeType, onActiveTypeChange }: ExploreCatalo
               </p>
               <button
                 type="button"
-                onClick={() => {
-                  setQuery('');
-                  setFilters(emptyFilters);
-                }}
+                onClick={handleClearAll}
                 className="mt-3 font-manrope text-sm font-semibold text-[#2F7D7E] underline"
               >
                 Clear search and filters
