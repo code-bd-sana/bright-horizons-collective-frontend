@@ -69,6 +69,7 @@ export function TherapyToysPage() {
     membership: 'all',
     status: 'all',
   });
+  const [sortByTime, setSortByTime] = useState<'new-to-old' | 'old-to-new'>('new-to-old');
   const [page, setPage] = useState(1);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [preview, setPreview] = useState<TherapyToy | null>(null);
@@ -92,10 +93,33 @@ export function TherapyToysPage() {
         filterValues.status === 'all'
           ? undefined
           : status[filterValues.status as keyof typeof status],
+      sortBy: 'createdAt' as const,
+      sortOrder: sortByTime === 'old-to-new' ? ('asc' as const) : ('desc' as const),
     }),
-    [debouncedSearch, filterValues, maxAgeMonths, minAgeMonths, page]
+    [debouncedSearch, filterValues, maxAgeMonths, minAgeMonths, page, sortByTime]
   );
   const toysQuery = useAdminTherapyToys(filters);
+
+  const sortedToysPage = useMemo(() => {
+    if (!toysQuery.data) return undefined;
+    const sortedItems = [...toysQuery.data.items].sort((a, b) => {
+      const parseTime = (dateStr?: string) => {
+        if (!dateStr) return 0;
+        const t = new Date(dateStr).getTime();
+        return Number.isNaN(t) ? 0 : t;
+      };
+      const timeA = parseTime(a.createdAt);
+      const timeB = parseTime(b.createdAt);
+      if (timeA !== timeB) {
+        return sortByTime === 'old-to-new' ? timeA - timeB : timeB - timeA;
+      }
+      return sortByTime === 'old-to-new' ? a.id.localeCompare(b.id) : b.id.localeCompare(a.id);
+    });
+    return {
+      ...toysQuery.data,
+      items: sortedItems,
+    };
+  }, [toysQuery.data, sortByTime]);
   const summaryQuery = useAdminTherapyToySummary();
   const updateToy = useUpdateTherapyToy();
   const deleteToy = useDeleteTherapyToy();
@@ -186,25 +210,31 @@ export function TherapyToysPage() {
       <div className="mt-8 space-y-8">
         <TherapyToysSummary summary={summaryQuery.data} isLoading={summaryQuery.isLoading} />
         <div className="space-y-6">
-          <TherapyToyFilters
-            search={search}
-            {...filterValues}
-            onSearchChange={setSearch}
-            onFilterChange={updateFilter}
-          />
-          <TherapyToysTable
-            page={toysQuery.data}
-            isLoading={toysQuery.isLoading}
-            error={toysQuery.error}
-            selectedIds={selectedIds}
-            onSelectionChange={setSelectedIds}
-            onPreview={setPreview}
-            onArchive={setStatusTarget}
-            onDelete={setDeleteTarget}
-            onDuplicate={duplicate}
-            duplicatingId={duplicatingId}
-            onPageChange={setPage}
-          />
+          <div className="relative z-30">
+            <TherapyToyFilters
+              search={search}
+              {...filterValues}
+              sortByTime={sortByTime}
+              onSearchChange={setSearch}
+              onFilterChange={updateFilter}
+              onSortByTimeChange={setSortByTime}
+            />
+          </div>
+          <div className="relative z-10">
+            <TherapyToysTable
+              page={sortedToysPage}
+              isLoading={toysQuery.isLoading}
+              error={toysQuery.error}
+              selectedIds={selectedIds}
+              onSelectionChange={setSelectedIds}
+              onPreview={setPreview}
+              onArchive={setStatusTarget}
+              onDelete={setDeleteTarget}
+              onDuplicate={duplicate}
+              duplicatingId={duplicatingId}
+              onPageChange={setPage}
+            />
+          </div>
         </div>
       </div>
       <TherapyToyPreviewModal toy={preview} onClose={(open) => !open && setPreview(null)} />

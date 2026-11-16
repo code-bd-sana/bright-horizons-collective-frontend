@@ -10,6 +10,8 @@ export type AdminWeeklyPlan = {
   assigned: string;
   status: PlanStatus;
   updated: string;
+  createdAt?: string;
+  rawUpdatedAt?: string;
 };
 
 export const adminWeeklyPlans: AdminWeeklyPlan[] = [

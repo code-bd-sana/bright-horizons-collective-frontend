@@ -29,6 +29,7 @@ const defaultFilters: ActivityFiltersState = {
   difficulty: 'all',
   membership: 'all',
   status: 'all',
+  sortByTime: 'new-to-old',
 };
 
 function matchDurationRange(durationStr: string | null | undefined, range: string): boolean {
@@ -90,13 +91,36 @@ export function ActivitiesLibraryPage() {
 
   const visibleActivities = useMemo(() => {
     const list = activitiesData?.data ?? [];
-    return list.filter((activity) =>
+    const filtered = list.filter((activity) =>
       matchDurationRange(activity.estimatedDuration, filters.durationRange)
     );
-  }, [activitiesData?.data, filters.durationRange]);
+
+    return [...filtered].sort((a, b) => {
+      const parseTime = (dateStr?: string) => {
+        if (!dateStr) return 0;
+        const t = new Date(dateStr).getTime();
+        return Number.isNaN(t) ? 0 : t;
+      };
+
+      const timeA = parseTime(a.createdAt);
+      const timeB = parseTime(b.createdAt);
+
+      if (timeA !== timeB) {
+        return filters.sortByTime === 'old-to-new' ? timeA - timeB : timeB - timeA;
+      }
+
+      return filters.sortByTime === 'old-to-new'
+        ? a.id.localeCompare(b.id)
+        : b.id.localeCompare(a.id);
+    });
+  }, [activitiesData?.data, filters.durationRange, filters.sortByTime]);
 
   const handleFilterChange = (filter: FilterName, value: string) => {
     setFilters((prev) => ({ ...prev, [filter]: value }));
+  };
+
+  const handleSortByTimeChange = (value: 'new-to-old' | 'old-to-new') => {
+    setFilters((prev) => ({ ...prev, sortByTime: value }));
   };
 
   const handleSearchChange = (value: string) => {
@@ -189,59 +213,63 @@ export function ActivitiesLibraryPage() {
         <ActivitySummaryCards summary={summary} isLoading={isSummaryLoading} />
       </div>
 
-      <div className="mt-8">
+      <div className="relative z-30 mt-8">
         <ActivityFilters
           filters={filters}
           onSearchChange={handleSearchChange}
           onFilterChange={handleFilterChange}
+          onSortByTimeChange={handleSortByTimeChange}
           onResetFilters={handleResetFilters}
         />
       </div>
 
-      {isActivitiesLoading ? (
-        <div className="mt-8 flex min-h-64 flex-col items-center justify-center rounded-2xl border border-[#e8ebe8] bg-white p-12 text-[#607d8b]">
-          <Loader2 className="size-8 animate-spin text-[#2f7d7e]" />
-          <p className="mt-3 font-manrope text-sm">Loading activities...</p>
-        </div>
-      ) : isError ? (
-        <div className="mt-8 rounded-2xl border border-dashed border-[#e57373] bg-white p-12 text-center text-[#e57373]">
-          <p className="font-manrope text-sm font-medium">
-            Unable to load activities. Please try refreshing the page.
-          </p>
-        </div>
-      ) : visibleActivities.length === 0 ? (
-        <div className="mt-8 flex flex-col items-center justify-center rounded-2xl border border-dashed border-[#d8dfdf] bg-white px-6 py-16 text-center">
-          <p className="font-nunito text-lg font-semibold text-[#263238]">No activities found</p>
-          <p className="mt-1 max-w-md font-manrope text-sm text-[#65758a]">
-            No activities match your current search and filter criteria. Try adjusting the filters
-            or adding a new activity.
-          </p>
-          <button
-            type="button"
-            onClick={handleResetFilters}
-            className="mt-4 rounded-xl border border-[#2f7d7e] px-4 py-2 font-nunito text-sm font-bold text-[#278488] transition-colors hover:bg-[#edf6f5]"
-          >
-            Clear all filters
-          </button>
-        </div>
-      ) : (
-        <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 2xl:grid-cols-3">
-          {visibleActivities.map((activity) => (
-            <ActivityCard
-              key={activity.id}
-              activity={activity}
-              isArchiving={archivingId === activity.id}
-              isDeleting={
-                deleteActivityMutation.isPending && deleteActivityMutation.variables === activity.id
-              }
-              onArchive={handleArchive}
-              onPublish={setPublishTarget}
-              onDelete={setDeleteTarget}
-              onDuplicate={handleDuplicate}
-            />
-          ))}
-        </div>
-      )}
+      <div className="relative z-10 mt-8">
+        {isActivitiesLoading ? (
+          <div className="mt-8 flex min-h-64 flex-col items-center justify-center rounded-2xl border border-[#e8ebe8] bg-white p-12 text-[#607d8b]">
+            <Loader2 className="size-8 animate-spin text-[#2f7d7e]" />
+            <p className="mt-3 font-manrope text-sm">Loading activities...</p>
+          </div>
+        ) : isError ? (
+          <div className="mt-8 rounded-2xl border border-dashed border-[#e57373] bg-white p-12 text-center text-[#e57373]">
+            <p className="font-manrope text-sm font-medium">
+              Unable to load activities. Please try refreshing the page.
+            </p>
+          </div>
+        ) : visibleActivities.length === 0 ? (
+          <div className="mt-8 flex flex-col items-center justify-center rounded-2xl border border-dashed border-[#d8dfdf] bg-white px-6 py-16 text-center">
+            <p className="font-nunito text-lg font-semibold text-[#263238]">No activities found</p>
+            <p className="mt-1 max-w-md font-manrope text-sm text-[#65758a]">
+              No activities match your current search and filter criteria. Try adjusting the filters
+              or adding a new activity.
+            </p>
+            <button
+              type="button"
+              onClick={handleResetFilters}
+              className="mt-4 rounded-xl border border-[#2f7d7e] px-4 py-2 font-nunito text-sm font-bold text-[#278488] transition-colors hover:bg-[#edf6f5]"
+            >
+              Clear all filters
+            </button>
+          </div>
+        ) : (
+          <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 2xl:grid-cols-3">
+            {visibleActivities.map((activity) => (
+              <ActivityCard
+                key={activity.id}
+                activity={activity}
+                isArchiving={archivingId === activity.id}
+                isDeleting={
+                  deleteActivityMutation.isPending &&
+                  deleteActivityMutation.variables === activity.id
+                }
+                onArchive={handleArchive}
+                onPublish={setPublishTarget}
+                onDelete={setDeleteTarget}
+                onDuplicate={handleDuplicate}
+              />
+            ))}
+          </div>
+        )}
+      </div>
 
       <ActivityPublishModal
         activity={publishTarget}

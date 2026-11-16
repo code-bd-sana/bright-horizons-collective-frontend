@@ -29,6 +29,7 @@ interface BackendWeeklyPlanItem {
   status: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED';
   accessLevels?: string[];
   _count?: { activities: number; assignments: number };
+  createdAt?: string;
   updatedAt: string;
 }
 
@@ -39,6 +40,7 @@ export function AdminWeeklyPlansPage() {
   const [membership, setMembership] = useState('all');
   const [age, setAge] = useState('all');
   const [status, setStatus] = useState('all');
+  const [sortByTime, setSortByTime] = useState<'new-to-old' | 'old-to-new'>('new-to-old');
   const [confirmation, setConfirmation] = useState<{
     action: 'archive' | 'delete';
     plan: AdminWeeklyPlan;
@@ -82,21 +84,40 @@ export function AdminWeeklyPlansPage() {
           day: 'numeric',
           year: 'numeric',
         }),
+        createdAt: p.createdAt || p.updatedAt,
+        rawUpdatedAt: p.updatedAt,
       };
     });
   }, [rawPlans]);
 
-  const plans = useMemo(
-    () =>
-      allPlans.filter(
-        (plan) =>
-          (membership === 'all' || plan.membership === membership) &&
-          (age === 'all' || plan.age === age) &&
-          (status === 'all' || plan.status === (status as PlanStatus)) &&
-          (!search || `${plan.title} ${plan.week}`.toLowerCase().includes(search.toLowerCase()))
-      ),
-    [age, allPlans, membership, search, status]
-  );
+  const plans = useMemo(() => {
+    const filtered = allPlans.filter(
+      (plan) =>
+        (membership === 'all' || plan.membership === membership) &&
+        (age === 'all' || plan.age === age) &&
+        (status === 'all' || plan.status === (status as PlanStatus)) &&
+        (!search || `${plan.title} ${plan.week}`.toLowerCase().includes(search.toLowerCase()))
+    );
+
+    return [...filtered].sort((a, b) => {
+      const parseTime = (dateStr?: string) => {
+        if (!dateStr) return 0;
+        const t = new Date(dateStr).getTime();
+        return Number.isNaN(t) ? 0 : t;
+      };
+
+      const timeA = parseTime(a.createdAt || a.rawUpdatedAt);
+      const timeB = parseTime(b.createdAt || b.rawUpdatedAt);
+
+      if (timeA !== timeB) {
+        return sortByTime === 'old-to-new' ? timeA - timeB : timeB - timeA;
+      }
+
+      return sortByTime === 'old-to-new'
+        ? String(a.id).localeCompare(String(b.id))
+        : String(b.id).localeCompare(String(a.id));
+    });
+  }, [age, allPlans, membership, search, sortByTime, status]);
 
   const handleAction = async (action: string, plan: AdminWeeklyPlan) => {
     const planIdStr = String(plan.id);
@@ -202,19 +223,25 @@ export function AdminWeeklyPlansPage() {
       <div className="mt-8 space-y-8">
         <WeeklyPlansSummary summary={summary} isLoading={isLoadingSummary} />
         <div className="space-y-6">
-          <WeeklyPlanFilters
-            search={search}
-            membership={membership}
-            age={age}
-            status={status}
-            onSearchChange={setSearch}
-            onFilterChange={(filter, value) => {
-              if (filter === 'membership') setMembership(value);
-              if (filter === 'age') setAge(value);
-              if (filter === 'status') setStatus(value);
-            }}
-          />
-          <WeeklyPlansTable plans={plans} onAction={handleAction} />
+          <div className="relative z-30">
+            <WeeklyPlanFilters
+              search={search}
+              membership={membership}
+              age={age}
+              status={status}
+              sortByTime={sortByTime}
+              onSearchChange={setSearch}
+              onSortByTimeChange={setSortByTime}
+              onFilterChange={(filter, value) => {
+                if (filter === 'membership') setMembership(value);
+                if (filter === 'age') setAge(value);
+                if (filter === 'status') setStatus(value);
+              }}
+            />
+          </div>
+          <div className="relative z-10">
+            <WeeklyPlansTable plans={plans} onAction={handleAction} />
+          </div>
         </div>
       </div>
       <WeeklyPlanConfirmationModal

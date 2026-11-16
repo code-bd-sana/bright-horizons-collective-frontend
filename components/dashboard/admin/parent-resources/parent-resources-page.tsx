@@ -29,6 +29,7 @@ export function ParentResourcesPage() {
     membership: 'all',
     status: 'all',
   });
+  const [sortByTime, setSortByTime] = useState<'new-to-old' | 'old-to-new'>('new-to-old');
   const [page, setPage] = useState(1);
   const [archiveTarget, setArchiveTarget] = useState<ParentResource | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<ParentResource | null>(null);
@@ -64,7 +65,22 @@ export function ParentResourcesPage() {
 
   const { data: resourcesResponse, isLoading } = useAdminParentResources(queryParams);
 
-  const resources = useMemo(() => resourcesResponse?.data ?? [], [resourcesResponse?.data]);
+  const resources = useMemo(() => {
+    const list = resourcesResponse?.data ?? [];
+    return [...list].sort((a, b) => {
+      const parseTime = (dateStr?: string) => {
+        if (!dateStr) return 0;
+        const t = new Date(dateStr).getTime();
+        return Number.isNaN(t) ? 0 : t;
+      };
+      const timeA = parseTime(a.createdAt);
+      const timeB = parseTime(b.createdAt);
+      if (timeA !== timeB) {
+        return sortByTime === 'old-to-new' ? timeA - timeB : timeB - timeA;
+      }
+      return sortByTime === 'old-to-new' ? a.id.localeCompare(b.id) : b.id.localeCompare(a.id);
+    });
+  }, [resourcesResponse?.data, sortByTime]);
   const meta = resourcesResponse?.meta;
 
   const availableCategories = useMemo(() => {
@@ -174,24 +190,30 @@ export function ParentResourcesPage() {
       <div className="mt-8 space-y-8">
         <ResourceSummary />
         <div className="space-y-6">
-          <ResourceFilters
-            search={search}
-            category={filters.category}
-            type={filters.type}
-            membership={filters.membership}
-            status={filters.status}
-            availableCategories={availableCategories}
-            onSearchChange={handleSearchChange}
-            onFilterChange={updateFilter}
-          />
-          <ResourceTable
-            resources={resources}
-            isLoading={isLoading}
-            meta={meta}
-            currentPage={page}
-            onPageChange={setPage}
-            onAction={handleAction}
-          />
+          <div className="relative z-30">
+            <ResourceFilters
+              search={search}
+              category={filters.category}
+              type={filters.type}
+              membership={filters.membership}
+              status={filters.status}
+              availableCategories={availableCategories}
+              sortByTime={sortByTime}
+              onSearchChange={handleSearchChange}
+              onFilterChange={updateFilter}
+              onSortByTimeChange={setSortByTime}
+            />
+          </div>
+          <div className="relative z-10">
+            <ResourceTable
+              resources={resources}
+              isLoading={isLoading}
+              meta={meta}
+              currentPage={page}
+              onPageChange={setPage}
+              onAction={handleAction}
+            />
+          </div>
         </div>
       </div>
       <ArchiveResourceModal
