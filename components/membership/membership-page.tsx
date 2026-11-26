@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Loader2, ShieldCheck, ArrowUpRight } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -13,6 +13,7 @@ import {
   type MembershipPlan,
   type MembershipTier,
 } from '@/components/membership/membership-plans';
+import { FreePlanConfirmationModal } from '@/components/membership/free-plan-confirmation-modal';
 import { MembershipComparison } from '@/components/membership/membership-comparison';
 import { MembershipFaqSection } from '@/components/membership/membership-faq-section';
 import { MembershipFinalCta } from '@/components/membership/membership-final-cta';
@@ -99,6 +100,26 @@ function FeatureCheck({ paid = false }: { paid?: boolean }) {
   );
 }
 
+function isPlanFree(plan: MembershipPlan, cycle: BillingCycle): boolean {
+  if (plan.tier === 'LITTLE_STEPS') return true;
+  if (!plan.monthlyPrice && !plan.annualPrice) return true;
+  const effectiveMonthly =
+    plan.effectiveMonthlyPrice !== undefined
+      ? plan.effectiveMonthlyPrice
+      : (plan.monthlyPrice ?? 0) * (1 - (plan.monthlyDiscount ?? 0) / 100);
+
+  const regularAnnual =
+    plan.annualPrice && plan.annualPrice > 0 ? plan.annualPrice : (plan.monthlyPrice ?? 0) * 12;
+
+  const effectiveAnnual =
+    plan.effectiveAnnualPrice !== undefined
+      ? plan.effectiveAnnualPrice
+      : regularAnnual * (1 - (plan.annualDiscount ?? 0) / 100);
+
+  const basePrice = cycle === 'annual' ? effectiveAnnual : effectiveMonthly;
+  return basePrice <= 0;
+}
+
 function MembershipCard({
   plan,
   billingCycle,
@@ -128,7 +149,7 @@ function MembershipCard({
   onSelectPlan: (plan: MembershipPlan) => void;
   className?: string;
 }) {
-  const isFree = plan.tier === 'LITTLE_STEPS' || (!plan.monthlyPrice && !plan.annualPrice);
+  const isFree = isPlanFree(plan, billingCycle);
 
   const effectiveMonthly =
     plan.effectiveMonthlyPrice !== undefined
@@ -299,10 +320,20 @@ function MembershipCard({
             ) : isFree ? (
               <button
                 type="button"
+                disabled={isCheckingOut}
                 onClick={() => onSelectPlan(plan)}
-                className="flex h-12.5 w-full items-center justify-center rounded-full border-2 border-[#D5E5E5] bg-white px-6.5 py-3.5 font-manrope text-[14.4px] font-bold leading-[21.6px] text-[#2F7D7E] transition-colors hover:bg-[#f5f8f7]"
+                className="flex h-12.5 w-full items-center justify-center gap-2 rounded-full border-2 border-[#D5E5E5] bg-white px-6.5 py-3.5 font-manrope text-[14.4px] font-bold leading-[21.6px] text-[#2F7D7E] transition-colors hover:bg-[#f5f8f7] disabled:opacity-60"
               >
-                Start Free
+                {plan.tier === 'LITTLE_STEPS' ? (
+                  <span>Start Free</span>
+                ) : isUpgrade ? (
+                  <>
+                    <ArrowUpRight size={16} />
+                    <span>Upgrade to {plan.name} (Free)</span>
+                  </>
+                ) : (
+                  <span>Choose {plan.name} (Free)</span>
+                )}
               </button>
             ) : isUpgrade ? (
               <button
@@ -372,9 +403,20 @@ function MembershipCard({
 
 export function MembershipPage() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { data: session } = useSession();
   const [billingCycle, setBillingCycle] = useState<BillingCycle>('annual');
   const [checkoutPlanId, setCheckoutPlanId] = useState<string | null>(null);
+  const [freePlanModal, setFreePlanModal] = useState<{
+    isOpen: boolean;
+    plan: MembershipPlan | null;
+    billingCycle: BillingCycle;
+  }>({
+    isOpen: false,
+    plan: null,
+    billingCycle: 'annual',
+  });
+  const [isActivatingFreePlan, setIsActivatingFreePlan] = useState(false);
 
   // Fetch live membership plans from Next.js BFF API
   const { data: serverPlans } = useQuery<MembershipPlan[]>({
@@ -457,14 +499,26 @@ export function MembershipPage() {
 
   // Handle plan checkout or registration
   const handleSelectPlan = async (plan: MembershipPlan) => {
-    const isFree = plan.tier === 'LITTLE_STEPS' || (!plan.monthlyPrice && !plan.annualPrice);
+    const isFree = isPlanFree(plan, billingCycle);
 
     if (isFree) {
-      if (session?.user) {
-        router.push('/dashboard');
-      } else {
-        router.push('/register');
+      if (!session?.user) {
+        toast.info('Please sign in or create an account to claim your free membership.');
+        const planParam = plan.id ? `&plan=${plan.id}` : '';
+        router.push(`/register?cycle=${billingCycle.toUpperCase()}${planParam}`);
+        return;
       }
+
+      if (checkIsCurrentPlan(plan)) {
+        return;
+      }
+
+      // Show Free Plan confirmation modal
+      setFreePlanModal({
+        isOpen: true,
+        plan,
+        billingCycle,
+      });
       return;
     }
 
@@ -528,6 +582,40 @@ export function MembershipPage() {
     }
   };
 
+  const handleConfirmFreePlan = async () => {
+    if (!freePlanModal.plan?.id) return;
+    const plan = freePlanModal.plan;
+
+    setIsActivatingFreePlan(true);
+    try {
+      const res = await fetch('/api/memberships/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          planId: plan.id,
+          billingCycle: freePlanModal.billingCycle.toUpperCase(),
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || 'Unable to activate membership.');
+      }
+
+      await queryClient.invalidateQueries({ queryKey: ['my-subscription'] });
+      await queryClient.invalidateQueries({ queryKey: ['public-membership-plans'] });
+
+      toast.success(`🎉 ${plan.name} plan has been activated for free! Enjoy your membership.`);
+      setFreePlanModal((prev) => ({ ...prev, isOpen: false, plan: null }));
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : 'Unable to activate free plan. Please try again.'
+      );
+    } finally {
+      setIsActivatingFreePlan(false);
+    }
+  };
+
   const checkIsCurrentPlan = (plan: MembershipPlan) => {
     if (!session?.user || !currentSubscription) return false;
     if (plan.tier === 'LITTLE_STEPS') {
@@ -545,12 +633,14 @@ export function MembershipPage() {
 
   const checkIsLowerTier = (plan: MembershipPlan) => {
     if (!isSubActive || !plan.tier) return false;
+    if ((currentSubscription?.amountPaid ?? 0) <= 0 || isPlanFree(plan, billingCycle)) return false;
     const cardRank = TIER_RANKS[plan.tier] || 1;
     return cardRank < activeRank;
   };
 
   const checkIsCycleDowngrade = (plan: MembershipPlan) => {
     if (!isSubActive || !plan.tier || !currentSubscription) return false;
+    if ((currentSubscription?.amountPaid ?? 0) <= 0 || isPlanFree(plan, billingCycle)) return false;
     const cardRank = TIER_RANKS[plan.tier] || 1;
     return (
       cardRank <= activeRank &&
@@ -718,6 +808,15 @@ export function MembershipPage() {
       <MembershipTestimonials />
       <MembershipFaqSection />
       <MembershipFinalCta />
+
+      <FreePlanConfirmationModal
+        isOpen={freePlanModal.isOpen}
+        onClose={() => setFreePlanModal((prev) => ({ ...prev, isOpen: false, plan: null }))}
+        plan={freePlanModal.plan}
+        billingCycle={freePlanModal.billingCycle}
+        onConfirm={handleConfirmFreePlan}
+        isActivating={isActivatingFreePlan}
+      />
     </main>
   );
 }
