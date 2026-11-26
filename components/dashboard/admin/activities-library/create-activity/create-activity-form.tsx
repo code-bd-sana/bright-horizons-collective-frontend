@@ -49,6 +49,30 @@ const difficultyOptions = [
   { label: 'Challenging', value: 'CHALLENGING' },
 ] as const;
 
+const ageYearOptions = Array.from({ length: 18 }, (_, i) => ({
+  label: `${i} ${i === 1 ? 'Year' : 'Years'}`,
+  value: String(i),
+}));
+
+const ageMonthOptions = Array.from({ length: 12 }, (_, i) => ({
+  label: `${i + 1} ${i + 1 === 1 ? 'Month' : 'Months'}`,
+  value: String(i + 1),
+}));
+
+function decomposeAgeMonths(
+  totalMonths?: number | null,
+  fallbackYears = 0,
+  fallbackMonths = 1
+): { years: string; months: string } {
+  if (totalMonths === undefined || totalMonths === null || isNaN(totalMonths)) {
+    return { years: String(fallbackYears), months: String(fallbackMonths) };
+  }
+  const safeMonths = Math.max(1, Math.min(216, totalMonths));
+  const y = Math.floor((safeMonths - 1) / 12);
+  const m = ((safeMonths - 1) % 12) + 1;
+  return { years: String(y), months: String(m) };
+}
+
 const activityFormSchema = z
   .object({
     title: z.string().trim().min(1, 'Please enter an activity title.').max(200),
@@ -56,16 +80,10 @@ const activityFormSchema = z
     learningObjective: z.string(),
     category: z.string().min(1, 'Please select a development category.'),
     customCategory: z.string(),
-    minAgeMonths: z
-      .string()
-      .trim()
-      .min(1, 'Please enter starting age.')
-      .refine((val) => /^\d+$/.test(val), 'Starting age must be a whole number of months.'),
-    maxAgeMonths: z
-      .string()
-      .trim()
-      .min(1, 'Please enter ending age.')
-      .refine((val) => /^\d+$/.test(val), 'Ending age must be a whole number of months.'),
+    startAgeYears: z.string().min(1, 'Please select starting year.'),
+    startAgeMonths: z.string().min(1, 'Please select starting month.'),
+    endAgeYears: z.string().min(1, 'Please select ending year.'),
+    endAgeMonths: z.string().min(1, 'Please select ending month.'),
     developmentGoal: z.string().trim().min(1, 'Please describe the development goal.'),
     materialsSummary: z.string(),
     otDesigned: z.string(),
@@ -92,10 +110,17 @@ const activityFormSchema = z
     safetyNotes: z.string(),
     accessLevel: z.enum(['little-steps', 'grow-together', 'personalized-pathways']),
   })
-  .refine((val) => Number(val.maxAgeMonths) >= Number(val.minAgeMonths), {
-    message: 'Ending age must be greater than or equal to starting age.',
-    path: ['maxAgeMonths'],
-  })
+  .refine(
+    (val) => {
+      const startTotal = Number(val.startAgeYears) * 12 + Number(val.startAgeMonths);
+      const endTotal = Number(val.endAgeYears) * 12 + Number(val.endAgeMonths);
+      return endTotal >= startTotal;
+    },
+    {
+      message: 'Ending age must be greater than or equal to starting age.',
+      path: ['endAgeYears'],
+    }
+  )
   .refine((val) => val.category !== 'Other' || Boolean(val.customCategory.trim()), {
     message: 'Please enter the custom development category.',
     path: ['customCategory'],
@@ -139,8 +164,10 @@ function getInitialFormValues(activity?: Activity, isDuplicate = false): Activit
       learningObjective: '',
       category: '',
       customCategory: '',
-      minAgeMonths: '0',
-      maxAgeMonths: '36',
+      startAgeYears: '0',
+      startAgeMonths: '1',
+      endAgeYears: '2',
+      endAgeMonths: '12',
       developmentGoal: '',
       materialsSummary: '',
       otDesigned: 'Therapist-approved',
@@ -167,14 +194,19 @@ function getInitialFormValues(activity?: Activity, isDuplicate = false): Activit
       )?.value ?? activity.developmentCategory)
     : 'Other';
 
+  const startAge = decomposeAgeMonths(activity.minAgeMonths, 0, 1);
+  const endAge = decomposeAgeMonths(activity.maxAgeMonths, 2, 12);
+
   return {
     title: isDuplicate ? `${activity.title} (Copy)` : activity.title,
     shortDescription: activity.shortDescription ?? '',
     learningObjective: activity.learningObjective ?? '',
     category: matchedCategory,
     customCategory: isStandard ? '' : activity.developmentCategory,
-    minAgeMonths: String(activity.minAgeMonths ?? 0),
-    maxAgeMonths: String(activity.maxAgeMonths ?? 36),
+    startAgeYears: startAge.years,
+    startAgeMonths: startAge.months,
+    endAgeYears: endAge.years,
+    endAgeMonths: endAge.months,
     developmentGoal: activity.developmentGoal ?? '',
     materialsSummary: activity.materialsSummary ?? '',
     otDesigned: activity.otDesigned ?? (activity.isOtDesigned ? 'Therapist-approved' : ''),
@@ -291,14 +323,17 @@ export function CreateActivityForm({
         .filter((s) => s.title.trim().length > 0)
         .map((s) => ({ title: s.title.trim(), description: s.description?.trim() || '' }));
 
+      const minAgeMonths = Number(values.startAgeYears) * 12 + Number(values.startAgeMonths);
+      const maxAgeMonths = Number(values.endAgeYears) * 12 + Number(values.endAgeMonths);
+
       const payload: CreateActivityInput = {
         title: values.title.trim(),
         shortDescription: values.shortDescription.trim(),
         learningObjective: values.learningObjective?.trim() || undefined,
         developmentCategory:
           values.category === 'Other' ? values.customCategory.trim() : values.category,
-        minAgeMonths: Number(values.minAgeMonths),
-        maxAgeMonths: Number(values.maxAgeMonths),
+        minAgeMonths,
+        maxAgeMonths,
         featuredImageUrl,
         developmentGoal: values.developmentGoal.trim(),
         materialsSummary: values.materialsSummary?.trim() || undefined,
@@ -414,22 +449,79 @@ export function CreateActivityForm({
           </div>
 
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-            <FormField label="Starting Age (Months)" required error={errors.minAgeMonths?.message}>
-              <input
-                {...register('minAgeMonths')}
-                inputMode="numeric"
-                placeholder="e.g. 0"
-                className={inputClassName}
-              />
-            </FormField>
-            <FormField label="Ending Age (Months)" required error={errors.maxAgeMonths?.message}>
-              <input
-                {...register('maxAgeMonths')}
-                inputMode="numeric"
-                placeholder="e.g. 36"
-                className={inputClassName}
-              />
-            </FormField>
+            <div>
+              <label className={labelClassName}>
+                Starting Age <span className="text-[#df6b63]">*</span>
+              </label>
+              <div className="mt-1.5 grid grid-cols-2 gap-3">
+                <Controller
+                  control={control}
+                  name="startAgeYears"
+                  render={({ field }) => (
+                    <ActivityFormSelect
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder="Select Year"
+                      options={ageYearOptions}
+                    />
+                  )}
+                />
+                <Controller
+                  control={control}
+                  name="startAgeMonths"
+                  render={({ field }) => (
+                    <ActivityFormSelect
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder="Select Month"
+                      options={ageMonthOptions}
+                    />
+                  )}
+                />
+              </div>
+              {(errors.startAgeYears || errors.startAgeMonths) && (
+                <span className="mt-1 block font-nunito text-xs text-[#c55750]">
+                  {errors.startAgeYears?.message || errors.startAgeMonths?.message}
+                </span>
+              )}
+            </div>
+
+            <div>
+              <label className={labelClassName}>
+                Ending Age <span className="text-[#df6b63]">*</span>
+              </label>
+              <div className="mt-1.5 grid grid-cols-2 gap-3">
+                <Controller
+                  control={control}
+                  name="endAgeYears"
+                  render={({ field }) => (
+                    <ActivityFormSelect
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder="Select Year"
+                      options={ageYearOptions}
+                    />
+                  )}
+                />
+                <Controller
+                  control={control}
+                  name="endAgeMonths"
+                  render={({ field }) => (
+                    <ActivityFormSelect
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder="Select Month"
+                      options={ageMonthOptions}
+                    />
+                  )}
+                />
+              </div>
+              {(errors.endAgeYears || errors.endAgeMonths) && (
+                <span className="mt-1 block font-nunito text-xs text-[#c55750]">
+                  {errors.endAgeYears?.message || errors.endAgeMonths?.message}
+                </span>
+              )}
+            </div>
           </div>
 
           <FormField label="Featured Image">
