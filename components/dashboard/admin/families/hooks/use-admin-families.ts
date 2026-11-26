@@ -12,6 +12,8 @@ export type FamilyItem = {
   children: string[];
   membership: string;
   tierKey?: string;
+  planId?: string | null;
+  billingCycle?: 'MONTHLY' | 'ANNUAL' | string | null;
   status: 'Active' | 'Inactive' | string;
   registrationDate: string;
 };
@@ -191,6 +193,38 @@ export function useDeleteFamily() {
     mutationFn: (id: string) => deleteFamilyApi(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: adminFamilyKeys.all });
+    },
+  });
+}
+
+export async function assignFamilyMembershipApi({
+  id,
+  planId,
+  billingCycle,
+}: {
+  id: string;
+  planId: string;
+  billingCycle?: 'MONTHLY' | 'ANNUAL';
+}): Promise<{ success: boolean; message?: string }> {
+  const res = await fetch(`/api/families/${id}/membership`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ planId, billingCycle: billingCycle || 'MONTHLY' }),
+  });
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.message || 'Failed to update family membership');
+  }
+  return res.json();
+}
+
+export function useAssignFamilyMembership() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: assignFamilyMembershipApi,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: adminFamilyKeys.all });
+      queryClient.invalidateQueries({ queryKey: ['admin-memberships'] });
     },
   });
 }

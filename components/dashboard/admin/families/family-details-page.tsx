@@ -11,6 +11,7 @@ import {
   UserCheck,
   UserRound,
   UserX,
+  WalletCards,
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -20,6 +21,7 @@ import { toast } from 'sonner';
 
 import { ChangeFamilyStatusModal } from './change-family-status-modal';
 import { DeleteFamilyModal } from './delete-family-modal';
+import { ChangeFamilyMembershipModal } from './change-family-membership-modal';
 import {
   useAdminFamilyDetails,
   useDeleteFamily,
@@ -78,6 +80,7 @@ export function FamilyDetailsPage({ familyId }: { familyId: string }) {
   const router = useRouter();
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showMembershipModal, setShowMembershipModal] = useState(false);
 
   const updateStatusMutation = useUpdateFamilyStatus();
   const deleteFamilyMutation = useDeleteFamily();
@@ -147,6 +150,7 @@ export function FamilyDetailsPage({ familyId }: { familyId: string }) {
     children = [],
     activeSubscription,
     membership = 'Little Steps',
+    tierKey,
     activityLog = [],
   } = data;
   const initials = getInitials(user.name, user.email);
@@ -254,12 +258,22 @@ export function FamilyDetailsPage({ familyId }: { familyId: string }) {
         <Card>
           <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">
             <h2 className="font-nunito text-lg font-bold leading-7 text-[#263238]">Membership</h2>
-            <Link
-              href="/dashboard/admin/memberships"
-              className="flex items-center gap-1.5 font-manrope text-sm font-semibold text-[#2f7d7e] transition-colors hover:underline"
-            >
-              Manage Memberships <ArrowUpRight aria-hidden="true" size={13} />
-            </Link>
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => setShowMembershipModal(true)}
+                className="flex items-center gap-1.5 rounded-[10px] border border-[rgba(47,125,126,0.25)] bg-[rgba(47,125,126,0.08)] px-3 py-1.5 font-manrope text-xs font-semibold text-[#2f7d7e] transition-colors hover:bg-[#edf6f2]"
+              >
+                <WalletCards aria-hidden="true" size={13} />
+                Change Plan
+              </button>
+              <Link
+                href="/dashboard/admin/memberships"
+                className="flex items-center gap-1.5 font-manrope text-sm font-semibold text-[#2f7d7e] transition-colors hover:underline"
+              >
+                Manage Memberships <ArrowUpRight aria-hidden="true" size={13} />
+              </Link>
+            </div>
           </div>
           <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-4">
             {[
@@ -513,6 +527,31 @@ export function FamilyDetailsPage({ familyId }: { familyId: string }) {
           }
         }}
         isPending={deleteFamilyMutation.isPending}
+      />
+
+      <ChangeFamilyMembershipModal
+        family={
+          user
+            ? {
+                id: user.id,
+                name: user.name,
+                relationship: user.relationship || 'Parent',
+                email: user.email,
+                phone: user.phone || 'N/A',
+                children: children.map((c) => c.name),
+                membership: currentPlanName,
+                tierKey: activeSubscription?.plan?.tier || tierKey,
+                planId: activeSubscription?.plan?.id || null,
+                billingCycle:
+                  (activeSubscription?.billingCycle as 'MONTHLY' | 'ANNUAL') || 'MONTHLY',
+                status: isActive ? 'Active' : 'Inactive',
+                registrationDate: user.createdAt,
+              }
+            : null
+        }
+        isOpen={showMembershipModal}
+        onClose={setShowMembershipModal}
+        onSuccess={() => refetch()}
       />
     </section>
   );

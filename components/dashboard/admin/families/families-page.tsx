@@ -21,6 +21,7 @@ import { toast } from 'sonner';
 
 import { ChangeFamilyStatusModal } from './change-family-status-modal';
 import { DeleteFamilyModal } from './delete-family-modal';
+import { ChangeFamilyMembershipModal } from './change-family-membership-modal';
 import {
   useAdminFamilies,
   useAdminFamilyStats,
@@ -179,6 +180,7 @@ export function FamiliesPage() {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [statusTarget, setStatusTarget] = useState<FamilyItem | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<FamilyItem | null>(null);
+  const [membershipTarget, setMembershipTarget] = useState<FamilyItem | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
 
   const updateStatusMutation = useUpdateFamilyStatus();
@@ -511,7 +513,18 @@ export function FamiliesPage() {
                       <Eye aria-hidden="true" size={14} strokeWidth={1.8} />
                     </Link>
 
-                    {/* 2. Status Change */}
+                    {/* 2. Change Membership Plan */}
+                    <button
+                      type="button"
+                      aria-label={`Change membership plan for ${family.name}`}
+                      title="Change membership plan"
+                      onClick={() => setMembershipTarget(family)}
+                      className="flex size-8 items-center justify-center rounded-[10px] border border-[#e8ebe8] bg-white text-[#607d8b] transition-colors hover:border-[#2f7d7e] hover:bg-[#edf6f2] hover:text-[#2f7d7e]"
+                    >
+                      <WalletCards aria-hidden="true" size={14} strokeWidth={1.8} />
+                    </button>
+
+                    {/* 3. Status Change */}
                     <button
                       type="button"
                       aria-label={`${(family.status || '').toLowerCase() === 'active' ? 'Deactivate' : 'Activate'} ${family.name}`}
@@ -672,7 +685,18 @@ export function FamiliesPage() {
                             <Eye aria-hidden="true" size={14} strokeWidth={1.8} />
                           </Link>
 
-                          {/* 2. Status Change */}
+                          {/* 2. Change Membership Plan */}
+                          <button
+                            type="button"
+                            aria-label={`Change membership plan for ${family.name}`}
+                            title="Change membership plan"
+                            onClick={() => setMembershipTarget(family)}
+                            className="flex size-7.5 items-center justify-center rounded-[10px] border border-[#e8ebe8] bg-white text-[#607d8b] transition-colors hover:border-[#2f7d7e] hover:bg-[#edf6f2] hover:text-[#2f7d7e]"
+                          >
+                            <WalletCards aria-hidden="true" size={14} strokeWidth={1.8} />
+                          </button>
+
+                          {/* 3. Status Change */}
                           <button
                             type="button"
                             aria-label={`${(family.status || '').toLowerCase() === 'active' ? 'Deactivate' : 'Activate'} ${family.name}`}
@@ -784,6 +808,13 @@ export function FamiliesPage() {
         onClose={(open) => !open && setDeleteTarget(null)}
         onConfirm={handleConfirmDelete}
         isPending={deleteFamilyMutation.isPending}
+      />
+
+      <ChangeFamilyMembershipModal
+        family={membershipTarget}
+        isOpen={Boolean(membershipTarget)}
+        onClose={(open) => !open && setMembershipTarget(null)}
+        onSuccess={() => refetch()}
       />
     </section>
   );
