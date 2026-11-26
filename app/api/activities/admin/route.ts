@@ -26,6 +26,7 @@ const adminActivityFiltersSchema = z.object({
   difficultyLevel: z.string().optional(),
   membership: z.string().optional(),
   status: z.string().optional(),
+  sortByTime: z.enum(['new-to-old', 'old-to-new']).optional(),
 });
 
 export async function GET(request: NextRequest) {

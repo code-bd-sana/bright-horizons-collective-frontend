@@ -36,6 +36,7 @@ export type Activity = {
   status: ActivityStatus;
   isFavorited?: boolean;
   isCompleted?: boolean;
+  activityDate?: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -62,6 +63,7 @@ export type CreateActivityInput = {
   safetyNotes?: string;
   accessLevel?: string[];
   status?: ActivityStatus;
+  activityDate?: string;
 };
 
 export type UpdateActivityInput = Partial<CreateActivityInput>;

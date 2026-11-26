@@ -73,6 +73,17 @@ function decomposeAgeMonths(
   return { years: String(y), months: String(m) };
 }
 
+function toDateInputValue(dateStr?: string | Date | null): string {
+  if (!dateStr) return new Date().toISOString().split('T')[0];
+  try {
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return new Date().toISOString().split('T')[0];
+    return d.toISOString().split('T')[0];
+  } catch {
+    return new Date().toISOString().split('T')[0];
+  }
+}
+
 const activityFormSchema = z
   .object({
     title: z.string().trim().min(1, 'Please enter an activity title.').max(200),
@@ -80,6 +91,7 @@ const activityFormSchema = z
     learningObjective: z.string(),
     category: z.string().min(1, 'Please select a development category.'),
     customCategory: z.string(),
+    activityDate: z.string().min(1, 'Please select an activity date.'),
     startAgeYears: z.string().min(1, 'Please select starting year.'),
     startAgeMonths: z.string().min(1, 'Please select starting month.'),
     endAgeYears: z.string().min(1, 'Please select ending year.'),
@@ -164,6 +176,7 @@ function getInitialFormValues(activity?: Activity, isDuplicate = false): Activit
       learningObjective: '',
       category: '',
       customCategory: '',
+      activityDate: toDateInputValue(),
       startAgeYears: '0',
       startAgeMonths: '1',
       endAgeYears: '2',
@@ -203,6 +216,7 @@ function getInitialFormValues(activity?: Activity, isDuplicate = false): Activit
     learningObjective: activity.learningObjective ?? '',
     category: matchedCategory,
     customCategory: isStandard ? '' : activity.developmentCategory,
+    activityDate: toDateInputValue(activity.activityDate || activity.createdAt),
     startAgeYears: startAge.years,
     startAgeMonths: startAge.months,
     endAgeYears: endAge.years,
@@ -332,6 +346,7 @@ export function CreateActivityForm({
         learningObjective: values.learningObjective?.trim() || undefined,
         developmentCategory:
           values.category === 'Other' ? values.customCategory.trim() : values.category,
+        activityDate: values.activityDate ? new Date(values.activityDate).toISOString() : undefined,
         minAgeMonths,
         maxAgeMonths,
         featuredImageUrl,
@@ -445,8 +460,20 @@ export function CreateActivityForm({
                   className={inputClassName}
                 />
               </FormField>
-            ) : null}
+            ) : (
+              <FormField label="Activity Date" required error={errors.activityDate?.message}>
+                <input type="date" {...register('activityDate')} className={inputClassName} />
+              </FormField>
+            )}
           </div>
+
+          {watchedCategory === 'Other' && (
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+              <FormField label="Activity Date" required error={errors.activityDate?.message}>
+                <input type="date" {...register('activityDate')} className={inputClassName} />
+              </FormField>
+            </div>
+          )}
 
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <div>

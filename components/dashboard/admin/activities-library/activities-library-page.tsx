@@ -73,6 +73,7 @@ export function ActivitiesLibraryPage() {
     if (filters.difficulty !== 'all') params.difficultyLevel = filters.difficulty;
     if (filters.membership !== 'all') params.membership = filters.membership;
     if (filters.status !== 'all') params.status = filters.status;
+    if (filters.sortByTime) params.sortByTime = filters.sortByTime;
 
     if (filters.ageRange !== 'all') {
       const [min, max] = filters.ageRange.split('-').map(Number);
@@ -96,14 +97,14 @@ export function ActivitiesLibraryPage() {
     );
 
     return [...filtered].sort((a, b) => {
-      const parseTime = (dateStr?: string) => {
+      const parseTime = (dateStr?: string | null) => {
         if (!dateStr) return 0;
         const t = new Date(dateStr).getTime();
         return Number.isNaN(t) ? 0 : t;
       };
 
-      const timeA = parseTime(a.createdAt);
-      const timeB = parseTime(b.createdAt);
+      const timeA = parseTime(a.activityDate || a.createdAt);
+      const timeB = parseTime(b.activityDate || b.createdAt);
 
       if (timeA !== timeB) {
         return filters.sortByTime === 'old-to-new' ? timeA - timeB : timeB - timeA;

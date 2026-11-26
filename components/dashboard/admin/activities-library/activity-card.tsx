@@ -2,6 +2,7 @@
 
 import {
   Archive,
+  Calendar,
   Clock3,
   Copy,
   Eye,
@@ -42,6 +43,18 @@ function getDifficultyLabel(difficulty: string): string {
       return 'Challenging';
     default:
       return difficulty || 'Easy';
+  }
+}
+
+function formatDate(dateStr?: string | null): string {
+  if (!dateStr) return '';
+  try {
+    const d = new Date(dateStr);
+    return isNaN(d.getTime())
+      ? ''
+      : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  } catch {
+    return '';
   }
 }
 
@@ -119,6 +132,10 @@ export function ActivityCard({
         </div>
 
         <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2 font-manrope text-xs leading-4.5 text-[#668a9e] 2xl:flex-nowrap 2xl:justify-between 2xl:gap-0">
+          <span className="flex items-center gap-1.5">
+            <Calendar aria-hidden="true" size={14} strokeWidth={1.5} />
+            {formatDate(activity.activityDate || activity.createdAt)}
+          </span>
           <span className="flex items-center gap-1.5">
             <Clock3 aria-hidden="true" size={14} strokeWidth={1.5} />
             {activity.estimatedDuration || '15 min'}
